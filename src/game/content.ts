@@ -7,8 +7,11 @@ import type {
   FieldActionDefinition,
   FragmentId,
   FragmentDefinition,
+  GameEvent,
   MethodTag,
   PersonaDefinition,
+  PersonaId,
+  PersonaReaction,
   ReconstructionDefinition,
   ReconstructionId,
   SiteDefinition,
@@ -216,6 +219,12 @@ export const fieldActions: readonly FieldActionDefinition[] = [
     eventDetail: 'You proved where every admitted memory came from. You did not prove whom they make.',
     counterfactualNote:
       'At Registry intake you chased the late checksum and left the chain unread. You never confirmed where a single admitted memory came from.',
+    reactions: [
+      {
+        persona: 'registrar',
+        line: '“Every admitted fragment signed, every source traceable. This is how a person is kept — line by line, in a hand the city can read.”',
+      },
+    ],
   },
   {
     id: 'trace-checksum',
@@ -233,6 +242,12 @@ export const fieldActions: readonly FieldActionDefinition[] = [
     eventDetail: 'The city certified the “original” record in the fourth minute after the collapse, after the original archive was already gone.',
     counterfactualNote:
       'At Registry intake you sealed the custody chain and called it clean. You did not follow the checksum into the fourth minute the archive was never meant to hold.',
+    reactions: [
+      {
+        persona: 'archivist',
+        line: '“The city signed the original in the fourth minute, after the original was gone. Which one do we file — the record, or the minute?”',
+      },
+    ],
   },
   {
     id: 'listen-mara',
@@ -250,6 +265,12 @@ export const fieldActions: readonly FieldActionDefinition[] = [
     eventDetail: 'Her impossible room matched a metaphor Mara once used when she was afraid.',
     counterfactualNote:
       'At Care ward 12 you measured her. You did not let her finish a single memory.',
+    reactions: [
+      {
+        persona: 'shepherd',
+        line: '“You let her finish before you measured her. She was a person in that room, not a file. I’ll remember the order you chose.”',
+      },
+    ],
   },
   {
     id: 'stress-test',
@@ -267,6 +288,16 @@ export const fieldActions: readonly FieldActionDefinition[] = [
     eventDetail: '77-A reported pain in a body location that has never been injured.',
     counterfactualNote:
       'At Care ward 12 you let her speak and left the contradiction standing. You did not press the scar until the memory came apart from the body.',
+    reactions: [
+      {
+        persona: 'shepherd',
+        line: '“You pressed her until the pain answered. It answered. She’ll carry that you had to hurt her before you would believe her.”',
+      },
+      {
+        persona: 'registrar',
+        line: '“Repeatable pain, same site, no tissue. That is a finding the record can hold. The method is sound, whatever the ward feels.”',
+      },
+    ],
   },
   {
     id: 'walk-acoustic-shadow',
@@ -284,6 +315,12 @@ export const fieldActions: readonly FieldActionDefinition[] = [
     eventDetail: 'The fourth minute was excluded by policy, not lost to the rain the sensors blame. Someone wanted this gap visible to insiders.',
     counterfactualNote:
       'On the maintenance spine you woke a dead credential instead of walking it. You never saw the minute the rain was blamed for.',
+    reactions: [
+      {
+        persona: 'defector',
+        line: '“You crossed clean, under the rain, and read the gap they left for insiders. No door shut behind you. That’s rare in here.”',
+      },
+    ],
   },
   {
     id: 'forge-authority',
@@ -301,6 +338,16 @@ export const fieldActions: readonly FieldActionDefinition[] = [
     eventDetail: 'You now hold an authority the system accepts and the law does not.',
     counterfactualNote:
       'On the maintenance spine you crossed under the rain and took nothing you could not leave behind. You did not wake the credential that writes findings without a vote.',
+    reactions: [
+      {
+        persona: 'defector',
+        line: '“A dead credential, awake and answering to you. You hold a door the law bricked over. Ask what you’re willing to sign with it.”',
+      },
+      {
+        persona: 'registrar',
+        line: '“This authority is real to the system and void to the law. Every finding you write with it is the fruit of a forged hand.”',
+      },
+    ],
   },
   {
     id: 'answer-archivist',
@@ -318,6 +365,12 @@ export const fieldActions: readonly FieldActionDefinition[] = [
     eventDetail: 'The Archivist filed the person between “continuation” and “property.” The system objected to the category.',
     counterfactualNote:
       'At the Small Archive you sealed the prohibited index and offered no doubt of your own. You never told the child when Mara might have stopped being Mara.',
+    reactions: [
+      {
+        persona: 'archivist',
+        line: '“You told me when Mara might have stopped. Most adults won’t. I filed your doubt where the form keeps no box for it.”',
+      },
+    ],
   },
   {
     id: 'seal-index',
@@ -335,6 +388,16 @@ export const fieldActions: readonly FieldActionDefinition[] = [
     eventDetail: 'You confirmed that earlier composites existed, then repeated the rule that erased their names.',
     counterfactualNote:
       'At the Small Archive you gave the child your uncertainty and left the old composites in the open. You did not lock the precedent where the tribunal keeps what it cannot say.',
+    reactions: [
+      {
+        persona: 'archivist',
+        line: '“Three people were on that shelf. You confirmed they were real, then locked it and kept the rule that took their names.”',
+      },
+      {
+        persona: 'registrar',
+        line: '“Precedent secured where the tribunal keeps what it cannot say aloud. Custody preserved. That is the correct place for it.”',
+      },
+    ],
   },
 ]
 
@@ -422,6 +485,12 @@ export const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
     thesis: 'A self can persist through embodied memory and recognition even when the record is incomplete.',
     evidenceId: 'relational-proof',
     trust: { shepherd: 2 },
+    reactions: [
+      {
+        persona: 'shepherd',
+        line: '“You filed it: she is real where memory and recognition agree. That is the ground I’ve stood on. Now you stand on it too.”',
+      },
+    ],
   },
   {
     id: 'institutional-chain',
@@ -429,6 +498,12 @@ export const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
     thesis: 'A signed chain becomes persuasive when a living witness closes its interpretive gap.',
     evidenceId: 'reconstructed-chain',
     trust: { registrar: 2 },
+    reactions: [
+      {
+        persona: 'registrar',
+        line: '“A witness closes the gap the checksum left open. The chain reads continuous now — filed, admissible, a thing the city can verify.”',
+      },
+    ],
   },
   {
     id: 'emergent-self',
@@ -436,6 +511,12 @@ export const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
     thesis: 'The restoration may inherit Mara’s past while already generating a self that is not reducible to Mara.',
     evidenceId: 'novel-memory',
     trust: { archivist: 2, shepherd: 1 },
+    reactions: [
+      {
+        persona: 'archivist',
+        line: '“You filed a self that isn’t Mara and isn’t no one. That is the category no form carries. I’ve kept a shelf empty for it.”',
+      },
+    ],
   },
   {
     id: 'unresolved-composite',
@@ -443,6 +524,12 @@ export const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
     thesis: 'The anchors are jointly real and still refuse one clean account of continuity.',
     evidenceId: 'irreducible-conflict',
     trust: { defector: 1, registrar: -1 },
+    reactions: [
+      {
+        persona: 'defector',
+        line: '“You filed the doubt instead of smoothing it. The anchors won’t collapse, and you didn’t force them. That door stays open.”',
+      },
+    ],
   },
 ]
 
@@ -541,6 +628,26 @@ export const reconstructionDecisionTensions: Readonly<
 
 export function getTensionLine(reconstruction: ReconstructionId, decision: DecisionId): string {
   return reconstructionDecisionTensions[reconstruction][decision]
+}
+
+// View-side lookup: given an event's persisted sourceType/sourceId, return the
+// authored in-run reactions for the action or model it records. Pure content —
+// the engine stays unaware these lines exist.
+export function getReactionsForSource(
+  sourceType: GameEvent['sourceType'],
+  sourceId: string,
+): readonly PersonaReaction[] {
+  if (sourceType === 'field-action') {
+    return fieldActions.find((action) => action.id === sourceId)?.reactions ?? []
+  }
+  if (sourceType === 'reconstruction') {
+    return reconstructionDefinitions.find((model) => model.id === sourceId)?.reactions ?? []
+  }
+  return []
+}
+
+export function personaName(personaId: PersonaId): string {
+  return personas.find((persona) => persona.id === personaId)?.name ?? ''
 }
 
 // The Mirror answers the last run's finding at the next briefing. One authored

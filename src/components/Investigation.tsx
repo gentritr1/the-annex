@@ -7,6 +7,7 @@ import {
 import { canEnterTribunal } from '../game/engine'
 import type { FieldActionId, GameState } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
+import { ReactionQuotes } from './ReactionQuotes'
 
 interface InvestigationProps {
   state: GameState
@@ -91,6 +92,7 @@ export function Investigation({
                     <div>
                       <strong>{completedAction.title}</strong>
                       <p>{completedAction.eventDetail}</p>
+                      <ReactionQuotes reactions={completedAction.reactions} />
                     </div>
                   </div>
                 ) : (
@@ -133,6 +135,7 @@ export function Investigation({
                 <strong>{reconstruction.title}:</strong> {reconstruction.thesis}
               </p>
               <span className="filed-badge">Model filed</span>
+              <ReactionQuotes reactions={reconstruction.reactions} />
             </>
           ) : (
             <p>Select two anchors. Every pairing is admissible, but each makes a different claim.</p>

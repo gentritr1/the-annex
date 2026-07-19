@@ -1,8 +1,15 @@
 import { useEffect, useState } from 'react'
 import { PersonaSigil } from '../ambience/sigils'
-import { caseFile, evidenceDefinitions, methodLabels, personas } from '../game/content'
+import {
+  caseFile,
+  evidenceDefinitions,
+  getReactionsForSource,
+  methodLabels,
+  personas,
+} from '../game/content'
 import { getTrustLabel } from '../game/engine'
 import type { EvidenceStatus, GameState, PersonaId } from '../game/types'
+import { ReactionQuotes } from './ReactionQuotes'
 
 interface CaseRailProps {
   state: GameState
@@ -205,6 +212,10 @@ export function CaseRail({ state }: CaseRailProps) {
                   <div>
                     <strong>{event.title}</strong>
                     <p>{event.detail}</p>
+                    <ReactionQuotes
+                      reactions={getReactionsForSource(event.sourceType, event.sourceId)}
+                      variant="log"
+                    />
                     <div className="event-tags">
                       {event.methodTags.map((tag) => (
                         <span key={tag}>{methodLabels[tag]}</span>

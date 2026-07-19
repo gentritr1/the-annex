@@ -127,6 +127,15 @@ export type GameAction =
   | { type: 'RETURN_TO_TITLE' }
   | { type: 'UPDATE_SETTING'; setting: keyof AccessibilitySettings; value: boolean | 'standard' | 'large' }
 
+// One authored, in-voice line a persona speaks in the moment a commitment lands.
+// This is CONTENT, not persisted state: it is looked up view-side from ids that
+// already live in GameState (event sourceType/sourceId, the site's chosen
+// actionId, the filed reconstruction). The engine never needs to know it exists.
+export interface PersonaReaction {
+  persona: PersonaId
+  line: string
+}
+
 export interface PersonaDefinition {
   id: PersonaId
   name: string
@@ -169,6 +178,9 @@ export interface FieldActionDefinition {
   // Testimony of the route not taken: read at debrief for the sibling action
   // the auditor skipped when this action's site was visited another way.
   counterfactualNote?: string
+  // The persona(s) who speak in the moment this action is committed, in their
+  // established voice. Read view-side; never persisted.
+  reactions?: readonly PersonaReaction[]
 }
 
 export interface SiteDefinition {
@@ -195,6 +207,8 @@ export interface ReconstructionDefinition {
   thesis: string
   evidenceId: EvidenceId
   trust: Partial<Record<PersonaId, number>>
+  // The persona most implicated by this model reacts to it being filed.
+  reactions?: readonly PersonaReaction[]
 }
 
 export interface DecisionDefinition {

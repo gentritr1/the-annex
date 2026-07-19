@@ -6,6 +6,7 @@ import {
   fragments,
   getReconstructionForFragments,
   getTensionLine,
+  personas,
   reconstructionDefinitions,
   sites,
 } from './content'
@@ -82,5 +83,40 @@ describe('Case 77 content integrity', () => {
       })
     })
     expect(pairs).toBe(16)
+  })
+
+  it('authors an in-run reaction for every field action, with two distinct voices on the highest-stakes ones', () => {
+    const twoVoiceActions = new Set(['forge-authority', 'stress-test', 'seal-index'])
+
+    fieldActions.forEach((action) => {
+      const reactions = action.reactions ?? []
+      expect(reactions.length).toBeGreaterThanOrEqual(1)
+
+      if (twoVoiceActions.has(action.id)) {
+        expect(reactions.length).toBeGreaterThanOrEqual(2)
+        expectUnique(reactions.map((reaction) => reaction.persona))
+      }
+    })
+  })
+
+  it('authors an in-run reaction for every reconstruction outcome', () => {
+    reconstructionDefinitions.forEach((model) => {
+      expect((model.reactions ?? []).length).toBeGreaterThanOrEqual(1)
+    })
+  })
+
+  it('gives every reaction a valid persona and a nonempty line within 160 characters', () => {
+    const validPersonas = new Set(personas.map((persona) => persona.id))
+    const allReactions = [
+      ...fieldActions.flatMap((action) => action.reactions ?? []),
+      ...reconstructionDefinitions.flatMap((model) => model.reactions ?? []),
+    ]
+
+    expect(allReactions.length).toBe(15)
+    allReactions.forEach((reaction) => {
+      expect(validPersonas.has(reaction.persona)).toBe(true)
+      expect(reaction.line.trim().length).toBeGreaterThan(0)
+      expect([...reaction.line].length).toBeLessThanOrEqual(160)
+    })
   })
 })
