@@ -10,16 +10,21 @@ interface BriefingProps {
 }
 
 export function Briefing({ state, onSelectApproach }: BriefingProps) {
-  const { caseFile, approaches, chrome } = getCaseContent(state.caseId)
+  const { caseFile, approaches, chrome, scene } = getCaseContent(state.caseId)
   const priorRun = state.previousRuns.at(-1)
   // The prior run may belong to another case; its aside comes from that case.
   const mirrorAside = priorRun
     ? getMirrorBriefingAside(priorRun.caseId ?? DEFAULT_CASE_ID, priorRun.decision)
     : null
+  // The banner wears this case's own art, resolved from scene data.
+  const bannerSrc = scene.layers.find((l) => l.raster?.src)?.raster?.src
+  const bannerStyle = bannerSrc
+    ? ({ '--banner-art': `url(${bannerSrc})` } as React.CSSProperties)
+    : undefined
 
   return (
     <article className="phase-page briefing-page">
-      <div className="scene-banner scene-banner-briefing">
+      <div className="scene-banner scene-banner-briefing" style={bannerStyle}>
         {/* Rain only — the banner already carries the art as its own background;
             no hero plane, no parallax (double-painting would ghost it). */}
         <Atmosphere mask={0.12} reducedMotion={state.settings.reducedMotion} />

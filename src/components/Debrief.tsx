@@ -7,6 +7,8 @@ import {
   personas,
 } from '../game/content'
 import { getTrustLabel } from '../game/engine'
+import { SceneStage } from '../scene/SceneStage'
+import { sceneStateFor } from '../scene/sceneState'
 import type {
   CaseDefinition,
   CaseSwitchOption,
@@ -71,6 +73,14 @@ export function Debrief({
 
   return (
     <article className="phase-page debrief-page">
+      {/* The narrow world window: the scene at its aftermath treatment — the
+          diorama stilled and dimmed, weather stopped (per the suppression map). */}
+      <SceneStage
+        scene={content.scene}
+        sceneState={sceneStateFor(state, { surface: 'debrief' })}
+        reducedMotion={state.settings.reducedMotion}
+        strip
+      />
       <header className="debrief-hero">
         <p className="case-code">Run {state.runNumber} closed · consequence record</p>
         <h1>{decision?.shortLabel}</h1>

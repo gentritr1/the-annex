@@ -1,4 +1,6 @@
 import { getCaseContent, getPrecedentLine, getTensionLine } from '../game/content'
+import { SceneStage } from '../scene/SceneStage'
+import { sceneStateFor } from '../scene/sceneState'
 import type { DecisionId, GameState } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
 
@@ -9,9 +11,8 @@ interface TribunalProps {
 }
 
 export function Tribunal({ state, onDecide, onBack }: TribunalProps) {
-  const { decisions, reconstructionDefinitions, evidenceDefinitions, chrome } = getCaseContent(
-    state.caseId,
-  )
+  const { decisions, reconstructionDefinitions, evidenceDefinitions, chrome, scene } =
+    getCaseContent(state.caseId)
   const reconstruction = reconstructionDefinitions.find((item) => item.id === state.reconstruction)
   const discoveredEvidence = evidenceDefinitions.filter((item) => state.evidence.includes(item.id))
   const filedModel = state.reconstruction
@@ -27,6 +28,14 @@ export function Tribunal({ state, onDecide, onBack }: TribunalProps) {
 
   return (
     <article className="phase-page tribunal-page">
+      {/* The narrow world window: the same scene, held at its tribunal treatment
+          (formal center, weather per the suppression map), no hotspots, no drift. */}
+      <SceneStage
+        scene={scene}
+        sceneState={sceneStateFor(state, { surface: 'tribunal' })}
+        reducedMotion={state.settings.reducedMotion}
+        strip
+      />
       <header className="tribunal-header">
         <button className="back-button" type="button" onClick={onBack}>
           <span aria-hidden="true">←</span> Return to field

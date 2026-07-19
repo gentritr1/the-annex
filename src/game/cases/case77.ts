@@ -14,6 +14,7 @@ import type {
   PersonaId,
   ReconstructionDefinition,
   ReconstructionId,
+  SceneDefinition,
   SiteDefinition,
 } from '../types'
 
@@ -698,6 +699,58 @@ function getPersonaReflection(personaId: PersonaId, state: GameState): string {
   return '“Adults call a shelf empty when they removed the label themselves.”'
 }
 
+// ── Scene direction ──────────────────────────────────────────────────────────
+// Case 77 is a FLAT map: the civic-archive exterior + rain (its identity is the
+// weather). No parallax planes and no deposition, so the press/corroborate/
+// refusal treatments are authored for completeness but never fire — sceneStateFor
+// resolves this case's investigation to 'neutral' throughout. Only neutral (map),
+// tribunal (world window), and aftermath (world window, rain stops) render in
+// play. Hotspot coordinates match the tuned world-label positions they replace.
+const scene: SceneDefinition = {
+  master: { w: 1600, h: 900 },
+  perspectivePx: 1100,
+  drift: { yawDeg: 0, pitchDeg: 0 },
+  layers: [
+    { name: 'flat', z: 0, scale: 1, kind: 'raster', raster: { src: '/images/civic-archive.webp', blend: 'normal' } },
+  ],
+  hotspots: [
+    { siteId: 'registry', x: 0.8, y: 0.19, r: 0.02, plane: 'flat' },
+    { siteId: 'care-ward', x: 0.58, y: 0.48, r: 0.02, plane: 'flat' },
+    { siteId: 'maintenance', x: 0.26, y: 0.78, r: 0.02, plane: 'flat' },
+    { siteId: 'small-archive', x: 0.1, y: 0.32, r: 0.02, plane: 'flat' },
+  ],
+  crops: {
+    desktop: { window: { x: 0, y: 0, w: 1, h: 1 }, containerAspect: '3:2' },
+    // Flat cover-map: the mobile view shows the whole container, so the window is
+    // full and every hotspot stays inside it.
+    mobile: { window: { x: 0, y: 0, w: 1, h: 1 }, containerAspect: 'flexible' },
+  },
+  safeTextZones: {
+    desktop: [{ x: 0.05, y: 0.8, w: 0.55, h: 0.16 }],
+    mobile: [{ x: 0.05, y: 0.8, w: 0.9, h: 0.16 }],
+  },
+  states: {
+    neutral: { '--scene-dim-o': 0, '--scene-center-o': 0, '--marker-o': 1 },
+    press: { '--scene-dim-o': 0.06, '--scene-center-o': 0, '--marker-o': 1 },
+    corroborate: { '--scene-dim-o': 0, '--scene-center-o': 0, '--marker-o': 1 },
+    refusal: { '--scene-dim-o': 0, '--scene-center-o': 0, '--marker-o': 1 },
+    tribunal: { '--scene-dim-o': 0.12, '--scene-center-o': 1, '--marker-o': 0.4 },
+    aftermath: { '--scene-dim-o': 0.34, '--scene-center-o': 0, '--marker-o': 1 },
+  },
+  weather: {
+    kind: 'rain',
+    intensity: {
+      neutral: 0.07,
+      press: 0.1,
+      corroborate: 0.05,
+      refusal: 0.07,
+      tribunal: 0.06,
+      aftermath: 0,
+    },
+    suppressed: ['aftermath'],
+  },
+}
+
 export const case77: CaseDefinition = {
   id: 'case-77',
   label: 'Case 77',
@@ -716,4 +769,5 @@ export const case77: CaseDefinition = {
   mirrorBriefingAsides,
   decisionConsequences,
   getPersonaReflection,
+  scene,
 }

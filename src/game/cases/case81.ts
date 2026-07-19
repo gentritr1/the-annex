@@ -1,3 +1,4 @@
+import { DepositionAnnexArt } from '../../scene/DepositionAnnexArt'
 import type {
   ApproachDefinition,
   CaseChrome,
@@ -17,6 +18,7 @@ import type {
   PrecedentSource,
   ReconstructionDefinition,
   ReconstructionId,
+  SceneDefinition,
   SiteDefinition,
 } from '../types'
 
@@ -974,6 +976,157 @@ function getRevelation(state: GameState): string | null {
   return null
 }
 
+// ── Scene direction ──────────────────────────────────────────────────────────
+// The Deposition Annex interior diorama. Every value below is transcribed
+// VERBATIM from the reviewed scene manifest in public/case-81.html (PART B): the
+// layer z-ladder, the plane-registered hotspots (1:1 with the four sites), the
+// crops, the safe text zones, the six state treatments (CSS custom-property sets),
+// the drift coefficients, and the dust weather confined to the two light shafts.
+// The four state treatments the deposition drives (press/corroborate on entry,
+// refusal after a refused consent) are live here; the SVG plane + haze art is
+// DepositionAnnexArt.
+const scene: SceneDefinition = {
+  master: { w: 1600, h: 900 },
+  perspectivePx: 1100,
+  drift: { yawDeg: 0.28, pitchDeg: 0.22 },
+  layers: [
+    {
+      name: 'background',
+      z: -720,
+      scale: 1.6545,
+      kind: 'raster',
+      raster: { src: '/images/case-81-deposition-annex.webp', blend: 'multiply' },
+    },
+    { name: 'far', z: -460, scale: 1.4182, kind: 'svg' },
+    { name: 'mid', z: -240, scale: 1.2182, kind: 'svg' },
+    { name: 'near', z: -80, scale: 1.0727, kind: 'svg' },
+    { name: 'haze', z: 0, scale: 1, kind: 'css-gradients' },
+  ],
+  hotspots: [
+    { siteId: 'deposition-suite', x: 0.494, y: 0.66, r: 0.02, plane: 'mid' },
+    { siteId: 'restoration-lab', x: 0.591, y: 0.489, r: 0.016, plane: 'mid' },
+    { siteId: 'records-annex', x: 0.491, y: 0.491, r: 0.015, plane: 'far' },
+    { siteId: 'counsel-office', x: 0.551, y: 0.51, r: 0.014, plane: 'far' },
+  ],
+  crops: {
+    desktop: { window: { x: 0, y: 0, w: 1, h: 1 }, containerAspect: '16:9' },
+    mobile: { window: { x: 0.37, y: 0, w: 0.26, h: 1 }, containerAspect: '390:844' },
+  },
+  safeTextZones: {
+    desktop: [
+      { x: 0.68, y: 0.05, w: 0.29, h: 0.16 },
+      { x: 0.05, y: 0.78, w: 0.28, h: 0.18 },
+    ],
+    mobile: [
+      { x: 0.385, y: 0.05, w: 0.23, h: 0.18 },
+      { x: 0.385, y: 0.77, w: 0.23, h: 0.19 },
+    ],
+  },
+  states: {
+    neutral: {
+      '--dim-o': 0,
+      '--shaft-soft-o': 0.9,
+      '--shaft-hard-o': 0,
+      '--shaft-sx': 1,
+      '--floor-o': 0.8,
+      '--floor-calm-o': 0,
+      '--haze-o': 0.5,
+      '--lab-o': 0.85,
+      '--near-dim-o': 0.12,
+      '--table-spot-o': 0.35,
+      '--center-o': 0,
+      '--shadow-stretch': 1,
+      '--marker-o': 1,
+    },
+    press: {
+      '--dim-o': 0.1,
+      '--shaft-soft-o': 0,
+      '--shaft-hard-o': 0.95,
+      '--shaft-sx': 0.8,
+      '--floor-o': 1,
+      '--floor-calm-o': 0,
+      '--haze-o': 0.25,
+      '--lab-o': 0.85,
+      '--near-dim-o': 0.4,
+      '--table-spot-o': 0.5,
+      '--center-o': 0,
+      '--shadow-stretch': 1.05,
+      '--marker-o': 1,
+    },
+    corroborate: {
+      '--dim-o': 0,
+      '--shaft-soft-o': 1,
+      '--shaft-hard-o': 0,
+      '--shaft-sx': 1.14,
+      '--floor-o': 0.35,
+      '--floor-calm-o': 0.8,
+      '--haze-o': 0.8,
+      '--lab-o': 0.9,
+      '--near-dim-o': 0.05,
+      '--table-spot-o': 0.35,
+      '--center-o': 0,
+      '--shadow-stretch': 0.95,
+      '--marker-o': 1,
+    },
+    refusal: {
+      '--dim-o': 0.42,
+      '--shaft-soft-o': 0,
+      '--shaft-hard-o': 0,
+      '--shaft-sx': 1,
+      '--floor-o': 0.15,
+      '--floor-calm-o': 0,
+      '--haze-o': 0.3,
+      '--lab-o': 0.06,
+      '--near-dim-o': 0.3,
+      '--table-spot-o': 1,
+      '--center-o': 0,
+      '--shadow-stretch': 1.1,
+      '--marker-o': 1,
+    },
+    tribunal: {
+      '--dim-o': 0.08,
+      '--shaft-soft-o': 0.75,
+      '--shaft-hard-o': 0,
+      '--shaft-sx': 1,
+      '--floor-o': 0.6,
+      '--floor-calm-o': 0,
+      '--haze-o': 0.4,
+      '--lab-o': 0.7,
+      '--near-dim-o': 0.22,
+      '--table-spot-o': 0.5,
+      '--center-o': 1,
+      '--shadow-stretch': 1,
+      '--marker-o': 0.35,
+    },
+    aftermath: {
+      '--dim-o': 0.3,
+      '--shaft-soft-o': 0,
+      '--shaft-hard-o': 0,
+      '--shaft-sx': 1,
+      '--floor-o': 0.12,
+      '--floor-calm-o': 0,
+      '--haze-o': 0.55,
+      '--lab-o': 0.18,
+      '--near-dim-o': 0.15,
+      '--table-spot-o': 0.12,
+      '--center-o': 0,
+      '--shadow-stretch': 1.6,
+      '--marker-o': 1,
+    },
+  },
+  weather: {
+    kind: 'dust',
+    intensity: {},
+    maxParticles: 40,
+    spawnVolumes: [
+      { x: 0.05, y: 0.15, w: 0.2, h: 0.6 },
+      { x: 0.29, y: 0.15, w: 0.15, h: 0.55 },
+    ],
+    suppressed: ['aftermath'],
+  },
+  LayerArt: DepositionAnnexArt,
+}
+
 export const case81: CaseDefinition = {
   id: 'case-81',
   label: 'Case 81',
@@ -995,4 +1148,5 @@ export const case81: CaseDefinition = {
   precedentSource,
   deposition,
   getRevelation,
+  scene,
 }

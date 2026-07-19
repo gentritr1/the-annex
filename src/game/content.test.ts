@@ -8,6 +8,7 @@ import {
   registeredCaseIds,
 } from './content'
 import { createInitialGameState } from './engine'
+import { SCENE_STATES } from './types'
 import type { CaseDefinition, GameState, MethodTag } from './types'
 
 function expectUnique(ids: readonly string[]) {
@@ -203,6 +204,71 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
     reconstructionDefinitions.forEach((model) => {
       expect((model.reactions ?? []).length).toBeGreaterThanOrEqual(1)
     })
+  })
+
+  // ── Scene direction completeness ──────────────────────────────────────────
+  const { scene } = content
+
+  it('registers one scene hotspot per site, 1:1', () => {
+    const hotspotSiteIds = scene.hotspots.map((hotspot) => hotspot.siteId)
+    expect(hotspotSiteIds).toHaveLength(sites.length)
+    expectUnique(hotspotSiteIds)
+    expect(new Set(hotspotSiteIds)).toEqual(new Set(sites.map((site) => site.id)))
+  })
+
+  it('places every hotspot in master-normalized bounds on a declared plane', () => {
+    const planeNames = new Set([...scene.layers.map((layer) => layer.name), 'flat'])
+    scene.hotspots.forEach((hotspot) => {
+      expect(hotspot.x).toBeGreaterThanOrEqual(0)
+      expect(hotspot.x).toBeLessThanOrEqual(1)
+      expect(hotspot.y).toBeGreaterThanOrEqual(0)
+      expect(hotspot.y).toBeLessThanOrEqual(1)
+      expect(hotspot.r).toBeGreaterThan(0)
+      expect(planeNames.has(hotspot.plane)).toBe(true)
+    })
+  })
+
+  it('defines all six scene-state treatments as nonempty custom-property sets', () => {
+    expect(new Set(Object.keys(scene.states))).toEqual(new Set(SCENE_STATES))
+    SCENE_STATES.forEach((stateId) => {
+      const treatment = scene.states[stateId]
+      const keys = Object.keys(treatment)
+      expect(keys.length).toBeGreaterThan(0)
+      keys.forEach((key) => expect(key.startsWith('--')).toBe(true))
+    })
+  })
+
+  it('declares a valid weather config', () => {
+    const weather = scene.weather
+    expect(['rain', 'dust', 'none']).toContain(weather.kind)
+    weather.suppressed.forEach((stateId) => expect(SCENE_STATES).toContain(stateId))
+    if (weather.kind === 'rain') {
+      expect(typeof weather.intensity.neutral).toBe('number')
+    }
+    if (weather.kind === 'dust') {
+      expect(weather.maxParticles ?? 0).toBeGreaterThan(0)
+      const volumes = weather.spawnVolumes ?? []
+      expect(volumes.length).toBeGreaterThan(0)
+      volumes.forEach((volume) => {
+        expect(volume.w).toBeGreaterThan(0)
+        expect(volume.h).toBeGreaterThan(0)
+      })
+    }
+  })
+
+  it('keeps every hotspot inside the declared mobile crop window', () => {
+    const win = scene.crops.mobile.window
+    scene.hotspots.forEach((hotspot) => {
+      expect(hotspot.x).toBeGreaterThanOrEqual(win.x)
+      expect(hotspot.x).toBeLessThanOrEqual(win.x + win.w)
+      expect(hotspot.y).toBeGreaterThanOrEqual(win.y)
+      expect(hotspot.y).toBeLessThanOrEqual(win.y + win.h)
+    })
+  })
+
+  it('ships a background raster source for the surface art', () => {
+    const raster = scene.layers.find((layer) => layer.raster)
+    expect(raster?.raster?.src.length ?? 0).toBeGreaterThan(0)
   })
 
   it('gives every reaction a valid persona and a nonempty line within 160 characters', () => {

@@ -739,14 +739,12 @@ p {
   display: flex;
   align-items: flex-end;
   overflow: hidden;
+  /* --banner-art is set per case by Briefing from the case's scene data;
+     the tower art is only the no-var fallback. */
   background-image:
     linear-gradient(0deg, oklch(0.07 0 0 / 0.94), oklch(0.07 0 0 / 0.12) 70%),
     linear-gradient(90deg, oklch(0.07 0 0 / 0.5), transparent 72%),
-    url('/images/civic-archive.webp');
-  background-image:
-    linear-gradient(0deg, oklch(0.07 0 0 / 0.94), oklch(0.07 0 0 / 0.12) 70%),
-    linear-gradient(90deg, oklch(0.07 0 0 / 0.5), transparent 72%),
-    image-set(url('/images/civic-archive.webp') type('image/webp'));
+    var(--banner-art, url('/images/civic-archive.webp'));
   background-position: center 55%;
   background-size: cover;
   border-radius: 10px;
@@ -1020,15 +1018,10 @@ p {
   position: relative;
   min-height: 390px;
   overflow: hidden;
-  background-image:
-    linear-gradient(0deg, oklch(0.06 0 0 / 0.7), transparent 45%),
-    url('/images/civic-archive.webp');
-  background-image:
-    linear-gradient(0deg, oklch(0.06 0 0 / 0.7), transparent 45%),
-    image-set(url('/images/civic-archive.webp') type('image/webp'));
-  background-position: center 57%;
-  background-size: cover;
   border-radius: 10px;
+  /* The surface art now lives inside <SceneStage>; this is a positioned wrapper
+     that clips the stage to the map's rounded box and anchors the caption. */
+  background: var(--night);
 }
 
 .world-scan {
@@ -1090,6 +1083,13 @@ p {
   display: flex;
   justify-content: space-between;
   color: var(--fog);
+  /* Above the hotspot overlay (z-index 7) but click-through, so a hotspot the
+     caption happens to overlap stays reachable. */
+  z-index: 8;
+  pointer-events: none;
+  text-shadow:
+    0 1px 6px var(--night),
+    0 0 3px var(--night);
 }
 
 .field-section {
@@ -2777,6 +2777,415 @@ p {
   box-shadow:
     inset 0 0 16vmin oklch(0.09 0 0 / 0.6),
     inset 0 -14vh 18vh -8vh oklch(0.09 0 0 / 0.5);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   SCENE STAGE — the state-directed 2.5D diorama (Case 81) / flat civic map
+   (Case 77), extracted from public/case-81.html. The art stack is
+   aria-hidden + pointer-events:none; only the hotspot buttons are
+   interactive. State treatments arrive as CSS custom properties applied
+   inline on .scene-stage (data-scene-state also set, for verification);
+   transitions animate opacity + transform only, 180ms.
+   ════════════════════════════════════════════════════════════════════ */
+.scene-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.scene-frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--night);
+  perspective: 1100px;
+}
+
+.scene-stack {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ── plane stack (diorama) ─────────────────────────────────────────── */
+.scene-pgroup {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.scene-layer {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.scene-layer-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.scene-layer-background {
+  transform: translateZ(-720px) scale(1.6545);
+  background:
+    linear-gradient(
+      to bottom,
+      oklch(0.09 0 0 / 0.5) 0 8%,
+      transparent 26% 68%,
+      oklch(0.09 0 0 / 0.55) 88%
+    ),
+    var(--scene-bg) center / cover no-repeat,
+    linear-gradient(to bottom, oklch(0.3 0.011 240), oklch(0.36 0.012 240) 46%, oklch(0.28 0.011 240));
+  background-blend-mode: normal, multiply, normal;
+}
+
+.scene-layer-far {
+  transform: translateZ(-460px) scale(1.4182);
+}
+
+.scene-layer-mid {
+  transform: translateZ(-240px) scale(1.2182);
+}
+
+.scene-layer-near {
+  transform: translateZ(-80px) scale(1.0727);
+  filter: blur(1px);
+}
+
+/* ── haze (diorama; CSS gradients, var-driven) ─────────────────────── */
+.scene-haze {
+  position: absolute;
+  inset: 0;
+}
+
+.scene-haze-frame {
+  position: absolute;
+  transform-origin: 50% 50%;
+}
+
+.scene-fx {
+  position: absolute;
+  transition:
+    opacity 180ms var(--ease-out),
+    transform 180ms var(--ease-out);
+}
+
+.scene-fx-haze {
+  inset: -2%;
+  background: linear-gradient(
+    to bottom,
+    oklch(0.72 0.018 210 / 0.05),
+    transparent 30%,
+    transparent 68%,
+    oklch(0.72 0.018 210 / 0.04)
+  );
+  opacity: var(--haze-o);
+}
+
+.scene-fx-floor {
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 50%;
+  background:
+    linear-gradient(to bottom, oklch(0.94 0.012 190 / 0.1), transparent 14%),
+    linear-gradient(to top, oklch(0.94 0.012 190 / 0.05), transparent 55%);
+  opacity: var(--floor-o);
+}
+
+.scene-fx-floor-calm {
+  left: 0;
+  top: 54%;
+  width: 100%;
+  height: 46%;
+  background: linear-gradient(to top, oklch(0.94 0.012 190 / 0.045), transparent 70%);
+  opacity: var(--floor-calm-o);
+}
+
+.scene-fx-shafts {
+  left: 3%;
+  top: 11%;
+  width: 52%;
+  height: 68%;
+  transform-origin: 50% 0;
+  transform: scaleX(var(--shaft-sx));
+}
+
+.scene-fx-shafts-soft {
+  background: repeating-linear-gradient(
+    104deg,
+    transparent 0 14px,
+    oklch(0.94 0.012 190 / 0.05) 26px,
+    oklch(0.94 0.012 190 / 0.08) 44px,
+    oklch(0.94 0.012 190 / 0.05) 62px,
+    transparent 76px 120px
+  );
+  opacity: var(--shaft-soft-o);
+}
+
+.scene-fx-shafts-hard {
+  background: repeating-linear-gradient(
+    104deg,
+    transparent 0 18px,
+    oklch(0.94 0.012 190 / 0.1) 30px,
+    oklch(0.94 0.012 190 / 0.16) 42px,
+    oklch(0.94 0.012 190 / 0.1) 54px,
+    transparent 66px 108px
+  );
+  opacity: var(--shaft-hard-o);
+}
+
+.scene-fx-center {
+  inset: -2%;
+  background: radial-gradient(52% 46% at 50% 46%, oklch(0.94 0.012 190 / 0.12), transparent 72%);
+  opacity: var(--center-o);
+}
+
+.scene-fx-table-spot {
+  left: 38%;
+  top: 33%;
+  width: 22%;
+  height: 37%;
+  clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%);
+  background: linear-gradient(
+    to bottom,
+    oklch(0.94 0.012 190 / 0.13),
+    oklch(0.94 0.012 190 / 0.04) 62%,
+    transparent
+  );
+  opacity: var(--table-spot-o);
+}
+
+.scene-fx-near-dim {
+  inset: -2%;
+  background: radial-gradient(125% 105% at 50% 44%, transparent 52%, oklch(0.09 0 0 / 0.6));
+  opacity: var(--near-dim-o);
+}
+
+.scene-fx-dim {
+  inset: -2%;
+  background: var(--night);
+  opacity: var(--dim-o);
+}
+
+/* SVG plane treatments (opacity/transform only) */
+.scene-svg-fx {
+  transition:
+    opacity 180ms var(--ease-out),
+    transform 180ms var(--ease-out);
+}
+
+.scene-shad {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  transform: scaleY(var(--shadow-stretch));
+}
+
+.scene-lab {
+  opacity: var(--lab-o);
+}
+
+.scene-weather {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ── flat map (Case 77): the civic-archive exterior + rain ─────────── */
+.scene-flat-art {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(0deg, oklch(0.06 0 0 / 0.7), transparent 45%),
+    var(--scene-bg);
+  background-position: center 57%;
+  background-size: cover;
+}
+
+.scene-scan {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(oklch(0.9 0 0 / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.9 0 0 / 0.035) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: linear-gradient(90deg, transparent, black 35%, black 75%, transparent);
+}
+
+.scene-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: var(--night);
+  opacity: var(--scene-dim-o, 0);
+  transition: opacity 180ms var(--ease-out);
+}
+
+.scene-center {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(60% 55% at 50% 45%, oklch(0.94 0.012 190 / 0.08), transparent 70%);
+  opacity: var(--scene-center-o, 0);
+  transition: opacity 180ms var(--ease-out);
+}
+
+/* ── hotspot overlay (interactive; NOT aria-hidden) ────────────────── */
+.scene-hotspots {
+  position: absolute;
+  inset: 0;
+  perspective: 1100px;
+  pointer-events: none;
+  z-index: 7;
+}
+
+.scene-hgroup {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.scene-hplane {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+.scene-hplane[data-plane='far'] {
+  transform: translateZ(-460px) scale(1.4182);
+}
+
+.scene-hplane[data-plane='mid'] {
+  transform: translateZ(-240px) scale(1.2182);
+}
+
+.scene-hplane[data-plane='near'] {
+  transform: translateZ(-80px) scale(1.0727);
+}
+
+.scene-hotspot {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  min-height: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  pointer-events: auto;
+  display: block;
+}
+
+.scene-hotspot-ring {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 1.5px solid oklch(0.94 0.012 190 / 0.75);
+  opacity: var(--marker-o, 1);
+  transition:
+    opacity 180ms var(--ease-out),
+    border-color 180ms var(--ease-out),
+    inset 180ms var(--ease-out);
+}
+
+.scene-hotspot-ring::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  margin: -2px;
+  border-radius: 50%;
+  background: oklch(0.94 0.012 190 / 0.8);
+}
+
+.scene-hotspot:hover .scene-hotspot-ring,
+.scene-hotspot:focus-visible .scene-hotspot-ring {
+  opacity: 1;
+  inset: 3px;
+  border-color: var(--record);
+}
+
+.scene-hotspot:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 50%;
+}
+
+/* Filed sites read as resolved: the marker dims and shows a check. */
+.scene-hotspot[data-filed='true'] .scene-hotspot-ring {
+  opacity: calc(var(--marker-o, 1) * 0.55);
+}
+
+.scene-hotspot[data-filed='true'] .scene-hotspot-ring::after {
+  content: '✓';
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  background: transparent;
+  border-radius: 0;
+  color: var(--record);
+  font-size: 11px;
+  line-height: 12px;
+  text-align: center;
+}
+
+.scene-hotspot-label {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--record);
+  white-space: nowrap;
+  text-shadow:
+    0 1px 6px var(--night),
+    0 0 2px var(--night);
+  opacity: var(--marker-o, 1);
+  transition: opacity 180ms var(--ease-out);
+  pointer-events: none;
+}
+
+.scene-hotspot:hover .scene-hotspot-label,
+.scene-hotspot:focus-visible .scene-hotspot-label {
+  opacity: 1;
+}
+
+/* ── world window strip (tribunal / debrief) ───────────────────────── */
+.scene-stage--strip {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: clamp(96px, 18vh, 160px);
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.scene-stage--strip .scene-frame {
+  border-radius: 10px;
+}
+
+/* ── mobile: labels on focus/hover only (avoid label collision) ────── */
+@media (max-width: 460px) {
+  .scene-hotspot-label {
+    opacity: 0;
+  }
+
+  .scene-hotspot:hover .scene-hotspot-label,
+  .scene-hotspot:focus-visible .scene-hotspot-label {
+    opacity: 1;
+  }
 }
 
 /* Deposition — Case 81's transcript interaction. Rendered as a modal over the

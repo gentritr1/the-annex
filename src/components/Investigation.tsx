@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { Atmosphere } from '../ambience/Atmosphere'
 import { getCaseContent } from '../game/content'
 import { canEnterTribunal } from '../game/engine'
-import type { DepositionChoiceId, FieldActionId, GameState } from '../game/types'
+import { SceneStage } from '../scene/SceneStage'
+import { sceneStateFor } from '../scene/sceneState'
+import type { DepositionChoiceId, FieldActionId, GameState, SiteId } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
 import { Deposition } from './Deposition'
 import { ReactionQuotes } from './ReactionQuotes'
@@ -19,10 +20,14 @@ interface InvestigationProps {
   onEnterTribunal: () => void
 }
 
-// The precipitation mask applied to the map surface. Single source of truth for
-// both the rain density passed to <Atmosphere> and the percentage the world
-// caption reports, so the two can never drift apart (they once read 0.07 vs 12%).
-const MAP_MASK = 0.07
+// A hotspot is wayfinding: activating it scrolls to and focuses that site's card,
+// which stays the canonical interaction surface.
+function focusSiteCard(siteId: SiteId, reducedMotion: boolean) {
+  const card = document.getElementById(`site-card-${siteId}`)
+  if (!card) return
+  card.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' })
+  card.focus({ preventScroll: true })
+}
 
 export function Investigation({
   state,
@@ -31,13 +36,23 @@ export function Investigation({
   onOpenReconstruction,
   onEnterTribunal,
 }: InvestigationProps) {
-  const { sites, fieldActions, reconstructionDefinitions, chrome, deposition } = getCaseContent(
-    state.caseId,
-  )
+  const { sites, fieldActions, reconstructionDefinitions, chrome, deposition, scene } =
+    getCaseContent(state.caseId)
   const reconstruction = reconstructionDefinitions.find((item) => item.id === state.reconstruction)
   // Which deposition entry action, if any, has its transcript open. Local view
   // state only: opening it dispatches nothing, and closing it commits nothing.
   const [depositionEntry, setDepositionEntry] = useState<FieldActionId | null>(null)
+  // The scene state is a pure read of GameState + the open-deposition view: the
+  // interior presses/corroborates while a transcript is open, and holds refusal
+  // after a refused consent. A flat map (Case 77) resolves to 'neutral' here.
+  const sceneState = sceneStateFor(state, {
+    surface: 'investigation',
+    openDepositionEntry: depositionEntry,
+  })
+  const diorama = Boolean(scene.LayerArt)
+  // Caption precipitation number: only meaningful for a rain scene (Case 77's
+  // identity). Kept as the single source of truth for the reported percentage.
+  const captionMask = scene.weather.kind === 'rain' ? scene.weather.intensity.neutral ?? 0 : null
   const tribunalReady = canEnterTribunal(state)
   const sitesNeeded = Math.max(0, 2 - state.completedSites.length)
   const gateRequirements = [
@@ -50,21 +65,28 @@ export function Investigation({
 
   return (
     <article className="phase-page investigation-page">
-      <div className="world-view" role="img" aria-label={chrome.worldAriaLabel}>
-        {/* Rain at MAP_MASK, parallax locked flat (no planes) so the map
-            annotation nodes stay registered against the artwork. */}
-        <Atmosphere mask={MAP_MASK} reducedMotion={state.settings.reducedMotion} />
-        <div className="world-scan" aria-hidden="true" />
-        {chrome.worldLabels.map((label) => (
-          <div className={label.className} key={label.className}>
-            {label.text}
-          </div>
-        ))}
+      <div className="world-view">
+        {/* The live scene: the diorama (Case 81) or the flat civic map (Case 77),
+            with a plane-registered hotspot overlay. The art stack is aria-hidden;
+            the hotspots are real buttons that focus their site card below. */}
+        <SceneStage
+          scene={scene}
+          sceneState={sceneState}
+          reducedMotion={state.settings.reducedMotion}
+          interactive
+          parallax={diorama}
+          sites={sites}
+          completedSiteIds={state.completedSites}
+          onHotspotActivate={(siteId) => focusSiteCard(siteId, state.settings.reducedMotion)}
+          ariaLabel={chrome.worldAriaLabel}
+        />
         <div className="world-caption">
           <span>{chrome.worldCaption[0]}</span>
-          <span>
-            {chrome.worldCaption[1]}: {Math.round(MAP_MASK * 100)}%
-          </span>
+          {captionMask !== null && (
+            <span>
+              {chrome.worldCaption[1]}: {Math.round(captionMask * 100)}%
+            </span>
+          )}
         </div>
       </div>
 
@@ -90,7 +112,12 @@ export function Investigation({
             )
 
             return (
-              <section className={`site-record ${completedAction ? 'site-record-complete' : ''}`} key={site.id}>
+              <section
+                className={`site-record ${completedAction ? 'site-record-complete' : ''}`}
+                key={site.id}
+                id={`site-card-${site.id}`}
+                tabIndex={-1}
+              >
                 <header className="site-header">
                   <span className="site-index">{site.index}</span>
                   <div>

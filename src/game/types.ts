@@ -1,3 +1,5 @@
+import type { ComponentType } from 'react'
+
 export type GamePhase =
   | 'landing'
   | 'briefing'
@@ -378,6 +380,101 @@ export interface DepositionDefinition {
   closing: Readonly<Record<FieldActionId, string>>
 }
 
+// ── Scene direction (2.5D diorama / flat map) ────────────────────────────────
+// Pure interpretation of canonical state: the reducer owns all game state; the
+// scene layer only READS it. Both registered cases author a `scene`. Case 81's
+// values are transcribed verbatim from public/case-81.html's manifest.
+
+// The six canonical scene states, in authored order. Shared vocabulary (like
+// MethodTag) — the mapping from GameState to one of these lives in
+// src/scene/sceneState.ts and is view-derived, never persisted.
+export const SCENE_STATES = [
+  'neutral',
+  'press',
+  'corroborate',
+  'refusal',
+  'tribunal',
+  'aftermath',
+] as const
+
+export type SceneStateId = (typeof SCENE_STATES)[number]
+
+// A CSS custom-property set applied to the stage root for one state. Keys are CSS
+// variable names ('--haze-o'); values are numbers or strings. Transitions animate
+// opacity and transform only (180ms token); reduced motion swaps instantly.
+export type SceneTreatment = Readonly<Record<string, number | string>>
+
+export interface SceneRect {
+  x: number
+  y: number
+  w: number
+  h: number
+}
+
+// One registered layer plane. `scale` is the pinned projection scale
+// (perspectivePx + |z|) / perspectivePx; `kind` selects how the layer is painted.
+// `raster.src` is the only place an image URL lives (kept out of shared runtime).
+export interface SceneLayer {
+  name: string
+  z: number
+  scale: number
+  kind: 'raster' | 'svg' | 'css-gradients'
+  raster?: { src: string; blend?: string }
+}
+
+// One hotspot, registered to a plane in master-normalized coordinates. `siteId`
+// MUST equal one of the case's SiteIds (1:1; enforced by the content test) — the
+// hotspot is wayfinding to that site's card, never a separate content id. `plane`
+// names the layer it mirrors (or 'flat' for a non-parallax map).
+export interface SceneHotspot {
+  siteId: SiteId
+  x: number
+  y: number
+  r: number
+  plane: string
+}
+
+export interface SceneCrop {
+  window: SceneRect
+  containerAspect: string
+}
+
+export type SceneWeatherKind = 'rain' | 'dust' | 'none'
+
+// Weather config. For 'rain', `intensity[state]` is a precipitation mask
+// fraction; for 'dust', `maxParticles` caps the mote count confined to
+// `spawnVolumes`. Any state in `suppressed` renders no weather at all.
+export interface SceneWeather {
+  kind: SceneWeatherKind
+  intensity: Readonly<Partial<Record<SceneStateId, number>>>
+  suppressed: readonly SceneStateId[]
+  spawnVolumes?: readonly SceneRect[]
+  maxParticles?: number
+}
+
+// Props the (optional) case-specific diorama art component receives. The only
+// input is the background raster URL, injected from data so no image path (which
+// embeds the case id) ever lives in shared scene runtime.
+export interface SceneArtProps {
+  backgroundSrc: string
+}
+
+export interface SceneDefinition {
+  master: { w: number; h: number }
+  perspectivePx: number
+  drift: { yawDeg: number; pitchDeg: number }
+  layers: readonly SceneLayer[]
+  hotspots: readonly SceneHotspot[]
+  crops: { desktop: SceneCrop; mobile: SceneCrop }
+  safeTextZones: { desktop: readonly SceneRect[]; mobile: readonly SceneRect[] }
+  states: Readonly<Record<SceneStateId, SceneTreatment>>
+  weather: SceneWeather
+  // The diorama plane+haze art (Case 81). Absent for a flat map (Case 77), which
+  // SceneStage paints from `layers[0].raster`. A component reference, never a
+  // string — invisible to the content string-walk in content.test.ts.
+  LayerArt?: ComponentType<SceneArtProps>
+}
+
 // A complete, self-contained dossier the engine and components resolve through
 // GameState.caseId. Personas and the method vocabulary stay global (same cast,
 // same verbs across every case); everything case-specific lives here.
@@ -414,4 +511,7 @@ export interface CaseDefinition {
   // was taken, per consent). Returns null when the case authors no revelation for
   // the resolved state. Read view-side by the Debrief; the engine never calls it.
   getRevelation?: (state: GameState) => string | null
+  // Scene direction for this case (investigation diorama/map + tribunal/debrief
+  // world window). Pure interpretation of state; the reducer owns everything.
+  scene: SceneDefinition
 }

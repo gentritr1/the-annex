@@ -13,6 +13,9 @@ interface AtmosphereProps {
   mask: number
   /** Reduced-motion preference from game settings. */
   reducedMotion: boolean
+  /** Force the rain stopped + cleared (e.g. a scene state where weather ceases,
+   *  like Case 77's aftermath), independent of the motion gate. */
+  suppress?: boolean
   /** Render the 4-plane depth stack + haze + vignette (hero surface only). */
   planes?: boolean
   /** Enable ≤~1° pointer parallax of the plane stack (hero surface only). */
@@ -26,6 +29,7 @@ interface AtmosphereProps {
 export function Atmosphere({
   mask,
   reducedMotion,
+  suppress = false,
   planes = false,
   parallax = false,
   heroImage,
@@ -35,6 +39,7 @@ export function Atmosphere({
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const pgroupRef = useRef<HTMLDivElement>(null)
   const reducedRef = useRef(reducedMotion)
+  const suppressRef = useRef(suppress)
   const syncRef = useRef<() => void>(() => {})
 
   // Create the rain engine once per mount (StrictMode-safe: full teardown).
@@ -50,8 +55,9 @@ export function Atmosphere({
     let sceneVisible = true
 
     // Both reduced-motion triggers converge here: the settings prop (mirrored
-    // into reducedRef) and the OS-level media query.
-    const motionOK = () => !reducedRef.current && !mq.matches
+    // into reducedRef) and the OS-level media query. Weather suppression (a scene
+    // state where rain ceases) folds in as a third stop condition.
+    const motionOK = () => !reducedRef.current && !suppressRef.current && !mq.matches
     const sync = () => {
       if (motionOK() && sceneVisible) {
         rain.start()
@@ -91,12 +97,13 @@ export function Atmosphere({
     }
   }, [mask, parallax])
 
-  // React to a live change of the in-app "Reduce motion" preference without
-  // recreating the rain engine.
+  // React to a live change of the in-app "Reduce motion" preference or the
+  // weather-suppress signal without recreating the rain engine.
   useEffect(() => {
     reducedRef.current = reducedMotion
+    suppressRef.current = suppress
     syncRef.current()
-  }, [reducedMotion])
+  }, [reducedMotion, suppress])
 
   const heroStyle = heroImage
     ? {
