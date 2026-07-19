@@ -99,16 +99,15 @@ button[aria-pressed="true"]{ color:var(--record); border-color:oklch(0.72 0.018 
 .layer-background{
   transform:translateZ(-720px) scale(1.6545);
   background:
-    /* clerestory ambience — broad pale wash, upper left */
-    radial-gradient(90% 65% at 20% 14%, oklch(0.94 0.012 190 / .09), transparent 62%),
-    /* hall-end glow around the back wall */
-    radial-gradient(38% 42% at 49% 46%, oklch(0.72 0.018 210 / .11), transparent 72%),
-    /* ceiling plane */
-    linear-gradient(to bottom, oklch(0.065 0.006 240) 0 16%, transparent 27%),
-    /* floor plane, wet-sheen dark */
-    linear-gradient(to top, oklch(0.115 0.010 240) 0 30%, transparent 56%),
-    /* wall field */
-    linear-gradient(to bottom, oklch(0.125 0.011 240), oklch(0.15 0.012 240) 46%, oklch(0.12 0.011 240));
+    /* text-zone scrim: darkens the top and bottom bands where safe zones live */
+    linear-gradient(to bottom, oklch(0.09 0 0 / .5) 0 8%, transparent 26% 68%, oklch(0.09 0 0 / .55) 88%),
+    /* generated raster master (see PROVENANCE.md), multiplied into the
+       dark wall field below so it sits in the value range the SVG
+       silhouette layers were authored against */
+    url("/images/case-81-deposition-annex.webp") center/cover no-repeat,
+    /* blend base + fallback wall field if the raster fails to load */
+    linear-gradient(to bottom, oklch(0.30 0.011 240), oklch(0.36 0.012 240) 46%, oklch(0.28 0.011 240));
+  background-blend-mode: normal, multiply, normal;
 }
 .layer-far { transform:translateZ(-460px) scale(1.4182); }
 .layer-mid { transform:translateZ(-240px) scale(1.2182); }
