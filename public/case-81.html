@@ -1,0 +1,1040 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Case 81 — Deposition Annex · The Annex</title>
+<meta name="description" content="Case 81 scene: the Deposition Annex. A layer-registered, state-directed 2.5D interior diorama for The Annex. Presentation only; the host reducer owns all state." />
+<style>
+/* ════════════════════════════════════════════════════════════════════
+   CASE 81 — DEPOSITION ANNEX (interior diorama; presentation only)
+   Closed oklch palette. Amber = action/service (withdrawn here: ONE
+   distant service strip, no floor pools). COLD IS NOT CYAN: every cold
+   source — clerestory shafts, table pendant, lab glow — is record/fog.
+   Cyan appears nowhere in the scene art. Motion token 180ms,
+   cubic-bezier(0.165, 0.84, 0.44, 1). State transitions animate opacity
+   and transform ONLY; sharpen/soften/widen/narrow are crossfade pairs.
+   ════════════════════════════════════════════════════════════════════ */
+:root{
+  --night:    oklch(0.09 0 0);
+  --concrete: oklch(0.16 0.012 240);
+  --raised:   oklch(0.21 0.016 240);
+  --record:   oklch(0.94 0.012 190);
+  --fog:      oklch(0.72 0.018 210);
+  --amber:    oklch(0.72 0.14 70);
+  --cyan:     oklch(0.78 0.11 190);
+  --coral:    oklch(0.66 0.17 30);
+  --t-token:   180ms;
+  --ease-token: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --focus-ring: 2px solid oklch(0.84 0.12 190); /* shipped app-wide ring */
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+*{ box-sizing:border-box; }
+html{ background:var(--night); }
+body{
+  margin:0; background:var(--night); color:var(--record);
+  font-family:var(--mono); font-size:14px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+h1,p{ margin:0; }
+.overline{
+  font-size:12px; letter-spacing:.2em; text-transform:uppercase;
+  color:oklch(0.72 0.018 210 / .8); margin-bottom:6px;
+}
+
+/* ── demo chrome (not part of the scene; WCAG AA, text ≥ 12px) ─────── */
+.top{
+  display:flex; justify-content:space-between; align-items:flex-start; gap:16px;
+  padding:20px clamp(16px,4vw,48px) 14px;
+}
+.top h1{ font-size:clamp(17px,2vw,22px); font-weight:600; }
+.toolbar{
+  display:flex; align-items:center; flex-wrap:wrap; gap:8px;
+  padding:0 clamp(16px,4vw,48px) 16px;
+}
+.tlabel{ font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:oklch(0.72 0.018 210 / .8); margin-right:2px; }
+.tsep{ width:1px; height:22px; background:oklch(0.72 0.018 210 / .25); margin:0 6px; }
+.tgroup{ display:flex; flex-wrap:wrap; gap:6px; }
+button{
+  font:inherit; font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--fog); background:transparent; cursor:pointer; border-radius:2px;
+  border:1px solid oklch(0.72 0.018 210 / .3); padding:.5em .9em; min-height:34px;
+  transition:color var(--t-token) var(--ease-token),
+             border-color var(--t-token) var(--ease-token),
+             background-color var(--t-token) var(--ease-token);
+}
+button:hover{ color:var(--amber); border-color:var(--amber); background:oklch(0.72 0.14 70 / .07); }
+button:focus-visible{ outline:var(--focus-ring); outline-offset:3px; }
+button[aria-pressed="true"]{ color:var(--record); border-color:oklch(0.72 0.018 210 / .75); background:oklch(0.72 0.018 210 / .1); }
+
+/* ────────────────────────────────────────────────────────────────────
+   PART A — LAYER STACK
+   perspective 1100px; scale = (1100 + |z|) / 1100 (pinned z-ladder,
+   identical to the shipped Case 77 stack). Each plane shows only its
+   central 1/scale window of the 1600×900 master — so every continuous
+   perspective structure (colonnade, floor seams, footprint trail) lives
+   in exactly ONE plane, and every hotspot-registered feature sits
+   inside its plane's visible window. Whole stack: pointer-events none,
+   aria-hidden. Drift: rotateY gx×0.28°, rotateX −gy×0.22° — half of
+   Case 77's coefficients; interiors don't sway.
+   ──────────────────────────────────────────────────────────────────── */
+.stage{ width:100%; aspect-ratio:16/9; max-height:86vh; margin:0 auto; position:relative; }
+.stage.crop-mobile{ width:auto; height:min(844px,80vh); aspect-ratio:390/844; max-width:92vw; outline:1px solid oklch(0.72 0.018 210 / .35); outline-offset:6px; }
+.scene{
+  position:absolute; inset:0; overflow:hidden; background:var(--night);
+  perspective:1100px;
+}
+.stack{ position:absolute; inset:0; pointer-events:none; }
+.pgroup{ position:absolute; inset:0; transform-style:preserve-3d; will-change:transform; }
+.layer{ position:absolute; inset:0; transform-style:preserve-3d; }
+.layer-svg{ width:100%; height:100%; display:block; }
+
+/* ┌─ RASTER PLUG POINT ───────────────────────────────────────────────┐
+   │ The gradient stack below is a STAND-IN. Final art (see the RASTER │
+   │ BRIEF comment in this file) replaces this layer's background:     │
+   │   background: url("/images/case-81-deposition-annex.webp")        │
+   │   center/cover no-repeat, plus one scrim gradient for text zones. │
+   │ Do not retune translateZ/scale — sibling planes register to it.   │
+   └───────────────────────────────────────────────────────────────────┘ */
+.layer-background{
+  transform:translateZ(-720px) scale(1.6545);
+  background:
+    /* clerestory ambience — broad pale wash, upper left */
+    radial-gradient(90% 65% at 20% 14%, oklch(0.94 0.012 190 / .09), transparent 62%),
+    /* hall-end glow around the back wall */
+    radial-gradient(38% 42% at 49% 46%, oklch(0.72 0.018 210 / .11), transparent 72%),
+    /* ceiling plane */
+    linear-gradient(to bottom, oklch(0.065 0.006 240) 0 16%, transparent 27%),
+    /* floor plane, wet-sheen dark */
+    linear-gradient(to top, oklch(0.115 0.010 240) 0 30%, transparent 56%),
+    /* wall field */
+    linear-gradient(to bottom, oklch(0.125 0.011 240), oklch(0.15 0.012 240) 46%, oklch(0.12 0.011 240));
+}
+.layer-far { transform:translateZ(-460px) scale(1.4182); }
+.layer-mid { transform:translateZ(-240px) scale(1.2182); }
+.layer-near{ transform:translateZ(-80px)  scale(1.0727); filter:blur(1px); } /* the single static filter exception — never animated */
+
+/* haze frame: JS sizes it to the master crop window and registers it to
+   the far-plane projection (scale 1.4182) so shafts meet the clerestory */
+.layer-haze{ position:absolute; inset:0; }
+.haze-frame{ position:absolute; transform-origin:50% 50%; }
+.fx{ position:absolute; transition:opacity var(--t-token) var(--ease-token), transform var(--t-token) var(--ease-token); }
+.fx-full{ inset:-2%; }
+
+/* state variable defaults = neutral (procedure at rest) */
+.scene{
+  --dim-o:0; --shaft-soft-o:.9; --shaft-hard-o:0; --shaft-sx:1;
+  --floor-o:.8; --floor-calm-o:0; --haze-o:.5; --lab-o:.85;
+  --near-dim-o:.12; --table-spot-o:.35; --center-o:0;
+  --shadow-stretch:1; --marker-o:1;
+}
+.scene[data-scene-state="press"]{
+  --dim-o:.10; --shaft-soft-o:0; --shaft-hard-o:.95; --shaft-sx:.8;
+  --floor-o:1; --floor-calm-o:0; --haze-o:.25; --lab-o:.85;
+  --near-dim-o:.4; --table-spot-o:.5; --center-o:0; --shadow-stretch:1.05;
+}
+.scene[data-scene-state="corroborate"]{
+  --dim-o:0; --shaft-soft-o:1; --shaft-hard-o:0; --shaft-sx:1.14;
+  --floor-o:.35; --floor-calm-o:.8; --haze-o:.8; --lab-o:.9;
+  --near-dim-o:.05; --table-spot-o:.35; --center-o:0; --shadow-stretch:.95;
+}
+.scene[data-scene-state="refusal"]{
+  --dim-o:.42; --shaft-soft-o:0; --shaft-hard-o:0; --shaft-sx:1;
+  --floor-o:.15; --floor-calm-o:0; --haze-o:.3; --lab-o:.06;
+  --near-dim-o:.3; --table-spot-o:1; --center-o:0; --shadow-stretch:1.1;
+}
+.scene[data-scene-state="tribunal"]{
+  --dim-o:.08; --shaft-soft-o:.75; --shaft-hard-o:0; --shaft-sx:1;
+  --floor-o:.6; --floor-calm-o:0; --haze-o:.4; --lab-o:.7;
+  --near-dim-o:.22; --table-spot-o:.5; --center-o:1; --shadow-stretch:1; --marker-o:.35;
+}
+.scene[data-scene-state="aftermath"]{
+  --dim-o:.30; --shaft-soft-o:0; --shaft-hard-o:0; --shaft-sx:1;
+  --floor-o:.12; --floor-calm-o:0; --haze-o:.55; --lab-o:.18;
+  --near-dim-o:.15; --table-spot-o:.12; --center-o:0; --shadow-stretch:1.6;
+}
+
+/* haze effects — CSS gradients only, painted softness */
+.fx-haze{
+  inset:-2%;
+  background:linear-gradient(to bottom, oklch(0.72 0.018 210 / .05), transparent 30%, transparent 68%, oklch(0.72 0.018 210 / .04));
+  opacity:var(--haze-o);
+}
+.fx-floor{
+  left:0; top:50%; width:100%; height:50%;
+  background:
+    linear-gradient(to bottom, oklch(0.94 0.012 190 / .1), transparent 14%),
+    linear-gradient(to top, oklch(0.94 0.012 190 / .05), transparent 55%);
+  opacity:var(--floor-o);
+}
+.fx-floor-calm{
+  left:0; top:54%; width:100%; height:46%;
+  background:linear-gradient(to top, oklch(0.94 0.012 190 / .045), transparent 70%);
+  opacity:var(--floor-calm-o);
+}
+.fx-shafts{
+  left:3%; top:11%; width:52%; height:68%;
+  transform-origin:50% 0;
+  transform:scaleX(var(--shaft-sx));
+}
+.fx-shafts.soft{
+  background:repeating-linear-gradient(104deg,
+    transparent 0 14px, oklch(0.94 0.012 190 / .05) 26px,
+    oklch(0.94 0.012 190 / .08) 44px, oklch(0.94 0.012 190 / .05) 62px,
+    transparent 76px 120px);
+  opacity:var(--shaft-soft-o);
+}
+.fx-shafts.hard{
+  background:repeating-linear-gradient(104deg,
+    transparent 0 18px, oklch(0.94 0.012 190 / .1) 30px,
+    oklch(0.94 0.012 190 / .16) 42px, oklch(0.94 0.012 190 / .1) 54px,
+    transparent 66px 108px);
+  opacity:var(--shaft-hard-o);
+}
+.fx-center{
+  inset:-2%;
+  background:radial-gradient(52% 46% at 50% 46%, oklch(0.94 0.012 190 / .12), transparent 72%);
+  opacity:var(--center-o);
+}
+.fx-table-spot{
+  left:38%; top:33%; width:22%; height:37%;
+  clip-path:polygon(46% 0, 54% 0, 100% 100%, 0 100%);
+  background:linear-gradient(to bottom, oklch(0.94 0.012 190 / .13), oklch(0.94 0.012 190 / .04) 62%, transparent);
+  opacity:var(--table-spot-o);
+}
+.fx-near-dim{
+  inset:-2%;
+  background:radial-gradient(125% 105% at 50% 44%, transparent 52%, oklch(0.09 0 0 / .6));
+  opacity:var(--near-dim-o);
+}
+.fx-dim{ inset:-2%; background:var(--night); opacity:var(--dim-o); }
+
+.layer-weather{ position:absolute; inset:0; width:100%; height:100%; }
+
+/* SVG layer var-driven treatments (opacity/transform only) */
+.svg-fx{ transition:opacity var(--t-token) var(--ease-token), transform var(--t-token) var(--ease-token); }
+.shad{
+  transform-box:fill-box; transform-origin:50% 0;
+  transform:scaleY(var(--shadow-stretch));
+}
+.lab{ opacity:var(--lab-o); }
+
+/* ────────────────────────────────────────────────────────────────────
+   PART C — HOTSPOT OVERLAY (the only interactive scene elements)
+   One overlay, NOT aria-hidden. Per-plane mirror nodes carry the same
+   translateZ+scale as their art plane; .hgroup receives the identical
+   drift rotation as .pgroup, so buttons track the art. Reduced motion:
+   mirror static.
+   ──────────────────────────────────────────────────────────────────── */
+.hotspots{ position:absolute; inset:0; perspective:1100px; pointer-events:none; z-index:7; }
+.hgroup{ position:absolute; inset:0; transform-style:preserve-3d; will-change:transform; }
+.hplane{ position:absolute; inset:0; transform-style:preserve-3d; pointer-events:none; }
+.hplane[data-plane="far"]{ transform:translateZ(-460px) scale(1.4182); }
+.hplane[data-plane="mid"]{ transform:translateZ(-240px) scale(1.2182); }
+.hotspot{
+  position:absolute; width:48px; height:48px; padding:0; border:none; background:transparent;
+  transform:translate(-50%,-50%); cursor:pointer; pointer-events:auto;
+  display:block; text-transform:none; letter-spacing:0;
+}
+.hotspot:hover{ background:transparent; }
+.hotspot .ring{
+  position:absolute; inset:6px; border-radius:50%;
+  border:1.5px solid oklch(0.94 0.012 190 / .75);
+  opacity:var(--marker-o);
+  transition:opacity var(--t-token) var(--ease-token), border-color var(--t-token) var(--ease-token), inset var(--t-token) var(--ease-token);
+}
+.hotspot .ring::after{
+  content:""; position:absolute; left:50%; top:50%; width:4px; height:4px; margin:-2px;
+  border-radius:50%; background:oklch(0.94 0.012 190 / .8);
+}
+.hotspot:hover .ring, .hotspot:focus-visible .ring{ opacity:1; inset:3px; border-color:var(--record); }
+.hotspot:focus-visible{ outline:var(--focus-ring); outline-offset:3px; border-radius:50%; }
+.hotspot .hlabel{
+  position:absolute; top:calc(100% + 4px); left:50%; transform:translateX(-50%);
+  font-size:12px; letter-spacing:.06em; color:var(--record); white-space:nowrap;
+  text-shadow:0 1px 6px var(--night), 0 0 2px var(--night);
+  opacity:var(--marker-o);
+  transition:opacity var(--t-token) var(--ease-token);
+}
+.hotspot:hover .hlabel, .hotspot:focus-visible .hlabel{ opacity:1; }
+
+/* safe-zone debug overlay (demo only, default off, aria-hidden) */
+.zones{ position:absolute; inset:0; pointer-events:none; z-index:6; display:none; }
+.zones.on{ display:block; }
+.zone{
+  position:absolute; border:1px dashed oklch(0.72 0.018 210 / .5);
+  font-size:12px; letter-spacing:.12em; color:oklch(0.72 0.018 210 / .85);
+  padding:4px 6px; text-transform:uppercase;
+}
+
+/* ── manifest viewer / notes (demo only) ───────────────────────────── */
+.panel{ max-width:1120px; margin:0 auto; padding:26px clamp(16px,4vw,48px) 10px; }
+details{ border:1px solid oklch(0.72 0.018 210 / .18); border-radius:3px; }
+summary{
+  cursor:pointer; padding:12px 16px; font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--fog);
+}
+summary:focus-visible{ outline:var(--focus-ring); outline-offset:3px; }
+pre{
+  margin:0; padding:14px 16px; overflow:auto; max-height:420px;
+  font-size:12px; line-height:1.5; color:oklch(0.72 0.018 210 / .9);
+  border-top:1px solid oklch(0.72 0.018 210 / .12);
+}
+.note{ font-size:12.5px; color:oklch(0.72 0.018 210 / .8); margin-top:14px; max-width:70em; }
+.colophon{
+  padding:26px clamp(16px,4vw,48px) 40px; text-align:center;
+  font-size:12px; letter-spacing:.08em; color:oklch(0.72 0.018 210 / .55);
+}
+
+/* ── reduced motion: full freeze, both triggers ────────────────────── */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{ animation:none !important; transition:none !important; }
+}
+.reduce-motion *, .reduce-motion *::before, .reduce-motion *::after{
+  animation:none !important; transition:none !important;
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     F. RASTER BRIEF — background layer, paste-ready for the image tool
+     ════════════════════════════════════════════════════════════════════
+
+SUBJECT
+  The Deposition Annex: a long, low, horizontal civic hall interior —
+  the architecture of procedure and waiting. A colonnade recedes along a
+  polished wet-reflective floor toward a dim back wall. High clerestory
+  windows run along the upper left wall, admitting pale, streaked,
+  rain-washed light (rain exists only as streaks on the glass and wet
+  footprints on the floor — never falling weather). On the right, glass
+  partition walls reveal dim rooms behind them; one glows faintly from
+  within. A long deposition table with empty chairs sits center-aisle,
+  lit by a single pale pendant.
+
+CAMERA
+  Low, seated-witness height (eye level ~55% of frame height), looking
+  straight down the hall's long axis. Extreme horizontal emphasis; the
+  hall's length is the subject. Deep one-point recession slightly left
+  of center. No people, or at most one distant featureless silhouette.
+
+PALETTE (sRGB APPROXIMATIONS — for generation only; the final grade
+maps to the game's oklch tokens)
+  near-black night ≈ #171717 · concrete ≈ #26282c · pale record white
+  ≈ #eceff1 · institutional fog gray ≈ #a9b0b6 · amber ≈ #d9a05b.
+  The room is cool, pale, even, fluorescent-adjacent: light is a thin
+  institutional wash, not pools of warmth. AMBER WITHDRAWAL LAW
+  (verbatim): at most one distant service strip, no amber pools on the
+  floor. No cyan: cold light is built from record/fog tones only.
+
+LIGHT LOGIC
+  Key light: the clerestory band, upper left — soft, streaked, falling
+  in visible shafts onto the floor. Secondary: the pendant over the
+  table, a narrow cold cone. Tertiary: the faint inner glow behind the
+  glass partition (restoration lab). Floor reads wet: it returns pale
+  elongated reflections of columns and light. Long soft shadows fall to
+  the right of the columns. Overall level: dim, even, quiet.
+
+SHARED-DNA MOTIF (must include)
+  The colonnade's spacing follows a steady geometric compression
+  (~0.9 ratio bay-to-bay) — the same column module rhythm as the Case 77
+  archive tower's base. Two organs, one city.
+
+REGIONS THAT MUST STAY EMPTY (for UI text; keep low-detail, low-contrast)
+  Desktop 16:9: upper-right band (x 68–97%, y 5–21%) and lower-left
+  field (x 5–33%, y 78–96%). Mobile crop (the central vertical slice,
+  x 37–63% of the full width): upper band (x 38.5–61.5%, y 5–23%) and
+  lower band (x 38.5–61.5%, y 74–96%). The four furniture/site features
+  (table, lab glow, recessed corridor, office door) all live in the
+  central slice x 37–63%; the hall's length extends beyond it left and
+  right for desktop.
+
+FORMAT
+  16:9 master, ≥ 1600px wide (3200×1800 preferred). No text-safe
+  elements may carry readable characters of any kind.
+
+NEGATIVE CONSTRAINTS
+  No readable text, no logos, no recognizable faces (featureless
+  silhouettes at most), no franchise references, no artist-style
+  references, no neon holograms, no scanlines or CRT damage, no
+  purple/magenta, no glassmorphism panels, no lens flares, no falling
+  rain indoors.
+
+════════════════════════════════════════════════════════════════════
+     G. PROVENANCE STUB
+     ════════════════════════════════════════════════════════════════════
+  Assets in this file and their author-method:
+    - background layer CSS stand-in ....... hand-written CSS gradients in this file
+    - far layer (colonnade, clerestory, back wall, records recess,
+      counsel door, service strip, floor seams, reflections, shadows) .. hand-written SVG in this file
+    - mid layer (glass partition, restoration-lab glow, deposition
+      table, chairs, pendant, footprint trail) ........................ hand-written SVG in this file
+    - near layer (doorframe edge, stanchion) .......................... hand-written SVG in this file
+    - haze treatments (shafts soft/hard pair, floor sheen pair, center
+      light, table spot, dim/vignette overlays) ....................... hand-written CSS in this file
+    - weather (dust motes) ............................................ hand-written canvas-2D JS in this file
+    - scene manifest .................................................. hand-written JSON in this file
+    - hotspot overlay + demo chrome ................................... hand-written HTML/CSS/JS in this file
+
+  Ready-to-paste docs/PROVENANCE.md rows:
+
+  | `public/case-81.html` | Authored in-session on 2026-07-19; zero external assets, fonts, or network requests — all visuals are hand-written SVG, CSS gradients, and canvas 2D | Case 81 Deposition Annex scene: layer-registered stack, scene manifest, six state treatments, hotspot overlay; background layer is a CSS stand-in with a marked raster plug point | Original code-native asset; presentation only — host reducer owns state |
+
+  | `public/images/case-81-deposition-annex.webp` | To be generated from the raster brief embedded in `public/case-81.html` (comment F), then locally encoded | Raster background for the Case 81 scene, replacing the CSS stand-in at the marked plug point | Pending generation; human review required before shipping |
+════════════════════════════════════════════════════════════════════ -->
+
+<header class="top">
+  <div>
+    <p class="overline">The Annex · Case 81</p>
+    <h1>Deposition Annex — scene demo</h1>
+  </div>
+  <button id="motionToggle" type="button" aria-pressed="false">Reduce motion</button>
+</header>
+
+<div class="toolbar" role="group" aria-label="Scene demo controls">
+  <span class="tlabel" id="stateLabel">State</span>
+  <div class="tgroup" role="group" aria-labelledby="stateLabel" id="stateSwitcher">
+    <button type="button" data-state="neutral" aria-pressed="true">Neutral</button>
+    <button type="button" data-state="press" aria-pressed="false">Press</button>
+    <button type="button" data-state="corroborate" aria-pressed="false">Corroborate</button>
+    <button type="button" data-state="refusal" aria-pressed="false">Refusal</button>
+    <button type="button" data-state="tribunal" aria-pressed="false">Tribunal</button>
+    <button type="button" data-state="aftermath" aria-pressed="false">Aftermath</button>
+  </div>
+  <span class="tsep" aria-hidden="true"></span>
+  <button type="button" id="dustToggle" aria-pressed="false">Dust motes</button>
+  <button type="button" id="zonesToggle" aria-pressed="false">Safe zones</button>
+  <span class="tsep" aria-hidden="true"></span>
+  <span class="tlabel" id="cropLabel">Crop</span>
+  <div class="tgroup" role="group" aria-labelledby="cropLabel" id="cropSwitcher">
+    <button type="button" data-crop="desktop" aria-pressed="true">16:9</button>
+    <button type="button" data-crop="mobile" aria-pressed="false">390×844</button>
+  </div>
+</div>
+
+<!-- ═══ PART A — LAYER STACK (extract: .scene + stack CSS + scene JS) ═══ -->
+<div class="stage" id="stage">
+<section class="scene" id="scene" data-scene-state="neutral" aria-label="Case 81 scene: the Deposition Annex hall">
+
+  <div class="stack" aria-hidden="true">
+    <div class="pgroup" id="pgroup">
+
+      <div class="layer layer-background" data-layer="background" data-z="-720"></div>
+
+      <!-- FAR — colonnade, clerestory, back wall, records recess, counsel
+           door, service strip, floor seams, reflections, shadows.
+           Continuous structures live in this one plane. -->
+      <div class="layer layer-far" data-layer="far" data-z="-460">
+        <svg class="layer-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" focusable="false">
+          <defs>
+            <linearGradient id="reflGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="oklch(0.72 0.018 210)" stop-opacity=".12"/>
+              <stop offset="1" stop-color="oklch(0.72 0.018 210)" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="clerGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="oklch(0.94 0.012 190)" stop-opacity=".55"/>
+              <stop offset="1" stop-color="oklch(0.94 0.012 190)" stop-opacity=".12"/>
+            </linearGradient>
+            <linearGradient id="doorSpill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="oklch(0.94 0.012 190)" stop-opacity=".14"/>
+              <stop offset="1" stop-color="oklch(0.94 0.012 190)" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+
+          <!-- perspective guides: ceiling & floor corner lines, VP (790,460) -->
+          <g stroke="oklch(0.72 0.018 210 / .1)" stroke-width="1" fill="none">
+            <path d="M0 148 L790 460"/><path d="M1600 96 L790 460"/>
+            <path d="M0 716 L790 460"/><path d="M1600 900 L790 460" stroke-opacity=".5"/>
+          </g>
+          <!-- floor seams, receding -->
+          <g stroke="oklch(0.72 0.018 210 / .08)" stroke-width="1" fill="none">
+            <path d="M667 500 H864"/><path d="M528 545 H946"/><path d="M358 600 H1048"/>
+            <path d="M142 670 H1177"/><path d="M0 760 H1342"/>
+          </g>
+
+          <!-- back wall -->
+          <rect x="620" y="290" width="340" height="280" fill="oklch(0.185 0.014 240)"/>
+          <path d="M620 290 H960" stroke="oklch(0.94 0.012 190 / .1)" stroke-width="1.5"/>
+          <path d="M620 290 V570" stroke="oklch(0.09 0 0 / .2)" stroke-width="2"/>
+
+          <!-- records-annex: recessed stack corridor -->
+          <rect x="745" y="320" width="80" height="245" fill="oklch(0.095 0.007 240)"/>
+          <g stroke="oklch(0.94 0.012 190 / .14)" stroke-width="1">
+            <path d="M752 360 H818"/><path d="M752 400 H818"/><path d="M752 440 H818"/>
+            <path d="M752 480 H818"/><path d="M752 520 H818"/>
+          </g>
+          <path d="M825 320 V565" stroke="oklch(0.94 0.012 190 / .2)" stroke-width="2"/>
+          <path d="M745 320 V565" stroke="oklch(0.09 0 0 / .4)" stroke-width="3"/>
+
+          <!-- the ONE distant service strip (amber withdrawal law) -->
+          <rect x="706" y="336" width="14" height="3" fill="oklch(0.72 0.14 70 / .5)"/>
+
+          <!-- counsel-office: a door with light under it -->
+          <rect x="856" y="352" width="52" height="213" fill="oklch(0.10 0.008 240)"/>
+          <rect x="856" y="352" width="52" height="213" fill="none" stroke="oklch(0.72 0.018 210 / .22)" stroke-width="1.5"/>
+          <rect x="858" y="561" width="48" height="4" fill="oklch(0.94 0.012 190 / .7)"/>
+          <rect x="856" y="565" width="52" height="12" fill="url(#doorSpill)"/>
+
+          <!-- clerestory band: pale, streaked (rain as traces only) -->
+          <polygon points="24,132 520,282 520,314 24,180" fill="url(#clerGrad)"/>
+          <g stroke="oklch(0.09 0 0 / .35)" stroke-width="2">
+            <path d="M80 149 V195"/><path d="M150 170 V214"/><path d="M230 194 V236"/>
+            <path d="M320 221 V260"/><path d="M420 252 V287"/>
+          </g>
+          <g stroke="oklch(0.94 0.012 190 / .2)" stroke-width="1">
+            <path d="M60 143 V190"/><path d="M120 161 V206"/><path d="M200 192 V234"/>
+            <path d="M280 217 V256"/><path d="M360 241 V277"/><path d="M460 271 V304"/>
+          </g>
+
+          <!-- column shadows (state: --shadow-stretch; transform only) -->
+          <g fill="oklch(0.09 0 0 / .2)">
+            <polygon class="shad svg-fx" points="227,635 273,635 325,828 256,828"/>
+            <polygon class="shad svg-fx" points="303,612 341,612 389,779 329,779"/>
+            <polygon class="shad svg-fx" points="372,590 403,590 448,733 397,733"/>
+            <polygon class="shad svg-fx" points="435,571 461,571 503,693 458,693"/>
+            <polygon class="shad svg-fx" points="491,553 513,553 552,655 512,655"/>
+            <polygon class="shad svg-fx" points="543,537 561,537 597,622 563,622"/>
+            <polygon class="shad svg-fx" points="590,522 605,522 639,590 609,590"/>
+            <polygon class="shad svg-fx" points="634,509 646,509 678,563 652,563"/>
+          </g>
+
+          <!-- column reflections on the wet floor -->
+          <g>
+            <rect x="227" y="635" width="46" height="70" fill="url(#reflGrad)"/>
+            <rect x="303" y="612" width="38" height="61" fill="url(#reflGrad)"/>
+            <rect x="372" y="590" width="31" height="52" fill="url(#reflGrad)"/>
+            <rect x="435" y="571" width="26" height="44" fill="url(#reflGrad)"/>
+            <rect x="491" y="553" width="22" height="37" fill="url(#reflGrad)"/>
+            <rect x="543" y="537" width="18" height="31" fill="url(#reflGrad)"/>
+            <rect x="590" y="522" width="15" height="25" fill="url(#reflGrad)"/>
+            <rect x="634" y="509" width="12" height="20" fill="url(#reflGrad)"/>
+          </g>
+
+          <!-- the colonnade: one plane, geometric rhythm ≈ 0.9 (shared DNA
+               with the Case 77 tower's column module) -->
+          <g fill="oklch(0.175 0.013 240)">
+            <rect x="227" y="247" width="46" height="388"/><rect x="223" y="247" width="54" height="7"/>
+            <rect x="303" y="275" width="38" height="337"/><rect x="300" y="275" width="44" height="6"/>
+            <rect x="372" y="301" width="31" height="289"/><rect x="369" y="301" width="37" height="6"/>
+            <rect x="435" y="325" width="26" height="246"/>
+            <rect x="491" y="346" width="22" height="207"/>
+            <rect x="543" y="366" width="18" height="171"/>
+            <rect x="590" y="384" width="15" height="138"/>
+            <rect x="634" y="401" width="12" height="108"/>
+          </g>
+          <g fill="oklch(0.94 0.012 190 / .22)">
+            <rect x="227" y="247" width="3" height="388"/><rect x="303" y="275" width="3" height="337"/>
+            <rect x="372" y="301" width="2.5" height="289"/><rect x="435" y="325" width="2.5" height="246"/>
+            <rect x="491" y="346" width="2" height="207"/><rect x="543" y="366" width="2" height="171"/>
+            <rect x="590" y="384" width="1.5" height="138"/><rect x="634" y="401" width="1.5" height="108"/>
+          </g>
+          <g fill="oklch(0.09 0 0 / .25)">
+            <rect x="270" y="247" width="3" height="388"/><rect x="338" y="275" width="3" height="337"/>
+            <rect x="400" y="301" width="3" height="289"/><rect x="458" y="325" width="3" height="246"/>
+            <rect x="511" y="346" width="2" height="207"/><rect x="559" y="366" width="2" height="171"/>
+          </g>
+
+          <!-- waiting benches along the left wall -->
+          <g>
+            <polygon points="296,640 420,600 427,611 303,653" fill="oklch(0.135 0.011 240)"/>
+            <path d="M296 640 L420 600" stroke="oklch(0.94 0.012 190 / .12)" stroke-width="1"/>
+            <rect x="312" y="650" width="8" height="24" fill="oklch(0.09 0 0 / .3)"/>
+            <rect x="398" y="614" width="8" height="24" fill="oklch(0.09 0 0 / .3)"/>
+            <polygon points="440,596 530,568 535,577 446,606" fill="oklch(0.135 0.011 240)"/>
+            <path d="M440 596 L530 568" stroke="oklch(0.94 0.012 190 / .1)" stroke-width="1"/>
+            <rect x="452" y="602" width="7" height="20" fill="oklch(0.09 0 0 / .3)"/>
+            <rect x="512" y="580" width="7" height="20" fill="oklch(0.09 0 0 / .3)"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- MID — glass partition, restoration lab, counsel approach,
+           deposition table, chairs, pendant, footprint trail -->
+      <div class="layer layer-mid" data-layer="mid" data-z="-240">
+        <svg class="layer-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" focusable="false">
+          <defs>
+            <radialGradient id="labGrad" cx=".5" cy=".5" r=".5">
+              <stop offset="0" stop-color="oklch(0.94 0.012 190)" stop-opacity=".3"/>
+              <stop offset="1" stop-color="oklch(0.94 0.012 190)" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="reflGrad2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="oklch(0.72 0.018 210)" stop-opacity=".1"/>
+              <stop offset="1" stop-color="oklch(0.72 0.018 210)" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+
+          <!-- near floor continuation + right floor edge -->
+          <path d="M0 800 H1416" stroke="oklch(0.72 0.018 210 / .07)" stroke-width="1" fill="none"/>
+          <path d="M1261 716 L1451 819" stroke="oklch(0.72 0.018 210 / .06)" stroke-width="1" fill="none"/>
+
+          <!-- dim rooms behind the glass -->
+          <polygon points="880,398 1600,150 1600,900 880,562" fill="oklch(0.125 0.01 240 / .55)"/>
+
+          <!-- restoration-lab: lit from within (record/fog only; var --lab-o) -->
+          <g class="lab svg-fx">
+            <ellipse cx="945" cy="440" rx="100" ry="120" fill="url(#labGrad)"/>
+            <rect x="905" y="400" width="20" height="90" fill="oklch(0.72 0.018 210 / .1)"/>
+            <rect x="940" y="380" width="34" height="110" fill="oklch(0.72 0.018 210 / .08)"/>
+            <rect x="900" y="490" width="90" height="8" fill="oklch(0.72 0.018 210 / .12)"/>
+          </g>
+
+          <!-- glass partition: architecture, not glassmorphism —
+               edge lines, tracks, reflection streaks -->
+          <g stroke="oklch(0.72 0.018 210 / .28)" stroke-width="1.5" fill="none">
+            <path d="M1600 150 L880 398"/><path d="M1600 900 L880 562" stroke-opacity=".8"/>
+            <path d="M1450 202 V830"/><path d="M1310 250 V764"/><path d="M1180 295 V703"/>
+            <path d="M1060 336 V647"/><path d="M950 374 V595"/><path d="M880 398 V562"/>
+          </g>
+          <g fill="oklch(0.94 0.012 190 / .05)">
+            <polygon points="1150,260 1250,240 1090,760 990,780"/>
+            <polygon points="1350,210 1400,200 1240,820 1190,830"/>
+            <polygon points="960,360 990,355 920,600 890,605"/>
+          </g>
+
+          <!-- deposition-suite: the table (hotspot plane: mid) -->
+          <polygon points="688,584 892,584 908,601 672,601" fill="oklch(0.14 0.011 240)"/>
+          <polygon points="672,601 908,601 908,614 672,614" fill="oklch(0.1 0.008 240)"/>
+          <path d="M688 584 H892" stroke="oklch(0.94 0.012 190 / .2)" stroke-width="1"/>
+          <rect x="700" y="614" width="10" height="78" fill="oklch(0.09 0.007 240)"/>
+          <rect x="868" y="614" width="10" height="78" fill="oklch(0.09 0.007 240)"/>
+          <rect x="776" y="536" width="50" height="48" fill="oklch(0.115 0.009 240)"/>
+          <path d="M776 536 H826" stroke="oklch(0.94 0.012 190 / .12)" stroke-width="1"/>
+          <rect x="700" y="648" width="52" height="78" fill="oklch(0.085 0.007 240)"/>
+          <rect x="826" y="648" width="52" height="78" fill="oklch(0.085 0.007 240)"/>
+          <polygon points="688,700 892,700 900,760 680,760" fill="url(#reflGrad2)"/>
+
+          <!-- pendant over the table (hardware; its cold cone lives in haze) -->
+          <path d="M790 150 V352" stroke="oklch(0.72 0.018 210 / .3)" stroke-width="1.5"/>
+          <polygon points="772,352 808,352 816,368 764,368" fill="oklch(0.16 0.012 240)"/>
+          <ellipse cx="790" cy="372" rx="20" ry="4" fill="oklch(0.94 0.012 190 / .25)"/>
+
+          <!-- wet footprints: rain as trace, leading to the table -->
+          <g fill="oklch(0.09 0 0 / .13)">
+            <ellipse cx="620" cy="806" rx="5" ry="2.3" transform="rotate(-14 620 806)"/>
+            <ellipse cx="648" cy="788" rx="5" ry="2.3" transform="rotate(12 648 788)"/>
+            <ellipse cx="634" cy="766" rx="5" ry="2.3" transform="rotate(-12 634 766)"/>
+            <ellipse cx="668" cy="748" rx="5" ry="2.3" transform="rotate(14 668 748)"/>
+            <ellipse cx="654" cy="728" rx="5" ry="2.3" transform="rotate(-10 654 728)"/>
+            <ellipse cx="688" cy="714" rx="5" ry="2.3" transform="rotate(12 688 714)"/>
+            <ellipse cx="676" cy="696" rx="5" ry="2.3" transform="rotate(-12 676 696)"/>
+            <ellipse cx="714" cy="686" rx="5" ry="2.3" transform="rotate(10 714 686)"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- NEAR — foreground doorframe + stanchion (static 1px blur only) -->
+      <div class="layer layer-near" data-layer="near" data-z="-80">
+        <svg class="layer-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" focusable="false">
+          <g fill="oklch(0.05 0.006 240)">
+            <rect x="0" y="0" width="110" height="900"/>
+            <rect x="0" y="0" width="330" height="90"/>
+            <rect x="1500" y="628" width="24" height="272"/>
+            <rect x="1440" y="628" width="160" height="14"/>
+            <ellipse cx="1512" cy="896" rx="30" ry="7"/>
+          </g>
+          <path d="M110 0 V900" stroke="oklch(0.72 0.018 210 / .07)" stroke-width="1.5" fill="none"/>
+          <path d="M0 90 H330" stroke="oklch(0.72 0.018 210 / .06)" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- HAZE — light volume, CSS gradients only; frame is JS-registered
+         to the far-plane projection so shafts meet the clerestory -->
+    <div class="layer-haze" data-layer="haze">
+      <div class="haze-frame" id="hazeFrame">
+        <div class="fx fx-haze"></div>
+        <div class="fx fx-floor"></div>
+        <div class="fx fx-floor-calm"></div>
+        <div class="fx fx-shafts soft"></div>
+        <div class="fx fx-shafts hard"></div>
+        <div class="fx fx-center"></div>
+        <div class="fx fx-table-spot"></div>
+        <div class="fx fx-near-dim"></div>
+        <div class="fx fx-dim"></div>
+      </div>
+    </div>
+
+    <canvas class="layer-weather" data-layer="weather" id="dust"></canvas>
+  </div>
+
+  <!-- safe-zone debug overlay (demo only) -->
+  <div class="zones" id="zones" aria-hidden="true"></div>
+
+  <!-- ═══ PART C — HOTSPOT OVERLAY (interactive; NOT aria-hidden) ═══ -->
+  <div class="hotspots" id="hotspots">
+    <div class="hgroup" id="hgroup">
+      <div class="hplane" data-plane="mid">
+        <button type="button" class="hotspot" data-hotspot="deposition-suite" style="left:49.4%;top:66%">
+          <span class="ring" aria-hidden="true"></span><span class="hlabel">Deposition suite</span>
+        </button>
+        <button type="button" class="hotspot" data-hotspot="restoration-lab" style="left:59.1%;top:48.9%">
+          <span class="ring" aria-hidden="true"></span><span class="hlabel">Restoration lab</span>
+        </button>
+      </div>
+      <div class="hplane" data-plane="far">
+        <button type="button" class="hotspot" data-hotspot="records-annex" style="left:49.1%;top:49.1%">
+          <span class="ring" aria-hidden="true"></span><span class="hlabel">Records annex</span>
+        </button>
+        <button type="button" class="hotspot" data-hotspot="counsel-office" style="left:55.1%;top:51%">
+          <span class="ring" aria-hidden="true"></span><span class="hlabel">Counsel office</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- ═══ PART B — SCENE MANIFEST (machine-readable; strict JSON) ═══ -->
+<script type="application/json" id="scene-manifest">
+{
+  "scene": "case-81-deposition-annex",
+  "coordSpace": "master-16x9-normalized",
+  "master": { "w": 1600, "h": 900 },
+  "perspectivePx": 1100,
+  "scaleFormula": "(1100 + |z|) / 1100",
+  "projectionNote": "screen = 0.5 + ((p - crop.origin)/crop.size - 0.5) x plane.scale, per axis. Each plane shows only its central 1/scale window of the master; continuous perspective structures must live in exactly one plane, and hotspot-registered features must sit inside their plane's visible window.",
+  "drift": { "yawDeg": 0.28, "pitchDeg": 0.22 },
+  "stateDefault": "neutral",
+  "minTargetPx": 44,
+  "focusRing": "2px solid oklch(0.84 0.12 190) offset 3px",
+  "crops": {
+    "desktop": {
+      "window": { "x": 0, "y": 0, "w": 1, "h": 1 },
+      "containerAspect": "16:9",
+      "note": "full master visible"
+    },
+    "mobile-390x844": {
+      "window": { "x": 0.37, "y": 0, "w": 0.26, "h": 1 },
+      "containerAspect": "390:844",
+      "note": "center vertical slice; all four hotspots and both mobile safe zones fall inside this window"
+    }
+  },
+  "layers": [
+    { "name": "background", "z": -720, "scale": 1.6545, "anchor": "center", "naturalSize": [1600, 900], "kind": "css-standin",
+      "crop": { "desktop": "xMidYMid slice", "mobile-390x844": "xMidYMid slice" },
+      "raster": { "objectPosition": { "desktop": "50% 50%", "mobile-390x844": "50% 50%" } } },
+    { "name": "far", "z": -460, "scale": 1.4182, "anchor": "center", "naturalSize": [1600, 900], "kind": "svg",
+      "crop": { "desktop": "xMidYMid slice", "mobile-390x844": "xMidYMid slice" } },
+    { "name": "mid", "z": -240, "scale": 1.2182, "anchor": "center", "naturalSize": [1600, 900], "kind": "svg",
+      "crop": { "desktop": "xMidYMid slice", "mobile-390x844": "xMidYMid slice" } },
+    { "name": "near", "z": -80, "scale": 1.0727, "anchor": "center", "naturalSize": [1600, 900], "kind": "svg",
+      "crop": { "desktop": "xMidYMid slice", "mobile-390x844": "xMidYMid slice" } },
+    { "name": "haze", "z": 0, "scale": 1, "anchor": "center", "naturalSize": [1600, 900], "kind": "css-gradients",
+      "crop": "js-master-frame registered to the far-plane projection (scale 1.4182)" },
+    { "name": "weather", "z": 0, "scale": 1, "anchor": "center", "naturalSize": [1600, 900], "kind": "canvas-2d",
+      "crop": "container" }
+  ],
+  "safeTextZones": {
+    "desktop": [
+      { "x": 0.68, "y": 0.05, "w": 0.29, "h": 0.16 },
+      { "x": 0.05, "y": 0.78, "w": 0.28, "h": 0.18 }
+    ],
+    "mobile-390x844": [
+      { "x": 0.385, "y": 0.05, "w": 0.23, "h": 0.18 },
+      { "x": 0.385, "y": 0.77, "w": 0.23, "h": 0.19 }
+    ]
+  },
+  "lightShafts": [
+    { "id": "shaft-a", "x": 0.05, "y": 0.15, "w": 0.20, "h": 0.60 },
+    { "id": "shaft-b", "x": 0.29, "y": 0.15, "w": 0.15, "h": 0.55 }
+  ],
+  "hotspots": [
+    { "id": "deposition-suite", "label": "Deposition suite", "x": 0.494, "y": 0.66, "r": 0.02, "plane": "mid" },
+    { "id": "restoration-lab", "label": "Restoration lab", "x": 0.591, "y": 0.489, "r": 0.016, "plane": "mid" },
+    { "id": "records-annex", "label": "Records annex", "x": 0.491, "y": 0.491, "r": 0.015, "plane": "far" },
+    { "id": "counsel-office", "label": "Counsel office", "x": 0.551, "y": 0.51, "r": 0.014, "plane": "far" }
+  ],
+  "states": {
+    "neutral":     { "--dim-o": 0,    "--shaft-soft-o": 0.9,  "--shaft-hard-o": 0,    "--shaft-sx": 1,    "--floor-o": 0.8,  "--floor-calm-o": 0,   "--haze-o": 0.5,  "--lab-o": 0.85, "--near-dim-o": 0.12, "--table-spot-o": 0.35, "--center-o": 0, "--shadow-stretch": 1,    "--marker-o": 1 },
+    "press":       { "--dim-o": 0.1,  "--shaft-soft-o": 0,    "--shaft-hard-o": 0.95, "--shaft-sx": 0.8,  "--floor-o": 1,    "--floor-calm-o": 0,   "--haze-o": 0.25, "--lab-o": 0.85, "--near-dim-o": 0.4,  "--table-spot-o": 0.5,  "--center-o": 0, "--shadow-stretch": 1.05, "--marker-o": 1 },
+    "corroborate": { "--dim-o": 0,    "--shaft-soft-o": 1,    "--shaft-hard-o": 0,    "--shaft-sx": 1.14, "--floor-o": 0.35, "--floor-calm-o": 0.8, "--haze-o": 0.8,  "--lab-o": 0.9,  "--near-dim-o": 0.05, "--table-spot-o": 0.35, "--center-o": 0, "--shadow-stretch": 0.95, "--marker-o": 1 },
+    "refusal":     { "--dim-o": 0.42, "--shaft-soft-o": 0,    "--shaft-hard-o": 0,    "--shaft-sx": 1,    "--floor-o": 0.15, "--floor-calm-o": 0,   "--haze-o": 0.3,  "--lab-o": 0.06, "--near-dim-o": 0.3,  "--table-spot-o": 1,    "--center-o": 0, "--shadow-stretch": 1.1,  "--marker-o": 1 },
+    "tribunal":    { "--dim-o": 0.08, "--shaft-soft-o": 0.75, "--shaft-hard-o": 0,    "--shaft-sx": 1,    "--floor-o": 0.6,  "--floor-calm-o": 0,   "--haze-o": 0.4,  "--lab-o": 0.7,  "--near-dim-o": 0.22, "--table-spot-o": 0.5,  "--center-o": 1, "--shadow-stretch": 1,    "--marker-o": 0.35 },
+    "aftermath":   { "--dim-o": 0.3,  "--shaft-soft-o": 0,    "--shaft-hard-o": 0,    "--shaft-sx": 1,    "--floor-o": 0.12, "--floor-calm-o": 0,   "--haze-o": 0.55, "--lab-o": 0.18, "--near-dim-o": 0.15, "--table-spot-o": 0.12, "--center-o": 0, "--shadow-stretch": 1.6,  "--marker-o": 1 }
+  },
+  "stateNote": "CSS is authoritative at runtime (data-scene-state on the scene root); these sets document the treatments for hosts. Transitions animate opacity and transform only.",
+  "weather": {
+    "kind": "dust-motes",
+    "maxParticles": 40,
+    "defaultOn": false,
+    "spawnVolumes": "lightShafts",
+    "states": { "aftermath": "suppressed" }
+  }
+}
+</script>
+
+<main class="panel">
+  <details>
+    <summary>scene-manifest.json — registration data</summary>
+    <pre id="manifestView">Enable JavaScript to inspect the manifest.</pre>
+  </details>
+  <p class="note">
+    Demo notes: the stack contributes nothing to the accessibility tree; only the four
+    hotspot buttons and this chrome are reachable. Hotspots track the art during pointer
+    drift via per-plane transform mirrors. The 390×844 crop switch previews the mobile
+    window declared in the manifest — all four sites and both mobile safe zones stay
+    inside it. State treatments are pure presentation keyed by <code>data-scene-state</code>;
+    the host reducer owns all game state.
+  </p>
+</main>
+
+<footer class="colophon">
+  Case 81 · Deposition Annex — presentation only. Nothing here reads or writes evidence,
+  trust, access, alarms, outcomes, or run history.
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ── manifest ─────────────────────────────────────────────────────── */
+  var manifest = JSON.parse(document.getElementById("scene-manifest").textContent);
+  document.getElementById("manifestView").textContent = JSON.stringify(manifest, null, 2);
+
+  var scene  = document.getElementById("scene");
+  var stage  = document.getElementById("stage");
+  var pgroup = document.getElementById("pgroup");
+  var hgroup = document.getElementById("hgroup");
+  var hazeFrame = document.getElementById("hazeFrame");
+  var canvas = document.getElementById("dust");
+  var ctx = canvas.getContext("2d");
+  var FAR_SCALE = 1.4182;
+
+  /* ── shared motion gate (mirrors the shipped Case 77 discipline) ──── */
+  var mqReduce = matchMedia("(prefers-reduced-motion: reduce)");
+  function motionOK(){
+    return !mqReduce.matches && !document.documentElement.classList.contains("reduce-motion");
+  }
+
+  /* ── crop window: computed from live container aspect (slice math),
+        identical to what the SVG planes self-apply ───────────────────── */
+  var W = 0, H = 0, dpr = 1, win = { x:0, y:0, w:1, h:1 };
+  function computeWindow(){
+    var A = W / H, M = manifest.master.w / manifest.master.h;
+    if (A >= M){ win = { x:0, y:(1 - M/A)/2, w:1, h:M/A }; }
+    else       { win = { x:(1 - A/M)/2, y:0, w:A/M, h:1 }; }
+  }
+
+  /* ── layout: haze frame + hotspot positions/sizes + zone rects ────── */
+  var hotspots = manifest.hotspots.map(function(h){
+    h.el = document.querySelector('[data-hotspot="' + h.id + '"]');
+    return h;
+  });
+  function layout(){
+    computeWindow();
+    /* haze frame: master-mapped, registered to the far-plane projection */
+    hazeFrame.style.left   = (-win.x / win.w * 100) + "%";
+    hazeFrame.style.top    = (-win.y / win.h * 100) + "%";
+    hazeFrame.style.width  = (100 / win.w) + "%";
+    hazeFrame.style.height = (100 / win.h) + "%";
+    hazeFrame.style.transform = "scale(" + FAR_SCALE + ")";
+    /* hotspots: box-fraction placement inside their plane mirror;
+       rendered diameter = max(2r, minTargetPx) */
+    hotspots.forEach(function(h){
+      if (!h.el) return;
+      h.el.style.left = ((h.x - win.x) / win.w * 100) + "%";
+      h.el.style.top  = ((h.y - win.y) / win.h * 100) + "%";
+      var d = Math.max(2 * h.r * (W / win.w), manifest.minTargetPx);
+      h.el.style.width = d + "px"; h.el.style.height = d + "px";
+    });
+    layoutZones();
+  }
+
+  /* ── safe-zone debug overlay ──────────────────────────────────────── */
+  var zonesEl = document.getElementById("zones"), zonesOn = false, cropMode = "desktop";
+  function layoutZones(){
+    zonesEl.textContent = "";
+    if (!zonesOn) return;
+    manifest.safeTextZones[cropMode === "mobile" ? "mobile-390x844" : "desktop"].forEach(function(z){
+      var d = document.createElement("div");
+      d.className = "zone";
+      d.style.left   = ((z.x - win.x) / win.w * 100) + "%";
+      d.style.top    = ((z.y - win.y) / win.h * 100) + "%";
+      d.style.width  = (z.w / win.w * 100) + "%";
+      d.style.height = (z.h / win.h * 100) + "%";
+      d.textContent = "safe text";
+      zonesEl.appendChild(d);
+    });
+  }
+
+  /* ── weather: dust motes, confined to the manifest light shafts ───── */
+  var motes = [], dustOn = false, sceneVisible = true, raf = 0, last = 0;
+  function shaftPx(r){ /* master rect -> container px via far projection */
+    return {
+      x: (0.5 + ((r.x - win.x) / win.w - 0.5) * FAR_SCALE) * W,
+      y: (0.5 + ((r.y - win.y) / win.h - 0.5) * FAR_SCALE) * H,
+      w: r.w / win.w * FAR_SCALE * W,
+      h: r.h / win.h * FAR_SCALE * H
+    };
+  }
+  function seedMotes(){
+    motes.length = 0;
+    var vols = manifest.lightShafts.map(shaftPx);
+    for (var i = 0; i < manifest.weather.maxParticles; i++){
+      var v = vols[i % vols.length];
+      motes.push({
+        v: v,
+        x: v.x + Math.random() * v.w,
+        y: v.y + Math.random() * v.h,
+        vy: 5 + Math.random() * 8,          /* slow settle, px/s */
+        sway: Math.random() * 6.28,
+        r: 0.5 + Math.random() * 0.7,
+        a: 0.08 + Math.random() * 0.14
+      });
+    }
+  }
+  function drawMotes(t, dt){
+    ctx.clearRect(0, 0, W, H);
+    var buckets = [[], [], [], []];
+    motes.forEach(function(m){
+      m.y += m.vy * dt;
+      m.x += Math.sin(t / 2600 + m.sway) * 2.2 * dt;
+      if (m.y > m.v.y + m.v.h + 6){ m.y = m.v.y - 4; m.x = m.v.x + Math.random() * m.v.w; }
+      buckets[Math.min(3, m.a * 24 | 0)].push(m);
+    });
+    var alphas = [0.08, 0.12, 0.17, 0.22];
+    ctx.fillStyle = "oklch(0.72 0.018 210)";
+    for (var b = 0; b < 4; b++){
+      if (!buckets[b].length) continue;
+      ctx.globalAlpha = alphas[b];
+      ctx.beginPath();
+      buckets[b].forEach(function(m){ ctx.moveTo(m.x + m.r, m.y); ctx.arc(m.x, m.y, m.r, 0, 6.2832); });
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+  function weatherAllowed(){
+    return dustOn && manifest.weather.states[scene.dataset.sceneState] !== "suppressed";
+  }
+
+  /* ── one shared rAF: drift + weather, capped delta time ───────────── */
+  var px = 0, py = 0, gx = 0, gy = 0;
+  function frame(t){
+    raf = requestAnimationFrame(frame);
+    if (!last) last = t;
+    var dt = Math.min((t - last) / 1000, 0.05); last = t;
+    gx += (px - gx) * 0.03; gy += (py - gy) * 0.03;
+    if (Math.abs(gx) + Math.abs(gy) > 0.0004){
+      var tr = "rotateX(" + (-gy * manifest.drift.pitchDeg).toFixed(3) + "deg) rotateY(" +
+               (gx * manifest.drift.yawDeg).toFixed(3) + "deg)";
+      pgroup.style.transform = tr;
+      hgroup.style.transform = tr;   /* the mirror: buttons track the art */
+    }
+    if (weatherAllowed()) drawMotes(t, dt);
+    else ctx.clearRect(0, 0, W, H);
+  }
+  function start(){
+    if (!raf && motionOK() && !document.hidden && sceneVisible){
+      last = 0; raf = requestAnimationFrame(frame);
+    }
+  }
+  function stop(){ if (raf){ cancelAnimationFrame(raf); raf = 0; } }
+  function sync(){
+    if (motionOK()){ start(); }
+    else {
+      stop();
+      gx = gy = px = py = 0;
+      pgroup.style.transform = "none";
+      hgroup.style.transform = "none";
+      ctx.clearRect(0, 0, W, H);
+    }
+  }
+
+  /* ── resize ───────────────────────────────────────────────────────── */
+  function resize(){
+    var r = scene.getBoundingClientRect();
+    W = Math.max(1, r.width); H = Math.max(1, r.height);
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    layout(); seedMotes();
+    if (!motionOK()) ctx.clearRect(0, 0, W, H);
+  }
+
+  /* ── demo chrome: state switcher ──────────────────────────────────── */
+  var stateBtns = Array.prototype.slice.call(document.querySelectorAll("#stateSwitcher [data-state]"));
+  function setState(s){
+    scene.dataset.sceneState = s;
+    stateBtns.forEach(function(b){ b.setAttribute("aria-pressed", String(b.dataset.state === s)); });
+    if (!weatherAllowed()) ctx.clearRect(0, 0, W, H);  /* aftermath: dust settles */
+  }
+  document.getElementById("stateSwitcher").addEventListener("click", function(e){
+    var b = e.target.closest("[data-state]"); if (b) setState(b.dataset.state);
+  });
+
+  var dustBtn = document.getElementById("dustToggle");
+  dustBtn.addEventListener("click", function(){
+    dustOn = !dustOn;
+    dustBtn.setAttribute("aria-pressed", String(dustOn));
+    if (!dustOn) ctx.clearRect(0, 0, W, H);
+  });
+
+  var zonesBtn = document.getElementById("zonesToggle");
+  zonesBtn.addEventListener("click", function(){
+    zonesOn = !zonesOn;
+    zonesBtn.setAttribute("aria-pressed", String(zonesOn));
+    zonesEl.classList.toggle("on", zonesOn);
+    layoutZones();
+  });
+
+  var cropBtns = Array.prototype.slice.call(document.querySelectorAll("#cropSwitcher [data-crop]"));
+  function setCrop(mode){
+    cropMode = mode;
+    stage.classList.toggle("crop-mobile", mode === "mobile");
+    cropBtns.forEach(function(b){ b.setAttribute("aria-pressed", String(b.dataset.crop === mode)); });
+    resize();
+  }
+  document.getElementById("cropSwitcher").addEventListener("click", function(e){
+    var b = e.target.closest("[data-crop]"); if (b) setCrop(b.dataset.crop);
+  });
+
+  var toggle = document.getElementById("motionToggle");
+  toggle.addEventListener("click", function(){
+    var on = document.documentElement.classList.toggle("reduce-motion");
+    toggle.setAttribute("aria-pressed", String(on));
+    toggle.textContent = on ? "Motion reduced — resume" : "Reduce motion";
+  });
+
+  /* ── wiring: reduced motion, visibility, viewport, pointer ────────── */
+  if (mqReduce.addEventListener) mqReduce.addEventListener("change", sync);
+  var mo = new MutationObserver(sync);
+  mo.observe(document.documentElement, { attributes:true, attributeFilter:["class"] });
+  document.addEventListener("visibilitychange", function(){
+    if (document.hidden) stop(); else sync();
+  });
+  var io = null;
+  if ("IntersectionObserver" in window){
+    io = new IntersectionObserver(function(en){
+      sceneVisible = en[0].isIntersecting;
+      if (sceneVisible) sync(); else stop();
+    }, { threshold: 0.02 });
+    io.observe(scene);
+  }
+  if (matchMedia("(pointer: fine)").matches){
+    addEventListener("pointermove", function(e){
+      if (!motionOK()) return;
+      px = Math.max(-0.5, Math.min(0.5, e.clientX / innerWidth  - 0.5));
+      py = Math.max(-0.5, Math.min(0.5, e.clientY / innerHeight - 0.5));
+    }, { passive:true });
+  }
+  var ro = null;
+  if ("ResizeObserver" in window){ ro = new ResizeObserver(resize); ro.observe(scene); }
+  else addEventListener("resize", resize);
+
+  /* full teardown for the host's unmount path */
+  window.__case81 = {
+    destroy: function(){
+      stop(); mo.disconnect(); if (io) io.disconnect(); if (ro) ro.disconnect();
+      pgroup.style.transform = "none"; hgroup.style.transform = "none";
+      ctx.clearRect(0, 0, W, H);
+    }
+  };
+
+  /* init — neutral is already in the markup: the no-JS baseline IS the
+     designed baseline */
+  if (innerWidth < 720) setCrop("mobile");
+  resize(); sync();
+})();
+</script>
+</body>
+</html>
