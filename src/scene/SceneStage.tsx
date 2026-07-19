@@ -11,6 +11,7 @@
 import { useEffect, useRef } from 'react'
 import type { CSSProperties } from 'react'
 import { Atmosphere } from '../ambience/Atmosphere'
+import { LABEL_LEADER_THRESHOLD } from '../game/types'
 import type { SceneDefinition, SceneStateId, SiteDefinition, SiteId } from '../game/types'
 import { createSceneMotion, type SceneMotionHandle } from './motion'
 
@@ -103,6 +104,11 @@ export function SceneStage({
           const site = sites?.find((item) => item.id === hotspot.siteId)
           const filed = completedSiteIds?.includes(hotspot.siteId) ?? false
           const name = site?.name ?? hotspot.siteId
+          const offset = hotspot.labelOffset
+          // A displaced label past the threshold gets a fog leader line back to
+          // the marker (motion.ts sizes/rotates it from the live projection).
+          const leader =
+            offset !== undefined && Math.hypot(offset.dx, offset.dy) >= LABEL_LEADER_THRESHOLD
           return (
             <div className="scene-hplane" data-plane={hotspot.plane} key={hotspot.siteId}>
               <button
@@ -112,6 +118,8 @@ export function SceneStage({
                 data-x={hotspot.x}
                 data-y={hotspot.y}
                 data-r={hotspot.r}
+                data-ldx={offset ? offset.dx : undefined}
+                data-ldy={offset ? offset.dy : undefined}
                 data-filed={filed ? 'true' : undefined}
                 style={
                   diorama
@@ -122,6 +130,7 @@ export function SceneStage({
                 onClick={() => onHotspotActivate?.(hotspot.siteId)}
               >
                 <span className="scene-hotspot-ring" aria-hidden="true" />
+                {leader && <span className="scene-hotspot-leader" aria-hidden="true" />}
                 <span className="scene-hotspot-label">{name}</span>
               </button>
             </div>

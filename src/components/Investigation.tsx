@@ -1,7 +1,8 @@
+import { useEffect, useRef, useState } from 'react'
 import { getCaseContent, resolveFieldAction } from '../game/content'
 import { canEnterTribunal } from '../game/engine'
 import { SceneStage } from '../scene/SceneStage'
-import { sceneStateFor } from '../scene/sceneState'
+import { resolveCommitConsent, sceneStateFor, witnessesRefusalOnCommit } from '../scene/sceneState'
 import type { DepositionChoiceId, FieldActionId, GameState, SiteId } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
 import { Deposition } from './Deposition'
@@ -32,6 +33,15 @@ function focusSiteCard(siteId: SiteId, reducedMotion: boolean) {
   card.focus({ preventScroll: true })
 }
 
+// The one in-voice line the witnessed-refusal beat announces (aria-live). Curly
+// punctuation, ≤ 90 chars. It names what just became permanent: the room holds it.
+const WITNESS_REFUSAL_LINE = 'The room dims. Ellis Marne’s “no” stays in it.'
+
+// How long the witnessed-refusal beat holds the stage in view before handing focus
+// to the filed card, so the refusal treatment has time to ramp. Reduced motion
+// skips the hold entirely (instant jump + immediate handoff).
+const WITNESS_HOLD_MS = 2500
+
 export function Investigation({
   state,
   depositionEntry,
@@ -44,6 +54,73 @@ export function Investigation({
   const content = getCaseContent(state.caseId)
   const { sites, fieldActions, reconstructionDefinitions, chrome, deposition, scene } = content
   const reconstruction = reconstructionDefinitions.find((item) => item.id === state.reconstruction)
+  const reducedMotion = state.settings.reducedMotion
+
+  // The live stage wrapper, so both the open-transcript reveal and the witnessed-
+  // refusal beat can bring the reacting room into view behind / after the modal.
+  const worldViewRef = useRef<HTMLDivElement>(null)
+  const holdTimerRef = useRef<number | null>(null)
+  // The one-shot witnessed-refusal announcement (aria-live). Set only from a commit
+  // callback; empty at rest, so a reload of a persisted refusal never re-announces.
+  const [refusalLine, setRefusalLine] = useState('')
+
+  // Clear any pending hold timer if the phase unmounts mid-beat.
+  useEffect(
+    () => () => {
+      if (holdTimerRef.current !== null) window.clearTimeout(holdTimerRef.current)
+    },
+    [],
+  )
+
+  // Finding 1a — when a transcript opens, the stage flips to press/corroborate
+  // above the fold. Bring it into view so its reaction reads around the (now
+  // scene-visible) modal instead of happening off-screen. The modal's own focus
+  // scrolls the page a frame later and would override an immediate scroll, so this
+  // is deferred past it (60ms) and instant — imperceptible under the fading modal.
+  useEffect(() => {
+    if (!depositionEntry) return
+    const timer = window.setTimeout(() => {
+      worldViewRef.current?.scrollIntoView({ behavior: 'auto', block: 'start' })
+    }, 60)
+    return () => window.clearTimeout(timer)
+  }, [depositionEntry])
+
+  // Finding 1b — the witnessed-refusal beat. Fires exactly once, from the commit
+  // result (never persisted state): on a refused ('no') consent, bring the stage
+  // into view, announce the in-voice line, hold while the refusal treatment ramps,
+  // then hand focus to the filed card. Reduced motion: instant jump, same
+  // announcement, immediate handoff — no smooth scroll, no hold timer.
+  function playWitnessedRefusal(siteId: SiteId) {
+    setRefusalLine(WITNESS_REFUSAL_LINE)
+    worldViewRef.current?.scrollIntoView({
+      behavior: reducedMotion ? 'auto' : 'smooth',
+      block: 'start',
+    })
+    if (reducedMotion) {
+      focusSiteCard(siteId, true)
+      return
+    }
+    if (holdTimerRef.current !== null) window.clearTimeout(holdTimerRef.current)
+    holdTimerRef.current = window.setTimeout(() => {
+      holdTimerRef.current = null
+      focusSiteCard(siteId, false)
+    }, WITNESS_HOLD_MS)
+  }
+
+  function handleCommitDeposition(
+    actionId: FieldActionId,
+    beats: DepositionChoiceId[],
+    askedConsent: boolean,
+  ) {
+    onDepositionEntryChange(null)
+    onCommitDeposition(actionId, beats, askedConsent)
+    // Decide the beat from the committed consent (shared vocabulary), not by
+    // observing the refusal state after it lands.
+    const consent = resolveCommitConsent(deposition, actionId, askedConsent)
+    if (!witnessesRefusalOnCommit(consent)) return
+    const siteId = fieldActions.find((action) => action.id === actionId)?.siteId
+    if (siteId) playWitnessedRefusal(siteId)
+  }
   // The scene state is a pure read of GameState + the open-deposition view: the
   // interior presses/corroborates while a transcript is open, and holds refusal
   // after a refused consent. A flat map (Case 77) resolves to 'neutral' here.
@@ -67,7 +144,10 @@ export function Investigation({
 
   return (
     <article className="phase-page investigation-page">
-      <div className="world-view">
+      <p className="sr-only" role="status" aria-live="polite">
+        {refusalLine}
+      </p>
+      <div className="world-view" ref={worldViewRef}>
         {/* The live scene: the diorama (Case 81) or the flat civic map (Case 77),
             with a plane-registered hotspot overlay. The art stack is aria-hidden;
             the hotspots are real buttons that focus their site card below. */}
@@ -245,10 +325,7 @@ export function Investigation({
         <Deposition
           state={state}
           entryActionId={depositionEntry}
-          onCommit={(actionId, beats, askedConsent) => {
-            onDepositionEntryChange(null)
-            onCommitDeposition(actionId, beats, askedConsent)
-          }}
+          onCommit={handleCommitDeposition}
           onAbandon={() => onDepositionEntryChange(null)}
         />
       )}

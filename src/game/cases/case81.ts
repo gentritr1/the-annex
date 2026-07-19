@@ -1044,10 +1044,36 @@ const scene: SceneDefinition = {
     { name: 'haze', z: 0, scale: 1, kind: 'css-gradients' },
   ],
   hotspots: [
+    // The three central markers (records/lab/office) cluster within ~0.1 master-
+    // width, so their labels collided pairwise at both review viewports. Authored
+    // offsets fan the labels apart: annex left-down, lab right-up, office right-
+    // down. The markers stay put; each offset trips the fog leader line. Verified
+    // collision-free by sceneLabels.test.ts across both desktop crops + mobile.
     { siteId: 'deposition-suite', x: 0.494, y: 0.66, r: 0.02, plane: 'mid' },
-    { siteId: 'restoration-lab', x: 0.591, y: 0.489, r: 0.016, plane: 'mid' },
-    { siteId: 'records-annex', x: 0.491, y: 0.491, r: 0.015, plane: 'far' },
-    { siteId: 'counsel-office', x: 0.551, y: 0.51, r: 0.014, plane: 'far' },
+    {
+      siteId: 'restoration-lab',
+      x: 0.591,
+      y: 0.489,
+      r: 0.016,
+      plane: 'mid',
+      labelOffset: { dx: 0.05, dy: -0.05 },
+    },
+    {
+      siteId: 'records-annex',
+      x: 0.491,
+      y: 0.491,
+      r: 0.015,
+      plane: 'far',
+      labelOffset: { dx: -0.05, dy: 0.03 },
+    },
+    {
+      siteId: 'counsel-office',
+      x: 0.551,
+      y: 0.51,
+      r: 0.014,
+      plane: 'far',
+      labelOffset: { dx: 0.03, dy: 0.07 },
+    },
   ],
   crops: {
     desktop: { window: { x: 0, y: 0, w: 1, h: 1 }, containerAspect: '16:9' },
@@ -1078,6 +1104,7 @@ const scene: SceneDefinition = {
       '--center-o': 0,
       '--shadow-stretch': 1,
       '--marker-o': 1,
+      '--amber-o': 1,
     },
     press: {
       '--dim-o': 0.1,
@@ -1093,6 +1120,7 @@ const scene: SceneDefinition = {
       '--center-o': 0,
       '--shadow-stretch': 1.05,
       '--marker-o': 1,
+      '--amber-o': 0.7,
     },
     corroborate: {
       '--dim-o': 0,
@@ -1108,6 +1136,7 @@ const scene: SceneDefinition = {
       '--center-o': 0,
       '--shadow-stretch': 0.95,
       '--marker-o': 1,
+      '--amber-o': 0.85,
     },
     refusal: {
       '--dim-o': 0.42,
@@ -1123,6 +1152,7 @@ const scene: SceneDefinition = {
       '--center-o': 0,
       '--shadow-stretch': 1.1,
       '--marker-o': 1,
+      '--amber-o': 0.35,
     },
     tribunal: {
       '--dim-o': 0.08,
@@ -1138,6 +1168,7 @@ const scene: SceneDefinition = {
       '--center-o': 1,
       '--shadow-stretch': 1,
       '--marker-o': 0.35,
+      '--amber-o': 0.6,
     },
     aftermath: {
       '--dim-o': 0.3,
@@ -1153,6 +1184,7 @@ const scene: SceneDefinition = {
       '--center-o': 0,
       '--shadow-stretch': 1.6,
       '--marker-o': 1,
+      '--amber-o': 0.4,
     },
   },
   weather: {

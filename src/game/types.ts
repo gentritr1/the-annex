@@ -428,6 +428,11 @@ export const SCENE_STATES = [
 
 export type SceneStateId = (typeof SCENE_STATES)[number]
 
+// A label whose authored offset displaces it at least this far (master-width
+// fractions) from its marker gets a fog leader line drawn back to the point, so
+// the label-to-hotspot association stays legible once it has been fanned away.
+export const LABEL_LEADER_THRESHOLD = 0.02
+
 // A CSS custom-property set applied to the stage root for one state. Keys are CSS
 // variable names ('--haze-o'); values are numbers or strings. Transitions animate
 // opacity and transform only (180ms token); reduced motion swaps instantly.
@@ -461,6 +466,12 @@ export interface SceneHotspot {
   y: number
   r: number
   plane: string
+  // Optional authored label offset in master-normalized fractions (dx of master
+  // width, dy of master height). Moves the LABEL only — the marker/button stays at
+  // (x, y). When the displacement is ≥ LABEL_LEADER_THRESHOLD master-width a fog
+  // leader line is drawn from marker to label. Used to fan apart labels whose
+  // markers cluster (Case 81's three central sites).
+  labelOffset?: { dx: number; dy: number }
 }
 
 export interface SceneCrop {

@@ -2829,6 +2829,9 @@ p {
 
 .scene-layer-background {
   transform: translateZ(-720px) scale(1.6545);
+  /* Wall-field (bottom layer) the raster multiplies against. Lifting its midtones
+     a step (0.30/0.36/0.28 → 0.35/0.43/0.33) pulls the composite off the graybox
+     floor and gives the interior tonal separation, without touching hue/chroma. */
   background:
     linear-gradient(
       to bottom,
@@ -2837,7 +2840,7 @@ p {
       oklch(0.09 0 0 / 0.55) 88%
     ),
     var(--scene-bg) center / cover no-repeat,
-    linear-gradient(to bottom, oklch(0.3 0.011 240), oklch(0.36 0.012 240) 46%, oklch(0.28 0.011 240));
+    linear-gradient(to bottom, oklch(0.35 0.011 240), oklch(0.43 0.012 240) 46%, oklch(0.33 0.011 240));
   background-blend-mode: normal, multiply, normal;
 }
 
@@ -2889,9 +2892,11 @@ p {
   top: 50%;
   width: 100%;
   height: 50%;
+  /* Deeper floor-reflection contrast: brighter grazing band at the floor line,
+     stronger falloff — reads as a wet, reflective stone rather than flat gray. */
   background:
-    linear-gradient(to bottom, oklch(0.94 0.012 190 / 0.1), transparent 14%),
-    linear-gradient(to top, oklch(0.94 0.012 190 / 0.05), transparent 55%);
+    linear-gradient(to bottom, oklch(0.94 0.012 190 / 0.14), transparent 16%),
+    linear-gradient(to top, oklch(0.94 0.012 190 / 0.07), transparent 55%);
   opacity: var(--floor-o);
 }
 
@@ -2917,9 +2922,9 @@ p {
   background: repeating-linear-gradient(
     104deg,
     transparent 0 14px,
-    oklch(0.94 0.012 190 / 0.05) 26px,
-    oklch(0.94 0.012 190 / 0.08) 44px,
-    oklch(0.94 0.012 190 / 0.05) 62px,
+    oklch(0.94 0.012 190 / 0.06) 26px,
+    oklch(0.94 0.012 190 / 0.11) 44px,
+    oklch(0.94 0.012 190 / 0.06) 62px,
     transparent 76px 120px
   );
   opacity: var(--shaft-soft-o);
@@ -2929,9 +2934,9 @@ p {
   background: repeating-linear-gradient(
     104deg,
     transparent 0 18px,
-    oklch(0.94 0.012 190 / 0.1) 30px,
-    oklch(0.94 0.012 190 / 0.16) 42px,
-    oklch(0.94 0.012 190 / 0.1) 54px,
+    oklch(0.94 0.012 190 / 0.13) 30px,
+    oklch(0.94 0.012 190 / 0.22) 42px,
+    oklch(0.94 0.012 190 / 0.13) 54px,
     transparent 66px 108px
   );
   opacity: var(--shaft-hard-o);
@@ -2985,6 +2990,10 @@ p {
 
 .scene-lab {
   opacity: var(--lab-o);
+}
+
+.scene-amber {
+  opacity: var(--amber-o, 1);
 }
 
 .scene-weather {
@@ -3139,6 +3148,21 @@ p {
   text-align: center;
 }
 
+/* Fog leader from a fanned label back to its marker point. Width + rotation are
+   set by motion.ts from the live projection; origin is the marker centre. */
+.scene-hotspot-leader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 1px;
+  width: 0;
+  transform-origin: 0 0;
+  background: oklch(0.72 0.018 210 / 0.4);
+  opacity: var(--marker-o, 1);
+  pointer-events: none;
+  transition: opacity 180ms var(--ease-out);
+}
+
 .scene-hotspot-label {
   position: absolute;
   top: calc(100% + 4px);
@@ -3178,12 +3202,15 @@ p {
 
 /* ── mobile: labels on focus/hover only (avoid label collision) ────── */
 @media (max-width: 460px) {
-  .scene-hotspot-label {
+  .scene-hotspot-label,
+  .scene-hotspot-leader {
     opacity: 0;
   }
 
   .scene-hotspot:hover .scene-hotspot-label,
-  .scene-hotspot:focus-visible .scene-hotspot-label {
+  .scene-hotspot:focus-visible .scene-hotspot-label,
+  .scene-hotspot:hover .scene-hotspot-leader,
+  .scene-hotspot:focus-visible .scene-hotspot-leader {
     opacity: 1;
   }
 }
@@ -3192,6 +3219,10 @@ p {
    investigation phase; abandoning it commits nothing. Reuses the existing palette
    only (no new colors); the appear animation is collapsed by the reduce-motion
    rules at the foot of this file. */
+/* The backdrop is a scene-visible DIM, not a veil: the live stage keeps reacting
+   (press / corroborate / refusal) around the transcript while the auditor chooses.
+   No backdrop-filter blur — the room must read. The panel below carries its own
+   solid surface, so transcript legibility does not depend on this dim. */
 .deposition-overlay {
   position: fixed;
   inset: 0;
@@ -3201,12 +3232,11 @@ p {
   justify-content: center;
   padding: max(4vh, 24px) 18px 24px;
   overflow-y: auto;
-  background: oklch(0.06 0 0 / 0.78);
-  backdrop-filter: blur(2px);
+  background: oklch(0.06 0 0 / 0.4);
 }
 
 .deposition-modal {
-  width: min(100%, 720px);
+  width: min(100%, 680px);
   margin: auto;
   padding: 26px 26px 20px;
   background: var(--night-soft);

@@ -69,7 +69,17 @@ export function DepositionAnnexArt({ backgroundSrc }: SceneArtProps) {
             <path d="M825 320 V565" stroke="oklch(0.94 0.012 190 / .2)" strokeWidth="2" />
             <path d="M745 320 V565" stroke="oklch(0.09 0 0 / .4)" strokeWidth="3" />
 
-            <rect x="706" y="336" width="14" height="3" fill="oklch(0.72 0.14 70 / .5)" />
+            {/* The single distant amber service strip (the only warm accent, per
+                the colour law). State-driven --amber-o: more present in neutral,
+                dimmed in refusal so that state stays the darkest. */}
+            <rect
+              className="scene-amber scene-svg-fx"
+              x="706"
+              y="336"
+              width="14"
+              height="3"
+              fill="oklch(0.72 0.14 70 / .7)"
+            />
 
             <rect x="856" y="352" width="52" height="213" fill="oklch(0.10 0.008 240)" />
             <rect
@@ -207,7 +217,9 @@ export function DepositionAnnexArt({ backgroundSrc }: SceneArtProps) {
               <rect x="900" y="490" width="90" height="8" fill="oklch(0.72 0.018 210 / .12)" />
             </g>
 
-            <g stroke="oklch(0.72 0.018 210 / .28)" strokeWidth="1.5" fill="none">
+            {/* Glass partition edges: a slightly brighter cold fog rim so the pane
+                catches light and reads as glass rather than a flat plane. */}
+            <g stroke="oklch(0.72 0.018 210 / .34)" strokeWidth="1.5" fill="none">
               <path d="M1600 150 L880 398" />
               <path d="M1600 900 L880 562" strokeOpacity=".8" />
               <path d="M1450 202 V830" />

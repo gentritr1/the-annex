@@ -98,6 +98,31 @@ export function createSceneMotion(
       const d = Math.max(2 * r * (W / win.w), minTargetPx)
       el.style.width = `${d}px`
       el.style.height = `${d}px`
+
+      // Project the authored label offset (master-normalized fractions) into
+      // container px through the same crop scaling, and displace the LABEL only.
+      // Draw the leader from the marker centre to the label's top-centre so the
+      // fanned label still reads as belonging to this point.
+      const label = el.querySelector<HTMLElement>('.scene-hotspot-label')
+      const leader = el.querySelector<HTMLElement>('.scene-hotspot-leader')
+      const ldx = Number(el.dataset.ldx)
+      const ldy = Number(el.dataset.ldy)
+      const hasOffset = Number.isFinite(ldx) && Number.isFinite(ldy) && (ldx !== 0 || ldy !== 0)
+      const dxPx = hasOffset ? (ldx * W) / win.w : 0
+      const dyPx = hasOffset ? (ldy * H) / win.h : 0
+      if (label) {
+        label.style.transform = hasOffset
+          ? `translate(calc(-50% + ${dxPx.toFixed(1)}px), ${dyPx.toFixed(1)}px)`
+          : ''
+      }
+      if (leader) {
+        const ax = dxPx
+        const ay = d / 2 + 4 + dyPx
+        const len = Math.hypot(ax, ay)
+        const angle = (Math.atan2(ay, ax) * 180) / Math.PI
+        leader.style.width = `${len.toFixed(1)}px`
+        leader.style.transform = `rotate(${angle.toFixed(1)}deg)`
+      }
     })
   }
 

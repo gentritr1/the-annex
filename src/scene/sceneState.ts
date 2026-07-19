@@ -7,7 +7,13 @@
 // refusal branch keys off the persisted DepositionConsent — never off any case's
 // entry-action id, site id, or case id.
 import { getCaseContent } from '../game/content'
-import type { FieldActionId, GameState, SceneStateId } from '../game/types'
+import type {
+  DepositionConsent,
+  DepositionDefinition,
+  FieldActionId,
+  GameState,
+  SceneStateId,
+} from '../game/types'
 
 // Which surface is being rendered. Investigation resolves neutral/press/
 // corroborate/refusal; the tribunal and debrief world windows are fixed.
@@ -41,4 +47,27 @@ export function sceneStateFor(state: GameState, view: SceneViewContext): SceneSt
   if (state.depositionRecord?.consent === 'no') return 'refusal'
 
   return 'neutral'
+}
+
+// Resolve the consent value a deposition commit WILL persist, from the same
+// authored data the engine reads (deposition.consent.answers) — asking yields the
+// authored answer, declining yields 'unasked'. Kept in the view layer so the
+// witnessed-refusal beat can be decided from the commit itself rather than by
+// observing persisted state after the fact. Mirrors the engine's COMMIT_DEPOSITION
+// derivation; both read the shared DepositionConsent vocabulary, no id literals.
+export function resolveCommitConsent(
+  deposition: DepositionDefinition | undefined,
+  actionId: FieldActionId,
+  askedConsent: boolean,
+): DepositionConsent {
+  if (!askedConsent) return 'unasked'
+  return deposition?.consent.answers[actionId]?.consent ?? 'unasked'
+}
+
+// Whether a just-committed deposition should play the one-shot witnessed-refusal
+// beat: only a refused ('no') consent witnesses the room. Evaluated from the
+// commit result (via resolveCommitConsent), never from persisted state, so it
+// fires exactly once per commit — not on later revisits or reloads.
+export function witnessesRefusalOnCommit(consent: DepositionConsent): boolean {
+  return consent === 'no'
 }
