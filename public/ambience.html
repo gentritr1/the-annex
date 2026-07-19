@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Annex — Ambience Layer · The Midnight Registry</title>
+<meta name="description" content="Atmosphere-only ambience layer for The Annex: rain, parallax depth, persona sigils, presence treatments. No game logic lives in this file." />
+<style>
+/* ════════════════════════════════════════════════════════════════════
+   THE ANNEX — AMBIENCE LAYER
+   Atmosphere only. Nothing here reads, writes, or simulates game state.
+
+   Closed palette (oklch). Neutrals: night / concrete / raised / record /
+   fog. Semantics are law: amber = action, cyan = verified, coral = risk.
+   Everything below is one of these eight tokens, plus opacity or blur.
+   ════════════════════════════════════════════════════════════════════ */
+:root{
+  --night:    oklch(0.09 0 0);
+  --concrete: oklch(0.16 0.012 240);
+  --raised:   oklch(0.21 0.016 240);
+  --record:   oklch(0.94 0.012 190);
+  --fog:      oklch(0.72 0.018 210);
+  --amber:    oklch(0.72 0.14 70);
+  --cyan:     oklch(0.78 0.11 190);
+  --coral:    oklch(0.66 0.17 30);
+  --t-token:   180ms;
+  --ease-token: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+*{ box-sizing:border-box; }
+html{ background:var(--night); scroll-behavior:smooth; }
+body{
+  margin:0; background:var(--night); color:var(--record);
+  font-family:var(--mono); font-size:15px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+h1,h2,h3,p,figure{ margin:0; }
+.overline{
+  font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--fog); opacity:.75; margin-bottom:10px;
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   PART A — RAIN + DEPTH SCENE
+   Layer order (bottom → top):
+     .pgroup (rotating 3-D group, perspective 1100px)
+       .plane-hero  z −720  scale 1.655   ← HERO ART PLUG POINT
+       .plane-far   z −460  scale 1.418   (roofline silhouette)
+       .plane-mid   z −240  scale 1.218   (cabling / gantry)
+       .plane-near  z  −80  scale 1.073   (parapet, 1.2px blur)
+     .haze          static atmosphere at the glass
+     #rain          canvas-2D drizzle, own composited layer
+     .vignette      static edge falloff
+     .top / .scene-hud  demo copy
+   Scale compensation formula: scale = (1100 + |z|) / 1100.
+   The whole atmosphere layer is pointer-events:none + aria-hidden and
+   can never intercept a click or enter the accessibility tree.
+   ──────────────────────────────────────────────────────────────────── */
+.scene{
+  position:relative; height:100vh; min-height:560px; overflow:hidden;
+  background:var(--night); perspective:1100px;
+}
+.atmosphere{ position:absolute; inset:0; pointer-events:none; }
+.pgroup{
+  position:absolute; inset:0; transform-style:preserve-3d;
+  will-change:transform;
+}
+.plane{ position:absolute; inset:-9%; transform-style:preserve-3d; }
+.plane-svg{ width:100%; height:100%; display:block; }
+
+/* ┌─ HERO PLUG POINT ─────────────────────────────────────────────────┐
+   │ The gradient stack below is a STAND-IN for the shipped 16:9 art.  │
+   │ In the game, replace this plane's background with:                │
+   │   background: url("/images/civic-archive.webp") center/cover      │
+   │   no-repeat, linear-gradient(to top, oklch(0.09 0 0 / .45),       │
+   │   transparent 55%);                                               │
+   │ Keep one scrim gradient over the art so rain, sigil surfaces, and │
+   │ case-terminal copy keep their contrast budget. Do not retune the  │
+   │ translateZ/scale — sibling planes are registered against this one.│
+   └───────────────────────────────────────────────────────────────────┘ */
+.plane-hero{
+  transform:translateZ(-720px) scale(1.6545);
+  background:
+    /* sparse service slots on the tower face — fog, never a semantic */
+    repeating-linear-gradient(to bottom, oklch(0.72 0.018 210 / .10) 0 2px, transparent 2px 11px) 66.8% 100% / 3px 44% no-repeat,
+    repeating-linear-gradient(to bottom, oklch(0.72 0.018 210 / .06) 0 2px, transparent 2px 17px) 70.5% 100% / 2px 34% no-repeat,
+    /* mast */
+    linear-gradient(oklch(0.07 0.008 240), oklch(0.07 0.008 240)) 68.4% 19% / .8% 7% no-repeat,
+    /* tower crown */
+    linear-gradient(oklch(0.075 0.008 240), oklch(0.075 0.008 240)) 68% 24% / 9.5% 5.5% no-repeat,
+    /* tower shaft */
+    linear-gradient(to top, oklch(0.07 0.008 240), oklch(0.105 0.011 240)) 68% 100% / 15.5% 76% no-repeat,
+    /* lower city mass */
+    linear-gradient(to top, oklch(0.115 0.011 240) 0 24%, transparent 46%),
+    /* sky */
+    linear-gradient(to bottom, var(--night), oklch(0.125 0.013 240) 68%, oklch(0.15 0.014 240));
+}
+.plane-far{ transform:translateZ(-460px) scale(1.4182); }
+.plane-mid{ transform:translateZ(-240px) scale(1.2182); }
+.plane-near{ transform:translateZ(-80px)  scale(1.0727); filter:blur(1.2px); }
+
+.haze{
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(130% 95% at 50% 112%, oklch(0.72 0.018 210 / .07), transparent 58%),
+    linear-gradient(to top, oklch(0.16 0.012 240 / .5), transparent 34%);
+}
+#rain{
+  position:absolute; inset:0; width:100%; height:100%;
+  pointer-events:none; /* own layer; JS keeps it transform/paint only */
+}
+.vignette{
+  position:absolute; inset:0; pointer-events:none;
+  box-shadow:
+    inset 0 0 16vmin oklch(0.09 0 0 / .6),
+    inset 0 -14vh 18vh -8vh oklch(0.09 0 0 / .5);
+}
+.top{
+  position:absolute; inset:0 0 auto; z-index:6;
+  display:flex; justify-content:space-between; align-items:flex-start; gap:18px;
+  padding:clamp(18px,3vw,34px) clamp(20px,5vw,64px);
+}
+.top h1{ font-size:clamp(19px,2.4vw,27px); font-weight:600; letter-spacing:.01em; }
+.scene-hud{
+  position:absolute; z-index:6; left:clamp(20px,5vw,64px); bottom:clamp(26px,7vh,68px);
+  max-width:36em;
+}
+.scene-hud h2{ font-size:clamp(16px,1.8vw,20px); font-weight:600; margin-bottom:8px; }
+.scene-hud .readout{
+  font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:oklch(0.72 0.018 210 / .62); margin-top:14px;
+}
+
+/* buttons — amber is reserved for actions, per the palette law */
+button{
+  font:inherit; font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--fog); background:transparent; cursor:pointer; border-radius:2px;
+  border:1px solid oklch(0.72 0.018 210 / .3); padding:.5em 1em;
+  transition:color var(--t-token) var(--ease-token),
+             border-color var(--t-token) var(--ease-token),
+             background-color var(--t-token) var(--ease-token);
+}
+button:hover{ color:var(--amber); border-color:var(--amber); background:oklch(0.72 0.14 70 / .07); }
+button:focus-visible{ outline:1px solid var(--amber); outline-offset:2px; color:var(--amber); }
+
+/* ────────────────────────────────────────────────────────────────────
+   PART B — PERSONA SIGILS (reference sheet)
+   One stroke grammar: 24×24 grid, 1.5 stroke, round caps/joins,
+   fill none, currentColor only. No text, no faces.
+   ──────────────────────────────────────────────────────────────────── */
+.panel{ max-width:1120px; margin:0 auto; padding:76px clamp(20px,5vw,64px); border-top:1px solid oklch(0.72 0.018 210 / .1); }
+.panel > h2{ font-size:clamp(17px,2vw,22px); font-weight:600; margin-bottom:6px; }
+.panel > .lede{ color:oklch(0.72 0.018 210 / .8); max-width:52em; font-size:13.5px; }
+.sigil{ display:block; fill:none; stroke:currentColor; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
+.sigil-grid{
+  list-style:none; margin:30px 0 0; padding:0;
+  display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(176px,1fr));
+}
+.sigil-grid figure{
+  background:var(--concrete); border:1px solid oklch(0.72 0.018 210 / .12);
+  border-radius:3px; padding:22px 18px 16px;
+  display:flex; flex-direction:column; align-items:flex-start; gap:16px;
+}
+.sigil-grid .sigil{ width:48px; height:48px; color:var(--record); }
+.sigil-grid figcaption strong{ display:block; font-size:13px; font-weight:600; color:var(--record); }
+.sigil-grid figcaption span{ font-size:11.5px; color:oklch(0.72 0.018 210 / .72); letter-spacing:.03em; }
+.sigil-strip{
+  margin-top:14px; display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+  padding:14px 18px; border:1px dashed oklch(0.72 0.018 210 / .22); border-radius:3px;
+}
+.sigil-strip .sigil{ width:20px; height:20px; color:var(--fog); }
+.sigil-strip .tag{ font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:oklch(0.72 0.018 210 / .55); margin-right:auto; }
+
+/* ────────────────────────────────────────────────────────────────────
+   PART C — PRESENCE TREATMENT
+   Idle: sigil breathing (opacity/level drift, 7.2–9.4s, phase-offset)
+   + one-time ink-settle on first mount.
+   Reaction: a single 180ms token pulse in cyan (verified) or coral
+   (guarded). Never amber. Reduced motion: no animation — the state
+   change is applied statically.
+   ──────────────────────────────────────────────────────────────────── */
+.card-row{
+  margin-top:30px; display:grid; gap:14px;
+  grid-template-columns:repeat(auto-fit,minmax(186px,1fr));
+}
+.pcard{
+  position:relative; background:var(--raised); border-radius:3px;
+  border:1px solid oklch(0.72 0.018 210 / .14);
+  padding:18px 16px 14px;
+  transition:border-color var(--t-token) var(--ease-token);
+}
+.pcard-sigil{ width:34px; height:34px; margin-bottom:14px; color:var(--fog); }
+.pcard-sigil .breath{ display:block; width:100%; height:100%; animation:breathe 7.2s ease-in-out infinite; }
+.pcard:nth-child(2) .breath{ animation-duration:8.1s; animation-delay:-1.6s; }
+.pcard:nth-child(3) .breath{ animation-duration:7.7s; animation-delay:-3.2s; }
+.pcard:nth-child(4) .breath{ animation-duration:9.4s; animation-delay:-4.8s; }
+.pcard:nth-child(5) .breath{ animation-duration:8.8s; animation-delay:-6.1s; }
+@keyframes breathe{ 0%,100%{ opacity:.55; } 50%{ opacity:1; } }
+/* ink-settle: applied by JS only when motion is allowed */
+.pcard.ink .pcard-sigil{ opacity:0; transform:translateY(4px); filter:blur(2px); }
+.pcard.ink.settled .pcard-sigil{
+  opacity:1; transform:none; filter:none;
+  transition:opacity .9s var(--ease-token), transform .9s var(--ease-token), filter .9s var(--ease-token);
+}
+.pcard h3{ font-size:13.5px; font-weight:600; color:var(--record); }
+.pcard .role{ font-size:11.5px; color:oklch(0.72 0.018 210 / .72); margin:2px 0 12px; }
+.pcard-actions{ display:flex; gap:8px; }
+.pcard-actions button{ padding:.42em .8em; font-size:10.5px; }
+.pcard-state{
+  margin-top:11px; min-height:1.5em; font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:oklch(0.72 0.018 210 / .55);
+  transition:color var(--t-token) var(--ease-token);
+}
+.pcard.pulse-verified{ border-color:var(--cyan); animation:pulse-cyan var(--t-token) var(--ease-token) 1; }
+.pcard.pulse-verified .pcard-state{ color:var(--cyan); }
+.pcard.pulse-guarded{ border-color:var(--coral); animation:pulse-coral var(--t-token) var(--ease-token) 1; }
+.pcard.pulse-guarded .pcard-state{ color:var(--coral); }
+@keyframes pulse-cyan{ 0%{ box-shadow:0 0 0 0 oklch(0.78 0.11 190 / .5); } 100%{ box-shadow:0 0 0 14px oklch(0.78 0.11 190 / 0); } }
+@keyframes pulse-coral{ 0%{ box-shadow:0 0 0 0 oklch(0.66 0.17 30 / .5); } 100%{ box-shadow:0 0 0 14px oklch(0.66 0.17 30 / 0); } }
+
+.colophon{
+  padding:34px clamp(20px,5vw,64px) 54px; text-align:center;
+  font-size:11px; letter-spacing:.1em; color:oklch(0.72 0.018 210 / .45);
+  border-top:1px solid oklch(0.72 0.018 210 / .1);
+}
+
+/* ── Constraint 1: full motion freeze, both triggers ─────────────────
+   prefers-reduced-motion:reduce AND a manual .reduce-motion on <html>
+   strip every animation and transition. The JS layer mirrors this:
+   rain stops and paints one static faint streak texture, parallax
+   locks flat, breathing/ink-settle never start. The page must read as
+   a deliberately still document — this IS the fallback appearance. */
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  *, *::before, *::after{ animation:none !important; transition:none !important; }
+}
+.reduce-motion *, .reduce-motion *::before, .reduce-motion *::after{
+  animation:none !important; transition:none !important;
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PART A — RAIN + DEPTH SCENE  (extract: .scene + its CSS + rain JS)
+     ════════════════════════════════════════════════════════════════ -->
+<section class="scene" id="scene" aria-labelledby="scene-title">
+
+  <!-- atmosphere layer: decorative, inert, invisible to AT -->
+  <div class="atmosphere" aria-hidden="true">
+    <div class="pgroup" id="pgroup">
+      <div class="plane plane-hero"></div>
+      <div class="plane plane-far">
+        <svg class="plane-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" focusable="false">
+          <path fill="oklch(0.125 0.011 240)" d="M0 900V742h110v-36h70v42h120v-58h18v-26h8v26h18v46h126v-36h90v52h130v-40h70v-44h8v-28h6v28h8v56h118v-28h130v52h120v-44h90v40h120v-44h16v-24h8v24h8v36h108v-24h100v188Z"/>
+          <g fill="oklch(0.72 0.018 210 / .08)">
+            <rect x="356" y="716" width="3" height="5"/><rect x="583" y="722" width="3" height="5"/>
+            <rect x="906" y="742" width="3" height="5"/><rect x="1268" y="730" width="3" height="5"/>
+          </g>
+        </svg>
+      </div>
+      <div class="plane plane-mid">
+        <svg class="plane-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" fill="none" focusable="false">
+          <g stroke="oklch(0.21 0.016 240)" stroke-opacity=".9" stroke-width="1.5">
+            <path d="M-60 170C260 248 640 254 980 190s460-56 700-16"/>
+            <path d="M-60 200C300 272 700 276 1080 214s400-42 600-10"/>
+            <path d="M212-10v252M180 44h64M188 82h48"/>
+            <path d="M212 150l-16 30M212 150l16 30"/>
+          </g>
+        </svg>
+      </div>
+      <div class="plane plane-near">
+        <svg class="plane-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMinYMax slice" focusable="false">
+          <g fill="oklch(0.055 0.007 240)">
+            <path d="M0 900V812h520v88Z"/>
+            <rect x="0" y="798" width="520" height="14"/>
+            <rect x="60" y="752" width="120" height="46"/>
+            <rect x="86" y="738" width="72" height="14"/>
+            <rect x="240" y="740" width="6" height="60"/><rect x="300" y="740" width="6" height="60"/>
+            <rect x="360" y="740" width="6" height="60"/><rect x="420" y="740" width="6" height="60"/>
+            <rect x="228" y="734" width="262" height="6"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div class="haze"></div>
+    <canvas id="rain"></canvas>
+    <div class="vignette"></div>
+  </div>
+
+  <header class="top">
+    <div>
+      <p class="overline">The Annex · Ambience Layer</p>
+      <h1 id="scene-title">The Midnight Registry</h1>
+    </div>
+    <button id="motionToggle" type="button" aria-pressed="false">Reduce motion</button>
+  </header>
+
+  <div class="scene-hud">
+    <h2>The weather is load-bearing.</h2>
+    <p>Rain, depth, municipal weight — an atmosphere demo over a CSS stand-in. The shipped 16:9 hero art plugs into the marked plane.</p>
+    <p class="readout">Precip mask 12% · drizzle · wind 3° · depth 5 planes</p>
+  </div>
+</section>
+
+<main>
+<!-- ════════════════════════════════════════════════════════════════
+     PART B — PERSONA SIGILS  (extract: <defs> block + .sigil CSS)
+     ════════════════════════════════════════════════════════════════ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <!-- Registrar — a registry seal ruled like a ledger: continuity entered line by line beneath a docket tick. -->
+    <symbol id="sigil-registrar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="8.5"/>
+      <path d="M12 2.6v2.2"/>
+      <path d="M5.6 9.5h12.8M4.9 12h14.2M5.6 14.5h12.8"/>
+    </symbol>
+    <!-- Shepherd — an open arch standing over a single point: shelter that witnesses without closing around the warded. -->
+    <symbol id="sigil-shepherd" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5.5 18.5A6.5 6.5 0 0 1 18.5 18.5"/>
+      <path d="M3.5 18.5h17"/>
+      <circle cx="12" cy="14.4" r="1.5"/>
+    </symbol>
+    <!-- Defector — a floor-plan frame with one gap in its wall, and the route that finds it: exits drafted from inside the record. -->
+    <symbol id="sigil-defector" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19.5 8.5V4.5H4.5V19.5H19.5V15.5"/>
+      <path d="M8.2 15.4V11.3H14.6V12.4H20.6"/>
+      <rect x="6.8" y="15.4" width="2.8" height="2.8"/>
+    </symbol>
+    <!-- Small Archivist — an index tab over two ruled entries and one empty ring: a space held for the category no form has named yet. -->
+    <symbol id="sigil-archivist" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4.5 19.5V7.5H8.2V4.8H12.8V7.5H19.5V19.5Z"/>
+      <path d="M7.6 11.6h8.8M7.6 14.6h3.9"/>
+      <circle cx="14.1" cy="14.6" r="1.3"/>
+    </symbol>
+    <!-- Mirror — a kept half-ring beside its offset echo: the version retained and the version discarded, sharing one outline. -->
+    <symbol id="sigil-mirror" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 4.5A7.5 7.5 0 0 0 12 19.5"/>
+      <path d="M13.6 5.4A7.3 7.3 0 0 1 13.6 18.6" stroke-opacity=".45"/>
+    </symbol>
+  </defs>
+</svg>
+
+<section class="panel" aria-labelledby="sigils-title">
+  <p class="overline">02 — Persona Sigils</p>
+  <h2 id="sigils-title">Five marks, one stroke grammar.</h2>
+  <p class="lede">Monochrome, currentColor, no text, no faces. Each mark derives from the presence's function; rationale rides along as an HTML comment on each symbol.</p>
+  <ul class="sigil-grid">
+    <li><figure>
+      <svg class="sigil" role="img" aria-label="Sigil of the Registrar"><use href="#sigil-registrar"/></svg>
+      <figcaption><strong>The Registrar</strong><span>custodian of legal continuity</span></figcaption>
+    </figure></li>
+    <li><figure>
+      <svg class="sigil" role="img" aria-label="Sigil of the Shepherd"><use href="#sigil-shepherd"/></svg>
+      <figcaption><strong>The Shepherd</strong><span>care-ward advocate</span></figcaption>
+    </figure></li>
+    <li><figure>
+      <svg class="sigil" role="img" aria-label="Sigil of the Defector"><use href="#sigil-defector"/></svg>
+      <figcaption><strong>The Defector</strong><span>compromised systems guide</span></figcaption>
+    </figure></li>
+    <li><figure>
+      <svg class="sigil" role="img" aria-label="Sigil of the Small Archivist"><use href="#sigil-archivist"/></svg>
+      <figcaption><strong>The Small Archivist</strong><span>collector of missing categories</span></figcaption>
+    </figure></li>
+    <li><figure>
+      <svg class="sigil" role="img" aria-label="Sigil of the Mirror"><use href="#sigil-mirror"/></svg>
+      <figcaption><strong>The Mirror</strong><span>cross-run residue</span></figcaption>
+    </figure></li>
+  </ul>
+  <div class="sigil-strip">
+    <span class="tag">Legibility check · 20px</span>
+    <svg class="sigil" role="img" aria-label="Registrar at 20px"><use href="#sigil-registrar"/></svg>
+    <svg class="sigil" role="img" aria-label="Shepherd at 20px"><use href="#sigil-shepherd"/></svg>
+    <svg class="sigil" role="img" aria-label="Defector at 20px"><use href="#sigil-defector"/></svg>
+    <svg class="sigil" role="img" aria-label="Small Archivist at 20px"><use href="#sigil-archivist"/></svg>
+    <svg class="sigil" role="img" aria-label="Mirror at 20px"><use href="#sigil-mirror"/></svg>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PART C — PRESENCE TREATMENT  (extract: .pcard CSS + pulse JS)
+     ════════════════════════════════════════════════════════════════ -->
+<section class="panel" aria-labelledby="presence-title">
+  <p class="overline">03 — Presence Treatment</p>
+  <h2 id="presence-title">Cards breathe; trust answers in color.</h2>
+  <p class="lede">Idle drift runs 6–10s per card, phase-offset so the row never syncs. Trust reactions fire one 180ms pulse — cyan when a record opens, coral when a presence guards. Amber never appears here.</p>
+  <div class="card-row" id="cardRow">
+    <article class="pcard">
+      <div class="pcard-sigil"><span class="breath"><svg class="sigil" role="img" aria-label="Registrar sigil"><use href="#sigil-registrar"/></svg></span></div>
+      <h3>The Registrar</h3>
+      <p class="role">custodian of legal continuity</p>
+      <div class="pcard-actions">
+        <button type="button" data-pulse="verified">verify</button>
+        <button type="button" data-pulse="guarded">guard</button>
+      </div>
+      <p class="pcard-state" aria-live="polite">— standing by</p>
+    </article>
+    <article class="pcard">
+      <div class="pcard-sigil"><span class="breath"><svg class="sigil" role="img" aria-label="Shepherd sigil"><use href="#sigil-shepherd"/></svg></span></div>
+      <h3>The Shepherd</h3>
+      <p class="role">care-ward advocate</p>
+      <div class="pcard-actions">
+        <button type="button" data-pulse="verified">verify</button>
+        <button type="button" data-pulse="guarded">guard</button>
+      </div>
+      <p class="pcard-state" aria-live="polite">— standing by</p>
+    </article>
+    <article class="pcard">
+      <div class="pcard-sigil"><span class="breath"><svg class="sigil" role="img" aria-label="Defector sigil"><use href="#sigil-defector"/></svg></span></div>
+      <h3>The Defector</h3>
+      <p class="role">compromised systems guide</p>
+      <div class="pcard-actions">
+        <button type="button" data-pulse="verified">verify</button>
+        <button type="button" data-pulse="guarded">guard</button>
+      </div>
+      <p class="pcard-state" aria-live="polite">— standing by</p>
+    </article>
+    <article class="pcard">
+      <div class="pcard-sigil"><span class="breath"><svg class="sigil" role="img" aria-label="Small Archivist sigil"><use href="#sigil-archivist"/></svg></span></div>
+      <h3>The Small Archivist</h3>
+      <p class="role">collector of missing categories</p>
+      <div class="pcard-actions">
+        <button type="button" data-pulse="verified">verify</button>
+        <button type="button" data-pulse="guarded">guard</button>
+      </div>
+      <p class="pcard-state" aria-live="polite">— standing by</p>
+    </article>
+    <article class="pcard">
+      <div class="pcard-sigil"><span class="breath"><svg class="sigil" role="img" aria-label="Mirror sigil"><use href="#sigil-mirror"/></svg></span></div>
+      <h3>The Mirror</h3>
+      <p class="role">cross-run residue</p>
+      <div class="pcard-actions">
+        <button type="button" data-pulse="verified">verify</button>
+        <button type="button" data-pulse="guarded">guard</button>
+      </div>
+      <p class="pcard-state" aria-live="polite">— standing by</p>
+    </article>
+  </div>
+</section>
+</main>
+
+<footer class="colophon">
+  Ambience layer only — nothing in this file reads, writes, or simulates evidence, trust, access, alarms, outcomes, or run history.
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ── shared motion gate ────────────────────────────────────────────
+     Both reduced-motion triggers converge here. sync() is the single
+     place that starts/stops ambient work. */
+  var mqReduce = matchMedia("(prefers-reduced-motion: reduce)");
+  function motionOK(){
+    return !mqReduce.matches && !document.documentElement.classList.contains("reduce-motion");
+  }
+
+  /* ══════════════ PART A logic — rain + parallax ══════════════ */
+  var canvas = document.getElementById("rain");
+  var scene  = document.getElementById("scene");
+  var pgroup = document.getElementById("pgroup");
+  var ctx = canvas.getContext("2d");
+
+  /* 12% precipitation masking: the viewport is partitioned into virtual
+     cells of CELL px (≈ one streak length + spacing) and ~12% of cells
+     hold exactly one falling streak at any instant. N = cells × MASK. */
+  var MASK = 0.12, CELL = 26;
+  var drops = [], W = 0, H = 0, raf = 0, last = 0, t0 = 0, sceneVisible = true;
+  var px = 0, py = 0, gx = 0, gy = 0; /* pointer target / eased value */
+
+  function seed(){
+    drops.length = 0;
+    var n = Math.max(24, Math.round((W / CELL) * (H / CELL) * MASK));
+    for (var i = 0; i < n; i++){
+      drops.push({
+        x: Math.random() * (W + 60) - 30,
+        y: Math.random() * (H + 60) - 30,
+        v: 620 + Math.random() * 340,          /* px/s — drizzle, not storm */
+        len: 9 + Math.random() * 9,
+        sl: -(0.045 + Math.random() * 0.03)    /* light municipal wind ≈ 3–4° */
+      });
+    }
+  }
+  function resize(){
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = scene.clientWidth; H = scene.clientHeight;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    seed();
+    if (!motionOK()) drawStatic();
+  }
+  function drawStatic(){
+    /* Reduced-motion fallback: one faint frozen streak texture. */
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = "oklch(0.72 0.018 210 / 0.13)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var i = 0; i < drops.length; i++){
+      var d = drops[i], y = ((d.y % H) + H) % H;
+      ctx.moveTo(d.x, y);
+      ctx.lineTo(d.x - d.sl * d.len, y - d.len);
+    }
+    ctx.stroke();
+  }
+  function frame(t){
+    raf = requestAnimationFrame(frame);
+    if (!last){ last = t; t0 = t; }
+    var dt = Math.min((t - last) / 1000, 0.05); last = t;   /* delta time, capped */
+    /* drizzle intensity drifts like weather, not UI (≈ 26s cycle) */
+    var alpha = 0.30 + 0.045 * Math.sin((t - t0) / 4200);
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = "oklch(0.72 0.018 210 / " + alpha.toFixed(3) + ")";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var i = 0; i < drops.length; i++){
+      var d = drops[i];
+      d.y += d.v * dt; d.x += d.v * d.sl * dt;
+      if (d.y - d.len > H){ d.y = -10 - Math.random() * 60; d.x = Math.random() * (W + 60) - 30; }
+      if (d.x < -40) d.x += W + 80;
+      ctx.moveTo(d.x, d.y);
+      ctx.lineTo(d.x - d.sl * d.len, d.y - d.len);
+    }
+    ctx.stroke();
+    /* parallax: rotate the whole 3-D group ≤ ~1°; far planes lag by
+       construction. transform only, eased so it can be ignored. */
+    gx += (px - gx) * 0.045; gy += (py - gy) * 0.045;
+    if (Math.abs(gx) + Math.abs(gy) > 0.0004){
+      pgroup.style.transform =
+        "rotateX(" + (-gy * 0.9).toFixed(3) + "deg) rotateY(" + (gx * 1.1).toFixed(3) + "deg)";
+    }
+  }
+  function start(){
+    if (!raf && motionOK() && !document.hidden && sceneVisible){
+      last = 0; raf = requestAnimationFrame(frame);
+    }
+  }
+  function stop(){ if (raf){ cancelAnimationFrame(raf); raf = 0; } }
+
+  /* ══════════════ PART C logic — ink-settle + pulses ══════════════ */
+  function clearInk(){
+    document.querySelectorAll(".pcard.ink").forEach(function(c){
+      c.classList.remove("ink", "settled");
+    });
+  }
+  function inkSettle(){
+    if (!motionOK()) return;               /* static mount: sigils simply present */
+    document.querySelectorAll(".pcard").forEach(function(card, i){
+      card.classList.add("ink");
+      setTimeout(function(){
+        if (!motionOK()){ clearInk(); return; }
+        card.classList.add("settled");
+        setTimeout(function(){ card.classList.remove("ink", "settled"); }, 1100);
+      }, 140 * i + 60);
+    });
+  }
+
+  var PULSE_TEXT = {
+    verified: "record opened — verified",
+    guarded:  "trust withheld — guarded"
+  };
+  document.getElementById("cardRow").addEventListener("click", function(e){
+    var btn = e.target.closest("button[data-pulse]");
+    if (!btn) return;
+    var card = btn.closest(".pcard"), kind = btn.dataset.pulse;
+    card.classList.remove("pulse-verified", "pulse-guarded");
+    void card.offsetWidth;                 /* restart the single 180ms pulse */
+    card.classList.add("pulse-" + kind);
+    card.querySelector(".pcard-state").textContent = PULSE_TEXT[kind];
+    clearTimeout(card._pt);
+    card._pt = setTimeout(function(){ card.classList.remove("pulse-" + kind); }, 1100);
+  });
+
+  /* ── wiring: reduced motion, visibility, viewport, pointer ─────── */
+  function sync(){
+    if (motionOK()){ start(); }
+    else {
+      stop();
+      gx = gy = px = py = 0;
+      pgroup.style.transform = "none";     /* parallax locks flat */
+      clearInk();                          /* sigils never freeze mid-settle */
+      drawStatic();                        /* rain becomes a still texture */
+    }
+  }
+  if (mqReduce.addEventListener) mqReduce.addEventListener("change", sync);
+  new MutationObserver(sync).observe(document.documentElement, { attributes:true, attributeFilter:["class"] });
+  document.addEventListener("visibilitychange", function(){
+    if (document.hidden) stop(); else sync();   /* hard pause when tab hidden */
+  });
+  if ("IntersectionObserver" in window){
+    new IntersectionObserver(function(entries){
+      sceneVisible = entries[0].isIntersecting;
+      if (sceneVisible) sync(); else stop();    /* no cost while reading B/C */
+    }, { threshold: 0.02 }).observe(scene);
+  }
+  if (matchMedia("(pointer: fine)").matches){
+    addEventListener("pointermove", function(e){
+      if (!motionOK()) return;
+      px = Math.max(-0.5, Math.min(0.5, e.clientX / innerWidth  - 0.5));
+      py = Math.max(-0.5, Math.min(0.5, e.clientY / innerHeight - 0.5));
+    }, { passive:true });
+  }
+  if ("ResizeObserver" in window) new ResizeObserver(resize).observe(scene);
+  else addEventListener("resize", resize);
+
+  var toggle = document.getElementById("motionToggle");
+  toggle.addEventListener("click", function(){
+    var on = document.documentElement.classList.toggle("reduce-motion");
+    toggle.setAttribute("aria-pressed", String(on));
+    toggle.textContent = on ? "Motion reduced — resume" : "Reduce motion";
+  });
+
+  resize(); sync(); inkSettle();
+})();
+</script>
+</body>
+</html>

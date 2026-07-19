@@ -818,9 +818,17 @@ p {
 }
 
 .echo-mark {
+  flex: 0 0 auto;
   color: var(--cyan);
   font-size: 1.8rem;
   line-height: 1;
+}
+
+/* Mirror sigil stands in for the ◌ glyph on the run-2+ residual signal. */
+.echo-mark svg {
+  display: block;
+  width: 28px;
+  height: 28px;
 }
 
 .memory-echo strong {
@@ -1720,12 +1728,26 @@ p {
 
 .reflection-list blockquote > div {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
+  align-items: center;
   gap: 14px;
 }
 
+/* Persona sigil beside each debrief reflection (~26px). */
+.reflection-sigil {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  color: var(--cyan);
+}
+
+.reflection-sigil svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .reflection-list strong {
+  margin-right: auto;
   color: var(--record);
   font-size: 0.82rem;
 }
@@ -1892,7 +1914,7 @@ p {
 .persona-list li {
   min-height: 58px;
   display: grid;
-  grid-template-columns: 8px minmax(0, 1fr) auto;
+  grid-template-columns: 8px 20px minmax(0, 1fr) auto;
   align-items: center;
   gap: 10px;
   border-bottom: 1px solid var(--line);
@@ -1909,6 +1931,75 @@ p {
   border-radius: 50%;
 }
 
+/* Persona sigil — 20px mark beside each name; idle "breathe" is applied per
+   row below (phase-offset), and is suppressed under the reduce-motion path. */
+.persona-sigil {
+  width: 20px;
+  height: 20px;
+  color: var(--fog-dim);
+}
+
+.persona-sigil svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.persona-list li:nth-child(1) .persona-sigil {
+  animation: ambience-breathe 7.2s ease-in-out infinite;
+}
+
+.persona-list li:nth-child(2) .persona-sigil {
+  animation: ambience-breathe 8.1s ease-in-out -1.6s infinite;
+}
+
+.persona-list li:nth-child(3) .persona-sigil {
+  animation: ambience-breathe 7.7s ease-in-out -3.2s infinite;
+}
+
+.persona-list li:nth-child(4) .persona-sigil {
+  animation: ambience-breathe 9.4s ease-in-out -4.8s infinite;
+}
+
+@keyframes ambience-breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Trust pulse — one 180ms ring; cyan when trust rises, coral when it falls.
+   Amber never appears here. Both keyframe and idle breathe die under the
+   reduce-motion rules at the foot of this file. */
+.persona-list li.pulse-rise {
+  animation: ambience-pulse-cyan 180ms var(--ease-out) 1;
+}
+
+.persona-list li.pulse-fall {
+  animation: ambience-pulse-coral 180ms var(--ease-out) 1;
+}
+
+@keyframes ambience-pulse-cyan {
+  0% {
+    box-shadow: 0 0 0 0 oklch(0.78 0.11 190 / 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 12px oklch(0.78 0.11 190 / 0);
+  }
+}
+
+@keyframes ambience-pulse-coral {
+  0% {
+    box-shadow: 0 0 0 0 oklch(0.66 0.17 30 / 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 12px oklch(0.66 0.17 30 / 0);
+  }
+}
+
 .trust-committed,
 .trust-open {
   background: var(--cyan);
@@ -1919,7 +2010,8 @@ p {
   background: var(--coral);
 }
 
-.persona-list li > span:nth-child(2) {
+/* Name block is the 3rd cell (signal dot, sigil, name/role, trust label). */
+.persona-list li > span:nth-child(3) {
   min-width: 0;
   display: grid;
   gap: 3px;
@@ -2481,6 +2573,96 @@ p {
     right: 6px;
     width: min(250px, calc(100vw - 24px));
   }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   AMBIENCE LAYER — extracted from public/ambience.html (PART A).
+   Decorative, inert, invisible to AT: pointer-events:none + aria-hidden,
+   always a sibling placed before content. Layer order (bottom → top):
+     .pgroup (rotating 3-D group, perspective 1100px)
+       .plane-hero  z −720  scale 1.6545  ← hero art plug point
+       .plane-far   z −460  scale 1.4182  (roofline silhouette)
+       .plane-mid   z −240  scale 1.2182  (cabling / gantry)
+       .plane-near  z  −80  scale 1.0727  (parapet, 1.2px blur)
+     .haze           static atmosphere at the glass
+     .ambience-rain  canvas-2D drizzle
+     .vignette       static edge falloff
+   ════════════════════════════════════════════════════════════════════ */
+.ambience {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  perspective: 1100px;
+  pointer-events: none;
+}
+
+/* Start screen: the plane stack replaces the static .start-visual; it sits
+   behind .start-shade (−1) so the contrast scrim still governs the copy. */
+.start-atmosphere {
+  z-index: -2;
+}
+
+.pgroup {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.plane {
+  position: absolute;
+  inset: -9%;
+  transform-style: preserve-3d;
+}
+
+.plane-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.plane-hero {
+  transform: translateZ(-720px) scale(1.6545);
+  background: var(--night) center / cover no-repeat;
+}
+
+.plane-far {
+  transform: translateZ(-460px) scale(1.4182);
+}
+
+.plane-mid {
+  transform: translateZ(-240px) scale(1.2182);
+}
+
+.plane-near {
+  transform: translateZ(-80px) scale(1.0727);
+  filter: blur(1.2px);
+}
+
+.haze {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(130% 95% at 50% 112%, oklch(0.72 0.018 210 / 0.07), transparent 58%),
+    linear-gradient(to top, oklch(0.16 0.012 240 / 0.5), transparent 34%);
+}
+
+.ambience-rain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 16vmin oklch(0.09 0 0 / 0.6),
+    inset 0 -14vh 18vh -8vh oklch(0.09 0 0 / 0.5);
 }
 
 .reduce-motion *,

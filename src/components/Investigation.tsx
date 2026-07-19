@@ -1,3 +1,4 @@
+import { Atmosphere } from '../ambience/Atmosphere'
 import {
   fieldActions,
   reconstructionDefinitions,
@@ -34,6 +35,9 @@ export function Investigation({
   return (
     <article className="phase-page investigation-page">
       <div className="world-view" role="img" aria-label="Rain-dark civic archive district at night">
+        {/* Rain at 0.07, parallax locked flat (no planes) so the map annotation
+            nodes stay registered against the artwork. */}
+        <Atmosphere mask={0.07} reducedMotion={state.settings.reducedMotion} />
         <div className="world-scan" aria-hidden="true" />
         <div className="world-label world-label-registry">A · Registry</div>
         <div className="world-label world-label-care">B · Care ward</div>

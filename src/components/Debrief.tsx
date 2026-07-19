@@ -1,3 +1,4 @@
+import { PersonaSigil } from '../ambience/sigils'
 import {
   approaches,
   decisions,
@@ -171,6 +172,9 @@ export function Debrief({ state, onNextRun, onReturnToTitle }: DebriefProps) {
           {personas.map((persona) => (
             <blockquote key={persona.id}>
               <div>
+                <span className="reflection-sigil" aria-hidden="true">
+                  <PersonaSigil personaId={persona.id} />
+                </span>
                 <strong>{persona.name}</strong>
                 <span>
                   {getTrustLabel(state.trust[persona.id])}

@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { PersonaSigil } from '../ambience/sigils'
 import { caseFile, evidenceDefinitions, methodLabels, personas } from '../game/content'
 import { getTrustLabel } from '../game/engine'
-import type { EvidenceStatus, GameState } from '../game/types'
+import type { EvidenceStatus, GameState, PersonaId } from '../game/types'
 
 interface CaseRailProps {
   state: GameState
@@ -20,6 +21,35 @@ export function CaseRail({ state }: CaseRailProps) {
   const [activeTab, setActiveTab] = useState<RailTab>('case')
   const [mobileOpen, setMobileOpen] = useState(false)
   const evidence = evidenceDefinitions.filter((item) => state.evidence.includes(item.id))
+
+  // Presence pulse: a VIEW-only reaction to a trust change. We keep the previous
+  // trust map in state and, when the incoming map differs, derive the pulse
+  // during render (the supported "adjust state from a prop change" pattern) —
+  // cyan when a persona's trust rises (a record opens), coral when it falls (a
+  // presence guards). Suppressed under reduced motion.
+  const [prevTrust, setPrevTrust] = useState(state.trust)
+  const [pulses, setPulses] = useState<Partial<Record<PersonaId, 'rise' | 'fall'>>>({})
+
+  if (prevTrust !== state.trust) {
+    setPrevTrust(state.trust)
+    if (!state.settings.reducedMotion) {
+      const changed: Partial<Record<PersonaId, 'rise' | 'fall'>> = {}
+      for (const persona of personas) {
+        const delta = state.trust[persona.id] - prevTrust[persona.id]
+        if (delta > 0) changed[persona.id] = 'rise'
+        else if (delta < 0) changed[persona.id] = 'fall'
+      }
+      if (Object.keys(changed).length > 0) setPulses(changed)
+    }
+  }
+
+  // Clear the pulse once it has played. setState lives in a timer callback here,
+  // not synchronously in the effect body.
+  useEffect(() => {
+    if (Object.keys(pulses).length === 0) return
+    const timer = window.setTimeout(() => setPulses({}), 1100)
+    return () => window.clearTimeout(timer)
+  }, [pulses])
 
   return (
     <aside className={`case-rail ${mobileOpen ? 'case-rail-mobile-open' : ''}`} aria-label="Case file">
@@ -85,9 +115,16 @@ export function CaseRail({ state }: CaseRailProps) {
             <ul className="persona-list">
               {personas.map((persona) => {
                 const trust = state.trust[persona.id]
+                const pulse = pulses[persona.id]
                 return (
-                  <li key={persona.id}>
+                  <li
+                    key={persona.id}
+                    className={pulse === 'rise' ? 'pulse-rise' : pulse === 'fall' ? 'pulse-fall' : undefined}
+                  >
                     <span className={`persona-signal trust-${getTrustLabel(trust)}`} aria-hidden="true" />
+                    <span className="persona-sigil" aria-hidden="true">
+                      <PersonaSigil personaId={persona.id} />
+                    </span>
                     <span>
                       <strong>{persona.name}</strong>
                       <small>{persona.role}</small>

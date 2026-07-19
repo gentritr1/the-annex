@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Atmosphere } from '../ambience/Atmosphere'
 import type { AccessibilitySettings, GameState } from '../game/types'
 
 interface StartScreenProps {
@@ -47,7 +48,16 @@ export function StartScreen({
 
   return (
     <main className="start-screen">
-      <div className="start-visual" aria-hidden="true" />
+      {/* Full 5-plane parallax stack carrying the real hero art; the plane-hero
+          replaces the static .start-visual, .start-shade stays for text contrast. */}
+      <Atmosphere
+        className="start-atmosphere"
+        mask={0.12}
+        reducedMotion={settings.reducedMotion}
+        planes
+        parallax
+        heroImage="/images/civic-archive.webp"
+      />
       <div className="start-shade" aria-hidden="true" />
 
       <section className="start-content" aria-labelledby="game-title">

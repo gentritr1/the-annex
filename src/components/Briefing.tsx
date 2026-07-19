@@ -1,3 +1,5 @@
+import { Atmosphere } from '../ambience/Atmosphere'
+import { MirrorSigil } from '../ambience/sigils'
 import { approaches, caseFile, methodLabels, mirrorBriefingAsides } from '../game/content'
 import type { ApproachId, GameState } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
@@ -14,6 +16,9 @@ export function Briefing({ state, onSelectApproach }: BriefingProps) {
   return (
     <article className="phase-page briefing-page">
       <div className="scene-banner scene-banner-briefing">
+        {/* Rain only — the banner already carries the art as its own background;
+            no hero plane, no parallax (double-painting would ghost it). */}
+        <Atmosphere mask={0.12} reducedMotion={state.settings.reducedMotion} />
         <div className="scene-banner-copy">
           <p className="case-code">Assignment received · {caseFile.code}</p>
           <h1>{caseFile.title}</h1>
@@ -28,7 +33,7 @@ export function Briefing({ state, onSelectApproach }: BriefingProps) {
         {priorRun && (
           <aside className="memory-echo" aria-label="Cross-run memory echo">
             <span className="echo-mark" aria-hidden="true">
-              ◌
+              <MirrorSigil />
             </span>
             <div>
               <strong>Residual signal</strong>
