@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { getCaseContent } from '../game/content'
+import { getCaseContent, resolveFieldAction } from '../game/content'
 import { canEnterTribunal } from '../game/engine'
 import { SceneStage } from '../scene/SceneStage'
 import { sceneStateFor } from '../scene/sceneState'
@@ -36,8 +36,8 @@ export function Investigation({
   onOpenReconstruction,
   onEnterTribunal,
 }: InvestigationProps) {
-  const { sites, fieldActions, reconstructionDefinitions, chrome, deposition, scene } =
-    getCaseContent(state.caseId)
+  const content = getCaseContent(state.caseId)
+  const { sites, fieldActions, reconstructionDefinitions, chrome, deposition, scene } = content
   const reconstruction = reconstructionDefinitions.find((item) => item.id === state.reconstruction)
   // Which deposition entry action, if any, has its transcript open. Local view
   // state only: opening it dispatches nothing, and closing it commits nothing.
@@ -107,9 +107,14 @@ export function Investigation({
 
         <div className="site-list">
           {sites.map((site) => {
-            const completedAction = fieldActions.find(
+            // Resolve the filed action through the precedent seam so its shown
+            // event detail and reactions match what the engine committed.
+            const completedBase = fieldActions.find(
               (action) => action.siteId === site.id && state.completedActions.includes(action.id),
             )
+            const completedAction = completedBase
+              ? resolveFieldAction(content, completedBase.id, state.precedents)
+              : undefined
 
             return (
               <section
@@ -143,7 +148,9 @@ export function Investigation({
                 ) : (
                   <div className="site-actions">
                     {site.actionIds.map((actionId) => {
-                      const action = fieldActions.find((item) => item.id === actionId)
+                      // Resolve through the precedent seam so the pre-commit hint
+                      // and risk tone reflect any prior-verdict override.
+                      const action = resolveFieldAction(content, actionId, state.precedents)
                       if (!action) return null
 
                       // A deposition entry action opens the transcript instead of

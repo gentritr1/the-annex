@@ -2,10 +2,12 @@ import { describe, expect, it } from 'vitest'
 import {
   getCaseContent,
   getPrecedentLine,
+  getReactionsForSource,
   getSwitchableCaseIds,
   getTensionLine,
   personas,
   registeredCaseIds,
+  resolveFieldAction,
 } from './content'
 import { createInitialGameState } from './engine'
 import { SCENE_STATES } from './types'
@@ -303,6 +305,106 @@ describe('cross-case precedent line', () => {
     expect(getPrecedentLine('case-81', {})).toBeNull()
     // Case 77 cites no earlier case.
     expect(getPrecedentLine('case-77', { 'case-77': 'certify-continuity' })).toBeNull()
+  })
+})
+
+describe('resolveFieldAction (cross-case precedent effects)', () => {
+  const case81 = getCaseContent('case-81')
+  const base = case81.fieldActions.find((action) => action.id === 'forge-certification-seal')
+
+  it('returns the authored base by reference with no precedents (identity)', () => {
+    expect(resolveFieldAction(case81, 'forge-certification-seal', {})).toBe(base)
+  })
+
+  it('returns the authored base by reference for a non-matching precedent', () => {
+    // A Case 77 verdict other than overwrite-record triggers nothing.
+    expect(
+      resolveFieldAction(case81, 'forge-certification-seal', { 'case-77': 'certify-continuity' }),
+    ).toBe(base)
+  })
+
+  it('returns undefined for an unknown action id', () => {
+    expect(resolveFieldAction(case81, 'no-such-action', { 'case-77': 'overwrite-record' })).toBeUndefined()
+  })
+
+  it('applies the overwrite-record override: alarm 2 and each copy variant', () => {
+    const resolved = resolveFieldAction(case81, 'forge-certification-seal', {
+      'case-77': 'overwrite-record',
+    })
+    expect(resolved).toBeDefined()
+    expect(base).toBeDefined()
+    if (!resolved || !base) return
+
+    // 1) The forged hand trips a live trace this time (base is 1).
+    expect(base.alarmDelta).toBe(1)
+    expect(resolved.alarmDelta).toBe(2)
+    // 2) The pre-commit hint is the authored variant that explains the elevated risk.
+    expect(resolved.consequence).not.toBe(base.consequence)
+    expect(resolved.consequence).toContain('Continuity Directorate')
+    // 3) The resolved event detail is the authored variant that acknowledges the watch.
+    expect(resolved.eventDetail).not.toBe(base.eventDetail)
+    expect(resolved.eventDetail).toContain('Continuity Directorate')
+    // 4) The Defector's line is replaced (in-voice, ≤140 chars); the Registrar's is not.
+    const defector = resolved.reactions?.find((r) => r.persona === 'defector')
+    const baseDefector = base.reactions?.find((r) => r.persona === 'defector')
+    expect(defector?.line).toBeDefined()
+    expect(defector?.line).not.toBe(baseDefector?.line)
+    expect([...(defector?.line ?? '')].length).toBeLessThanOrEqual(140)
+    const registrar = resolved.reactions?.find((r) => r.persona === 'registrar')
+    const baseRegistrar = base.reactions?.find((r) => r.persona === 'registrar')
+    expect(registrar?.line).toBe(baseRegistrar?.line)
+
+    // 5) Everything else is unchanged.
+    expect(resolved.evidenceId).toBe(base.evidenceId)
+    expect(resolved.grantsTribunalOverride).toBe(base.grantsTribunalOverride)
+    expect(resolved.trust).toEqual(base.trust)
+    expect(resolved.methodTags).toEqual(base.methodTags)
+  })
+
+  it('leaves sibling actions and Case 77 untouched under the matching precedent', () => {
+    const sibling = case81.fieldActions.find((action) => action.id === 'pull-service-record')
+    expect(
+      resolveFieldAction(case81, 'pull-service-record', { 'case-77': 'overwrite-record' }),
+    ).toBe(sibling)
+    // Case 77 authors no precedent effects at all.
+    expect(getCaseContent('case-77').precedentEffects ?? []).toHaveLength(0)
+  })
+
+  it('surfaces the variant reactions through getReactionsForSource in the log path', () => {
+    const plain = getReactionsForSource('case-81', 'field-action', 'forge-certification-seal', {})
+    const watched = getReactionsForSource('case-81', 'field-action', 'forge-certification-seal', {
+      'case-77': 'overwrite-record',
+    })
+    expect(plain).toEqual(base?.reactions)
+    expect(watched).not.toEqual(plain)
+    expect(watched.find((r) => r.persona === 'defector')?.line).toContain('dead hand')
+  })
+})
+
+describe('precedent effects referential integrity', () => {
+  it('references a registered case, a real decision of it, and real action ids of the owning case', () => {
+    const validPersonas = new Set(personas.map((persona) => persona.id))
+    registeredCases.forEach(([, content]) => {
+      const effects = content.precedentEffects ?? []
+      effects.forEach((effect) => {
+        // whenCase is a registered case.
+        expect(registeredCaseIds).toContain(effect.whenCase)
+        // whenDecision is a real decision of that referenced case.
+        const priorDecisionIds = getCaseContent(effect.whenCase).decisions.map((d) => d.id)
+        expect(priorDecisionIds).toContain(effect.whenDecision)
+        // Every overridden action id belongs to THIS (the owning) case.
+        const ownActionIds = new Set(content.fieldActions.map((action) => action.id))
+        Object.entries(effect.fieldActionOverrides).forEach(([actionId, override]) => {
+          expect(ownActionIds.has(actionId)).toBe(true)
+          // Any variant reactions must still be valid, nonempty, in-bounds voices.
+          ;(override.reactions ?? []).forEach((reaction) => {
+            expect(validPersonas.has(reaction.persona)).toBe(true)
+            expect(reaction.line.trim().length).toBeGreaterThan(0)
+            expect([...reaction.line].length).toBeLessThanOrEqual(160)
+          })
+        })
+      })
+    })
   })
 })
 

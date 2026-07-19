@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { getCaseContent, getReactionsForSource } from './content'
 import { canEnterTribunal, createInitialGameState, gameReducer } from './engine'
 import type { GameState } from './types'
 
@@ -384,6 +385,78 @@ describe('authored decision & reconstruction semantics (Case 81)', () => {
     const event = s.events.at(-1)
     expect(event?.detail).toContain('1 of 2 anchors were corroborated')
     expect(event?.tone).toBe('warning')
+  })
+})
+
+describe('cross-case precedent consequence (Case 81 forge, Case 77 overwrite)', () => {
+  // A completed Case 77 run that ends on the forged-hand verdict — the precedent
+  // that arms the records-annex watch in Case 81. Built entirely by the engine.
+  function case77OverwriteDebrief(): GameState {
+    let s = solveReconstruction()
+    s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'forge-authority' })
+    s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
+    s = gameReducer(s, { type: 'ENTER_TRIBUNAL' })
+    return gameReducer(s, { type: 'DECIDE', decisionId: 'overwrite-record' })
+  }
+
+  // Open Case 81 off a completed Case 77 run, choose the covert approach, and
+  // commit the records-annex forge. Returns the post-commit state.
+  function forgeInCase81(case77Run: GameState): GameState {
+    let s = gameReducer(case77Run, { type: 'START_CASE', caseId: 'case-81' })
+    s = gameReducer(s, { type: 'SELECT_APPROACH', approachId: 'covert' })
+    return gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'forge-certification-seal' })
+  }
+
+  const base = getCaseContent('case-81').fieldActions.find(
+    (action) => action.id === 'forge-certification-seal',
+  )
+
+  it('doubles the alarm and swaps in the variant copy when Case 77 was overwritten', () => {
+    const overwrite = case77OverwriteDebrief()
+    expect(overwrite.precedents).toEqual({ 'case-77': 'overwrite-record' })
+
+    const s = forgeInCase81(overwrite)
+    // The forged hand trips two civic traces this time (base action is one).
+    expect(s.alarm).toBe(2)
+
+    const event = s.events.at(-1)
+    expect(event?.sourceId).toBe('forge-certification-seal')
+    expect(event?.tone).toBe('warning')
+    // The persisted event detail is the authored variant (acknowledges the watch).
+    expect(event?.detail).toContain('Continuity Directorate')
+    expect(event?.detail).not.toContain('with no vote at all')
+
+    // The event-log reactions resolve to the variant Defector line.
+    const reactions = getReactionsForSource(
+      'case-81',
+      'field-action',
+      'forge-certification-seal',
+      s.precedents,
+    )
+    expect(reactions.find((r) => r.persona === 'defector')?.line).toContain('dead hand')
+  })
+
+  it('lands alarm 1 with today’s copy, byte-identical, without the precedent', () => {
+    // Open Case 81 off a lawful Case 77 verdict (charter-new-person): no watch.
+    const s = forgeInCase81(case77Debrief())
+    expect(s.precedents).toEqual({ 'case-77': 'charter-new-person' })
+    expect(s.alarm).toBe(1)
+
+    const event = s.events.at(-1)
+    expect(event?.sourceId).toBe('forge-certification-seal')
+    // The committed detail is exactly the base copy (engine appends only the trust
+    // suffix, which is identical because trust deltas are never overridden).
+    expect(event?.detail.startsWith(base?.eventDetail ?? '')).toBe(true)
+    expect(event?.detail).toContain('with no vote at all')
+
+    // Reactions are the authored base, unchanged.
+    const reactions = getReactionsForSource(
+      'case-81',
+      'field-action',
+      'forge-certification-seal',
+      s.precedents,
+    )
+    expect(reactions).toEqual(base?.reactions)
   })
 })
 

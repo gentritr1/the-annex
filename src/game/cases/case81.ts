@@ -15,6 +15,7 @@ import type {
   FragmentId,
   GameState,
   PersonaId,
+  PrecedentEffect,
   PrecedentSource,
   ReconstructionDefinition,
   ReconstructionId,
@@ -784,6 +785,46 @@ const precedentSource: PrecedentSource = {
   },
 }
 
+// Cross-case precedent EFFECT: a prior ruling reaches into the field, not just the
+// tribunal copy. If the player wrote continuity with a forged hand in Case 77
+// (decision 'overwrite-record'), the city audited its dormant seals after the Vale
+// forgery — so the records-annex forge is watched THIS time. Only the four
+// player-facing fields change on that one action; evidence id, override grant, and
+// trust deltas stay exactly as authored. The Registrar's reaction is unchanged;
+// only the Defector's line is replaced (they know the hand from last time).
+const precedentEffects: readonly PrecedentEffect[] = [
+  {
+    whenCase: 'case-77',
+    whenDecision: 'overwrite-record',
+    fieldActionOverrides: {
+      'forge-certification-seal': {
+        // The forged hand trips a live trace this time (base is 1).
+        alarmDelta: 2,
+        // Pre-commit hint: tells the player WHY the risk is elevated, before they
+        // commit — the game never hides a cost it is about to charge.
+        consequence:
+          'Doubled civic trace — the Continuity Directorate audits its dormant seals since the Vale forgery · unlocks an illicit certification',
+        // Resolved detail: acknowledges the watch, traced lightly to the fourth
+        // minute's canon office (the Continuity Directorate).
+        eventDetail:
+          'You hold a certification the system will accept and the law will not — enough to seat the witness with no vote. But the seal did not wake quietly: since the Vale forgery the Continuity Directorate audits its dormant hands, and this one tripped a live trace as it turned.',
+        // The Defector knows you have forged before; the Registrar's line is the
+        // authored base, unchanged (the whole array is replaced, so it is repeated).
+        reactions: [
+          {
+            persona: 'defector',
+            line: '“You’ve raised a dead hand before. The city found that one and watches its dormant seals faster now — this trace lit as you turned it.”',
+          },
+          {
+            persona: 'registrar',
+            line: '“Real to the system, void to the law. Certify with that hand and Deputy Registrar Marne’s standing is fraud from its first breath.”',
+          },
+        ],
+      },
+    },
+  },
+]
+
 // ── The deposition (Case 81's interaction grammar) ───────────────────────────
 // A bounded, deterministic transcript at the deposition suite. Both entry actions
 // share this beat skeleton; only Ellis's statements differ — the sworn entry is a
@@ -1146,6 +1187,7 @@ export const case81: CaseDefinition = {
   decisionConsequences,
   getPersonaReflection,
   precedentSource,
+  precedentEffects,
   deposition,
   getRevelation,
   scene,

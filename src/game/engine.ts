@@ -4,6 +4,7 @@ import {
   isRegisteredCase,
   methodLabels,
   personas,
+  resolveFieldAction,
 } from './content'
 // Save-schema constants live with the persistence layer (the single source of
 // truth). Importing them here keeps the version the engine stamps and the run
@@ -263,8 +264,13 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case 'COMMIT_FIELD_ACTION': {
       if (state.phase !== 'investigation') return state
 
-      const definition = getCaseContent(state.caseId).fieldActions.find(
-        (item) => item.id === action.actionId,
+      // Resolve to the EFFECTIVE definition: a prior-case verdict may override
+      // this action's alarm/hint/detail/reactions. Identity when no precedent
+      // applies, so unaffected actions commit byte-for-byte as before.
+      const definition = resolveFieldAction(
+        getCaseContent(state.caseId),
+        action.actionId,
+        state.precedents,
       )
       if (!definition || state.completedSites.includes(definition.siteId)) return state
 
@@ -298,7 +304,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       const deposition = content.deposition
       if (!deposition || !deposition.entryActionIds.includes(action.actionId)) return state
 
-      const definition = content.fieldActions.find((item) => item.id === action.actionId)
+      // Resolve the deposition's underlying entry action through the same seam as
+      // COMMIT_FIELD_ACTION, so a precedent that overrides an entry action's
+      // alarm/detail would apply here too (identity for today's entry actions).
+      const definition = resolveFieldAction(content, action.actionId, state.precedents)
       if (!definition || state.completedSites.includes(definition.siteId)) return state
 
       // The committed beats must match the authored skeleton one-for-one: same

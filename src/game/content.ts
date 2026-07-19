@@ -2,6 +2,8 @@ import { case77 } from './cases/case77'
 import { case81 } from './cases/case81'
 import type {
   CaseDefinition,
+  FieldActionDefinition,
+  FieldActionId,
   GameEvent,
   MethodTag,
   PersonaDefinition,
@@ -115,16 +117,47 @@ export function getTensionLine(
   return getCaseContent(caseId).reconstructionDecisionTensions[reconstruction]?.[decision] ?? ''
 }
 
+// Resolve a field action to its EFFECTIVE definition under the given precedents.
+// Total and pure: when the case authors no precedentEffects, or none matches the
+// player's recorded verdicts, the AUTHORED base object is returned by reference
+// (identity — callers relying on `=== base` and byte-identical copy are safe).
+// When a `precedentEffects` entry's `whenCase`/`whenDecision` matches and it names
+// this action, that entry's override is spread over the base (a new object; only
+// the declared fields change). This is the single seam every consumer — the
+// engine's COMMIT_FIELD_ACTION / COMMIT_DEPOSITION and every view that shows
+// action copy — resolves through, so pre-commit display and committed effects can
+// never diverge. Returns undefined only when the action id is unknown to the case
+// (matching the prior `fieldActions.find` contract callers already guard on).
+export function resolveFieldAction(
+  caseDef: CaseDefinition,
+  actionId: FieldActionId,
+  precedents: Readonly<Record<string, string>>,
+): FieldActionDefinition | undefined {
+  const base = caseDef.fieldActions.find((action) => action.id === actionId)
+  if (!base || !caseDef.precedentEffects) return base
+
+  let resolved = base
+  for (const effect of caseDef.precedentEffects) {
+    if (precedents[effect.whenCase] !== effect.whenDecision) continue
+    const override = effect.fieldActionOverrides[actionId]
+    if (override) resolved = { ...resolved, ...override }
+  }
+  return resolved
+}
+
 // View-side lookup: given an event's persisted sourceType/sourceId within a case,
-// return the authored in-run reactions for the action or model it records.
+// return the authored in-run reactions for the action or model it records. Field
+// actions resolve through resolveFieldAction so a precedent's variant reactions
+// (e.g. the Defector who knows the player has forged before) surface in the log.
 export function getReactionsForSource(
   caseId: string,
   sourceType: GameEvent['sourceType'],
   sourceId: string,
+  precedents: Readonly<Record<string, string>> = {},
 ): readonly PersonaReaction[] {
   const content = getCaseContent(caseId)
   if (sourceType === 'field-action') {
-    return content.fieldActions.find((action) => action.id === sourceId)?.reactions ?? []
+    return resolveFieldAction(content, sourceId, precedents)?.reactions ?? []
   }
   if (sourceType === 'reconstruction') {
     return content.reconstructionDefinitions.find((model) => model.id === sourceId)?.reactions ?? []

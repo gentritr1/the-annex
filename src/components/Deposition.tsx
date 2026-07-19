@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { getCaseContent } from '../game/content'
+import { getCaseContent, resolveFieldAction } from '../game/content'
 import type { DepositionChoiceId, FieldActionId, GameState } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
 
@@ -24,8 +24,11 @@ const CHOICE_TAG: Record<DepositionChoiceId, string> = {
 // resolves everything from the case's authored `deposition` block — this
 // component references no case-specific ids.
 export function Deposition({ state, entryActionId, onCommit, onAbandon }: DepositionProps) {
-  const { deposition, fieldActions } = getCaseContent(state.caseId)
-  const entryAction = fieldActions.find((item) => item.id === entryActionId)
+  const content = getCaseContent(state.caseId)
+  const { deposition } = content
+  // Resolve the entry action through the precedent seam so its shown copy matches
+  // what commits (identity for today's entry actions — none carry an override).
+  const entryAction = resolveFieldAction(content, entryActionId, state.precedents)
   const dialogRef = useRef<HTMLDivElement>(null)
 
   const [stepIndex, setStepIndex] = useState(0)

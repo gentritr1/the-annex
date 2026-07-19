@@ -208,7 +208,12 @@ export function CaseRail({ state }: CaseRailProps) {
                     <strong>{event.title}</strong>
                     <p>{event.detail}</p>
                     <ReactionQuotes
-                      reactions={getReactionsForSource(state.caseId, event.sourceType, event.sourceId)}
+                      reactions={getReactionsForSource(
+                        state.caseId,
+                        event.sourceType,
+                        event.sourceId,
+                        state.precedents,
+                      )}
                       variant="log"
                     />
                     <div className="event-tags">

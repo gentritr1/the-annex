@@ -327,6 +327,29 @@ export interface PrecedentSource {
   lines: Readonly<Record<DecisionId, string>>
 }
 
+// ── Cross-case precedent EFFECTS (a prior verdict changes playable field copy) ─
+// A precedent citation is copy at the tribunal; a precedent EFFECT reaches back
+// into the field. The only fields a prior verdict may alter on a matching field
+// action are the ones a player sees and pays before/at commit: the doubled-or-not
+// alarm, the pre-commit risk hint (`consequence`), the resolved `eventDetail`, and
+// the in-run `reactions`. Everything else on the action (evidence id, override
+// grant, trust deltas, method tags) is immutable across precedents.
+export type FieldActionOverride = Partial<
+  Pick<FieldActionDefinition, 'alarmDelta' | 'consequence' | 'eventDetail' | 'reactions'>
+>
+
+// One authored consequence: when the player's recorded verdict on `whenCase`
+// equals `whenDecision`, every field action of THIS case named in
+// `fieldActionOverrides` resolves with its declared override applied over the
+// authored base. Matched by resolveFieldAction (content.ts); the engine and every
+// view that shows action copy resolve through that one helper, so the pre-commit
+// display and the committed effects can never disagree.
+export interface PrecedentEffect {
+  whenCase: string
+  whenDecision: DecisionId
+  fieldActionOverrides: Readonly<Record<FieldActionId, FieldActionOverride>>
+}
+
 // ── Deposition (Case 81's interaction grammar) ───────────────────────────────
 // A bounded, deterministic transcript a case may author at one field site. The
 // engine and UI treat it generically: no case knows the beat count, and no beat
@@ -505,6 +528,10 @@ export interface CaseDefinition {
   getPersonaReflection: (personaId: PersonaId, state: GameState) => string
   // Optional cross-case precedent citation shown at this case's tribunal.
   precedentSource?: PrecedentSource
+  // Optional cross-case precedent EFFECTS: a prior verdict alters this case's
+  // field-action copy/alarm (see PrecedentEffect). Resolved through
+  // resolveFieldAction; absent/empty means no field action ever changes.
+  precedentEffects?: readonly PrecedentEffect[]
   // Optional bounded transcript interaction authored at one field site.
   deposition?: DepositionDefinition
   // Optional debrief revelation authored per verdict path (and, when a deposition
