@@ -1,9 +1,4 @@
-import {
-  decisions,
-  evidenceDefinitions,
-  getTensionLine,
-  reconstructionDefinitions,
-} from '../game/content'
+import { getCaseContent, getPrecedentLine, getTensionLine } from '../game/content'
 import type { DecisionId, GameState } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
 
@@ -14,13 +9,19 @@ interface TribunalProps {
 }
 
 export function Tribunal({ state, onDecide, onBack }: TribunalProps) {
+  const { decisions, reconstructionDefinitions, evidenceDefinitions, chrome } = getCaseContent(
+    state.caseId,
+  )
   const reconstruction = reconstructionDefinitions.find((item) => item.id === state.reconstruction)
   const discoveredEvidence = evidenceDefinitions.filter((item) => state.evidence.includes(item.id))
   const filedModel = state.reconstruction
+  // Cross-case precedent: one authored line citing the player's ruling on the
+  // case this one follows. Null when the case cites none or none was recorded.
+  const precedentLine = getPrecedentLine(state.caseId, state.precedents)
   const tensionFor = (decisionId: DecisionId) =>
     filedModel ? (
       <>
-        <em>Filed model:</em> {getTensionLine(filedModel, decisionId)}
+        <em>Filed model:</em> {getTensionLine(state.caseId, filedModel, decisionId)}
       </>
     ) : null
 
@@ -31,14 +32,16 @@ export function Tribunal({ state, onDecide, onBack }: TribunalProps) {
           <span aria-hidden="true">←</span> Return to field
         </button>
         <div className="tribunal-seal" aria-hidden="true">
-          77
+          {chrome.tribunalSeal}
         </div>
-        <p className="case-code">Civic personhood tribunal · single auditor channel</p>
-        <h1>The record is sufficient. It is not complete.</h1>
-        <p>
-          Your decision will change legal reality. It cannot settle the metaphysical question that
-          produced it.
-        </p>
+        <p className="case-code">{chrome.tribunalChannel}</p>
+        <h1>{chrome.tribunalHeadline}</h1>
+        <p>{chrome.tribunalIntro}</p>
+        {precedentLine ? (
+          <p className="tribunal-precedent" role="note">
+            {precedentLine}
+          </p>
+        ) : null}
       </header>
 
       <section className="tribunal-summary" aria-labelledby="summary-heading">
@@ -101,10 +104,7 @@ export function Tribunal({ state, onDecide, onBack }: TribunalProps) {
                   </span>
                   <div>
                     <strong>{decision.title}</strong>
-                    <p>
-                      Locked. Acquire the dormant credential through the Maintenance Spine’s forged
-                      authority route.
-                    </p>
+                    <p>{chrome.lockedDecisionHint}</p>
                     {filedModel ? (
                       <span className="choice-tension">{tensionFor(decision.id)}</span>
                     ) : null}

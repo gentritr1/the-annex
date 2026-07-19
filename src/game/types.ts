@@ -23,45 +23,25 @@ export type MethodTag =
 
 export type EvidenceStatus = 'verified' | 'disputed' | 'anomaly' | 'testimony'
 
-export type EvidenceId =
-  | 'custody-chain'
-  | 'checksum-drift'
-  | 'sensory-echo'
-  | 'contradictory-scar'
-  | 'sensor-omission'
-  | 'maintenance-override'
-  | 'missing-category'
-  | 'redacted-index'
-  | 'relational-proof'
-  | 'reconstructed-chain'
-  | 'novel-memory'
-  | 'irreducible-conflict'
+// Content-item ids are per-case and open-ended: each registered CaseDefinition
+// authors its own set (Case 77's 'registry', Case 81's 'deposition-suite', …),
+// so these are widened to `string` rather than a global union. Cross-case
+// completeness that a fixed union used to guarantee at compile time is instead
+// enforced at runtime by the parameterized structural tests in content.test.ts
+// and by the per-case decode validation in persistence.ts. PersonaId, ApproachId
+// and MethodTag stay narrow unions — that cast and vocabulary are shared by
+// every case.
+export type EvidenceId = string
 
-export type SiteId = 'registry' | 'care-ward' | 'maintenance' | 'small-archive'
+export type SiteId = string
 
-export type FieldActionId =
-  | 'authenticate-chain'
-  | 'trace-checksum'
-  | 'listen-mara'
-  | 'stress-test'
-  | 'walk-acoustic-shadow'
-  | 'forge-authority'
-  | 'answer-archivist'
-  | 'seal-index'
+export type FieldActionId = string
 
-export type FragmentId = 'scar-sensation' | 'witness-account' | 'registry-hash' | 'new-dream'
+export type FragmentId = string
 
-export type ReconstructionId =
-  | 'relational-continuity'
-  | 'institutional-chain'
-  | 'emergent-self'
-  | 'unresolved-composite'
+export type ReconstructionId = string
 
-export type DecisionId =
-  | 'certify-continuity'
-  | 'charter-new-person'
-  | 'quarantine-review'
-  | 'overwrite-record'
+export type DecisionId = string
 
 export interface AccessibilitySettings {
   reducedMotion: boolean
@@ -83,6 +63,11 @@ export interface GameEvent {
 
 export interface RunSummary {
   runNumber: number
+  // Which case this run belonged to. Optional for backward compatibility:
+  // summaries written before multi-case landed have no caseId and are treated
+  // as 'case-77' by every reader. New summaries always stamp it so cross-case
+  // residue (the Mirror) can resolve the correct case's prior-decision copy.
+  caseId?: string
   decision: DecisionId
   primaryApproach: ApproachId
   methodTags: MethodTag[]
@@ -133,6 +118,10 @@ export type GameAction =
   | { type: 'RETURN_TO_INVESTIGATION' }
   | { type: 'DECIDE'; decisionId: DecisionId }
   | { type: 'START_NEXT_RUN' }
+  // Begin a fresh run of a DIFFERENT registered case, carrying precedents,
+  // capped run history, and cross-run residue exactly as START_NEXT_RUN does.
+  // Ignored (no-op) when caseId is not a registered case.
+  | { type: 'START_CASE'; caseId: string }
   | { type: 'RETURN_TO_TITLE' }
   | { type: 'UPDATE_SETTING'; setting: keyof AccessibilitySettings; value: boolean | 'standard' | 'large' }
 
@@ -227,4 +216,81 @@ export interface DecisionDefinition {
   description: string
   cost: string
   requiresOverride: boolean
+}
+
+// The assignment header shown at briefing and echoed across the case rail and
+// tribunal. Pure copy — no ids, no logic.
+export interface CaseFile {
+  code: string
+  title: string
+  subject: string
+  deadline: string
+  question: string
+  publicRecord: string
+  mandate: string
+}
+
+// One positioned annotation on the investigation world-map. `className` carries
+// the CSS position (case art is bespoke per case); `text` is the label.
+export interface WorldLabel {
+  className: string
+  text: string
+}
+
+// Per-case strings that used to be hardcoded inside components. Kept in the case
+// bundle so a second case can differ without editing the presentation layer.
+export interface CaseChrome {
+  // Briefing scene coordinates (decorative, aria-hidden).
+  briefingCoordinates: string
+  // Investigation world-view: the map's aria-label, its positioned annotations,
+  // and the two-line caption beneath it.
+  worldAriaLabel: string
+  worldLabels: readonly WorldLabel[]
+  worldCaption: readonly [string, string]
+  // Tribunal chrome: the seal glyph and the three header lines, plus the copy
+  // shown on a locked (override-gated) decision.
+  tribunalSeal: string
+  tribunalChannel: string
+  tribunalHeadline: string
+  tribunalIntro: string
+  lockedDecisionHint: string
+}
+
+// When a case cites a prior case's verdict at its tribunal. `caseId` names the
+// earlier case; `lines` maps that case's decision id to the authored citation.
+export interface PrecedentSource {
+  caseId: string
+  lines: Readonly<Record<DecisionId, string>>
+}
+
+// A complete, self-contained dossier the engine and components resolve through
+// GameState.caseId. Personas and the method vocabulary stay global (same cast,
+// same verbs across every case); everything case-specific lives here.
+export interface CaseDefinition {
+  id: string
+  // Short human label, e.g. 'Case 77'. Used in announcements and the tab title.
+  label: string
+  caseFile: CaseFile
+  chrome: CaseChrome
+  approaches: readonly ApproachDefinition[]
+  evidenceDefinitions: readonly EvidenceDefinition[]
+  fieldActions: readonly FieldActionDefinition[]
+  sites: readonly SiteDefinition[]
+  fragments: readonly FragmentDefinition[]
+  fragmentEvidenceLinks: Readonly<Record<FragmentId, readonly EvidenceId[]>>
+  reconstructionDefinitions: readonly ReconstructionDefinition[]
+  decisions: readonly DecisionDefinition[]
+  // Which model two anchors resolve to. Pure, order-independent.
+  getReconstructionForFragments: (fragmentIds: readonly FragmentId[]) => ReconstructionId
+  // One authored line for every reconstruction × decision pairing.
+  reconstructionDecisionTensions: Readonly<Record<ReconstructionId, Record<DecisionId, string>>>
+  // The Mirror's briefing aside for the prior run's decision (keyed by THIS
+  // case's decision ids; the reader picks the map of the prior run's case).
+  mirrorBriefingAsides: Readonly<Record<DecisionId, string>>
+  // Debrief consequence lines, keyed by this case's decision ids.
+  decisionConsequences: Readonly<Record<DecisionId, readonly string[]>>
+  // Debrief persona reflection, given the resolved run state.
+  getPersonaReflection: (personaId: PersonaId, state: GameState) => string
+  // Optional cross-case precedent citation shown at this case's tribunal.
+  precedentSource?: PrecedentSource
 }

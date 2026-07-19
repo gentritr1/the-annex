@@ -1,12 +1,9 @@
 import {
-  approaches,
-  decisions,
-  fieldActions,
-  fragmentEvidenceLinks,
-  getReconstructionForFragments,
+  DEFAULT_CASE_ID,
+  getCaseContent,
+  isRegisteredCase,
   methodLabels,
   personas,
-  reconstructionDefinitions,
 } from './content'
 // Save-schema constants live with the persistence layer (the single source of
 // truth). Importing them here keeps the version the engine stamps and the run
@@ -31,11 +28,6 @@ export const defaultAccessibilitySettings: AccessibilitySettings = {
   showTrustNumbers: false,
 }
 
-// The only case that exists today. Fresh runs are stamped with it. Distinct
-// from the frozen 'case-77' literal in the v1->v2 migration: this default may
-// change when new cases ship, but historical v1 saves are always Case 77.
-const CASE_ID = 'case-77'
-
 const emptyTrust: Record<PersonaId, number> = {
   registrar: 0,
   shepherd: 0,
@@ -51,6 +43,7 @@ const approachMethods: Record<ApproachId, MethodTag[]> = {
 }
 
 function createRunState(
+  caseId: string,
   runNumber: number,
   previousRuns: RunSummary[],
   settings: AccessibilitySettings,
@@ -58,7 +51,7 @@ function createRunState(
 ): GameState {
   return {
     schemaVersion: CURRENT_SAVE_SCHEMA,
-    caseId: CASE_ID,
+    caseId,
     phase: 'briefing',
     runNumber,
     primaryApproach: null,
@@ -76,7 +69,7 @@ function createRunState(
     previousRuns,
     precedents: { ...precedents },
     settings: { ...settings },
-    announcement: `Case 77, run ${runNumber}, opened.`,
+    announcement: `${getCaseContent(caseId).label}, run ${runNumber}, opened.`,
   }
 }
 
@@ -84,7 +77,7 @@ export function createInitialGameState(
   settings: AccessibilitySettings = defaultAccessibilitySettings,
 ): GameState {
   return {
-    ...createRunState(1, [], settings),
+    ...createRunState(DEFAULT_CASE_ID, 1, [], settings),
     phase: 'landing',
     announcement: 'The Annex is ready.',
   }
@@ -155,6 +148,7 @@ function buildRunSummary(state: GameState): RunSummary | null {
 
   return {
     runNumber: state.runNumber,
+    caseId: state.caseId,
     decision: state.decision,
     primaryApproach: state.primaryApproach,
     methodTags: [...state.methodTags],
@@ -203,7 +197,7 @@ export function getTrustLabel(value: number): string {
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case 'START_NEW':
-      return createRunState(1, [], state.settings)
+      return createRunState(DEFAULT_CASE_ID, 1, [], state.settings)
 
     case 'RESTORE':
       return {
@@ -215,11 +209,17 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case 'SELECT_APPROACH': {
       if (state.phase !== 'briefing' || state.primaryApproach) return state
 
-      const approach = approaches.find((item) => item.id === action.approachId)
+      const approach = getCaseContent(state.caseId).approaches.find(
+        (item) => item.id === action.approachId,
+      )
       if (!approach) return state
 
       const previousRun = state.previousRuns.at(-1)
-      const priorDecision = decisions.find((item) => item.id === previousRun?.decision)
+      // The prior run may belong to a different case; resolve its decision copy
+      // from that run's own case (the personas — and the Mirror — cross cases).
+      const priorDecision = getCaseContent(previousRun?.caseId ?? DEFAULT_CASE_ID).decisions.find(
+        (item) => item.id === previousRun?.decision,
+      )
       const runResidue = buildRunResidue(previousRun)
       const residue = priorDecision
         ? ` A voice beneath the terminal adds: “Last time: ${priorDecision.shortLabel.toLowerCase()}.”${runResidue.detail}`
@@ -246,7 +246,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case 'COMMIT_FIELD_ACTION': {
       if (state.phase !== 'investigation') return state
 
-      const definition = fieldActions.find((item) => item.id === action.actionId)
+      const definition = getCaseContent(state.caseId).fieldActions.find(
+        (item) => item.id === action.actionId,
+      )
       if (!definition || state.completedSites.includes(definition.siteId)) return state
 
       const nextAlarm = Math.max(0, Math.min(3, state.alarm + definition.alarmDelta))
@@ -308,11 +310,14 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case 'SUBMIT_RECONSTRUCTION': {
       if (state.phase !== 'reconstruction' || state.selectedFragments.length !== 2) return state
 
-      const reconstructionId = getReconstructionForFragments(state.selectedFragments)
-      const definition = reconstructionDefinitions.find((item) => item.id === reconstructionId)
+      const content = getCaseContent(state.caseId)
+      const reconstructionId = content.getReconstructionForFragments(state.selectedFragments)
+      const definition = content.reconstructionDefinitions.find((item) => item.id === reconstructionId)
       if (!definition) return state
       const corroboratedAnchors = state.selectedFragments.filter((fragmentId) =>
-        fragmentEvidenceLinks[fragmentId].some((evidenceId) => state.evidence.includes(evidenceId)),
+        content.fragmentEvidenceLinks[fragmentId].some((evidenceId) =>
+          state.evidence.includes(evidenceId),
+        ),
       ).length
 
       return {
@@ -356,7 +361,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case 'DECIDE': {
       if (state.phase !== 'tribunal' || state.decision) return state
 
-      const decision = decisions.find((item) => item.id === action.decisionId)
+      const content = getCaseContent(state.caseId)
+      const decision = content.decisions.find((item) => item.id === action.decisionId)
       if (!decision || (decision.requiresOverride && !state.tribunalOverride)) return state
 
       return {
@@ -377,7 +383,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           tone: decision.id === 'overwrite-record' ? 'warning' : 'neutral',
           methodTags: decision.id === 'overwrite-record' ? ['fraud', 'systems'] : ['procedure'],
         }),
-        announcement: `${decision.shortLabel}. Case 77 is resolved for this run.`,
+        announcement: `${decision.shortLabel}. ${content.label} is resolved for this run.`,
       }
     }
 
@@ -389,7 +395,40 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       // Cap run history at push time, keeping the most recent runs. Residue
       // reads .at(-1), so trimming the oldest entries changes nothing observable.
       const previousRuns = [...state.previousRuns, summary].slice(-MAX_PREVIOUS_RUNS)
-      return createRunState(state.runNumber + 1, previousRuns, state.settings, state.precedents)
+      return createRunState(
+        state.caseId,
+        state.runNumber + 1,
+        previousRuns,
+        state.settings,
+        state.precedents,
+      )
+    }
+
+    case 'START_CASE': {
+      // Switch to (or restart) any registered case, carrying precedents, capped
+      // run history, and cross-run residue exactly as START_NEXT_RUN does — the
+      // personas are the same people, so their memory follows across cases.
+      // Unknown case ids are ignored. Case-77 progress is never destroyed:
+      // previousRuns and precedents persist, so START_CASE back to case-77 works
+      // symmetrically.
+      if (!isRegisteredCase(action.caseId)) return state
+
+      // If the current run is complete, fold it into history (and advance the
+      // global loop counter) so the next case's residue reads it; otherwise
+      // carry history untouched and keep the counter where it is.
+      const summary = buildRunSummary(state)
+      const previousRuns = summary
+        ? [...state.previousRuns, summary].slice(-MAX_PREVIOUS_RUNS)
+        : state.previousRuns
+      const nextRunNumber = summary ? state.runNumber + 1 : state.runNumber
+
+      return createRunState(
+        action.caseId,
+        nextRunNumber,
+        previousRuns,
+        state.settings,
+        state.precedents,
+      )
     }
 
     case 'RETURN_TO_TITLE':

@@ -1,104 +1,52 @@
 import { PersonaSigil } from '../ambience/sigils'
-import {
-  approaches,
-  decisions,
-  evidenceDefinitions,
-  fieldActions,
-  getTensionLine,
-  personas,
-  sites,
-} from '../game/content'
+import { getCaseContent, getTensionLine, personas } from '../game/content'
 import { getTrustLabel } from '../game/engine'
-import type { FieldActionId, GameState, PersonaId, SiteId } from '../game/types'
+import type {
+  CaseDefinition,
+  FieldActionId,
+  GameState,
+  SiteDefinition,
+} from '../game/types'
 
 interface DebriefProps {
   state: GameState
   onNextRun: () => void
+  case81Available: boolean
+  onOpenCase81: () => void
   onReturnToTitle: () => void
-}
-
-function reflectionFor(personaId: PersonaId, state: GameState): string {
-  const trust = state.trust[personaId]
-  const decision = state.decision
-
-  if (personaId === 'registrar') {
-    if (decision === 'overwrite-record') return '“The record is now consistent. Its authority is not.”'
-    if (state.methodTags.includes('fraud')) return '“You asked the system to accept what the law would reject. It remembers the difference.”'
-    if (trust >= 2) return '“You treated procedure as evidence, not as innocence. That distinction is admissible.”'
-    return '“Your finding exceeds what the office can verify. The office will obey it anyway.”'
-  }
-
-  if (personaId === 'shepherd') {
-    if (decision === 'quarantine-review') return '“Protection that removes a person from life is still a kind of removal.”'
-    if (state.methodTags.includes('coercion')) return '“You called pain a test because the result fit in a record. She will remember the test.”'
-    if (trust >= 2) return '“She will remember that someone listened before deciding what she was.”'
-    return '“You learned something true by making her into an instrument. Truth keeps that cost.”'
-  }
-
-  if (personaId === 'defector') {
-    if (state.methodTags.includes('stealth')) return '“You walked through the omission instead of around it. The next door will know that.”'
-    if (state.alarm > 0) return '“The system noticed you. More useful: you saw which exit it closed first.”'
-    return '“Clean route. No clean consequence.”'
-  }
-
-  if (state.methodTags.includes('care')) return '“You let a person speak before a category did. I saved the order.”'
-  if (decision === 'charter-new-person') return '“You made a category. Now find out who it leaves behind.”'
-  if (trust >= 2) return '“I kept the question you answered. I also kept the one you did not.”'
-  return '“Adults call a shelf empty when they removed the label themselves.”'
-}
-
-function consequenceLines(state: GameState): string[] {
-  switch (state.decision) {
-    case 'certify-continuity':
-      return [
-        '77-A leaves review as Mara Vale and inherits every relationship attached to that name.',
-        'The restoration process becomes a precedent creditors and families may both invoke.',
-        'Any emerging self inside 77-A is legally invisible unless Mara chooses to name it later.',
-      ]
-    case 'charter-new-person':
-      return [
-        '77-A leaves review with full civic protection under a name she may choose herself.',
-        'Mara Vale remains legally dead; property and unfinished obligations pass without her.',
-        'The city gains its first category for a person made from another person’s continuity claim.',
-      ]
-    case 'quarantine-review':
-      return [
-        '77-A cannot be erased for ninety days, but she cannot leave the Annex or hold property.',
-        'An independent panel receives the contradictions you preserved and the methods you used.',
-        'Delay prevents one irreversible harm while creating a slower institutional one.',
-      ]
-    case 'overwrite-record':
-      return [
-        'The registry now recognizes Mara Vale. The tribunal never voted.',
-        'The dormant credential’s fraud is woven into the same chain that proves her continuity.',
-        'A civic trace remains open. Someone will eventually ask who authored the fourth minute after the collapse.',
-      ]
-    default:
-      return []
-  }
 }
 
 // For a visited site, the sibling action the auditor did not take carries the
 // counterfactual note. For an unvisited site, the site's own note stands in.
-function refusalNoteForSite(siteId: SiteId, completedActions: readonly FieldActionId[]): string {
-  const site = sites.find((item) => item.id === siteId)
-  if (!site) return ''
-
+function refusalNoteForSite(
+  site: SiteDefinition,
+  completedActions: readonly FieldActionId[],
+  content: CaseDefinition,
+): string {
   const takenActionId = site.actionIds.find((actionId) => completedActions.includes(actionId))
   if (!takenActionId) return site.unvisitedNote
 
   const notTakenId = site.actionIds.find((actionId) => actionId !== takenActionId)
-  const notTaken = fieldActions.find((item) => item.id === notTakenId)
+  const notTaken = content.fieldActions.find((item) => item.id === notTakenId)
   return notTaken?.counterfactualNote ?? ''
 }
 
-export function Debrief({ state, onNextRun, onReturnToTitle }: DebriefProps) {
+export function Debrief({
+  state,
+  onNextRun,
+  case81Available,
+  onOpenCase81,
+  onReturnToTitle,
+}: DebriefProps) {
+  const content = getCaseContent(state.caseId)
+  const { decisions, approaches, evidenceDefinitions, sites } = content
   const decision = decisions.find((item) => item.id === state.decision)
   const approach = approaches.find((item) => item.id === state.primaryApproach)
   const discoveredEvidence = evidenceDefinitions.filter((item) => state.evidence.includes(item.id))
+  const consequenceLines = state.decision ? content.decisionConsequences[state.decision] ?? [] : []
   const tensionEcho =
     state.reconstruction && state.decision
-      ? getTensionLine(state.reconstruction, state.decision)
+      ? getTensionLine(state.caseId, state.reconstruction, state.decision)
       : null
 
   return (
@@ -134,7 +82,7 @@ export function Debrief({ state, onNextRun, onReturnToTitle }: DebriefProps) {
           <h2 id="consequence-heading">A decision distributes uncertainty. It does not remove it.</h2>
         </div>
         <ol className="consequence-list">
-          {consequenceLines(state).map((line, index) => (
+          {consequenceLines.map((line, index) => (
             <li key={line}>
               <span>{String(index + 1).padStart(2, '0')}</span>
               <p>{line}</p>
@@ -157,7 +105,7 @@ export function Debrief({ state, onNextRun, onReturnToTitle }: DebriefProps) {
           {sites.map((site) => (
             <li key={site.id}>
               <span>{site.index}</span>
-              <p>{refusalNoteForSite(site.id, state.completedActions)}</p>
+              <p>{refusalNoteForSite(site, state.completedActions, content)}</p>
             </li>
           ))}
         </ol>
@@ -181,7 +129,7 @@ export function Debrief({ state, onNextRun, onReturnToTitle }: DebriefProps) {
                   {state.settings.showTrustNumbers ? ` · ${state.trust[persona.id] >= 0 ? '+' : ''}${state.trust[persona.id]}` : ''}
                 </span>
               </div>
-              <p>{reflectionFor(persona.id, state)}</p>
+              <p>{content.getPersonaReflection(persona.id, state)}</p>
             </blockquote>
           ))}
         </div>
@@ -199,9 +147,17 @@ export function Debrief({ state, onNextRun, onReturnToTitle }: DebriefProps) {
             briefing. Choose another route to expose a different account of the same person.
           </p>
         </div>
-        <button className="button button-primary" type="button" onClick={onNextRun}>
-          Begin run {state.runNumber + 1} <span aria-hidden="true">→</span>
-        </button>
+        <div className="mirror-actions">
+          <button className="button button-primary" type="button" onClick={onNextRun}>
+            Begin run {state.runNumber + 1} <span aria-hidden="true">→</span>
+          </button>
+          {case81Available && (
+            <button className="button button-secondary" type="button" onClick={onOpenCase81}>
+              {/* [TODO-81] in-voice label lands with the authoring pass */}
+              [TODO-81] Open Case 81 <span aria-hidden="true">→</span>
+            </button>
+          )}
+        </div>
       </section>
 
       <footer className="debrief-footer">

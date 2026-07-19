@@ -1,9 +1,5 @@
 import { Atmosphere } from '../ambience/Atmosphere'
-import {
-  fieldActions,
-  reconstructionDefinitions,
-  sites,
-} from '../game/content'
+import { getCaseContent } from '../game/content'
 import { canEnterTribunal } from '../game/engine'
 import type { FieldActionId, GameState } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
@@ -22,6 +18,7 @@ export function Investigation({
   onOpenReconstruction,
   onEnterTribunal,
 }: InvestigationProps) {
+  const { sites, fieldActions, reconstructionDefinitions, chrome } = getCaseContent(state.caseId)
   const reconstruction = reconstructionDefinitions.find((item) => item.id === state.reconstruction)
   const tribunalReady = canEnterTribunal(state)
   const sitesNeeded = Math.max(0, 2 - state.completedSites.length)
@@ -35,18 +32,19 @@ export function Investigation({
 
   return (
     <article className="phase-page investigation-page">
-      <div className="world-view" role="img" aria-label="Rain-dark civic archive district at night">
+      <div className="world-view" role="img" aria-label={chrome.worldAriaLabel}>
         {/* Rain at 0.07, parallax locked flat (no planes) so the map annotation
             nodes stay registered against the artwork. */}
         <Atmosphere mask={0.07} reducedMotion={state.settings.reducedMotion} />
         <div className="world-scan" aria-hidden="true" />
-        <div className="world-label world-label-registry">A · Registry</div>
-        <div className="world-label world-label-care">B · Care ward</div>
-        <div className="world-label world-label-maintenance">C · Service spine</div>
-        <div className="world-label world-label-archive">D · Small archive</div>
+        {chrome.worldLabels.map((label) => (
+          <div className={label.className} key={label.className}>
+            {label.text}
+          </div>
+        ))}
         <div className="world-caption">
-          <span>Annex 04 · live civic layer</span>
-          <span>Precipitation masking: 12%</span>
+          <span>{chrome.worldCaption[0]}</span>
+          <span>{chrome.worldCaption[1]}</span>
         </div>
       </div>
 

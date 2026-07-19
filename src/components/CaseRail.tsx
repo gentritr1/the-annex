@@ -1,12 +1,6 @@
 import { useEffect, useState } from 'react'
 import { PersonaSigil } from '../ambience/sigils'
-import {
-  caseFile,
-  evidenceDefinitions,
-  getReactionsForSource,
-  methodLabels,
-  personas,
-} from '../game/content'
+import { getCaseContent, getReactionsForSource, methodLabels, personas } from '../game/content'
 import { getTrustLabel } from '../game/engine'
 import type { EvidenceStatus, GameState, PersonaId } from '../game/types'
 import { ReactionQuotes } from './ReactionQuotes'
@@ -25,6 +19,7 @@ const statusLabels: Record<EvidenceStatus, string> = {
 }
 
 export function CaseRail({ state }: CaseRailProps) {
+  const { caseFile, evidenceDefinitions } = getCaseContent(state.caseId)
   const [activeTab, setActiveTab] = useState<RailTab>('case')
   const [mobileOpen, setMobileOpen] = useState(false)
   const evidence = evidenceDefinitions.filter((item) => state.evidence.includes(item.id))
@@ -213,7 +208,7 @@ export function CaseRail({ state }: CaseRailProps) {
                     <strong>{event.title}</strong>
                     <p>{event.detail}</p>
                     <ReactionQuotes
-                      reactions={getReactionsForSource(event.sourceType, event.sourceId)}
+                      reactions={getReactionsForSource(state.caseId, event.sourceType, event.sourceId)}
                       variant="log"
                     />
                     <div className="event-tags">

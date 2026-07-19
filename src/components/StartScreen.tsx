@@ -6,8 +6,11 @@ interface StartScreenProps {
   savedState: GameState | null
   settings: AccessibilitySettings
   storageAvailable: boolean
+  // True once the saved game carries a Case 77 verdict, unlocking Case 81.
+  case81Available: boolean
   onNew: () => void
   onContinue: () => void
+  onOpenCase81: () => void
   onErase: () => void
   onUpdateSetting: (
     setting: keyof AccessibilitySettings,
@@ -25,8 +28,10 @@ export function StartScreen({
   savedState,
   settings,
   storageAvailable,
+  case81Available,
   onNew,
   onContinue,
+  onOpenCase81,
   onErase,
   onUpdateSetting,
 }: StartScreenProps) {
@@ -83,6 +88,13 @@ export function StartScreen({
               <span className="button-meta">
                 Run {savedState.runNumber} · {phaseLabel(savedState.phase)}
               </span>
+            </button>
+          )}
+          {case81Available && (
+            <button className="button button-secondary" type="button" onClick={onOpenCase81}>
+              {/* [TODO-81] in-voice label lands with the authoring pass */}
+              <span>[TODO-81] Open Case 81</span>
+              <span className="button-meta">The Commissioned Witness · carries your record</span>
             </button>
           )}
           <button

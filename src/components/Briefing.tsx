@@ -1,6 +1,6 @@
 import { Atmosphere } from '../ambience/Atmosphere'
 import { MirrorSigil } from '../ambience/sigils'
-import { approaches, caseFile, methodLabels, mirrorBriefingAsides } from '../game/content'
+import { DEFAULT_CASE_ID, getCaseContent, getMirrorBriefingAside, methodLabels } from '../game/content'
 import type { ApproachId, GameState } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
 
@@ -10,8 +10,12 @@ interface BriefingProps {
 }
 
 export function Briefing({ state, onSelectApproach }: BriefingProps) {
+  const { caseFile, approaches, chrome } = getCaseContent(state.caseId)
   const priorRun = state.previousRuns.at(-1)
-  const mirrorAside = priorRun ? mirrorBriefingAsides[priorRun.decision] : null
+  // The prior run may belong to another case; its aside comes from that case.
+  const mirrorAside = priorRun
+    ? getMirrorBriefingAside(priorRun.caseId ?? DEFAULT_CASE_ID, priorRun.decision)
+    : null
 
   return (
     <article className="phase-page briefing-page">
@@ -25,7 +29,7 @@ export function Briefing({ state, onSelectApproach }: BriefingProps) {
           <p>{caseFile.question}</p>
         </div>
         <div className="scene-coordinates" aria-hidden="true">
-          Lower Span / Annex 04
+          {chrome.briefingCoordinates}
         </div>
       </div>
 

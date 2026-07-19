@@ -193,3 +193,107 @@ describe('gameReducer', () => {
     expect(detail).toContain('Shepherd +1')
   })
 })
+
+// A completed Case 77 run at debrief, with charter-new-person recorded — the
+// precedent Case 81's tribunal cites and the gate the selection flow reads.
+function case77Debrief(): GameState {
+  let state = solveReconstruction()
+  state = gameReducer(state, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
+  state = gameReducer(state, { type: 'COMMIT_FIELD_ACTION', actionId: 'authenticate-chain' })
+  state = gameReducer(state, { type: 'ENTER_TRIBUNAL' })
+  return gameReducer(state, { type: 'DECIDE', decisionId: 'charter-new-person' })
+}
+
+describe('START_CASE (multi-case)', () => {
+  it('ignores an unregistered case id', () => {
+    const debrief = case77Debrief()
+    const unchanged = gameReducer(debrief, { type: 'START_CASE', caseId: 'case-404' })
+    expect(unchanged).toBe(debrief)
+  })
+
+  it('opens Case 81 from a completed Case 77 run, carrying precedent, history, and the loop counter', () => {
+    const debrief = case77Debrief()
+    expect(debrief.runNumber).toBe(1)
+
+    const opened = gameReducer(debrief, { type: 'START_CASE', caseId: 'case-81' })
+
+    expect(opened.caseId).toBe('case-81')
+    expect(opened.phase).toBe('briefing')
+    // Precedent from the Case 77 verdict persists.
+    expect(opened.precedents).toEqual({ 'case-77': 'charter-new-person' })
+    // The completed Case 77 run folded into history, stamped with its case.
+    expect(opened.previousRuns).toHaveLength(1)
+    expect(opened.previousRuns[0]?.caseId).toBe('case-77')
+    expect(opened.previousRuns[0]?.decision).toBe('charter-new-person')
+    // Global loop counter advances, never resets.
+    expect(opened.runNumber).toBe(2)
+    // Fresh run: no case-77 field state leaks in.
+    expect(opened.evidence).toHaveLength(0)
+    expect(opened.completedSites).toHaveLength(0)
+    expect(opened.announcement).toContain('Case 81')
+  })
+
+  it('carries Case 77 trust residue into Case 81 (the personas cross cases)', () => {
+    const opened = gameReducer(case77Debrief(), { type: 'START_CASE', caseId: 'case-81' })
+    // care approach in Case 77 left shepherd high (+3), so residue grants +1.
+    const withApproach = gameReducer(opened, { type: 'SELECT_APPROACH', approachId: 'procedure' })
+
+    expect(withApproach.caseId).toBe('case-81')
+    const detail = withApproach.events[0]?.detail ?? ''
+    expect(detail).toContain('Residue:')
+    expect(detail).toContain('Shepherd +1')
+    expect(withApproach.trust.shepherd).toBeGreaterThanOrEqual(1)
+  })
+
+  it('does not fold an incomplete current run into history and keeps the counter', () => {
+    // Mid-investigation (no decision): switching cases carries history untouched.
+    const mid = startInvestigation()
+    expect(mid.runNumber).toBe(1)
+
+    const opened = gameReducer(mid, { type: 'START_CASE', caseId: 'case-81' })
+
+    expect(opened.caseId).toBe('case-81')
+    expect(opened.previousRuns).toHaveLength(0)
+    expect(opened.runNumber).toBe(1)
+    expect(opened.precedents).toEqual({})
+  })
+
+  it('never destroys Case 77 progress: START_CASE back to case-77 works symmetrically', () => {
+    const opened81 = gameReducer(case77Debrief(), { type: 'START_CASE', caseId: 'case-81' })
+    const back77 = gameReducer(opened81, { type: 'START_CASE', caseId: 'case-77' })
+
+    expect(back77.caseId).toBe('case-77')
+    // Precedent and run history survive the round trip.
+    expect(back77.precedents).toEqual({ 'case-77': 'charter-new-person' })
+    expect(back77.previousRuns).toHaveLength(1)
+    expect(back77.previousRuns[0]?.caseId).toBe('case-77')
+  })
+
+  it('plays a full Case 81 run through the shared engine to a verdict', () => {
+    let s = gameReducer(case77Debrief(), { type: 'START_CASE', caseId: 'case-81' })
+    s = gameReducer(s, { type: 'SELECT_APPROACH', approachId: 'care' })
+    s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'take-sworn-statement' })
+    s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
+    s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'oath-cadence' })
+    s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'unscripted-answer' })
+    s = gameReducer(s, { type: 'SUBMIT_RECONSTRUCTION' })
+    s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'pull-service-record' })
+    s = gameReducer(s, { type: 'ENTER_TRIBUNAL' })
+    s = gameReducer(s, { type: 'DECIDE', decisionId: 'certify-witness' })
+
+    expect(s.phase).toBe('debrief')
+    expect(s.reconstruction).toBe('testimonial-standing')
+    expect(s.decision).toBe('certify-witness')
+    // Case 81 verdict recorded under its own case; Case 77's precedent untouched.
+    expect(s.precedents).toEqual({ 'case-77': 'charter-new-person', 'case-81': 'certify-witness' })
+  })
+
+  it('gates Case 81 availability on a recorded Case 77 precedent', () => {
+    // The selection flow reads precedents['case-77']; model that predicate here.
+    const available = (state: GameState) => Boolean(state.precedents['case-77'])
+
+    const fresh = gameReducer(createInitialGameState(), { type: 'START_NEW' })
+    expect(available(fresh)).toBe(false)
+    expect(available(case77Debrief())).toBe(true)
+  })
+})

@@ -1,3 +1,4 @@
+import { getCaseContent } from '../game/content'
 import type { AccessibilitySettings, GameState } from '../game/types'
 
 interface CaseHeaderProps {
@@ -28,7 +29,7 @@ export function CaseHeader({ state, onReturnToTitle, onUpdateSetting }: CaseHead
           </span>
           <span>
             <strong>The Annex</strong>
-            <small>CMA–77–A</small>
+            <small>{getCaseContent(state.caseId).caseFile.code}</small>
           </span>
         </button>
       </div>

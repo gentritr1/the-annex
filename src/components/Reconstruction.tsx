@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { evidenceDefinitions, fragmentEvidenceLinks, fragments } from '../game/content'
+import { getCaseContent } from '../game/content'
 import type { FragmentId, GameState } from '../game/types'
 
 interface ReconstructionProps {
@@ -15,6 +15,7 @@ export function Reconstruction({
   onSubmit,
   onBack,
 }: ReconstructionProps) {
+  const { fragments, fragmentEvidenceLinks, evidenceDefinitions } = getCaseContent(state.caseId)
   const [commitArmed, setCommitArmed] = useState(false)
 
   function commitReconstruction() {

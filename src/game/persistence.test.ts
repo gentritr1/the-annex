@@ -6,6 +6,7 @@ import {
   decodeGameState,
   migrateRawSave,
 } from './persistence'
+import type { GameState } from './types'
 
 function validInvestigationState() {
   const initial = createInitialGameState()
@@ -289,5 +290,86 @@ describe('v2 encode/decode round-trip', () => {
     expect(state.precedents).toEqual({ 'case-77': 'certify-continuity' })
     expect(state.previousRuns).toHaveLength(1)
     expect(decodeGameState(migrateRawSave(encoded))).toEqual(state)
+  })
+
+  it('tolerates a run summary written without a caseId (legacy pre-multi-case)', () => {
+    let s = gameReducer(createInitialGameState(), { type: 'START_NEW' })
+    s = gameReducer(s, { type: 'SELECT_APPROACH', approachId: 'care' })
+    s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
+    s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
+    s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'scar-sensation' })
+    s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'witness-account' })
+    s = gameReducer(s, { type: 'SUBMIT_RECONSTRUCTION' })
+    s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'authenticate-chain' })
+    s = gameReducer(s, { type: 'ENTER_TRIBUNAL' })
+    s = gameReducer(s, { type: 'DECIDE', decisionId: 'certify-continuity' })
+    const next = gameReducer(s, { type: 'START_NEXT_RUN' })
+
+    const encoded = JSON.parse(JSON.stringify(next)) as {
+      previousRuns: { caseId?: string }[]
+    }
+    // Strip the caseId as a save written before multi-case would have lacked it.
+    delete encoded.previousRuns[0]?.caseId
+
+    const decoded = decodeGameState(migrateRawSave(encoded))
+    expect(decoded).not.toBeNull()
+    expect(decoded?.previousRuns).toHaveLength(1)
+    expect(decoded?.previousRuns[0]?.caseId).toBeUndefined()
+  })
+})
+
+// Build a Case 81 state through the shared engine: a completed Case 77 run, then
+// START_CASE into Case 81 played to a verdict.
+function playCase81ToDebrief(): GameState {
+  let s = gameReducer(createInitialGameState(), { type: 'START_NEW' })
+  s = gameReducer(s, { type: 'SELECT_APPROACH', approachId: 'care' })
+  s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
+  s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
+  s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'scar-sensation' })
+  s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'witness-account' })
+  s = gameReducer(s, { type: 'SUBMIT_RECONSTRUCTION' })
+  s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'authenticate-chain' })
+  s = gameReducer(s, { type: 'ENTER_TRIBUNAL' })
+  s = gameReducer(s, { type: 'DECIDE', decisionId: 'charter-new-person' })
+  s = gameReducer(s, { type: 'START_CASE', caseId: 'case-81' })
+  s = gameReducer(s, { type: 'SELECT_APPROACH', approachId: 'procedure' })
+  s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'take-sworn-statement' })
+  s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
+  s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'oath-cadence' })
+  s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'unscripted-answer' })
+  s = gameReducer(s, { type: 'SUBMIT_RECONSTRUCTION' })
+  s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'pull-service-record' })
+  s = gameReducer(s, { type: 'ENTER_TRIBUNAL' })
+  return gameReducer(s, { type: 'DECIDE', decisionId: 'certify-witness' })
+}
+
+describe('multi-case persistence', () => {
+  it('round-trips a Case 81 reducer state through encode/decode', () => {
+    const state = playCase81ToDebrief()
+    expect(state.caseId).toBe('case-81')
+    expect(state.previousRuns[0]?.caseId).toBe('case-77')
+    expect(state.precedents).toEqual({
+      'case-77': 'charter-new-person',
+      'case-81': 'certify-witness',
+    })
+
+    const encoded = JSON.parse(JSON.stringify(state)) as { schemaVersion: number }
+    expect(encoded.schemaVersion).toBe(CURRENT_SAVE_SCHEMA)
+    expect(decodeGameState(migrateRawSave(encoded))).toEqual(state)
+  })
+
+  it('rejects a payload whose caseId is not a registered case', () => {
+    const state = validInvestigationState()
+    const encoded = JSON.parse(JSON.stringify(state)) as Record<string, unknown>
+    encoded.caseId = 'case-999'
+    expect(decodeGameState(encoded)).toBeNull()
+  })
+
+  it('rejects a Case 81 payload carrying Case 77 field ids (validated against its own case)', () => {
+    const state = playCase81ToDebrief()
+    const encoded = JSON.parse(JSON.stringify(state)) as Record<string, unknown>
+    // A case-77 evidence id is not part of case-81's vocabulary.
+    encoded.evidence = ['custody-chain']
+    expect(decodeGameState(encoded)).toBeNull()
   })
 })

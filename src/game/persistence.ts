@@ -1,28 +1,13 @@
-import {
-  approaches,
-  decisions,
-  evidenceDefinitions,
-  fieldActions,
-  fragments,
-  personas,
-  reconstructionDefinitions,
-  sites,
-} from './content'
+import { DEFAULT_CASE_ID, getCaseContent, isRegisteredCase, personas } from './content'
 import type {
   AccessibilitySettings,
-  ApproachId,
-  DecisionId,
-  EvidenceId,
-  FieldActionId,
-  FragmentId,
+  CaseDefinition,
   GameEvent,
   GamePhase,
   GameState,
   MethodTag,
   PersonaId,
-  ReconstructionId,
   RunSummary,
-  SiteId,
 } from './types'
 
 // The '.v1' here is a HISTORICAL localStorage KEY NAME, not the save-schema
@@ -53,15 +38,32 @@ const validPhases = new Set<GamePhase>([
   'tribunal',
   'debrief',
 ])
-const validApproaches = new Set<ApproachId>(approaches.map((item) => item.id))
-const validSites = new Set<SiteId>(sites.map((item) => item.id))
-const validFieldActions = new Set<FieldActionId>(fieldActions.map((item) => item.id))
-const validEvidence = new Set<EvidenceId>(evidenceDefinitions.map((item) => item.id))
-const validFragments = new Set<FragmentId>(fragments.map((item) => item.id))
-const validReconstructions = new Set<ReconstructionId>(
-  reconstructionDefinitions.map((item) => item.id),
-)
-const validDecisions = new Set<DecisionId>(decisions.map((item) => item.id))
+
+// Content-item ids are per-case now, so their valid sets are built from the
+// case a payload declares — not from a global union. A save is only accepted
+// against ITS OWN case's vocabulary, which is stricter than a union would be.
+interface CaseIdSets {
+  approaches: Set<string>
+  sites: Set<string>
+  fieldActions: Set<string>
+  evidence: Set<string>
+  fragments: Set<string>
+  reconstructions: Set<string>
+  decisions: Set<string>
+}
+
+function buildCaseIdSets(content: CaseDefinition): CaseIdSets {
+  return {
+    approaches: new Set(content.approaches.map((item) => item.id)),
+    sites: new Set(content.sites.map((item) => item.id)),
+    fieldActions: new Set(content.fieldActions.map((item) => item.id)),
+    evidence: new Set(content.evidenceDefinitions.map((item) => item.id)),
+    fragments: new Set(content.fragments.map((item) => item.id)),
+    reconstructions: new Set(content.reconstructionDefinitions.map((item) => item.id)),
+    decisions: new Set(content.decisions.map((item) => item.id)),
+  }
+}
+
 const validPersonas = personas.map((item) => item.id)
 const validMethodTags = new Set<MethodTag>([
   'procedure',
@@ -143,7 +145,7 @@ export function decodeAccessibilitySettings(value: unknown): AccessibilitySettin
   }
 }
 
-function isGameEvent(value: unknown, expectedOrder: number): value is GameEvent {
+function isGameEvent(value: unknown, expectedOrder: number, sets: CaseIdSets): value is GameEvent {
   if (!isRecord(value)) return false
   if (typeof value.id !== 'string' || value.id.length === 0) return false
   if (value.order !== expectedOrder) return false
@@ -155,17 +157,10 @@ function isGameEvent(value: unknown, expectedOrder: number): value is GameEvent 
   if (value.tone !== 'neutral' && value.tone !== 'positive' && value.tone !== 'warning') return false
   if (!isUniqueArrayOf(value.methodTags, validMethodTags)) return false
 
-  if (value.sourceType === 'approach' && !validApproaches.has(value.sourceId as ApproachId)) return false
-  if (value.sourceType === 'field-action' && !validFieldActions.has(value.sourceId as FieldActionId)) {
-    return false
-  }
-  if (
-    value.sourceType === 'reconstruction' &&
-    !validReconstructions.has(value.sourceId as ReconstructionId)
-  ) {
-    return false
-  }
-  if (value.sourceType === 'decision' && !validDecisions.has(value.sourceId as DecisionId)) return false
+  if (value.sourceType === 'approach' && !sets.approaches.has(value.sourceId)) return false
+  if (value.sourceType === 'field-action' && !sets.fieldActions.has(value.sourceId)) return false
+  if (value.sourceType === 'reconstruction' && !sets.reconstructions.has(value.sourceId)) return false
+  if (value.sourceType === 'decision' && !sets.decisions.has(value.sourceId)) return false
 
   return true
 }
@@ -173,11 +168,19 @@ function isGameEvent(value: unknown, expectedOrder: number): value is GameEvent 
 function isRunSummary(value: unknown): value is RunSummary {
   if (!isRecord(value)) return false
   if (!Number.isInteger(value.runNumber) || (value.runNumber as number) < 1) return false
-  if (typeof value.decision !== 'string' || !validDecisions.has(value.decision as DecisionId)) return false
-  if (
-    typeof value.primaryApproach !== 'string' ||
-    !validApproaches.has(value.primaryApproach as ApproachId)
-  ) {
+
+  // caseId is optional: summaries written before multi-case landed omit it and
+  // are validated as the default case. When present it must name a registered
+  // case, and the run's decision/approach are validated against THAT case.
+  let summaryCaseId = DEFAULT_CASE_ID
+  if (value.caseId !== undefined) {
+    if (typeof value.caseId !== 'string' || !isRegisteredCase(value.caseId)) return false
+    summaryCaseId = value.caseId
+  }
+  const sets = buildCaseIdSets(getCaseContent(summaryCaseId))
+
+  if (typeof value.decision !== 'string' || !sets.decisions.has(value.decision)) return false
+  if (typeof value.primaryApproach !== 'string' || !sets.approaches.has(value.primaryApproach)) {
     return false
   }
   if (!isUniqueArrayOf(value.methodTags, validMethodTags)) return false
@@ -250,45 +253,50 @@ export function migrateRawSave(value: unknown): unknown | null {
 
 export function decodeGameState(value: unknown): GameState | null {
   if (!isRecord(value) || value.schemaVersion !== CURRENT_SAVE_SCHEMA) return null
-  if (typeof value.caseId !== 'string' || value.caseId.length === 0) return null
+  // caseId is now tightened from "nonempty string" to "registered case id"; the
+  // rest of the payload is validated against that case's authored vocabulary.
+  if (typeof value.caseId !== 'string' || !isRegisteredCase(value.caseId)) return null
+  const content = getCaseContent(value.caseId)
+  const sets = buildCaseIdSets(content)
   if (!isStringRecord(value.precedents)) return null
   if (typeof value.phase !== 'string' || !validPhases.has(value.phase as GamePhase)) return null
   if (!Number.isInteger(value.runNumber) || (value.runNumber as number) < 1) return null
   if (
     value.primaryApproach !== null &&
-    (typeof value.primaryApproach !== 'string' ||
-      !validApproaches.has(value.primaryApproach as ApproachId))
+    (typeof value.primaryApproach !== 'string' || !sets.approaches.has(value.primaryApproach))
   ) {
     return null
   }
-  if (!isUniqueArrayOf(value.completedSites, validSites)) return null
+  if (!isUniqueArrayOf(value.completedSites, sets.sites)) return null
   const completedSites = value.completedSites
-  if (!isUniqueArrayOf(value.completedActions, validFieldActions)) return null
+  if (!isUniqueArrayOf(value.completedActions, sets.fieldActions)) return null
   const completedActions = value.completedActions
-  if (!isUniqueArrayOf(value.evidence, validEvidence)) return null
+  if (!isUniqueArrayOf(value.evidence, sets.evidence)) return null
   if (!isUniqueArrayOf(value.methodTags, validMethodTags)) return null
   if (!isTrustState(value.trust)) return null
   if (!Number.isInteger(value.alarm) || (value.alarm as number) < 0 || (value.alarm as number) > 3) {
     return null
   }
   if (typeof value.tribunalOverride !== 'boolean') return null
-  if (!isUniqueArrayOf(value.selectedFragments, validFragments) || value.selectedFragments.length > 2) {
+  if (!isUniqueArrayOf(value.selectedFragments, sets.fragments) || value.selectedFragments.length > 2) {
     return null
   }
   if (
     value.reconstruction !== null &&
-    (typeof value.reconstruction !== 'string' ||
-      !validReconstructions.has(value.reconstruction as ReconstructionId))
+    (typeof value.reconstruction !== 'string' || !sets.reconstructions.has(value.reconstruction))
   ) {
     return null
   }
   if (
     value.decision !== null &&
-    (typeof value.decision !== 'string' || !validDecisions.has(value.decision as DecisionId))
+    (typeof value.decision !== 'string' || !sets.decisions.has(value.decision))
   ) {
     return null
   }
-  if (!Array.isArray(value.events) || !value.events.every((event, index) => isGameEvent(event, index + 1))) {
+  if (
+    !Array.isArray(value.events) ||
+    !value.events.every((event, index) => isGameEvent(event, index + 1, sets))
+  ) {
     return null
   }
   if (!Array.isArray(value.previousRuns) || !value.previousRuns.every(isRunSummary)) return null
@@ -297,7 +305,7 @@ export function decodeGameState(value: unknown): GameState | null {
 
   if (completedSites.length !== completedActions.length) return null
   const actionsMatchSites = completedActions.every((actionId, index) => {
-    const action = fieldActions.find((item) => item.id === actionId)
+    const action = content.fieldActions.find((item) => item.id === actionId)
     return action?.siteId === completedSites[index]
   })
   if (!actionsMatchSites) return null
@@ -309,7 +317,7 @@ export function decodeGameState(value: unknown): GameState | null {
     caseId: value.caseId,
     phase: value.phase as GamePhase,
     runNumber: value.runNumber as number,
-    primaryApproach: value.primaryApproach as ApproachId | null,
+    primaryApproach: value.primaryApproach as GameState['primaryApproach'],
     completedSites,
     completedActions,
     evidence: value.evidence,
@@ -318,8 +326,8 @@ export function decodeGameState(value: unknown): GameState | null {
     alarm: value.alarm as number,
     tribunalOverride: value.tribunalOverride,
     selectedFragments: value.selectedFragments,
-    reconstruction: value.reconstruction as ReconstructionId | null,
-    decision: value.decision as DecisionId | null,
+    reconstruction: value.reconstruction as GameState['reconstruction'],
+    decision: value.decision as GameState['decision'],
     events: value.events,
     previousRuns: value.previousRuns,
     precedents: value.precedents,
