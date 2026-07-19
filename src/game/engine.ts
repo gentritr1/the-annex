@@ -8,6 +8,11 @@ import {
   personas,
   reconstructionDefinitions,
 } from './content'
+// Save-schema constants live with the persistence layer (the single source of
+// truth). Importing them here keeps the version the engine stamps and the run
+// cap it enforces in lockstep with decode/migrate. persistence never imports
+// engine, so there is no cycle.
+import { CURRENT_SAVE_SCHEMA, MAX_PREVIOUS_RUNS } from './persistence'
 import type {
   AccessibilitySettings,
   ApproachId,
@@ -25,6 +30,11 @@ export const defaultAccessibilitySettings: AccessibilitySettings = {
   textSize: 'standard',
   showTrustNumbers: false,
 }
+
+// The only case that exists today. Fresh runs are stamped with it. Distinct
+// from the frozen 'case-77' literal in the v1->v2 migration: this default may
+// change when new cases ship, but historical v1 saves are always Case 77.
+const CASE_ID = 'case-77'
 
 const emptyTrust: Record<PersonaId, number> = {
   registrar: 0,
@@ -44,9 +54,11 @@ function createRunState(
   runNumber: number,
   previousRuns: RunSummary[],
   settings: AccessibilitySettings,
+  precedents: Record<string, string> = {},
 ): GameState {
   return {
-    schemaVersion: 1,
+    schemaVersion: CURRENT_SAVE_SCHEMA,
+    caseId: CASE_ID,
     phase: 'briefing',
     runNumber,
     primaryApproach: null,
@@ -62,6 +74,7 @@ function createRunState(
     decision: null,
     events: [],
     previousRuns,
+    precedents: { ...precedents },
     settings: { ...settings },
     announcement: `Case 77, run ${runNumber}, opened.`,
   }
@@ -350,6 +363,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         phase: 'debrief',
         decision: decision.id,
+        // Record this run's verdict as the case precedent for later runs/cases.
+        precedents: { ...state.precedents, [state.caseId]: decision.id },
         methodTags: addUnique(
           state.methodTags,
           decision.id === 'overwrite-record' ? ['fraud', 'systems'] : ['procedure'],
@@ -371,7 +386,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       const summary = buildRunSummary(state)
       if (!summary) return state
 
-      return createRunState(state.runNumber + 1, [...state.previousRuns, summary], state.settings)
+      // Cap run history at push time, keeping the most recent runs. Residue
+      // reads .at(-1), so trimming the oldest entries changes nothing observable.
+      const previousRuns = [...state.previousRuns, summary].slice(-MAX_PREVIOUS_RUNS)
+      return createRunState(state.runNumber + 1, previousRuns, state.settings, state.precedents)
     }
 
     case 'RETURN_TO_TITLE':

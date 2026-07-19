@@ -24,7 +24,15 @@ Canonical state → optional provider adapter → candidates → authored valida
 
 ### Persistence
 
-`src/game/persistence.ts` stores a versioned JSON snapshot and a separate accessibility-preferences record in `localStorage`. Loading decodes every nested field and rejects malformed or incompatible saves. A future migration should be added per schema version rather than weakening validation. Clearing progress intentionally preserves accessibility preferences.
+`src/game/persistence.ts` stores a versioned JSON snapshot and a separate accessibility-preferences record in `localStorage`. The current save schema is **v2** (`CURRENT_SAVE_SCHEMA`), the single source of truth used by encode (the engine stamps fresh state with it), decode, migration, and tests. v2 added two fields to `GameState`: `caseId` (always `'case-77'` today) and `precedents` (a `caseId → last completed decision id` map), landed together so the multi-case expansion moves the schema only once.
+
+Loading runs `migrateRawSave` **before** `decodeGameState`: the raw parsed save is brought up to `CURRENT_SAVE_SCHEMA` through an ordered pipeline of pure functions in `saveMigrations`, keyed by the version they upgrade *from* and applied in sequence. A non-record save, a missing/non-number `schemaVersion`, a version below 1, or a version above current (never downgrade) all migrate to `null`; decode then validates the migrated record strictly. This replaces the old hard `schemaVersion !== 1` rejection that silently dropped every save on a version bump.
+
+**Adding v3 later:** add the new fields to `GameState`; write a `2` entry in `saveMigrations` that reshapes a v2 record into v3 (pure, no I/O; derive any new field from existing data); bump `CURRENT_SAVE_SCHEMA` to `3` and the `GameState.schemaVersion` literal; and add a hand-authored v2-fixture test asserting an old save still loads with progress intact. The pipeline then chains `1 → 2 → 3` automatically.
+
+Run history (`previousRuns`) is bounded: the engine caps it to the last `MAX_PREVIOUS_RUNS` (20) at push time in `START_NEXT_RUN`, and the 1→2 migration truncates any oversized legacy array. Only the most recent runs are kept; cross-run residue reads `.at(-1)`, so trimming is not observable.
+
+The `SAVE_KEY` string (`'the-annex.case-77.save.v1'`) is frozen: its `.v1` suffix is a historical *key name*, not the schema version. Renaming it would orphan every existing save under the old key — the schema version lives inside the payload as `schemaVersion`. A future migration is added per schema version rather than weakening validation. Clearing progress intentionally preserves accessibility preferences.
 
 ### Presentation
 

@@ -25,8 +25,25 @@ import type {
   SiteId,
 } from './types'
 
+// The '.v1' here is a HISTORICAL localStorage KEY NAME, not the save-schema
+// version. It is deliberately frozen: renaming it would orphan every existing
+// player save under the old key. The schema version lives INSIDE the payload as
+// `schemaVersion` (see CURRENT_SAVE_SCHEMA) and is what migrations key off of.
+// Do not "fix" this to '.v2'.
 const SAVE_KEY = 'the-annex.case-77.save.v1'
 const SETTINGS_KEY = 'the-annex.accessibility.v1'
+
+// The save-schema version this build reads and writes. Single source of truth
+// for encode (engine stamps fresh state with it), decode (strict v2 validation
+// below), migrateRawSave, and tests. Bump this by ONE when the shape changes,
+// and add the matching from->to entry to saveMigrations.
+export const CURRENT_SAVE_SCHEMA = 2
+
+// Upper bound on retained run history. previousRuns is capped at push time in
+// the engine (START_NEXT_RUN) and any oversized legacy array is truncated by
+// the 1->2 migration, so a long-lived save can never grow without bound. Only
+// the most recent runs are kept; cross-run residue reads .at(-1).
+export const MAX_PREVIOUS_RUNS = 20
 
 const validPhases = new Set<GamePhase>([
   'landing',
@@ -88,6 +105,11 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function isFiniteNumber(value: unknown): value is number {
   return typeof value === 'number' && Number.isFinite(value)
+}
+
+function isStringRecord(value: unknown): value is Record<string, string> {
+  if (!isRecord(value)) return false
+  return Object.values(value).every((entry) => typeof entry === 'string')
 }
 
 function isUniqueArrayOf<T extends string>(value: unknown, allowed: Set<T>): value is T[] {
@@ -166,8 +188,70 @@ function isRunSummary(value: unknown): value is RunSummary {
   return isTrustState(value.trust)
 }
 
+// Ordered save migrations, keyed by the schemaVersion they upgrade FROM. Each
+// function receives a record already known to be at its from-version and returns
+// the same record reshaped to from+1. They are PURE (no I/O) and run BEFORE the
+// strict decode below. To add v3 later: write the 2 entry here and bump
+// CURRENT_SAVE_SCHEMA; migrateRawSave will chain 1->2->3 automatically.
+const saveMigrations: Record<number, (raw: Record<string, unknown>) => Record<string, unknown>> = {
+  // v1 -> v2: introduce caseId + precedents, and cap legacy run history.
+  1: (raw) => {
+    // Derive the case precedent from whatever progress the v1 save holds:
+    // a completed run (non-null decision) wins; otherwise the last finished
+    // run recorded in previousRuns; otherwise there is no precedent yet.
+    const decision = raw.decision
+    const previousRuns = raw.previousRuns
+    let precedent: string | null = null
+    if (typeof decision === 'string' && decision.length > 0) {
+      precedent = decision
+    } else if (Array.isArray(previousRuns) && previousRuns.length > 0) {
+      const lastRun = previousRuns[previousRuns.length - 1]
+      if (isRecord(lastRun) && typeof lastRun.decision === 'string') {
+        precedent = lastRun.decision
+      }
+    }
+    // v1 predates multi-case; every v1 save is Case 77 by definition, so this
+    // is a frozen historical literal, NOT the mutable default caseId.
+    const precedents: Record<string, string> = precedent ? { 'case-77': precedent } : {}
+    const cappedRuns = Array.isArray(previousRuns)
+      ? previousRuns.slice(-MAX_PREVIOUS_RUNS)
+      : previousRuns
+
+    return {
+      ...raw,
+      schemaVersion: 2,
+      caseId: 'case-77',
+      precedents,
+      previousRuns: cappedRuns,
+    }
+  },
+}
+
+// Bring a raw parsed save up to CURRENT_SAVE_SCHEMA, or reject it. Returns the
+// migrated record (still untrusted — decodeGameState validates it) or null when
+// the save cannot be migrated. Never attempts a downgrade.
+export function migrateRawSave(value: unknown): unknown | null {
+  if (!isRecord(value)) return null
+  const version = value.schemaVersion
+  if (!isFiniteNumber(version)) return null
+  if (version > CURRENT_SAVE_SCHEMA) return null
+  if (version < 1) return null
+
+  let current: Record<string, unknown> = value
+  let currentVersion = version
+  while (currentVersion < CURRENT_SAVE_SCHEMA) {
+    const migrate = saveMigrations[currentVersion]
+    if (!migrate) return null
+    current = migrate(current)
+    currentVersion += 1
+  }
+  return current
+}
+
 export function decodeGameState(value: unknown): GameState | null {
-  if (!isRecord(value) || value.schemaVersion !== 1) return null
+  if (!isRecord(value) || value.schemaVersion !== CURRENT_SAVE_SCHEMA) return null
+  if (typeof value.caseId !== 'string' || value.caseId.length === 0) return null
+  if (!isStringRecord(value.precedents)) return null
   if (typeof value.phase !== 'string' || !validPhases.has(value.phase as GamePhase)) return null
   if (!Number.isInteger(value.runNumber) || (value.runNumber as number) < 1) return null
   if (
@@ -221,7 +305,8 @@ export function decodeGameState(value: unknown): GameState | null {
   if (value.phase === 'debrief' && value.decision === null) return null
 
   return {
-    schemaVersion: 1,
+    schemaVersion: CURRENT_SAVE_SCHEMA,
+    caseId: value.caseId,
     phase: value.phase as GamePhase,
     runNumber: value.runNumber as number,
     primaryApproach: value.primaryApproach as ApproachId | null,
@@ -237,6 +322,7 @@ export function decodeGameState(value: unknown): GameState | null {
     decision: value.decision as DecisionId | null,
     events: value.events,
     previousRuns: value.previousRuns,
+    precedents: value.precedents,
     settings,
     announcement: value.announcement,
   }
@@ -258,7 +344,8 @@ export function loadGame(): GameState | null {
   if (!serialized) return null
 
   try {
-    return decodeGameState(JSON.parse(serialized) as unknown)
+    const migrated = migrateRawSave(JSON.parse(serialized) as unknown)
+    return decodeGameState(migrated)
   } catch {
     return null
   }

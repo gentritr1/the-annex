@@ -92,7 +92,12 @@ export interface RunSummary {
 }
 
 export interface GameState {
-  schemaVersion: 1
+  // Persisted save-schema version. Bumped only via the migration pipeline in
+  // persistence.ts; the runtime source of truth is CURRENT_SAVE_SCHEMA there.
+  schemaVersion: 2
+  // Which case this run belongs to. Always 'case-77' today; introduced in v2 so
+  // the upcoming multi-case expansion (Case 81) can move the schema only once.
+  caseId: string
   phase: GamePhase
   runNumber: number
   primaryApproach: ApproachId | null
@@ -108,6 +113,10 @@ export interface GameState {
   decision: DecisionId | null
   events: GameEvent[]
   previousRuns: RunSummary[]
+  // caseId -> the decision id of the most recently COMPLETED run of that case.
+  // Empty until a run reaches a verdict. Carried across runs; read by future
+  // cases that branch on a prior verdict.
+  precedents: Record<string, string>
   settings: AccessibilitySettings
   announcement: string
 }

@@ -1,10 +1,24 @@
 import { describe, expect, it } from 'vitest'
 import { canEnterTribunal, createInitialGameState, gameReducer } from './engine'
+import type { GameState } from './types'
 
 function startInvestigation() {
   const initial = createInitialGameState()
   const briefing = gameReducer(initial, { type: 'START_NEW' })
   return gameReducer(briefing, { type: 'SELECT_APPROACH', approachId: 'care' })
+}
+
+// Play a briefing state through to a debrief verdict in one call.
+function playRunToDebrief(briefing: GameState): GameState {
+  let s = gameReducer(briefing, { type: 'SELECT_APPROACH', approachId: 'care' })
+  s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
+  s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
+  s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'scar-sensation' })
+  s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'witness-account' })
+  s = gameReducer(s, { type: 'SUBMIT_RECONSTRUCTION' })
+  s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'authenticate-chain' })
+  s = gameReducer(s, { type: 'ENTER_TRIBUNAL' })
+  return gameReducer(s, { type: 'DECIDE', decisionId: 'certify-continuity' })
 }
 
 function solveReconstruction(state = startInvestigation()) {
@@ -119,6 +133,41 @@ describe('gameReducer', () => {
     expect(state.trust.shepherd).toBe(1)
     expect(state.trust.registrar).toBe(2)
     expect(state.events[0]?.detail).toContain('retain traces')
+  })
+
+  it('records the run verdict as the case precedent, not before', () => {
+    let state = solveReconstruction()
+    state = gameReducer(state, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
+    state = gameReducer(state, { type: 'ENTER_TRIBUNAL' })
+
+    expect(state.caseId).toBe('case-77')
+    expect(state.precedents).toEqual({})
+
+    state = gameReducer(state, { type: 'DECIDE', decisionId: 'charter-new-person' })
+
+    expect(state.precedents).toEqual({ 'case-77': 'charter-new-person' })
+  })
+
+  it('starts a fresh game with no precedents and the current case id', () => {
+    const fresh = gameReducer(createInitialGameState(), { type: 'START_NEW' })
+
+    expect(fresh.caseId).toBe('case-77')
+    expect(fresh.precedents).toEqual({})
+  })
+
+  it('caps carried run history at twenty and keeps the most recent runs', () => {
+    let state = gameReducer(createInitialGameState(), { type: 'START_NEW' })
+    for (let i = 0; i < 22; i++) {
+      state = playRunToDebrief(state)
+      state = gameReducer(state, { type: 'START_NEXT_RUN' })
+    }
+
+    expect(state.runNumber).toBe(23)
+    expect(state.previousRuns).toHaveLength(20)
+    expect(state.previousRuns.at(-1)?.runNumber).toBe(22)
+    expect(state.previousRuns[0]?.runNumber).toBe(3)
+    // The precedent from the last decided run persists across the cap.
+    expect(state.precedents).toEqual({ 'case-77': 'certify-continuity' })
   })
 
   it('records the trust cause of a field action in the event log', () => {
