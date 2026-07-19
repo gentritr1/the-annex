@@ -12,6 +12,11 @@ interface InvestigationProps {
   onEnterTribunal: () => void
 }
 
+// The precipitation mask applied to the map surface. Single source of truth for
+// both the rain density passed to <Atmosphere> and the percentage the world
+// caption reports, so the two can never drift apart (they once read 0.07 vs 12%).
+const MAP_MASK = 0.07
+
 export function Investigation({
   state,
   onCommitAction,
@@ -33,9 +38,9 @@ export function Investigation({
   return (
     <article className="phase-page investigation-page">
       <div className="world-view" role="img" aria-label={chrome.worldAriaLabel}>
-        {/* Rain at 0.07, parallax locked flat (no planes) so the map annotation
-            nodes stay registered against the artwork. */}
-        <Atmosphere mask={0.07} reducedMotion={state.settings.reducedMotion} />
+        {/* Rain at MAP_MASK, parallax locked flat (no planes) so the map
+            annotation nodes stay registered against the artwork. */}
+        <Atmosphere mask={MAP_MASK} reducedMotion={state.settings.reducedMotion} />
         <div className="world-scan" aria-hidden="true" />
         {chrome.worldLabels.map((label) => (
           <div className={label.className} key={label.className}>
@@ -44,7 +49,9 @@ export function Investigation({
         ))}
         <div className="world-caption">
           <span>{chrome.worldCaption[0]}</span>
-          <span>{chrome.worldCaption[1]}</span>
+          <span>
+            {chrome.worldCaption[1]}: {Math.round(MAP_MASK * 100)}%
+          </span>
         </div>
       </div>
 

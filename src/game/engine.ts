@@ -333,9 +333,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           title: `${definition.title} model filed`,
           detail: `${definition.thesis} ${corroboratedAnchors} of 2 anchors were corroborated by your field record.${describeTrustDeltas(definition.trust)}`,
           tone:
-            reconstructionId === 'unresolved-composite' || corroboratedAnchors === 0
-              ? 'warning'
-              : 'positive',
+            definition.unresolvedTone || corroboratedAnchors === 0 ? 'warning' : 'positive',
           methodTags: ['puzzle'],
         }),
         announcement: `${definition.title} filed as evidence.`,
@@ -371,17 +369,14 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         decision: decision.id,
         // Record this run's verdict as the case precedent for later runs/cases.
         precedents: { ...state.precedents, [state.caseId]: decision.id },
-        methodTags: addUnique(
-          state.methodTags,
-          decision.id === 'overwrite-record' ? ['fraud', 'systems'] : ['procedure'],
-        ),
+        methodTags: addUnique(state.methodTags, [...decision.methodTags]),
         events: appendEvent(state, {
           sourceType: 'decision',
           sourceId: decision.id,
           title: decision.title,
           detail: decision.cost,
-          tone: decision.id === 'overwrite-record' ? 'warning' : 'neutral',
-          methodTags: decision.id === 'overwrite-record' ? ['fraud', 'systems'] : ['procedure'],
+          tone: decision.tone,
+          methodTags: [...decision.methodTags],
         }),
         announcement: `${decision.shortLabel}. ${content.label} is resolved for this run.`,
       }

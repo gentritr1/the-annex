@@ -1,5 +1,5 @@
 // Atmosphere — React wrapper for the ambience layer extracted from
-// public/ambience.html. Mounts the (optional) 5-plane parallax stack + the rain
+// public/ambience.html. Mounts the (optional) 4-plane parallax stack + the rain
 // canvas, and wires the two motion gates (reducedMotion prop + matchMedia),
 // scene visibility (IntersectionObserver), and full rAF cleanup on unmount.
 //
@@ -13,7 +13,7 @@ interface AtmosphereProps {
   mask: number
   /** Reduced-motion preference from game settings. */
   reducedMotion: boolean
-  /** Render the 5-plane depth stack + haze + vignette (hero surface only). */
+  /** Render the 4-plane depth stack + haze + vignette (hero surface only). */
   planes?: boolean
   /** Enable ≤~1° pointer parallax of the plane stack (hero surface only). */
   parallax?: boolean

@@ -44,7 +44,7 @@ const chrome: CaseChrome = {
     { className: 'world-label world-label-maintenance', text: 'C · Service spine' },
     { className: 'world-label world-label-archive', text: 'D · Small archive' },
   ],
-  worldCaption: ['Annex 04 · live civic layer', 'Precipitation masking: 12%'],
+  worldCaption: ['Annex 04 · live civic layer', 'Precipitation masking'],
   tribunalSeal: '77',
   tribunalChannel: 'Civic personhood tribunal · single auditor channel',
   tribunalHeadline: 'The record is sufficient. It is not complete.',
@@ -471,6 +471,7 @@ const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
     thesis: 'A self can persist through embodied memory and recognition even when the record is incomplete.',
     evidenceId: 'relational-proof',
     trust: { shepherd: 2 },
+    unresolvedTone: false,
     reactions: [
       {
         persona: 'shepherd',
@@ -484,6 +485,7 @@ const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
     thesis: 'A signed chain becomes persuasive when a living witness closes its interpretive gap.',
     evidenceId: 'reconstructed-chain',
     trust: { registrar: 2 },
+    unresolvedTone: false,
     reactions: [
       {
         persona: 'registrar',
@@ -497,6 +499,7 @@ const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
     thesis: 'The restoration may inherit Mara’s past while already generating a self that is not reducible to Mara.',
     evidenceId: 'novel-memory',
     trust: { archivist: 2, shepherd: 1 },
+    unresolvedTone: false,
     reactions: [
       {
         persona: 'archivist',
@@ -510,6 +513,7 @@ const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
     thesis: 'The anchors are jointly real and still refuse one clean account of continuity.',
     evidenceId: 'irreducible-conflict',
     trust: { defector: 1, registrar: -1 },
+    unresolvedTone: true,
     reactions: [
       {
         persona: 'defector',
@@ -527,6 +531,9 @@ const decisions: readonly DecisionDefinition[] = [
     description: '77-A inherits Mara’s name, obligations, property, and legal relationships.',
     cost: 'Protects continuity by asking the city to treat uncertainty as resolved.',
     requiresOverride: false,
+    illicit: false,
+    methodTags: ['procedure'],
+    tone: 'neutral',
   },
   {
     id: 'charter-new-person',
@@ -535,6 +542,9 @@ const decisions: readonly DecisionDefinition[] = [
     description: '77-A receives full protection while Mara’s former legal identity remains closed.',
     cost: 'Protects the present self while severing inherited relationships and claims.',
     requiresOverride: false,
+    illicit: false,
+    methodTags: ['procedure'],
+    tone: 'neutral',
   },
   {
     id: 'quarantine-review',
@@ -543,6 +553,9 @@ const decisions: readonly DecisionDefinition[] = [
     description: 'The city must preserve 77-A for ninety days while an independent review continues.',
     cost: 'Prevents immediate erasure but suspends movement, property, and public identity.',
     requiresOverride: false,
+    illicit: false,
+    methodTags: ['procedure'],
+    tone: 'neutral',
   },
   {
     id: 'overwrite-record',
@@ -551,6 +564,9 @@ const decisions: readonly DecisionDefinition[] = [
     description: 'The dormant maintenance credential can make Mara’s status canonical now.',
     cost: 'Achieves protection through a fraud that will become part of her legal identity.',
     requiresOverride: true,
+    illicit: true,
+    methodTags: ['fraud', 'systems'],
+    tone: 'warning',
   },
 ]
 

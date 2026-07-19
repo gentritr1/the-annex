@@ -73,10 +73,17 @@ label[for] {
 button:focus-visible,
 summary:focus-visible,
 input:focus-visible,
-a:focus-visible,
-h1:focus-visible {
+a:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 3px;
+}
+
+/* App.tsx moves focus to the scene heading on every phase change so screen
+   readers announce the new scene. Keep that focus target, but suppress the
+   visible ring — the heading is not a keyboard Tab stop (tabindex="-1"), so
+   interactive-element focus rings above are unaffected. */
+h1:focus {
+  outline: none;
 }
 
 button:disabled {
@@ -2630,9 +2637,42 @@ p {
     width: 100%;
   }
 
-  .world-label-care,
+  /* Reposition all four map labels into four vertical bands (staggered
+     left/right) so every label stays visible and non-overlapping down to 390px.
+     Previously care + archive were hidden here. Covers both label sets (A–D and
+     E–H); left-anchored labels keep the ::before dot clear of the edge. */
+  .world-label {
+    font-size: 0.58rem;
+    padding: 4px 6px;
+    max-width: 44%;
+  }
+
+  .world-label-registry {
+    top: 6%;
+    left: 6%;
+    right: auto;
+    bottom: auto;
+  }
+
+  .world-label-care {
+    top: 30%;
+    right: 6%;
+    left: auto;
+    bottom: auto;
+  }
+
+  .world-label-maintenance {
+    top: 54%;
+    left: 6%;
+    right: auto;
+    bottom: auto;
+  }
+
   .world-label-archive {
-    display: none;
+    top: 78%;
+    right: 6%;
+    left: auto;
+    bottom: auto;
   }
 
   .case-header {

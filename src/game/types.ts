@@ -216,6 +216,11 @@ export interface ReconstructionDefinition {
   thesis: string
   evidenceId: EvidenceId
   trust: Partial<Record<PersonaId, number>>
+  // Authored flag (was inferred from Case 77's 'unresolved-composite' id inside
+  // the engine): the irreducible-doubt model whose filing reads as a warning
+  // rather than a positive result. The dynamic `corroboratedAnchors === 0`
+  // condition still applies on top of this at SUBMIT_RECONSTRUCTION time.
+  unresolvedTone: boolean
   // The persona most implicated by this model reacts to it being filed.
   reactions?: readonly PersonaReaction[]
 }
@@ -227,6 +232,14 @@ export interface DecisionDefinition {
   description: string
   cost: string
   requiresOverride: boolean
+  // Authored classification (was inferred from Case 77's 'overwrite-record' id
+  // inside the engine and the Tribunal). `illicit` drives the tribunal's
+  // 'Illicit finding' label and 'risk' tone; `methodTags` and `tone` drive the
+  // DECIDE method-memory tags and the decision event's tone. Every registered
+  // case authors these on every decision so the shared runtime reads only data.
+  illicit: boolean
+  methodTags: readonly MethodTag[]
+  tone: GameEvent['tone']
 }
 
 // The assignment header shown at briefing and echoed across the case rail and

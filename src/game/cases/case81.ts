@@ -47,7 +47,7 @@ const chrome: CaseChrome = {
     { className: 'world-label world-label-maintenance', text: 'G · Records annex' },
     { className: 'world-label world-label-archive', text: 'H · Counsel office' },
   ],
-  worldCaption: ['Deposition Annex · live civic layer', 'Precipitation masking: 12%'],
+  worldCaption: ['Deposition Annex · live civic layer', 'Precipitation masking'],
   tribunalSeal: '81',
   tribunalChannel: 'Civic personhood tribunal · commissioned-witness channel',
   tribunalHeadline: 'The testimony is ready. The witness is not yet a person.',
@@ -476,6 +476,7 @@ const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
     thesis: 'The witness holds standing where its sworn account and another’s recognition of it agree.',
     evidenceId: 'testimonial-standing',
     trust: { shepherd: 2 },
+    unresolvedTone: false,
     reactions: [
       {
         persona: 'shepherd',
@@ -489,6 +490,7 @@ const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
     thesis: 'A clean assembly makes the certification procedurally sound, whatever the city meant by it.',
     evidenceId: 'procedural-legitimacy',
     trust: { registrar: 2 },
+    unresolvedTone: false,
     reactions: [
       {
         persona: 'registrar',
@@ -502,6 +504,7 @@ const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
     thesis: 'Seed and seal together read as a witness built to the city’s specification, not found.',
     evidenceId: 'fabricated-witness',
     trust: { defector: 1, registrar: -1 },
+    unresolvedTone: false,
     reactions: [
       {
         persona: 'defector',
@@ -515,6 +518,7 @@ const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
     thesis: 'The anchors hold together and still refuse a single account of the witness’s standing.',
     evidenceId: 'deadlocked-standing',
     trust: { archivist: 2, shepherd: 1 },
+    unresolvedTone: true,
     reactions: [
       {
         persona: 'archivist',
@@ -532,6 +536,9 @@ const decisions: readonly DecisionDefinition[] = [
     description: '81-C is certified as a person; the testimony about the collapse becomes admissible.',
     cost: 'Seats the witness the city needed by treating its standing as already settled.',
     requiresOverride: false,
+    illicit: false,
+    methodTags: ['procedure'],
+    tone: 'neutral',
   },
   {
     id: 'reject-standing',
@@ -540,6 +547,9 @@ const decisions: readonly DecisionDefinition[] = [
     description: '81-C is denied personhood, and with it the testimony is ruled inadmissible.',
     cost: 'Keeps a commissioned witness out of the record and buries the person alongside it.',
     requiresOverride: false,
+    illicit: false,
+    methodTags: ['procedure'],
+    tone: 'neutral',
   },
   {
     id: 'provisional-seating',
@@ -548,6 +558,9 @@ const decisions: readonly DecisionDefinition[] = [
     description: '81-C is preserved under review; the testimony is held while standing stays open.',
     cost: 'Prevents erasure but suspends the witness and its account together, indefinitely.',
     requiresOverride: false,
+    illicit: false,
+    methodTags: ['procedure'],
+    tone: 'neutral',
   },
   {
     id: 'seal-certification',
@@ -556,6 +569,9 @@ const decisions: readonly DecisionDefinition[] = [
     description: 'The dormant seal can seat the witness and admit the testimony now, with no tribunal vote.',
     cost: 'Seats the witness through a fraud sealed into the certification it depends on.',
     requiresOverride: true,
+    illicit: true,
+    methodTags: ['fraud', 'systems'],
+    tone: 'warning',
   },
 ]
 

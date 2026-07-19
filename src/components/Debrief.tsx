@@ -1,4 +1,4 @@
-import { PersonaSigil } from '../ambience/sigils'
+import { MirrorSigil, PersonaSigil } from '../ambience/sigils'
 import { getCaseContent, getTensionLine, personas } from '../game/content'
 import { getTrustLabel } from '../game/engine'
 import type {
@@ -140,7 +140,7 @@ export function Debrief({
 
       <section className="mirror-invitation">
         <div className="mirror-orbit" aria-hidden="true">
-          ◌
+          <MirrorSigil width={32} height={32} />
         </div>
         <div>
           <p className="section-context">Residual memory available</p>

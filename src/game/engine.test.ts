@@ -107,6 +107,33 @@ describe('gameReducer', () => {
     expect(overrideState.decision).toBe('overwrite-record')
   })
 
+  it('tags the forged Case 77 finding as fraud/systems with a warning event', () => {
+    let state = solveReconstruction()
+    state = gameReducer(state, { type: 'COMMIT_FIELD_ACTION', actionId: 'forge-authority' })
+    state = gameReducer(state, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
+    state = gameReducer(state, { type: 'ENTER_TRIBUNAL' })
+    state = gameReducer(state, { type: 'DECIDE', decisionId: 'overwrite-record' })
+
+    expect(state.decision).toBe('overwrite-record')
+    expect(state.methodTags).toEqual(expect.arrayContaining(['fraud', 'systems']))
+    const event = state.events.at(-1)
+    expect(event?.sourceId).toBe('overwrite-record')
+    expect(event?.tone).toBe('warning')
+    expect(event?.methodTags).toEqual(expect.arrayContaining(['fraud', 'systems']))
+  })
+
+  it('tags a lawful Case 77 finding as procedure with a neutral event', () => {
+    let state = solveReconstruction()
+    state = gameReducer(state, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
+    state = gameReducer(state, { type: 'ENTER_TRIBUNAL' })
+    state = gameReducer(state, { type: 'DECIDE', decisionId: 'certify-continuity' })
+
+    const event = state.events.at(-1)
+    expect(event?.sourceId).toBe('certify-continuity')
+    expect(event?.tone).toBe('neutral')
+    expect(event?.methodTags).toEqual(['procedure'])
+  })
+
   it('carries a compact run summary into the next loop', () => {
     let state = solveReconstruction()
     state = gameReducer(state, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
@@ -295,5 +322,67 @@ describe('START_CASE (multi-case)', () => {
     const fresh = gameReducer(createInitialGameState(), { type: 'START_NEW' })
     expect(available(fresh)).toBe(false)
     expect(available(case77Debrief())).toBe(true)
+  })
+})
+
+describe('authored decision & reconstruction semantics (Case 81)', () => {
+  // Reach Case 81's tribunal with the forged seal acquired, two sites filed, and
+  // a model on record — the Case 81 analogue of Case 77's forged-authority path.
+  function case81Tribunal(): GameState {
+    let s = gameReducer(case77Debrief(), { type: 'START_CASE', caseId: 'case-81' })
+    s = gameReducer(s, { type: 'SELECT_APPROACH', approachId: 'covert' })
+    s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'forge-certification-seal' })
+    s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'take-sworn-statement' })
+    s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
+    s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'oath-cadence' })
+    s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'unscripted-answer' })
+    s = gameReducer(s, { type: 'SUBMIT_RECONSTRUCTION' })
+    return gameReducer(s, { type: 'ENTER_TRIBUNAL' })
+  }
+
+  it('tags the forged seal-certification finding as fraud/systems with a warning event', () => {
+    const tribunal = case81Tribunal()
+    expect(tribunal.phase).toBe('tribunal')
+    expect(tribunal.tribunalOverride).toBe(true)
+
+    const decided = gameReducer(tribunal, { type: 'DECIDE', decisionId: 'seal-certification' })
+
+    expect(decided.phase).toBe('debrief')
+    expect(decided.decision).toBe('seal-certification')
+    expect(decided.methodTags).toEqual(expect.arrayContaining(['fraud', 'systems']))
+    const event = decided.events.at(-1)
+    expect(event?.sourceId).toBe('seal-certification')
+    expect(event?.tone).toBe('warning')
+    expect(event?.methodTags).toEqual(expect.arrayContaining(['fraud', 'systems']))
+  })
+
+  it('tags a lawful Case 81 finding as procedure with a neutral event', () => {
+    const decided = gameReducer(case81Tribunal(), {
+      type: 'DECIDE',
+      decisionId: 'certify-witness',
+    })
+
+    const event = decided.events.at(-1)
+    expect(event?.sourceId).toBe('certify-witness')
+    expect(event?.tone).toBe('neutral')
+    expect(event?.methodTags).toEqual(['procedure'])
+  })
+
+  it('gives Case 81 standing-deadlock a warning tone even when an anchor is corroborated', () => {
+    let s = gameReducer(case77Debrief(), { type: 'START_CASE', caseId: 'case-81' })
+    s = gameReducer(s, { type: 'SELECT_APPROACH', approachId: 'procedure' })
+    // Auditing the restoration log corroborates 'redacted-clause' (its links
+    // include 'restoration-log'), so the warning must come from the authored
+    // unresolvedTone flag, not the corroboratedAnchors === 0 fallback.
+    s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'audit-restoration-log' })
+    s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
+    s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'redacted-clause' })
+    s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'unscripted-answer' })
+    s = gameReducer(s, { type: 'SUBMIT_RECONSTRUCTION' })
+
+    expect(s.reconstruction).toBe('standing-deadlock')
+    const event = s.events.at(-1)
+    expect(event?.detail).toContain('1 of 2 anchors were corroborated')
+    expect(event?.tone).toBe('warning')
   })
 })

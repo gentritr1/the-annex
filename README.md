@@ -2,7 +2,7 @@
 
 A standalone, playable browser vertical slice about auditing a contested identity in a city whose civic infrastructure stores human memory.
 
-The current case, **Case 77: Mara Vale**, proves three mechanics together:
+Two linked case files — **Case 77: Mara Vale** and **Case 81: The Commissioned Witness** — prove three mechanics together:
 
 - multiple investigative methods that change access and social response;
 - a philosophical reconstruction puzzle with several valid interpretations;
@@ -40,7 +40,7 @@ Future AI integrations are proposal-only: models may draft dialogue, reflections
 
 ## MVP scope
 
-Included: one complete case, four investigative sites, four method families, a reconstruction puzzle, four major personas plus a Mirror residue hook, tribunal outcomes, local persistence, responsive controls, and accessibility preferences.
+Included: two linked cases, four investigative sites each, four method families, a reconstruction puzzle, four major personas plus a Mirror residue hook, tribunal outcomes, local persistence, responsive controls, and accessibility preferences.
 
 Deferred: 3D first-person traversal, combat, open-world districts, cloud accounts, live freeform NPC chat, procedural missions, and production-final art/audio.
 

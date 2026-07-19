@@ -117,10 +117,10 @@ export function Tribunal({ state, onDecide, onBack }: TribunalProps) {
               <ChoiceButton
                 key={decision.id}
                 title={decision.title}
-                label={decision.id === 'overwrite-record' ? 'Illicit finding' : 'Tribunal finding'}
+                label={decision.illicit ? 'Illicit finding' : 'Tribunal finding'}
                 description={decision.description}
                 consequence={decision.cost}
-                tone={decision.id === 'overwrite-record' ? 'risk' : 'default'}
+                tone={decision.illicit ? 'risk' : 'default'}
                 tension={tensionFor(decision.id)}
                 requiresConfirmation
                 onClick={() => onDecide(decision.id)}

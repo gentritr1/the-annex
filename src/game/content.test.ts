@@ -72,6 +72,35 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
     expect(decisions.filter((decision) => decision.requiresOverride)).toHaveLength(1)
   })
 
+  it('marks exactly one decision illicit — the override-gated one — with warning tone and non-procedure tags', () => {
+    const illicit = decisions.filter((decision) => decision.illicit)
+    expect(illicit).toHaveLength(1)
+
+    const overrideDecision = decisions.find((decision) => decision.requiresOverride)
+    expect(overrideDecision).toBeDefined()
+    // The single illicit decision is exactly the override-gated one.
+    expect(illicit[0]).toBe(overrideDecision)
+
+    // Its authored runtime signature: warning tone plus method tags that are not
+    // the lawful 'procedure' default (drives the Tribunal label/tone + method memory).
+    expect(overrideDecision?.tone).toBe('warning')
+    expect(overrideDecision?.methodTags.length).toBeGreaterThan(0)
+    expect(overrideDecision?.methodTags).not.toContain('procedure')
+  })
+
+  it('gives every non-illicit decision a neutral tone and no override gate', () => {
+    decisions
+      .filter((decision) => !decision.illicit)
+      .forEach((decision) => {
+        expect(decision.tone).toBe('neutral')
+        expect(decision.requiresOverride).toBe(false)
+      })
+  })
+
+  it('flags exactly one reconstruction with the unresolved (warning) tone', () => {
+    expect(reconstructionDefinitions.filter((model) => model.unresolvedTone)).toHaveLength(1)
+  })
+
   it('resolves every authored evidence reference', () => {
     const evidenceIds = new Set(evidenceDefinitions.map((item) => item.id))
     fieldActions.forEach((action) => expect(evidenceIds.has(action.evidenceId)).toBe(true))

@@ -76,7 +76,7 @@ export function StartScreen({
 
   return (
     <main className="start-screen">
-      {/* Full 5-plane parallax stack carrying the real hero art; the plane-hero
+      {/* Full 4-plane parallax stack carrying the real hero art; the plane-hero
           replaces the static .start-visual, .start-shade stays for text contrast. */}
       <Atmosphere
         className="start-atmosphere"
@@ -95,7 +95,7 @@ export function StartScreen({
         </div>
 
         <div className="start-copy">
-          <p className="case-code">Playable systems prototype · Case 77</p>
+          <p className="case-code">Playable systems prototype · Case files 77 &amp; 81</p>
           <h1 id="game-title">The Annex</h1>
           <p className="start-premise">
             A person has returned from a memory archive. The city needs you to decide whether she is
