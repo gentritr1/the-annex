@@ -229,6 +229,17 @@ export function StartScreen({
                 <small>Increase narrative and control text.</small>
               </span>
             </label>
+            <label className="preference-toggle">
+              <input
+                type="checkbox"
+                checked={settings.ambientSound}
+                onChange={(event) => onUpdateSetting('ambientSound', event.target.checked)}
+              />
+              <span>
+                <strong>Ambient sound</strong>
+                <small>Quiet, synthesized room tone. Off by default.</small>
+              </span>
+            </label>
           </div>
         </details>
 

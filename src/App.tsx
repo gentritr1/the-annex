@@ -1,4 +1,5 @@
-import { useEffect, useReducer, useState, useSyncExternalStore } from 'react'
+import { useEffect, useReducer, useRef, useState, useSyncExternalStore } from 'react'
+import { createAmbientAudio, type AmbientAudioHandle, type WeatherBedKind } from './ambience/audio'
 import { Briefing } from './components/Briefing'
 import { CaseHeader } from './components/CaseHeader'
 import { CaseRail } from './components/CaseRail'
@@ -18,7 +19,8 @@ import {
   saveSettings,
   subscribeStorageAvailability,
 } from './game/persistence'
-import type { CaseSwitchOption } from './game/types'
+import { sceneStateFor } from './scene/sceneState'
+import type { CaseSwitchOption, FieldActionId, SceneStateId } from './game/types'
 import type { AccessibilitySettings } from './game/types'
 
 // Resolve a switchable case id into the presentation model the title and debrief
@@ -38,6 +40,71 @@ function describeSwitchTarget(
   }
 }
 
+interface AmbientAudioParams {
+  // The ambientSound setting (default OFF). The single on/off gate.
+  enabled: boolean
+  // Whether a case surface (briefing/investigation onward) is showing. False on
+  // the title screen — no audio there.
+  active: boolean
+  // The bed keyed by the current case's scene weather kind.
+  weatherKind: WeatherBedKind
+  // The resolved scene state driving the gain/filter treatment.
+  sceneState: SceneStateId
+}
+
+// Wire the (React-free) ambient audio engine to game state. One engine per App
+// lifetime, created inside an effect (StrictMode-safe: fully torn down and
+// recreated) and driven entirely by props — no DOM observation of the scene.
+function useAmbientAudio({ enabled, active, weatherKind, sceneState }: AmbientAudioParams): void {
+  const handleRef = useRef<AmbientAudioHandle | null>(null)
+
+  // Create once; destroy (and close the AudioContext) on unmount.
+  useEffect(() => {
+    const handle = createAmbientAudio()
+    handleRef.current = handle
+    if (import.meta.env.DEV) {
+      // Verification handle only (dev builds): probe context.state / getSnapshot().
+      ;(window as unknown as { __annexAmbient?: AmbientAudioHandle }).__annexAmbient = handle
+    }
+    return () => {
+      handle.destroy()
+      handleRef.current = null
+    }
+  }, [])
+
+  // Keep the active bed and its scene treatment synced. Both are no-ops until the
+  // engine is started, so they are safe to push every time either changes.
+  useEffect(() => {
+    handleRef.current?.setWeather(weatherKind)
+  }, [weatherKind])
+  useEffect(() => {
+    handleRef.current?.setSceneState(sceneState)
+  }, [sceneState])
+
+  // Enable / active lifecycle + gesture arming. The engine only ever constructs
+  // or resumes the AudioContext inside a real user gesture: on toggle-on we are
+  // inside the click's activation, so it starts at once; on a reload with the
+  // setting persisted ON there is no activation yet, so the bed is ARMED and the
+  // first pointer/key interaction starts it.
+  useEffect(() => {
+    const handle = handleRef.current
+    if (!handle) return
+    if (!enabled || !active) {
+      handle.stop()
+      return
+    }
+    const activation = typeof navigator !== 'undefined' ? navigator.userActivation : undefined
+    if (activation?.isActive) handle.start()
+    const kick = () => handle.start()
+    window.addEventListener('pointerdown', kick, { once: true })
+    window.addEventListener('keydown', kick, { once: true })
+    return () => {
+      window.removeEventListener('pointerdown', kick)
+      window.removeEventListener('keydown', kick)
+    }
+  }, [enabled, active])
+}
+
 export default function App() {
   const [state, dispatch] = useReducer(gameReducer, undefined, () =>
     createInitialGameState(loadSettings() ?? undefined),
@@ -48,6 +115,39 @@ export default function App() {
     getStorageAvailability,
     () => true,
   )
+
+  // Which deposition entry action (if any) has its transcript open. Lifted here
+  // from Investigation so the audio scene state — which presses/corroborates
+  // while a transcript is open — reads the SAME resolved value the SceneStage
+  // renders, via props (no DOM observation). The transcript is a full-screen
+  // blocking modal that can only be closed by commit or abandon (both clear this),
+  // so it is always null by the time the phase leaves investigation — no reset
+  // needed, and App and SceneStage always read the identical value.
+  const [depositionEntry, setDepositionEntry] = useState<FieldActionId | null>(null)
+
+  // The bed for this case, and the resolved scene state that drives its gain.
+  // Only rain (Case 77) and dust (Case 81) are synthesized; a weatherless case
+  // gets no bed. Tribunal/debrief resolve to fixed states; investigation resolves
+  // through the same sceneStateFor the SceneStage uses; briefing is neutral.
+  const weatherKind = getCaseContent(state.caseId).scene.weather.kind
+  const weatherBed: WeatherBedKind | null =
+    weatherKind === 'dust' ? 'dust' : weatherKind === 'rain' ? 'rain' : null
+  let audioSceneState: SceneStateId = 'neutral'
+  if (state.phase === 'tribunal') audioSceneState = 'tribunal'
+  else if (state.phase === 'debrief') audioSceneState = 'aftermath'
+  else if (state.phase === 'investigation') {
+    audioSceneState = sceneStateFor(state, {
+      surface: 'investigation',
+      openDepositionEntry: depositionEntry,
+    })
+  }
+
+  useAmbientAudio({
+    enabled: state.settings.ambientSound,
+    active: state.phase !== 'landing' && weatherBed !== null,
+    weatherKind: weatherBed ?? 'rain',
+    sceneState: audioSceneState,
+  })
 
   useEffect(() => {
     const label = getCaseContent(state.caseId).label
@@ -188,6 +288,8 @@ export default function App() {
           {state.phase === 'investigation' && (
             <Investigation
               state={state}
+              depositionEntry={depositionEntry}
+              onDepositionEntryChange={setDepositionEntry}
               onCommitAction={(actionId) => dispatch({ type: 'COMMIT_FIELD_ACTION', actionId })}
               onCommitDeposition={(actionId, beats, askedConsent) =>
                 dispatch({ type: 'COMMIT_DEPOSITION', actionId, beats, askedConsent })

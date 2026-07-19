@@ -145,12 +145,18 @@ export function decodeAccessibilitySettings(value: unknown): AccessibilitySettin
   if (typeof value.highContrast !== 'boolean') return null
   if (value.textSize !== 'standard' && value.textSize !== 'large') return null
   if (typeof value.showTrustNumbers !== 'boolean') return null
+  // ambientSound is optional-tolerated: absent decodes to false (older stored
+  // settings keep loading), the same treatment RunSummary.caseId gets. When
+  // present it must be a boolean — a malformed value rejects the whole blob,
+  // matching the strict treatment every other field gets.
+  if (value.ambientSound !== undefined && typeof value.ambientSound !== 'boolean') return null
 
   return {
     reducedMotion: value.reducedMotion,
     highContrast: value.highContrast,
     textSize: value.textSize,
     showTrustNumbers: value.showTrustNumbers,
+    ambientSound: value.ambientSound ?? false,
   }
 }
 

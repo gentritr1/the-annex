@@ -200,16 +200,44 @@ describe('decodeGameState', () => {
 })
 
 describe('decodeAccessibilitySettings', () => {
-  it('requires every preference and preserves a valid set', () => {
+  it('requires every mandatory preference and preserves a valid set', () => {
     const settings = {
       reducedMotion: true,
       highContrast: false,
       textSize: 'large' as const,
       showTrustNumbers: true,
+      ambientSound: true,
     }
 
     expect(decodeAccessibilitySettings(settings)).toEqual(settings)
     expect(decodeAccessibilitySettings({ reducedMotion: true })).toBeNull()
+  })
+
+  it('tolerates stored settings that predate ambientSound (missing -> false)', () => {
+    // The true pre-ambientSound shape: the four original fields, no ambientSound.
+    // Same optional-tolerated treatment RunSummary.caseId gets — an older stored
+    // blob must keep loading rather than being rejected.
+    const legacy = {
+      reducedMotion: false,
+      highContrast: true,
+      textSize: 'standard' as const,
+      showTrustNumbers: false,
+    }
+    expect(decodeAccessibilitySettings(legacy)).toEqual({ ...legacy, ambientSound: false })
+  })
+
+  it('accepts ambientSound true and rejects a present-but-non-boolean value', () => {
+    const base = {
+      reducedMotion: false,
+      highContrast: false,
+      textSize: 'standard' as const,
+      showTrustNumbers: false,
+    }
+    expect(decodeAccessibilitySettings({ ...base, ambientSound: true })?.ambientSound).toBe(true)
+    expect(decodeAccessibilitySettings({ ...base, ambientSound: false })?.ambientSound).toBe(false)
+    // Present but malformed rejects the whole blob (strict, like every other field).
+    expect(decodeAccessibilitySettings({ ...base, ambientSound: 'on' })).toBeNull()
+    expect(decodeAccessibilitySettings({ ...base, ambientSound: 1 })).toBeNull()
   })
 })
 
@@ -226,6 +254,8 @@ describe('migrateRawSave (v1 -> current)', () => {
       // Optional-tolerated: a pre-deposition save has no record; decode normalizes
       // the absent field to null. Progress is otherwise untouched.
       depositionRecord: null,
+      // A v1 save's settings predate ambientSound; decode normalizes it to false.
+      settings: { ...v1Settings, ambientSound: false },
     })
     // Spot-check that field progress survived the migration.
     expect(decoded?.completedActions).toEqual(['authenticate-chain'])
@@ -246,6 +276,8 @@ describe('migrateRawSave (v1 -> current)', () => {
       caseId: 'case-77',
       precedents: { 'case-77': 'certify-continuity' },
       depositionRecord: null,
+      // A v1 save's settings predate ambientSound; decode normalizes it to false.
+      settings: { ...v1Settings, ambientSound: false },
     })
   })
 

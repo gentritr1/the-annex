@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { getCaseContent, resolveFieldAction } from '../game/content'
 import { canEnterTribunal } from '../game/engine'
 import { SceneStage } from '../scene/SceneStage'
@@ -10,6 +9,10 @@ import { ReactionQuotes } from './ReactionQuotes'
 
 interface InvestigationProps {
   state: GameState
+  // Which deposition entry action, if any, has its transcript open. Lifted to App
+  // so the ambient-audio scene state reads the same value (view-local otherwise).
+  depositionEntry: FieldActionId | null
+  onDepositionEntryChange: (entry: FieldActionId | null) => void
   onCommitAction: (actionId: FieldActionId) => void
   onCommitDeposition: (
     actionId: FieldActionId,
@@ -31,6 +34,8 @@ function focusSiteCard(siteId: SiteId, reducedMotion: boolean) {
 
 export function Investigation({
   state,
+  depositionEntry,
+  onDepositionEntryChange,
   onCommitAction,
   onCommitDeposition,
   onOpenReconstruction,
@@ -39,9 +44,6 @@ export function Investigation({
   const content = getCaseContent(state.caseId)
   const { sites, fieldActions, reconstructionDefinitions, chrome, deposition, scene } = content
   const reconstruction = reconstructionDefinitions.find((item) => item.id === state.reconstruction)
-  // Which deposition entry action, if any, has its transcript open. Local view
-  // state only: opening it dispatches nothing, and closing it commits nothing.
-  const [depositionEntry, setDepositionEntry] = useState<FieldActionId | null>(null)
   // The scene state is a pure read of GameState + the open-deposition view: the
   // interior presses/corroborates while a transcript is open, and holds refusal
   // after a refused consent. A flat map (Case 77) resolves to 'neutral' here.
@@ -171,7 +173,7 @@ export function Investigation({
                           requiresConfirmation={!isDepositionEntry}
                           onClick={
                             isDepositionEntry
-                              ? () => setDepositionEntry(action.id)
+                              ? () => onDepositionEntryChange(action.id)
                               : () => onCommitAction(action.id)
                           }
                         />
@@ -244,10 +246,10 @@ export function Investigation({
           state={state}
           entryActionId={depositionEntry}
           onCommit={(actionId, beats, askedConsent) => {
-            setDepositionEntry(null)
+            onDepositionEntryChange(null)
             onCommitDeposition(actionId, beats, askedConsent)
           }}
-          onAbandon={() => setDepositionEntry(null)}
+          onAbandon={() => onDepositionEntryChange(null)}
         />
       )}
     </article>

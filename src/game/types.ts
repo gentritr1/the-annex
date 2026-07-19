@@ -71,6 +71,12 @@ export interface AccessibilitySettings {
   highContrast: boolean
   textSize: 'standard' | 'large'
   showTrustNumbers: boolean
+  // Opt-in synthesized ambient sound, DEFAULT OFF. Optional-tolerated in decode
+  // (a stored settings blob written before this field existed loads with
+  // ambientSound === false — same pattern as RunSummary.caseId), so no schema
+  // bump. Sound is not motion: the reduced-motion preference does NOT gate it;
+  // this toggle's default-off state is the accessibility posture on its own.
+  ambientSound: boolean
 }
 
 export interface GameEvent {

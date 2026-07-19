@@ -81,6 +81,14 @@ export function CaseHeader({ state, onReturnToTitle, onUpdateSetting }: CaseHead
             />
             Show trust values
           </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={state.settings.ambientSound}
+              onChange={(event) => onUpdateSetting('ambientSound', event.target.checked)}
+            />
+            Ambient sound
+          </label>
         </div>
       </details>
     </header>
