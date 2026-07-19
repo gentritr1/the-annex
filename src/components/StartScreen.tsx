@@ -1,22 +1,31 @@
 import { useState } from 'react'
 import { Atmosphere } from '../ambience/Atmosphere'
-import type { AccessibilitySettings, GameState } from '../game/types'
+import type { AccessibilitySettings, CaseSwitchOption, GameState } from '../game/types'
 
 interface StartScreenProps {
   savedState: GameState | null
   settings: AccessibilitySettings
   storageAvailable: boolean
-  // True once the saved game carries a Case 77 verdict, unlocking Case 81.
-  case81Available: boolean
+  // Cases the save may switch to: every registered case except the one it is on,
+  // gated by any precedent the target cites. Empty when there is nowhere to go.
+  switchTargets: readonly CaseSwitchOption[]
   onNew: () => void
   onContinue: () => void
-  onOpenCase81: () => void
+  onSwitchCase: (caseId: string) => void
   onErase: () => void
   onUpdateSetting: (
     setting: keyof AccessibilitySettings,
     value: boolean | 'standard' | 'large',
   ) => void
 }
+
+// The pending two-step confirmation. Switching a save that is mid-run closes the
+// unfinished run, so it takes the same confirm gate as replacing/erasing.
+type Confirmation =
+  | { kind: 'replace' }
+  | { kind: 'erase' }
+  | { kind: 'switch'; caseId: string }
+  | null
 
 function phaseLabel(phase: GameState['phase']): string {
   if (phase === 'debrief') return 'debrief'
@@ -28,26 +37,40 @@ export function StartScreen({
   savedState,
   settings,
   storageAvailable,
-  case81Available,
+  switchTargets,
   onNew,
   onContinue,
-  onOpenCase81,
+  onSwitchCase,
   onErase,
   onUpdateSetting,
 }: StartScreenProps) {
-  const [confirmation, setConfirmation] = useState<'replace' | 'erase' | null>(null)
+  const [confirmation, setConfirmation] = useState<Confirmation>(null)
+
+  // A saved run that has not reached its debrief is still in progress; switching
+  // away from it discards the unfinished run, so it needs a confirm step.
+  const runInProgress = Boolean(savedState) && savedState?.phase !== 'debrief'
 
   function requestNewAudit() {
     if (savedState) {
-      setConfirmation('replace')
+      setConfirmation({ kind: 'replace' })
       return
     }
     onNew()
   }
 
+  function requestSwitchCase(caseId: string) {
+    if (runInProgress) {
+      setConfirmation({ kind: 'switch', caseId })
+      return
+    }
+    onSwitchCase(caseId)
+  }
+
   function confirmAction() {
-    if (confirmation === 'replace') onNew()
-    if (confirmation === 'erase') onErase()
+    if (!confirmation) return
+    if (confirmation.kind === 'replace') onNew()
+    else if (confirmation.kind === 'erase') onErase()
+    else if (confirmation.kind === 'switch') onSwitchCase(confirmation.caseId)
     setConfirmation(null)
   }
 
@@ -90,13 +113,18 @@ export function StartScreen({
               </span>
             </button>
           )}
-          {case81Available && (
-            <button className="button button-secondary" type="button" onClick={onOpenCase81}>
-              {/* [TODO-81] in-voice label lands with the authoring pass */}
-              <span>[TODO-81] Open Case 81</span>
-              <span className="button-meta">The Commissioned Witness · carries your record</span>
-            </button>
-          )}
+          {savedState &&
+            switchTargets.map((target) => (
+              <button
+                key={target.caseId}
+                className="button button-secondary"
+                type="button"
+                onClick={() => requestSwitchCase(target.caseId)}
+              >
+                <span>{target.heading}</span>
+                <span className="button-meta">{target.meta}</span>
+              </button>
+            ))}
           <button
             className={savedState ? 'button button-secondary' : 'button button-primary'}
             type="button"
@@ -112,16 +140,28 @@ export function StartScreen({
         {confirmation && (
           <div className="inline-confirmation" role="alert">
             <div>
-              <strong>{confirmation === 'replace' ? 'Replace the current save?' : 'Erase local progress?'}</strong>
+              <strong>
+                {confirmation.kind === 'replace'
+                  ? 'Replace the current save?'
+                  : confirmation.kind === 'erase'
+                    ? 'Erase local progress?'
+                    : 'Leave the run in progress?'}
+              </strong>
               <p>
-                {confirmation === 'replace'
+                {confirmation.kind === 'replace'
                   ? 'The next autosave will replace the existing run and its accumulated residue.'
-                  : 'This removes the saved case and run history. Access preferences stay on this device.'}
+                  : confirmation.kind === 'erase'
+                    ? 'This removes the saved case and run history. Access preferences stay on this device.'
+                    : 'The run you have open will close. Only completed cases carry forward — nothing from this unfinished run does.'}
               </p>
             </div>
             <div className="inline-confirmation-actions">
               <button className="button button-primary" type="button" onClick={confirmAction}>
-                {confirmation === 'replace' ? 'Start fresh' : 'Erase progress'}
+                {confirmation.kind === 'replace'
+                  ? 'Start fresh'
+                  : confirmation.kind === 'erase'
+                    ? 'Erase progress'
+                    : 'Leave and switch'}
               </button>
               <button className="text-button" type="button" onClick={() => setConfirmation(null)}>
                 Cancel
@@ -178,7 +218,7 @@ export function StartScreen({
               : 'Session only · local saving unavailable · no timer'}
           </p>
           {savedState && (
-            <button className="text-button" type="button" onClick={() => setConfirmation('erase')}>
+            <button className="text-button" type="button" onClick={() => setConfirmation({ kind: 'erase' })}>
               Erase local save
             </button>
           )}

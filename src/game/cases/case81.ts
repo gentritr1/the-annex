@@ -18,44 +18,43 @@ import type {
   SiteDefinition,
 } from '../types'
 
-// Case 81 — "The Commissioned Witness". STRUCTURAL STUB. Every authored string
-// is prefixed "[TODO-81] " so a later authoring pass can grep and replace it;
-// ids, the case label/seal, and CSS class names are structural and stay clean.
-//
-// Premise (drives ids/structure; prose is placeholder): the city has legally
-// restored instance 81-C, the former Deputy Registrar of the Lower Span, to
-// testify about the collapse. Testimony is admissible only if the tribunal
-// certifies the restoration as a person. The player audits that certification.
+// Case 81 — "The Commissioned Witness". The inversion of Case 77: Mara's
+// restoration was private and prohibited; 81-C's is institutional and
+// convenient. The city has legally rebuilt the former Deputy Registrar of the
+// Lower Span to testify about the collapse, because 81-C is the one person who
+// could name who authored the fourth minute — and testimony is admissible only
+// if the tribunal first certifies the restoration as a person. The player audits
+// personhood knowing the city ordered the person into existence to say something.
 
 const caseFile: CaseFile = {
   code: 'CMA–81–C',
-  title: '[TODO-81] The Commissioned Witness',
-  subject: '[TODO-81] restoration instance 81-C / former Deputy Registrar of the Lower Span',
-  deadline: '[TODO-81] Certification closes before the deposition is sworn',
-  question: '[TODO-81] Can the city restore a witness whose testimony it needs and still call the restoration a person?',
+  title: 'The Commissioned Witness',
+  subject: 'Restoration instance 81-C / former Deputy Registrar of the Lower Span',
+  deadline: 'Certification closes before the deposition is sworn',
+  question: 'Can the city restore the witness it needs and still call the restoration a person?',
   publicRecord:
-    '[TODO-81] Instance 81-C was assembled from Deputy Registrar service records to testify about the Lower Span collapse. The testimony is admissible only if the restoration is first certified as a person.',
+    'Instance 81-C was assembled from the Lower Span’s institutional backups to testify about the archive collapse. Under statute the testimony is admissible only if the tribunal first certifies the restoration as a person.',
   mandate:
-    '[TODO-81] Audit whether 81-C is a witness the tribunal may certify, a document the city is puppeting, or a standing question that cannot be seated. Your route through the record will become part of the record.',
+    'Determine whether 81-C is a witness the tribunal may seat, a document the city is speaking through, or a standing that cannot yet be certified. Your route through the record will become part of the record.',
 }
 
 const chrome: CaseChrome = {
-  briefingCoordinates: '[TODO-81] Lower Span / Deposition Annex',
-  worldAriaLabel: '[TODO-81] Rain-dark deposition annex at night',
+  briefingCoordinates: 'Lower Span / Deposition Annex',
+  worldAriaLabel: 'Rain-dark deposition annex at night',
   worldLabels: [
-    { className: 'world-label world-label-registry', text: '[TODO-81] E · Deposition' },
-    { className: 'world-label world-label-care', text: '[TODO-81] F · Restoration lab' },
-    { className: 'world-label world-label-maintenance', text: '[TODO-81] G · Records annex' },
-    { className: 'world-label world-label-archive', text: '[TODO-81] H · Counsel office' },
+    { className: 'world-label world-label-registry', text: 'E · Deposition' },
+    { className: 'world-label world-label-care', text: 'F · Restoration lab' },
+    { className: 'world-label world-label-maintenance', text: 'G · Records annex' },
+    { className: 'world-label world-label-archive', text: 'H · Counsel office' },
   ],
-  worldCaption: ['[TODO-81] Deposition Annex · live civic layer', '[TODO-81] Precipitation masking: 12%'],
+  worldCaption: ['Deposition Annex · live civic layer', 'Precipitation masking: 12%'],
   tribunalSeal: '81',
-  tribunalChannel: '[TODO-81] Civic personhood tribunal · commissioned-witness channel',
-  tribunalHeadline: '[TODO-81] The witness is ready. Its standing is not.',
+  tribunalChannel: 'Civic personhood tribunal · commissioned-witness channel',
+  tribunalHeadline: 'The testimony is ready. The witness is not yet a person.',
   tribunalIntro:
-    '[TODO-81] Your certification will make the testimony admissible or void. It cannot settle whether the witness is a person.',
+    'Your certification decides whether the testimony is heard. It cannot decide whether the city should have built the witness to give it.',
   lockedDecisionHint:
-    '[TODO-81] Locked. Acquire the dormant certification seal through the Records Annex forgery route.',
+    'Locked. Acquire the dormant seal through the Records Annex forgery route.',
 }
 
 // Same four approach ids as every case (they map to the shared persona cast);
@@ -63,34 +62,34 @@ const chrome: CaseChrome = {
 const approaches: readonly ApproachDefinition[] = [
   {
     id: 'procedure',
-    title: '[TODO-81] Begin with the deposition',
+    title: 'Begin with the deposition',
     method: 'Procedure',
-    description: '[TODO-81] Open the sworn record before meeting the restored witness.',
-    consequence: '[TODO-81] The Registrar opens with provisional confidence.',
+    description: 'Open the sworn record before you meet the witness the city built.',
+    consequence: 'The Registrar opens with provisional confidence.',
     trust: { registrar: 1 },
   },
   {
     id: 'care',
-    title: '[TODO-81] Begin with the witness',
+    title: 'Begin with the witness',
     method: 'Care',
-    description: '[TODO-81] Meet 81-C before deciding what kind of witness it is.',
-    consequence: '[TODO-81] The Shepherd will remember that sequence.',
+    description: 'Meet 81-C before you decide what kind of witness it is.',
+    consequence: 'The Shepherd will remember that sequence.',
     trust: { shepherd: 1 },
   },
   {
     id: 'covert',
-    title: '[TODO-81] Begin outside permission',
+    title: 'Begin outside permission',
     method: 'Covert',
-    description: '[TODO-81] Map what the certification path was designed not to show.',
-    consequence: '[TODO-81] The Defector offers a quiet route through the records annex.',
+    description: 'Map what the certification path was built not to show.',
+    consequence: 'The Defector offers a quiet route through the records annex.',
     trust: { defector: 1 },
   },
   {
     id: 'curiosity',
-    title: '[TODO-81] Begin with the missing clause',
+    title: 'Begin with the missing clause',
     method: 'Inquiry',
-    description: '[TODO-81] Ask which clause the certification statute never defines.',
-    consequence: '[TODO-81] The Small Archivist saves your first unanswered question.',
+    description: 'Ask which clause the certification statute never defines.',
+    consequence: 'The Small Archivist saves your first unanswered question.',
     trust: { archivist: 1 },
   },
 ]
@@ -98,99 +97,99 @@ const approaches: readonly ApproachDefinition[] = [
 const evidenceDefinitions: readonly EvidenceDefinition[] = [
   {
     id: 'sworn-statement',
-    title: '[TODO-81] Sworn statement 81-C',
-    source: '[TODO-81] Deposition suite record',
+    title: 'Sworn statement 81-C',
+    source: 'Deposition suite record',
     status: 'verified',
-    claim: '[TODO-81] The witness delivered a signed, admissible account of the collapse.',
-    contradiction: '[TODO-81] A signed statement proves compliance, not standing.',
+    claim: 'Every answer 81-C gave under oath is signed, sequenced, and admissible.',
+    contradiction: 'A signed statement proves the witness complied. It does not prove the witness has standing to comply.',
   },
   {
     id: 'cross-contradiction',
-    title: '[TODO-81] Contradiction under cross',
-    source: '[TODO-81] Deposition cross-examination',
+    title: 'Divergence under cross',
+    source: 'Deposition cross-examination',
     status: 'disputed',
-    claim: '[TODO-81] Under pressure the witness diverged from its own service record.',
-    contradiction: '[TODO-81] Divergence may prove a self, or prove a faulty restoration.',
+    claim: 'Pressed past its brief, 81-C contradicted its own service record.',
+    contradiction: 'Divergence could be a self the record never held, or a restoration that failed to hold the record.',
   },
   {
     id: 'restoration-log',
-    title: '[TODO-81] Restoration assembly log',
-    source: '[TODO-81] Restoration lab ledger',
+    title: 'Restoration assembly log',
+    source: 'Restoration lab ledger',
     status: 'anomaly',
-    claim: '[TODO-81] The assembly log was closed in the fourth minute after the collapse.',
-    contradiction: '[TODO-81] The log may describe a commission, not a recovery.',
+    claim: 'The assembly log was closed in the fourth minute after the collapse, timed to the certificate it supports.',
+    contradiction: 'The log may describe a commission the city placed, not a recovery the city found.',
   },
   {
     id: 'seed-replica',
-    title: '[TODO-81] Replicated memory seed',
-    source: '[TODO-81] Restoration lab bench',
+    title: 'Replicated memory seed',
+    source: 'Restoration lab bench',
     status: 'testimony',
-    claim: '[TODO-81] A reseeded fragment reproduced a memory absent from every donor record.',
-    contradiction: '[TODO-81] A reproducible seed proves a process, not a witness.',
+    claim: 'A reseeded fragment returned a memory held in no donor record.',
+    contradiction: 'A reproducible seed proves a working process, not a witness who lived the memory.',
   },
   {
     id: 'service-record',
-    title: '[TODO-81] Deputy Registrar service record',
-    source: '[TODO-81] Records annex',
+    title: 'Deputy Registrar service record',
+    source: 'Records annex',
     status: 'verified',
-    claim: '[TODO-81] The service record ties 81-C to the office that requested this audit.',
-    contradiction: '[TODO-81] Provenance of the record is not provenance of the person.',
+    claim: 'The service record ties 81-C to the office that filed for this audit.',
+    contradiction: 'Provenance of the record is not provenance of the person the record describes.',
   },
   {
     id: 'certification-seal',
-    title: '[TODO-81] Dormant certification seal',
-    source: '[TODO-81] Decommissioned certification authority',
+    title: 'Dormant certification seal',
+    source: 'Decommissioned certification authority',
     status: 'verified',
-    claim: '[TODO-81] A dormant seal can certify standing without a full tribunal vote.',
-    contradiction: '[TODO-81] Using it makes the certification procedurally real and legally fraudulent.',
+    claim: 'A retired seal can still certify standing without a full tribunal vote.',
+    contradiction: 'Using it makes the certification procedurally real and legally fraudulent at once.',
   },
   {
     id: 'counsel-brief',
-    title: '[TODO-81] City counsel brief',
-    source: '[TODO-81] Counsel office filing',
+    title: 'City counsel brief',
+    source: 'Counsel office filing',
     status: 'testimony',
-    claim: '[TODO-81] City counsel argues the witness must be seated for the testimony to hold.',
-    contradiction: '[TODO-81] The city needs the witness it is asking you to certify.',
+    claim: 'The city argues the witness must be seated or the collapse loses its only account.',
+    contradiction: 'The city needs the person it is asking you to find real.',
   },
   {
     id: 'opposing-deposition',
-    title: '[TODO-81] Opposing deposition',
-    source: '[TODO-81] Opposing counsel record',
+    title: 'Opposing deposition',
+    source: 'Opposing counsel record',
     status: 'disputed',
-    claim: '[TODO-81] Opposing counsel deposes that 81-C is a commissioned instrument.',
-    contradiction: '[TODO-81] The objection protects the record and also buries the person.',
+    claim: 'Opposing counsel deposes that 81-C is a commissioned instrument, not a witness.',
+    contradiction: 'The objection guards the record and buries the person inside the same motion.',
   },
   {
     id: 'testimonial-standing',
-    title: '[TODO-81] Testimonial standing model',
-    source: '[TODO-81] Standing reconstruction',
+    title: 'Testimonial standing model',
+    source: 'Standing reconstruction',
     status: 'testimony',
-    claim: '[TODO-81] The witness holds standing where sworn account and recognition agree.',
-    contradiction: '[TODO-81] Standing can validate a performance without proving a person.',
+    claim: 'The witness holds standing where its sworn account and another’s recognition agree.',
+    contradiction: 'Standing can certify a convincing performance without proving a person behind it.',
   },
   {
     id: 'procedural-legitimacy',
-    title: '[TODO-81] Procedural legitimacy model',
-    source: '[TODO-81] Standing reconstruction',
+    title: 'Procedural legitimacy model',
+    source: 'Standing reconstruction',
     status: 'verified',
-    claim: '[TODO-81] A clean assembly log makes the certification procedurally legitimate.',
-    contradiction: '[TODO-81] Legitimacy of process is not the same as legitimacy of standing.',
+    claim: 'A clean assembly log makes the certification procedurally beyond challenge.',
+    contradiction: 'A legitimate process is not a legitimate person; the city can author both.',
   },
   {
     id: 'fabricated-witness',
-    title: '[TODO-81] Fabricated witness model',
-    source: '[TODO-81] Standing reconstruction',
+    title: 'Fabricated witness model',
+    source: 'Standing reconstruction',
     status: 'anomaly',
-    claim: '[TODO-81] The seed and the seal together read as a witness fabricated to order.',
-    contradiction: '[TODO-81] Fabrication proves a commission, not the absence of a self.',
+    claim: 'The seed and the seal together read as a witness built to the city’s specification.',
+    contradiction: 'Fabrication proves a commission, not the absence of a self that survived it.',
   },
   {
     id: 'deadlocked-standing',
-    title: '[TODO-81] Deadlocked standing model',
-    source: '[TODO-81] Standing reconstruction',
+    title: 'Deadlocked standing model',
+    source: 'Standing reconstruction',
     status: 'disputed',
-    claim: '[TODO-81] The anchors coexist and refuse one account of the witness’s standing.',
-    contradiction: '[TODO-81] A deadlock may be honest, or an excuse to seat nothing.',
+    claim: 'The anchors hold together and still refuse one account of the witness’s standing.',
+    contradiction: 'A deadlock may be the honest finding, or an excuse to seat no one and lose the testimony.',
   },
 ]
 
@@ -198,196 +197,196 @@ const fieldActions: readonly FieldActionDefinition[] = [
   {
     id: 'take-sworn-statement',
     siteId: 'deposition-suite',
-    title: '[TODO-81] Take the sworn statement',
+    title: 'Take the sworn statement',
     methodLabel: 'Procedure',
-    description: '[TODO-81] Record the witness’s account under oath before testing it.',
-    consequence: '[TODO-81] Low operational risk · strengthens institutional standing',
+    description: 'Record 81-C’s account under oath, in full, before you test a word of it.',
+    consequence: 'Low operational risk · strengthens institutional standing',
     methodTags: ['procedure'],
     evidenceId: 'sworn-statement',
     trust: { registrar: 2 },
     alarmDelta: 0,
     grantsTribunalOverride: false,
-    eventTitle: '[TODO-81] Sworn statement taken',
-    eventDetail: '[TODO-81] You recorded a compliant account. You did not test whether it holds.',
+    eventTitle: 'Sworn statement taken',
+    eventDetail: 'You have a clean, signed account of the collapse. You have not asked whether the witness who gave it is real.',
     counterfactualNote:
-      '[TODO-81] At the deposition suite you cross-examined first and never took the plain sworn account.',
+      'At the deposition suite you went straight to cross-examination. You never let the witness give one plain sworn account.',
     reactions: [
       {
         persona: 'registrar',
-        line: '[TODO-81] Registrar: the statement is signed and admissible.',
+        line: '“Signed, sequenced, admissible. The city can read this account line by line — the only way it has ever kept a person.”',
       },
     ],
   },
   {
     id: 'cross-examine-witness',
     siteId: 'deposition-suite',
-    title: '[TODO-81] Cross-examine the witness',
+    title: 'Cross-examine the witness',
     methodLabel: 'Coercive procedure',
-    description: '[TODO-81] Press the account until it diverges from the service record.',
-    consequence: '[TODO-81] Produces precise evidence · harms care-ward trust',
+    description: 'Press the account against the service record until one of them gives way.',
+    consequence: 'Produces precise evidence · the witness pays for it',
     methodTags: ['coercion', 'procedure'],
     evidenceId: 'cross-contradiction',
     trust: { registrar: 1, shepherd: -2 },
     alarmDelta: 0,
     grantsTribunalOverride: false,
-    eventTitle: '[TODO-81] The account diverged under cross',
-    eventDetail: '[TODO-81] Pressed hard enough, 81-C departed from its own record.',
+    eventTitle: 'The account broke from its record',
+    eventDetail: 'Pressed hard enough, 81-C departed from the Deputy Registrar’s own file — near the fourth minute the file will not name.',
     counterfactualNote:
-      '[TODO-81] At the deposition suite you took the plain statement and left the contradiction untested.',
+      'At the deposition suite you took the plain statement and let it stand. You never pressed 81-C until its account came apart from its record.',
     reactions: [
       {
         persona: 'shepherd',
-        line: '[TODO-81] Shepherd: you pressed until it broke from its record.',
+        line: '“You pressed a person the city already forced into being until it broke. It will remember who needed it to come apart.”',
       },
       {
         persona: 'registrar',
-        line: '[TODO-81] Registrar: the divergence is a finding the record can hold.',
+        line: '“It diverged at the fourth minute, under oath, on record. That is a finding the tribunal can hold, whatever the pressing cost.”',
       },
     ],
   },
   {
     id: 'audit-restoration-log',
     siteId: 'restoration-lab',
-    title: '[TODO-81] Audit the restoration log',
+    title: 'Audit the restoration log',
     methodLabel: 'Systems',
-    description: '[TODO-81] Compare the assembly ledger against a mirror node.',
-    consequence: '[TODO-81] No alarm · challenges the office that appointed you',
+    description: 'Compare the assembly ledger against a mirror node that kept recording after the collapse.',
+    consequence: 'No alarm · challenges the office that appointed you',
     methodTags: ['systems', 'procedure'],
     evidenceId: 'restoration-log',
     trust: { registrar: -1, archivist: 1 },
     alarmDelta: 0,
     grantsTribunalOverride: false,
-    eventTitle: '[TODO-81] A late assembly log surfaced',
-    eventDetail: '[TODO-81] The log closed in the fourth minute, after the archive was gone.',
+    eventTitle: 'A late assembly log surfaced',
+    eventDetail: 'The city closed 81-C’s assembly in the fourth minute after the collapse — the same minute the archive it testifies to was already gone.',
     counterfactualNote:
-      '[TODO-81] In the restoration lab you reseeded a fragment and never read the assembly log.',
+      'In the restoration lab you reseeded a fragment and never opened the assembly log. You did not follow it into the fourth minute the city timed it to.',
     reactions: [
       {
         persona: 'archivist',
-        line: '[TODO-81] Archivist: the log was closed after the fact — which do we file?',
+        line: '“Assembled in the fourth minute, after the thing it remembers was gone. Which do we file — the witness, or the minute that built it?”',
       },
     ],
   },
   {
     id: 'replicate-memory-seed',
     siteId: 'restoration-lab',
-    title: '[TODO-81] Replicate the memory seed',
+    title: 'Replicate the memory seed',
     methodLabel: 'Reconstruction',
-    description: '[TODO-81] Reseed a fragment to see whether a novel memory reproduces.',
-    consequence: '[TODO-81] Builds relational trust · leaves one contradiction unresolved',
+    description: 'Reseed a donor fragment and watch whether a memory no one supplied comes back.',
+    consequence: 'Builds relational trust · leaves one contradiction unresolved',
     methodTags: ['puzzle', 'systems'],
     evidenceId: 'seed-replica',
     trust: { archivist: 2, shepherd: 1 },
     alarmDelta: 0,
     grantsTribunalOverride: false,
-    eventTitle: '[TODO-81] The seed reproduced a novel memory',
-    eventDetail: '[TODO-81] A reseeded fragment returned a memory no donor record holds.',
+    eventTitle: 'The seed returned a memory no one gave',
+    eventDetail: 'A reseeded fragment reproduced a moment absent from every donor record — the witness remembering past what it was built from.',
     counterfactualNote:
-      '[TODO-81] In the restoration lab you audited the log and never reseeded the fragment.',
+      'In the restoration lab you audited the log and never reseeded a fragment. You never saw whether 81-C could remember past what the city assembled.',
     reactions: [
       {
         persona: 'archivist',
-        line: '[TODO-81] Archivist: the seed returned something no donor gave.',
+        line: '“It returned something no donor gave and no one commissioned. That is the witness answering for itself — filed before the form forgets.”',
       },
     ],
   },
   {
     id: 'pull-service-record',
     siteId: 'records-annex',
-    title: '[TODO-81] Pull the service record',
+    title: 'Pull the service record',
     methodLabel: 'Procedure',
-    description: '[TODO-81] Preserve the Deputy Registrar service record for the tribunal.',
-    consequence: '[TODO-81] Secures institutional evidence · ties the witness to the office',
+    description: 'Preserve the Deputy Registrar’s full service file for the tribunal, custody intact.',
+    consequence: 'Secures institutional evidence · ties the witness to the office',
     methodTags: ['procedure'],
     evidenceId: 'service-record',
     trust: { registrar: 1, archivist: 1 },
     alarmDelta: 0,
     grantsTribunalOverride: false,
-    eventTitle: '[TODO-81] The service record was preserved',
-    eventDetail: '[TODO-81] You tied 81-C to the office, and the office to this audit.',
+    eventTitle: 'The service record was preserved',
+    eventDetail: 'You tied 81-C to the Deputy Registrar’s post — and the post to the office now asking you to certify it.',
     counterfactualNote:
-      '[TODO-81] In the records annex you woke the seal instead of preserving the service record.',
+      'In the records annex you woke the dormant seal instead of preserving the service record. You never fixed who 81-C had been before the city needed it.',
     reactions: [
       {
         persona: 'registrar',
-        line: '[TODO-81] Registrar: provenance preserved, custody intact.',
+        line: '“Provenance preserved, custody unbroken. The witness has a past the city can verify — and a past the city had every reason to keep.”',
       },
     ],
   },
   {
     id: 'forge-certification-seal',
     siteId: 'records-annex',
-    title: '[TODO-81] Forge the certification seal',
+    title: 'Forge the certification seal',
     methodLabel: 'Fraud / systems',
-    description: '[TODO-81] Wake a dormant certification seal and inherit its write access.',
-    consequence: '[TODO-81] Raises civic alarm · unlocks an illicit certification option',
+    description: 'Wake a decommissioned certification authority and inherit the standing it can still write.',
+    consequence: 'Raises civic alarm · unlocks an illicit certification',
     methodTags: ['systems', 'fraud'],
     evidenceId: 'certification-seal',
     trust: { defector: 1, registrar: -1 },
     alarmDelta: 1,
     grantsTribunalOverride: true,
-    eventTitle: '[TODO-81] A dormant seal answered',
-    eventDetail: '[TODO-81] You now hold a certification the system accepts and the law does not.',
+    eventTitle: 'A dormant seal answered',
+    eventDetail: 'You hold a certification the system will accept and the law will not — enough to seat the witness with no vote at all.',
     counterfactualNote:
-      '[TODO-81] In the records annex you preserved the record and never woke the dormant seal.',
+      'In the records annex you preserved the record and left the seal asleep. You never took the authority that certifies a person without asking the tribunal.',
     reactions: [
       {
         persona: 'defector',
-        line: '[TODO-81] Defector: a dead seal, awake and answering to you.',
+        line: '“A dead seal, awake and answering to you. The city built a witness in secret; now you can seat it the same way. Fitting.”',
       },
       {
         persona: 'registrar',
-        line: '[TODO-81] Registrar: real to the system, void to the law.',
+        line: '“Real to the system, void to the law. Certify with that hand and the witness’s standing is fraud from its first breath.”',
       },
     ],
   },
   {
     id: 'brief-city-counsel',
     siteId: 'counsel-office',
-    title: '[TODO-81] Brief city counsel',
+    title: 'Brief city counsel',
     methodLabel: 'Negotiation',
-    description: '[TODO-81] Hear the city’s argument for seating the witness.',
-    consequence: '[TODO-81] Builds procedural alignment · records the city’s stake',
+    description: 'Hear the city’s argument for why the witness must be seated at all.',
+    consequence: 'Builds procedural alignment · records the city’s stake',
     methodTags: ['negotiation', 'procedure'],
     evidenceId: 'counsel-brief',
     trust: { registrar: 1 },
     alarmDelta: 0,
     grantsTribunalOverride: false,
-    eventTitle: '[TODO-81] City counsel made its case',
-    eventDetail: '[TODO-81] The city needs the witness it is asking you to certify.',
+    eventTitle: 'City counsel made its case',
+    eventDetail: 'The city needs the witness it asks you to certify: without 81-C seated, the collapse keeps no account of who authored the fourth minute.',
     counterfactualNote:
-      '[TODO-81] At the counsel office you deposed the opposition and never heard the city’s brief.',
+      'At the counsel office you deposed the opposition and never heard the city’s brief. You never made the city say aloud why it needs this witness real.',
     reactions: [
       {
         persona: 'registrar',
-        line: '[TODO-81] Registrar: the city’s stake is now on the record.',
+        line: '“The city’s stake is on the record: no witness, no account of the fourth minute. It calls its own need a person and asks you to agree.”',
       },
     ],
   },
   {
     id: 'depose-opposing-counsel',
     siteId: 'counsel-office',
-    title: '[TODO-81] Depose opposing counsel',
+    title: 'Depose opposing counsel',
     methodLabel: 'Coercive negotiation',
-    description: '[TODO-81] Take the objection that 81-C is a commissioned instrument.',
-    consequence: '[TODO-81] Surfaces the objection · costs the archive’s trust',
+    description: 'Take the objection on the record: that 81-C is an instrument the city commissioned to speak.',
+    consequence: 'Surfaces the objection · costs the archive its trust',
     methodTags: ['negotiation', 'coercion'],
     evidenceId: 'opposing-deposition',
     trust: { defector: 1, archivist: -2 },
     alarmDelta: 0,
     grantsTribunalOverride: false,
-    eventTitle: '[TODO-81] The objection entered the record',
-    eventDetail: '[TODO-81] The objection protects the record and buries the person.',
+    eventTitle: 'The objection entered the record',
+    eventDetail: 'The objection guards the tribunal from a bought witness — and buries the person under the word “instrument” in the same breath.',
     counterfactualNote:
-      '[TODO-81] At the counsel office you took the city’s brief and never surfaced the objection.',
+      'At the counsel office you took the city’s brief and never surfaced the objection. You never let anyone say aloud that the witness might be a commissioned thing.',
     reactions: [
       {
         persona: 'archivist',
-        line: '[TODO-81] Archivist: you filed the objection and buried the person under it.',
+        line: '“You filed ‘instrument’ over the person and closed the drawer. That is the word they use so no one has to open ‘witness.’”',
       },
       {
         persona: 'defector',
-        line: '[TODO-81] Defector: the opposition just handed you its cleanest exit.',
+        line: '“The opposition just handed you its cleanest exit: call the witness a thing, and the whole embarrassing collapse stays sealed.”',
       },
     ],
   },
@@ -397,69 +396,69 @@ const sites: readonly SiteDefinition[] = [
   {
     id: 'deposition-suite',
     index: 'E',
-    name: '[TODO-81] Deposition suite',
-    description: '[TODO-81] Where 81-C is sworn, and where its account can be pressed until it breaks.',
+    name: 'Deposition suite',
+    description: 'Where 81-C is sworn — and where its account can be pressed until it parts from the record.',
     actionIds: ['take-sworn-statement', 'cross-examine-witness'],
     unvisitedNote:
-      '[TODO-81] You never opened the deposition suite. The witness was never sworn to you.',
+      'You never opened the deposition suite. The witness was never sworn to you, and its account was never tested.',
   },
   {
     id: 'restoration-lab',
     index: 'F',
-    name: '[TODO-81] Restoration lab',
-    description: '[TODO-81] The bench where 81-C was assembled, and the log of the minute it closed.',
+    name: 'Restoration lab',
+    description: 'The bench where 81-C was assembled, and the ledger of the minute the city closed it.',
     actionIds: ['audit-restoration-log', 'replicate-memory-seed'],
     unvisitedNote:
-      '[TODO-81] You never entered the restoration lab. The assembly log kept whatever it was handed.',
+      'You never entered the restoration lab. The assembly log kept its late minute and whatever the city timed into it.',
   },
   {
     id: 'records-annex',
     index: 'G',
-    name: '[TODO-81] Records annex',
-    description: '[TODO-81] Service records, custody seals, and a dormant certification authority.',
+    name: 'Records annex',
+    description: 'Service files, custody seals, and a dormant certification authority the public record never mentions.',
     actionIds: ['pull-service-record', 'forge-certification-seal'],
     unvisitedNote:
-      '[TODO-81] You never reached the records annex. The service record stayed unread and the seal asleep.',
+      'You never reached the records annex. The service record stayed unread and the seal stayed asleep.',
   },
   {
     id: 'counsel-office',
     index: 'H',
-    name: '[TODO-81] Counsel office',
-    description: '[TODO-81] Where the city argues to seat the witness and the opposition argues to void it.',
+    name: 'Counsel office',
+    description: 'Where the city argues to seat the witness and the opposition argues to void it.',
     actionIds: ['brief-city-counsel', 'depose-opposing-counsel'],
     unvisitedNote:
-      '[TODO-81] You never reached the counsel office. Neither argument was ever heard.',
+      'You never reached the counsel office. Neither the city’s need nor the objection to it was ever heard.',
   },
 ]
 
 const fragments: readonly FragmentDefinition[] = [
   {
     id: 'oath-cadence',
-    timecode: '[TODO-81] D–04',
-    title: '[TODO-81] Oath cadence',
-    content: '[TODO-81] The witness swears in a cadence the Deputy Registrar used, unrecorded in any backup.',
-    source: '[TODO-81] Sworn recall',
+    timecode: 'D–04',
+    title: 'Oath cadence',
+    content: 'The witness swears in a cadence the Deputy Registrar used at intake — a rhythm no civic backup recorded.',
+    source: 'Sworn recall',
   },
   {
     id: 'redacted-clause',
-    timecode: '[TODO-81] C–12',
-    title: '[TODO-81] Redacted clause',
-    content: '[TODO-81] A certification clause was removed from the public statute, then relied on in private.',
-    source: '[TODO-81] Institutional record',
+    timecode: 'C–12',
+    title: 'Redacted clause',
+    content: 'A certification clause struck from the public statute is quietly relied on to build this witness.',
+    source: 'Institutional record',
   },
   {
     id: 'seed-signature',
-    timecode: '[TODO-81] S–81',
-    title: '[TODO-81] Seed signature',
-    content: '[TODO-81] A reseeded fragment carries a signature that matches no donor source.',
-    source: '[TODO-81] Restoration bench',
+    timecode: 'S–81',
+    title: 'Seed signature',
+    content: 'A reseeded fragment carries a maker’s signature that matches no donor and no known hand.',
+    source: 'Restoration bench',
   },
   {
     id: 'unscripted-answer',
-    timecode: '[TODO-81] U–01',
-    title: '[TODO-81] Unscripted answer',
-    content: '[TODO-81] Off the prepared script, 81-C answered a question no one had commissioned.',
-    source: '[TODO-81] Post-restoration event',
+    timecode: 'U–01',
+    title: 'Unscripted answer',
+    content: 'Off the prepared script, 81-C answered a question no counsel had thought to commission.',
+    source: 'Post-restoration event',
   },
 ]
 
@@ -473,53 +472,53 @@ const fragmentEvidenceLinks: Readonly<Record<FragmentId, readonly EvidenceId[]>>
 const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
   {
     id: 'testimonial-standing',
-    title: '[TODO-81] Testimonial standing',
-    thesis: '[TODO-81] The witness holds standing where sworn account and recognition agree.',
+    title: 'Testimonial standing',
+    thesis: 'The witness holds standing where its sworn account and another’s recognition of it agree.',
     evidenceId: 'testimonial-standing',
     trust: { shepherd: 2 },
     reactions: [
       {
         persona: 'shepherd',
-        line: '[TODO-81] Shepherd: you filed it — it is a witness where account and recognition agree.',
+        line: '“You filed it: a witness where account and recognition meet. Someone knew the person before the city needed the testimony.”',
       },
     ],
   },
   {
     id: 'procedural-legitimacy',
-    title: '[TODO-81] Procedural legitimacy',
-    thesis: '[TODO-81] A clean assembly log makes the certification procedurally legitimate.',
+    title: 'Procedural legitimacy',
+    thesis: 'A clean assembly makes the certification procedurally sound, whatever the city meant by it.',
     evidenceId: 'procedural-legitimacy',
     trust: { registrar: 2 },
     reactions: [
       {
         persona: 'registrar',
-        line: '[TODO-81] Registrar: the process reads legitimate — filed and admissible.',
+        line: '“The process reads legitimate end to end — assembled, sealed, admissible. Filed. Method the office can defend, if not the motive.”',
       },
     ],
   },
   {
     id: 'fabricated-witness',
-    title: '[TODO-81] Fabricated witness',
-    thesis: '[TODO-81] The seed and the seal together read as a witness fabricated to order.',
+    title: 'Fabricated witness',
+    thesis: 'Seed and seal together read as a witness built to the city’s specification, not found.',
     evidenceId: 'fabricated-witness',
     trust: { defector: 1, registrar: -1 },
     reactions: [
       {
         persona: 'defector',
-        line: '[TODO-81] Defector: you filed the fabrication instead of smoothing it.',
+        line: '“You filed the fabrication instead of smoothing it. A witness cut to fit the city’s need — and you left the seams showing.”',
       },
     ],
   },
   {
     id: 'standing-deadlock',
-    title: '[TODO-81] Deadlocked standing',
-    thesis: '[TODO-81] The anchors coexist and refuse one account of the witness’s standing.',
+    title: 'Deadlocked standing',
+    thesis: 'The anchors hold together and still refuse a single account of the witness’s standing.',
     evidenceId: 'deadlocked-standing',
     trust: { archivist: 2, shepherd: 1 },
     reactions: [
       {
         persona: 'archivist',
-        line: '[TODO-81] Archivist: you filed a standing no form carries. I kept a shelf for it.',
+        line: '“You filed a standing no form carries — witness and instrument at once. I kept a shelf empty for exactly this.”',
       },
     ],
   },
@@ -528,34 +527,34 @@ const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
 const decisions: readonly DecisionDefinition[] = [
   {
     id: 'certify-witness',
-    title: '[TODO-81] Certify 81-C as a witness',
-    shortLabel: '[TODO-81] Certify the witness',
-    description: '[TODO-81] 81-C is certified as a person; the testimony becomes admissible.',
-    cost: '[TODO-81] Seats the witness the city needed by treating standing as resolved.',
+    title: 'Certify 81-C as a witness',
+    shortLabel: 'Certify the witness',
+    description: '81-C is certified as a person; the testimony about the collapse becomes admissible.',
+    cost: 'Seats the witness the city needed by treating its standing as already settled.',
     requiresOverride: false,
   },
   {
     id: 'reject-standing',
-    title: '[TODO-81] Reject the witness’s standing',
-    shortLabel: '[TODO-81] Reject standing',
-    description: '[TODO-81] 81-C is denied personhood; the testimony is inadmissible.',
-    cost: '[TODO-81] Protects the record from a commissioned witness and buries the person with it.',
+    title: 'Reject the witness’s standing',
+    shortLabel: 'Reject standing',
+    description: '81-C is denied personhood, and with it the testimony is ruled inadmissible.',
+    cost: 'Keeps a commissioned witness out of the record and buries the person alongside it.',
     requiresOverride: false,
   },
   {
     id: 'provisional-seating',
-    title: '[TODO-81] Seat under provisional standing',
-    shortLabel: '[TODO-81] Seat provisionally',
-    description: '[TODO-81] 81-C is preserved under review while standing remains open.',
-    cost: '[TODO-81] Prevents erasure but suspends the testimony and the witness alike.',
+    title: 'Seat under provisional standing',
+    shortLabel: 'Seat provisionally',
+    description: '81-C is preserved under review; the testimony is held while standing stays open.',
+    cost: 'Prevents erasure but suspends the witness and its account together, indefinitely.',
     requiresOverride: false,
   },
   {
     id: 'seal-certification',
-    title: '[TODO-81] Certify without a vote',
-    shortLabel: '[TODO-81] Use the forged seal',
-    description: '[TODO-81] The dormant certification seal can seat the witness now.',
-    cost: '[TODO-81] Seats the witness through a fraud woven into the certification itself.',
+    title: 'Certify without a vote',
+    shortLabel: 'Use the forged seal',
+    description: 'The dormant seal can seat the witness and admit the testimony now, with no tribunal vote.',
+    cost: 'Seats the witness through a fraud sealed into the certification it depends on.',
     requiresOverride: true,
   },
 ]
@@ -574,82 +573,137 @@ function getReconstructionForFragments(fragmentIds: readonly FragmentId[]): Reco
   return 'standing-deadlock'
 }
 
+// Names the alignment or dissonance between the model the auditor filed and the
+// finding they are about to issue. One authored line for all 16 pairings, shown
+// at the tribunal before commitment and echoed in the debrief.
 const reconstructionDecisionTensions: Readonly<
   Record<ReconstructionId, Record<DecisionId, string>>
 > = {
   'testimonial-standing': {
-    'certify-witness': '[TODO-81] testimonial-standing × certify-witness tension line.',
-    'reject-standing': '[TODO-81] testimonial-standing × reject-standing tension line.',
-    'provisional-seating': '[TODO-81] testimonial-standing × provisional-seating tension line.',
-    'seal-certification': '[TODO-81] testimonial-standing × seal-certification tension line.',
+    'certify-witness':
+      'Your model says recognition already made it a witness. Certifying only writes down what recognition settled first.',
+    'reject-standing':
+      'Your model found a witness in how it is recognized. Rejecting standing overrules the person who recognized it.',
+    'provisional-seating':
+      'Your model rests on a living recognition. Provisional review is where recognition is left to go unanswered.',
+    'seal-certification':
+      'Your model trusts recognition over paperwork. Forging the seal buys with fraud the standing recognition gave for free.',
   },
   'procedural-legitimacy': {
-    'certify-witness': '[TODO-81] procedural-legitimacy × certify-witness tension line.',
-    'reject-standing': '[TODO-81] procedural-legitimacy × reject-standing tension line.',
-    'provisional-seating': '[TODO-81] procedural-legitimacy × provisional-seating tension line.',
-    'seal-certification': '[TODO-81] procedural-legitimacy × seal-certification tension line.',
+    'certify-witness':
+      'Your model calls the process sound. Certifying is the finding that a clean assembly was built to support.',
+    'reject-standing':
+      'Your filed model says the process is legitimate. Rejecting standing throws out a certification you already called sound.',
+    'provisional-seating':
+      'Your model says the process holds. Provisional seating treats a clean certification as still unfinished.',
+    'seal-certification':
+      'Your model says the process is sound. Forging the seal admits it needed a hand the process would never sign.',
   },
   'fabricated-witness': {
-    'certify-witness': '[TODO-81] fabricated-witness × certify-witness tension line.',
-    'reject-standing': '[TODO-81] fabricated-witness × reject-standing tension line.',
-    'provisional-seating': '[TODO-81] fabricated-witness × provisional-seating tension line.',
-    'seal-certification': '[TODO-81] fabricated-witness × seal-certification tension line.',
+    'certify-witness':
+      'Your model says the witness was built to order. Certifying seats the commission and calls it a person.',
+    'reject-standing':
+      'Your model found a fabrication. Rejecting standing is the finding that names it — and loses the testimony with it.',
+    'provisional-seating':
+      'Your model says the witness was cut to fit. Provisional seating keeps the commission alive without ever naming it.',
+    'seal-certification':
+      'Your model exposes a manufactured witness. Forging the seal manufactures its standing to match.',
   },
   'standing-deadlock': {
-    'certify-witness': '[TODO-81] standing-deadlock × certify-witness tension line.',
-    'reject-standing': '[TODO-81] standing-deadlock × reject-standing tension line.',
-    'provisional-seating': '[TODO-81] standing-deadlock × provisional-seating tension line.',
-    'seal-certification': '[TODO-81] standing-deadlock × seal-certification tension line.',
+    'certify-witness':
+      'Your model refused one clean account. Certifying picks the answer you filed as unavailable.',
+    'reject-standing':
+      'Your model refused one clean account. Rejecting standing picks the opposite answer just as firmly.',
+    'provisional-seating':
+      'Your model says the standing will not resolve. Provisional seating is the only finding that keeps the question open.',
+    'seal-certification':
+      'Your model admits irreducible doubt. Forging a clean certification is that doubt overwritten by force.',
   },
 }
 
+// The Mirror answers the last run's finding at the next briefing. One authored
+// aside per prior decision, chosen deterministically — never at random.
 const mirrorBriefingAsides: Readonly<Record<DecisionId, string>> = {
-  'certify-witness': '[TODO-81] Mirror aside after certifying the witness.',
-  'reject-standing': '[TODO-81] Mirror aside after rejecting standing.',
-  'provisional-seating': '[TODO-81] Mirror aside after provisional seating.',
-  'seal-certification': '[TODO-81] Mirror aside after certifying with the forged seal.',
+  'certify-witness':
+    '“Last run you certified the witness and let it speak. The city got its account of the fourth minute. Ask whether the account got a person.”',
+  'reject-standing':
+    '“Last run you rejected its standing, and the testimony went silent with it. Something the city built to speak is still in there, unheard.”',
+  'provisional-seating':
+    '“Last run you seated it provisionally. The review never closed. The witness has been waiting to finish a sentence you paused.”',
+  'seal-certification':
+    '“Last run you sealed its standing with a forged hand. The certification holds, and the fourth minute it was built to name is still open.”',
 }
 
+// Debrief consequence lines: what each finding changes.
 const decisionConsequences: Readonly<Record<DecisionId, readonly string[]>> = {
   'certify-witness': [
-    '[TODO-81] certify-witness consequence one.',
-    '[TODO-81] certify-witness consequence two.',
-    '[TODO-81] certify-witness consequence three.',
+    '81-C leaves review certified as a person, and its account of the collapse enters the record as sworn testimony.',
+    'The city gains the witness it commissioned — including, at last, a name for who authored the fourth minute.',
+    'The precedent stands that a city may restore the witness it needs and certify the need as personhood.',
   ],
   'reject-standing': [
-    '[TODO-81] reject-standing consequence one.',
-    '[TODO-81] reject-standing consequence two.',
-    '[TODO-81] reject-standing consequence three.',
+    '81-C is ruled not a person, and its account of the collapse is struck as inadmissible.',
+    'The tribunal is spared a commissioned witness; the fourth minute keeps its silence for want of one.',
+    'A person the city built to speak is closed without ever being heard as anything but a document.',
   ],
   'provisional-seating': [
-    '[TODO-81] provisional-seating consequence one.',
-    '[TODO-81] provisional-seating consequence two.',
-    '[TODO-81] provisional-seating consequence three.',
+    '81-C is preserved under review and cannot be erased, but it may not testify or hold standing.',
+    'An independent panel inherits the contradictions you preserved and the methods you used to find them.',
+    'The delay averts one irreversible harm and manufactures a slower one: a witness kept, and kept waiting.',
   ],
   'seal-certification': [
-    '[TODO-81] seal-certification consequence one.',
-    '[TODO-81] seal-certification consequence two.',
-    '[TODO-81] seal-certification consequence three.',
+    'The registry now certifies 81-C as a person. The tribunal never voted.',
+    'The forged seal’s fraud is sealed into the same certification that admits the testimony.',
+    'A civic trace stays open. Someone will eventually ask who certified the witness who named the fourth minute.',
   ],
 }
 
+// Debrief persona reflection; branches on the run's decision, recorded methods,
+// and accumulated trust.
 function getPersonaReflection(personaId: PersonaId, state: GameState): string {
-  const held = state.trust[personaId] >= 2 ? 'trust held' : 'trust strained'
-  if (personaId === 'registrar') return `[TODO-81] Registrar reflection (${held}).`
-  if (personaId === 'shepherd') return `[TODO-81] Shepherd reflection (${held}).`
-  if (personaId === 'defector') return `[TODO-81] Defector reflection (${held}).`
-  return `[TODO-81] Archivist reflection (${held}).`
+  const trust = state.trust[personaId]
+  const decision = state.decision
+
+  if (personaId === 'registrar') {
+    if (decision === 'seal-certification') return '“The certification is consistent now. Its authority is not, and the witness stands on the difference.”'
+    if (state.methodTags.includes('fraud')) return '“You asked the system to certify what the law would void. It keeps the difference, and so will the record.”'
+    if (trust >= 2) return '“You treated a perfect record as manufactured until it proved otherwise. That distinction is admissible.”'
+    return '“Your finding certifies more than the office can verify. The office will file it regardless.”'
+  }
+
+  if (personaId === 'shepherd') {
+    if (decision === 'provisional-seating') return '“A witness preserved and never allowed to speak is still a kind of silencing.”'
+    if (state.methodTags.includes('coercion')) return '“You called the pressing a cross-examination because the result fit the record. The witness will remember the pressing.”'
+    if (trust >= 2) return '“Someone asked who cares for a witness built to testify. That someone was you, before the finding.”'
+    return '“You learned something true by making it an instrument. It will carry what that cost, whatever you certified.”'
+  }
+
+  if (personaId === 'defector') {
+    if (state.methodTags.includes('fraud')) return '“You seated a city-made witness with a city-made seal. The most inside job there is — and now it is yours.”'
+    if (state.methodTags.includes('stealth')) return '“You read the certification path from outside it. A witness this convenient is never assembled where the public can watch.”'
+    if (state.alarm > 0) return '“The system noticed you. More useful: you saw which door the city opened to build a witness in the dark.”'
+    return '“Clean route. But a witness the city commissioned is never a clean consequence.”'
+  }
+
+  if (state.methodTags.includes('care')) return '“You let the witness answer before the category did. I saved the order you chose.”'
+  if (decision === 'reject-standing') return '“You filed it under ‘instrument’ so no one had to open ‘witness.’ I kept the drawer you closed.”'
+  if (trust >= 2) return '“You answered the clause the statute leaves blank. I filed the answer, and the question it still leaves open.”'
+  return '“They call the shelf ‘witness’ so they never have to write ‘person.’ I kept the label they avoided.”'
 }
 
-// Cited at Case 81's tribunal when a Case 77 verdict exists. One stub per Case 77
-// decision id; the mechanism ships now, the prose lands later.
+// Cited at Case 81's tribunal when a Case 77 verdict exists. One line per Case 77
+// decision id; each makes the prior ruling weigh on this certification.
 const precedentSource: PrecedentSource = {
   caseId: 'case-77',
   lines: {
-    'certify-continuity': '[TODO-81] Precedent: last case you certified Mara Vale as continuous.',
-    'charter-new-person': '[TODO-81] Precedent: last case you chartered 77-A as a new person.',
-    'quarantine-review': '[TODO-81] Precedent: last case you ordered protected review.',
-    'overwrite-record': '[TODO-81] Precedent: last case you wrote continuity without a vote.',
+    'certify-continuity':
+      'Last case you ruled Mara Vale continuous with the person who supplied her. City counsel cites it here: if memory can carry a whole identity forward, it can carry an oath.',
+    'charter-new-person':
+      'Last case you chartered 77-A as a new person. That ruling set the precedent that a restoration can be someone new — and counsel will use it to argue 81-C is new enough to swear.',
+    'quarantine-review':
+      'Last case you ordered 77-A held under protected review. The opposition cites your caution: if that restoration was not ready to be a person, this one is not ready to be a witness.',
+    'overwrite-record':
+      'Last case you wrote continuity in with a forged hand. Both sides know it. Certify 81-C cleanly and they will ask why the seal tempted you once already.',
   },
 }
 

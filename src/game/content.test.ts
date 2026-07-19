@@ -2,11 +2,13 @@ import { describe, expect, it } from 'vitest'
 import {
   getCaseContent,
   getPrecedentLine,
+  getSwitchableCaseIds,
   getTensionLine,
   personas,
   registeredCaseIds,
 } from './content'
-import type { CaseDefinition } from './types'
+import { createInitialGameState } from './engine'
+import type { CaseDefinition, GameState, MethodTag } from './types'
 
 function expectUnique(ids: readonly string[]) {
   expect(new Set(ids).size).toBe(ids.length)
@@ -188,7 +190,8 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
 
 describe('cross-case precedent line', () => {
   it('cites the prior case ruling at Case 81, keyed by the Case 77 decision', () => {
-    expect(getPrecedentLine('case-81', { 'case-77': 'charter-new-person' })).toContain('[TODO-81]')
+    // The charter ruling from Case 77 is cited by name in Case 81's precedent.
+    expect(getPrecedentLine('case-81', { 'case-77': 'charter-new-person' })).toMatch(/new person/i)
     // Every Case 77 decision must have a precedent variant.
     getCaseContent('case-77').decisions.forEach((decision) => {
       const line = getPrecedentLine('case-81', { 'case-77': decision.id })
@@ -201,5 +204,88 @@ describe('cross-case precedent line', () => {
     expect(getPrecedentLine('case-81', {})).toBeNull()
     // Case 77 cites no earlier case.
     expect(getPrecedentLine('case-77', { 'case-77': 'certify-continuity' })).toBeNull()
+  })
+})
+
+// Recursively gathers every authored string reachable from a value: strings,
+// array elements, and plain-object values. Functions and non-string primitives
+// are skipped (the two content functions are exercised separately below).
+function collectStrings(value: unknown, out: string[]): void {
+  if (typeof value === 'string') {
+    out.push(value)
+    return
+  }
+  if (Array.isArray(value)) {
+    value.forEach((item) => collectStrings(item, out))
+    return
+  }
+  if (value && typeof value === 'object') {
+    Object.values(value).forEach((item) => collectStrings(item, out))
+  }
+}
+
+describe.each(registeredCases)('%s carries no placeholder text', (_caseId, content) => {
+  it('has no [TODO marker in any authored string', () => {
+    const strings: string[] = []
+    collectStrings(content, strings)
+
+    // The persona reflection is a function, so its branches are not reachable by
+    // the recursive walk. Exercise every branch (decision × method × trust) and
+    // fold the results into the same no-placeholder assertion.
+    const methodMatrix: MethodTag[][] = [[], ['fraud', 'systems'], ['coercion'], ['care'], ['stealth']]
+    content.decisions.forEach((decision) => {
+      methodMatrix.forEach((methodTags) => {
+        ;[-3, 3].forEach((trustValue) => {
+          const state: GameState = {
+            ...createInitialGameState(),
+            caseId: content.id,
+            decision: decision.id,
+            methodTags,
+            alarm: 1,
+            trust: {
+              registrar: trustValue,
+              shepherd: trustValue,
+              defector: trustValue,
+              archivist: trustValue,
+            },
+          }
+          personas.forEach((persona) =>
+            strings.push(content.getPersonaReflection(persona.id, state)),
+          )
+        })
+      })
+    })
+
+    strings.forEach((line) => expect(line).not.toContain('[TODO'))
+  })
+})
+
+describe('case switcher availability', () => {
+  it('returns only non-active registered cases', () => {
+    // Satisfy every cited precedent so the sole exclusion under test is the
+    // active case itself; then every other registered case must be offered.
+    const precedents = Object.fromEntries(
+      registeredCaseIds.map((id) => [id, 'certify-continuity']),
+    )
+    registeredCaseIds.forEach((activeId) => {
+      const targets = getSwitchableCaseIds(activeId, precedents)
+      expect(targets).not.toContain(activeId)
+      targets.forEach((id) => expect(registeredCaseIds).toContain(id))
+      expect(new Set(targets)).toEqual(
+        new Set(registeredCaseIds.filter((id) => id !== activeId)),
+      )
+    })
+  })
+
+  it('withholds a case until the precedent it cites has a verdict', () => {
+    // Case 81 cites Case 77: unavailable with no verdict, available once recorded.
+    expect(getSwitchableCaseIds('case-77', {})).not.toContain('case-81')
+    expect(getSwitchableCaseIds('case-77', { 'case-77': 'charter-new-person' })).toContain(
+      'case-81',
+    )
+    // The active case is never offered, and a save on Case 81 can return to 77.
+    const fromCase81 = getSwitchableCaseIds('case-81', { 'case-77': 'charter-new-person' })
+    expect(fromCase81).not.toContain('case-81')
+    expect(fromCase81).toContain('case-77')
   })
 })

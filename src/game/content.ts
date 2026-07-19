@@ -80,6 +80,22 @@ export function isRegisteredCase(caseId: string): boolean {
   return Object.prototype.hasOwnProperty.call(caseRegistry, caseId)
 }
 
+// The cases a save may switch to from its current case: every registered case
+// except the one the save is on. A case that cites a precedent (Case 81 cites
+// Case 77) is only offered once that precedent has a recorded verdict — the
+// Mirror needs a prior ruling to cross into it. Never returns the active case.
+export function getSwitchableCaseIds(
+  activeCaseId: string,
+  precedents: Readonly<Record<string, string>>,
+): readonly string[] {
+  return registeredCaseIds.filter((id) => {
+    if (id === activeCaseId) return false
+    const source = getCaseContent(id).precedentSource
+    if (source && !precedents[source.caseId]) return false
+    return true
+  })
+}
+
 // Resolve a case bundle. Runtime state.caseId is always validated at decode, so
 // the fallback only guards against a programming error, never a real save.
 export function getCaseContent(caseId: string): CaseDefinition {

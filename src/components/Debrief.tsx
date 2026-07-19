@@ -3,6 +3,7 @@ import { getCaseContent, getTensionLine, personas } from '../game/content'
 import { getTrustLabel } from '../game/engine'
 import type {
   CaseDefinition,
+  CaseSwitchOption,
   FieldActionId,
   GameState,
   SiteDefinition,
@@ -11,8 +12,10 @@ import type {
 interface DebriefProps {
   state: GameState
   onNextRun: () => void
-  case81Available: boolean
-  onOpenCase81: () => void
+  // Cases this completed run may switch to; the run's verdict already carries as
+  // a precedent, so no confirmation is needed from the debrief.
+  switchTargets: readonly CaseSwitchOption[]
+  onSwitchCase: (caseId: string) => void
   onReturnToTitle: () => void
 }
 
@@ -34,8 +37,8 @@ function refusalNoteForSite(
 export function Debrief({
   state,
   onNextRun,
-  case81Available,
-  onOpenCase81,
+  switchTargets,
+  onSwitchCase,
   onReturnToTitle,
 }: DebriefProps) {
   const content = getCaseContent(state.caseId)
@@ -151,12 +154,16 @@ export function Debrief({
           <button className="button button-primary" type="button" onClick={onNextRun}>
             Begin run {state.runNumber + 1} <span aria-hidden="true">→</span>
           </button>
-          {case81Available && (
-            <button className="button button-secondary" type="button" onClick={onOpenCase81}>
-              {/* [TODO-81] in-voice label lands with the authoring pass */}
-              [TODO-81] Open Case 81 <span aria-hidden="true">→</span>
+          {switchTargets.map((target) => (
+            <button
+              key={target.caseId}
+              className="button button-secondary"
+              type="button"
+              onClick={() => onSwitchCase(target.caseId)}
+            >
+              {target.heading} <span aria-hidden="true">→</span>
             </button>
-          )}
+          ))}
         </div>
       </section>
 

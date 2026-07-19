@@ -7,7 +7,7 @@ import { Investigation } from './components/Investigation'
 import { Reconstruction } from './components/Reconstruction'
 import { StartScreen } from './components/StartScreen'
 import { Tribunal } from './components/Tribunal'
-import { getCaseContent } from './game/content'
+import { getCaseContent, getSwitchableCaseIds } from './game/content'
 import { createInitialGameState, gameReducer } from './game/engine'
 import {
   clearGame,
@@ -18,11 +18,25 @@ import {
   saveSettings,
   subscribeStorageAvailability,
 } from './game/persistence'
+import type { CaseSwitchOption } from './game/types'
 import type { AccessibilitySettings } from './game/types'
 
-// Case 81 is only reachable once the player has a saved game that recorded a
-// Case 77 verdict — the Mirror needs a prior ruling to cross into the new case.
-const CASE_81_ID = 'case-81'
+// Resolve a switchable case id into the presentation model the title and debrief
+// switchers render. A case the player has already ruled on reads as a return; an
+// unseen case reads as opening it for the first time.
+function describeSwitchTarget(
+  caseId: string,
+  precedents: Readonly<Record<string, string>>,
+): CaseSwitchOption {
+  const content = getCaseContent(caseId)
+  const seen = Boolean(precedents[caseId])
+  return {
+    caseId,
+    heading: `${seen ? 'Return to' : 'Open'} ${content.label}: ${content.caseFile.title}`,
+    meta: seen ? 'Your record crosses back with you.' : 'Your record follows you into it.',
+    seen,
+  }
+}
 
 export default function App() {
   const [state, dispatch] = useReducer(gameReducer, undefined, () =>
@@ -87,25 +101,34 @@ export default function App() {
     dispatch({ type: 'RETURN_TO_TITLE' })
   }
 
-  // From the title: restore the existing progress, then open Case 81 on top of
-  // it. START_CASE carries that save's precedents, run history, and residue.
-  function openCase81FromTitle() {
+  // From the title: restore the existing progress, then open the chosen case on
+  // top of it. START_CASE carries that save's precedents, run history, and
+  // residue; an in-progress run is discarded (only completed history carries).
+  function switchCaseFromTitle(caseId: string) {
     if (!savedState) return
     dispatch({ type: 'RESTORE', state: savedState })
-    dispatch({ type: 'START_CASE', caseId: CASE_81_ID })
+    dispatch({ type: 'START_CASE', caseId })
   }
 
   // From a debrief: the current run's verdict is already recorded as a precedent,
-  // so START_CASE folds this run into history and opens Case 81 directly.
-  function openCase81FromDebrief() {
-    dispatch({ type: 'START_CASE', caseId: CASE_81_ID })
+  // so START_CASE folds this run into history and opens the chosen case directly.
+  function switchCaseFromDebrief(caseId: string) {
+    dispatch({ type: 'START_CASE', caseId })
   }
 
-  // Case 81 is offered on the title screen once a save carries a Case 77 verdict,
-  // and at a Case 77 debrief once this run has recorded one.
-  const titleCase81Available = Boolean(savedState?.precedents['case-77'])
-  const debriefCase81Available =
-    state.caseId !== CASE_81_ID && Boolean(state.precedents['case-77'])
+  // The cases each switcher may offer: every registered case except the one the
+  // save/run is currently on, gated by any precedent the target case cites. The
+  // title reads the persisted save; the debrief reads the just-resolved run
+  // (whose verdict is already recorded as a precedent).
+  const titleSwitchTargets: CaseSwitchOption[] = savedState
+    ? getSwitchableCaseIds(savedState.caseId, savedState.precedents).map((id) =>
+        describeSwitchTarget(id, savedState.precedents),
+      )
+    : []
+  const debriefSwitchTargets: CaseSwitchOption[] = getSwitchableCaseIds(
+    state.caseId,
+    state.precedents,
+  ).map((id) => describeSwitchTarget(id, state.precedents))
 
   const appClassName = [
     'annex-app',
@@ -123,10 +146,10 @@ export default function App() {
           savedState={savedState}
           settings={state.settings}
           storageAvailable={storageAvailable}
-          case81Available={titleCase81Available}
+          switchTargets={titleSwitchTargets}
           onNew={() => dispatch({ type: 'START_NEW' })}
           onContinue={() => savedState && dispatch({ type: 'RESTORE', state: savedState })}
-          onOpenCase81={openCase81FromTitle}
+          onSwitchCase={switchCaseFromTitle}
           onErase={eraseLocalSave}
           onUpdateSetting={updateSetting}
         />
@@ -189,8 +212,8 @@ export default function App() {
             <Debrief
               state={state}
               onNextRun={() => dispatch({ type: 'START_NEXT_RUN' })}
-              case81Available={debriefCase81Available}
-              onOpenCase81={openCase81FromDebrief}
+              switchTargets={debriefSwitchTargets}
+              onSwitchCase={switchCaseFromDebrief}
               onReturnToTitle={returnToTitle}
             />
           )}

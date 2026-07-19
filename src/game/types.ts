@@ -125,6 +125,17 @@ export type GameAction =
   | { type: 'RETURN_TO_TITLE' }
   | { type: 'UPDATE_SETTING'; setting: keyof AccessibilitySettings; value: boolean | 'standard' | 'large' }
 
+// A case the player may switch their current run to, resolved for presentation.
+// `seen` is true when the player already has a recorded verdict for that case,
+// so the switch reads as returning to it rather than opening it for the first
+// time. Built view-side from getSwitchableCaseIds + the case bundle.
+export interface CaseSwitchOption {
+  caseId: string
+  heading: string
+  meta: string
+  seen: boolean
+}
+
 // One authored, in-voice line a persona speaks in the moment a commitment lands.
 // This is CONTENT, not persisted state: it is looked up view-side from ids that
 // already live in GameState (event sourceType/sourceId, the site's chosen
