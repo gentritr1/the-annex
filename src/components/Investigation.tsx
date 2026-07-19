@@ -1,13 +1,20 @@
+import { useState } from 'react'
 import { Atmosphere } from '../ambience/Atmosphere'
 import { getCaseContent } from '../game/content'
 import { canEnterTribunal } from '../game/engine'
-import type { FieldActionId, GameState } from '../game/types'
+import type { DepositionChoiceId, FieldActionId, GameState } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
+import { Deposition } from './Deposition'
 import { ReactionQuotes } from './ReactionQuotes'
 
 interface InvestigationProps {
   state: GameState
   onCommitAction: (actionId: FieldActionId) => void
+  onCommitDeposition: (
+    actionId: FieldActionId,
+    beats: DepositionChoiceId[],
+    askedConsent: boolean,
+  ) => void
   onOpenReconstruction: () => void
   onEnterTribunal: () => void
 }
@@ -20,11 +27,17 @@ const MAP_MASK = 0.07
 export function Investigation({
   state,
   onCommitAction,
+  onCommitDeposition,
   onOpenReconstruction,
   onEnterTribunal,
 }: InvestigationProps) {
-  const { sites, fieldActions, reconstructionDefinitions, chrome } = getCaseContent(state.caseId)
+  const { sites, fieldActions, reconstructionDefinitions, chrome, deposition } = getCaseContent(
+    state.caseId,
+  )
   const reconstruction = reconstructionDefinitions.find((item) => item.id === state.reconstruction)
+  // Which deposition entry action, if any, has its transcript open. Local view
+  // state only: opening it dispatches nothing, and closing it commits nothing.
+  const [depositionEntry, setDepositionEntry] = useState<FieldActionId | null>(null)
   const tribunalReady = canEnterTribunal(state)
   const sitesNeeded = Math.max(0, 2 - state.completedSites.length)
   const gateRequirements = [
@@ -106,6 +119,12 @@ export function Investigation({
                       const action = fieldActions.find((item) => item.id === actionId)
                       if (!action) return null
 
+                      // A deposition entry action opens the transcript instead of
+                      // resolving instantly; its own confirm is the final commit.
+                      const isDepositionEntry = Boolean(
+                        deposition?.entryActionIds.includes(action.id),
+                      )
+
                       return (
                         <ChoiceButton
                           key={action.id}
@@ -114,8 +133,13 @@ export function Investigation({
                           description={action.description}
                           consequence={action.consequence}
                           tone={action.alarmDelta > 0 ? 'risk' : 'default'}
-                          requiresConfirmation
-                          onClick={() => onCommitAction(action.id)}
+                          aside={isDepositionEntry ? 'Open transcript' : undefined}
+                          requiresConfirmation={!isDepositionEntry}
+                          onClick={
+                            isDepositionEntry
+                              ? () => setDepositionEntry(action.id)
+                              : () => onCommitAction(action.id)
+                          }
                         />
                       )
                     })}
@@ -180,6 +204,18 @@ export function Investigation({
           Enter tribunal <span aria-hidden="true">→</span>
         </button>
       </section>
+
+      {depositionEntry && (
+        <Deposition
+          state={state}
+          entryActionId={depositionEntry}
+          onCommit={(actionId, beats, askedConsent) => {
+            setDepositionEntry(null)
+            onCommitDeposition(actionId, beats, askedConsent)
+          }}
+          onAbandon={() => setDepositionEntry(null)}
+        />
+      )}
     </article>
   )
 }

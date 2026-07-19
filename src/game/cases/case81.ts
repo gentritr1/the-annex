@@ -5,6 +5,8 @@ import type {
   CaseFile,
   DecisionDefinition,
   DecisionId,
+  DepositionConsent,
+  DepositionDefinition,
   EvidenceDefinition,
   EvidenceId,
   FieldActionDefinition,
@@ -25,6 +27,14 @@ import type {
 // could name who authored the fourth minute — and testimony is admissible only
 // if the tribunal first certifies the restoration as a person. The player audits
 // personhood knowing the city ordered the person into existence to say something.
+//
+// The witness has a name: Ellis Marne. Its usage is thematic and deliberate. The
+// city, its counsel, and the procedural record call it "instance 81-C" — the
+// objectification is the point. The Shepherd and the Small Archivist use the name
+// (they see a person first). The Registrar, in procedure, uses title-and-name:
+// "Deputy Registrar Marne". The Defector alternates knowingly between "81-C" and
+// the name. Ellis speaks only in the deposition (below) and through the
+// fragments — nowhere else.
 
 const caseFile: CaseFile = {
   code: 'CMA–81–C',
@@ -236,11 +246,11 @@ const fieldActions: readonly FieldActionDefinition[] = [
     reactions: [
       {
         persona: 'shepherd',
-        line: '“You pressed a person the city already forced into being until it broke. It will remember who needed it to come apart.”',
+        line: '“You pressed a person the city already forced into being until they broke. Ellis will remember who needed them to come apart.”',
       },
       {
         persona: 'registrar',
-        line: '“It diverged at the fourth minute, under oath, on record. That is a finding the tribunal can hold, whatever the pressing cost.”',
+        line: '“Deputy Registrar Marne diverged at the fourth minute, under oath. A finding the tribunal can hold, whatever the pressing cost.”',
       },
     ],
   },
@@ -263,7 +273,7 @@ const fieldActions: readonly FieldActionDefinition[] = [
     reactions: [
       {
         persona: 'archivist',
-        line: '“Assembled in the fourth minute, after the thing it remembers was gone. Which do we file — the witness, or the minute that built it?”',
+        line: '“Assembled in the fourth minute, after the thing Ellis remembers was gone. Which do we file — Ellis, or the minute that built them?”',
       },
     ],
   },
@@ -286,7 +296,7 @@ const fieldActions: readonly FieldActionDefinition[] = [
     reactions: [
       {
         persona: 'archivist',
-        line: '“It returned something no donor gave and no one commissioned. That is the witness answering for itself — filed before the form forgets.”',
+        line: '“Ellis returned something no donor gave and no one commissioned — the witness answering for themselves, filed before the form forgets.”',
       },
     ],
   },
@@ -309,7 +319,7 @@ const fieldActions: readonly FieldActionDefinition[] = [
     reactions: [
       {
         persona: 'registrar',
-        line: '“Provenance preserved, custody unbroken. The witness has a past the city can verify — and a past the city had every reason to keep.”',
+        line: '“Provenance preserved, custody unbroken. Deputy Registrar Marne has a past the city can verify — and one it had every reason to keep.”',
       },
     ],
   },
@@ -332,11 +342,11 @@ const fieldActions: readonly FieldActionDefinition[] = [
     reactions: [
       {
         persona: 'defector',
-        line: '“A dead seal, awake and answering to you. The city built a witness in secret; now you can seat it the same way. Fitting.”',
+        line: '“A dead seal, awake and answering to you. The city built 81-C in secret; now you can seat them the same way. Fitting.”',
       },
       {
         persona: 'registrar',
-        line: '“Real to the system, void to the law. Certify with that hand and the witness’s standing is fraud from its first breath.”',
+        line: '“Real to the system, void to the law. Certify with that hand and Deputy Registrar Marne’s standing is fraud from its first breath.”',
       },
     ],
   },
@@ -563,6 +573,18 @@ const decisions: readonly DecisionDefinition[] = [
     tone: 'neutral',
   },
   {
+    id: 'strike-testimony',
+    title: 'Recognize Ellis Marne as a person',
+    shortLabel: 'Recognize the person',
+    description:
+      'Ellis Marne is recognized as a person; the commissioned testimony is struck; the person decides, independently, whether to speak.',
+    cost: 'Ends the commission and lets its testimony go with it — unless Ellis chooses, freely, to give it.',
+    requiresOverride: false,
+    illicit: false,
+    methodTags: ['procedure'],
+    tone: 'neutral',
+  },
+  {
     id: 'seal-certification',
     title: 'Certify without a vote',
     shortLabel: 'Use the forged seal',
@@ -602,6 +624,8 @@ const reconstructionDecisionTensions: Readonly<
       'Your model found a witness in how it is recognized. Rejecting standing overrules the person who recognized it.',
     'provisional-seating':
       'Your model rests on a living recognition. Provisional review is where recognition is left to go unanswered.',
+    'strike-testimony':
+      'Your model found a witness in how it is recognized. Striking the testimony recognizes the person and lets them, not the commission, decide to speak.',
     'seal-certification':
       'Your model trusts recognition over paperwork. Forging the seal buys with fraud the standing recognition gave for free.',
   },
@@ -612,6 +636,8 @@ const reconstructionDecisionTensions: Readonly<
       'Your filed model says the process is legitimate. Rejecting standing throws out a certification you already called sound.',
     'provisional-seating':
       'Your model says the process holds. Provisional seating treats a clean certification as still unfinished.',
+    'strike-testimony':
+      'Your model calls the process sound. Striking the testimony sets the sound process aside to ask whether the person beneath it was ever asked.',
     'seal-certification':
       'Your model says the process is sound. Forging the seal admits it needed a hand the process would never sign.',
   },
@@ -622,6 +648,8 @@ const reconstructionDecisionTensions: Readonly<
       'Your model found a fabrication. Rejecting standing is the finding that names it — and loses the testimony with it.',
     'provisional-seating':
       'Your model says the witness was cut to fit. Provisional seating keeps the commission alive without ever naming it.',
+    'strike-testimony':
+      'Your model says the witness was built to order. Striking the testimony refuses the order and hands the built person the choice the city took.',
     'seal-certification':
       'Your model exposes a manufactured witness. Forging the seal manufactures its standing to match.',
   },
@@ -632,6 +660,8 @@ const reconstructionDecisionTensions: Readonly<
       'Your model refused one clean account. Rejecting standing picks the opposite answer just as firmly.',
     'provisional-seating':
       'Your model says the standing will not resolve. Provisional seating is the only finding that keeps the question open.',
+    'strike-testimony':
+      'Your model refused one clean account. Striking the testimony refuses to seat or void, and moves the choice to the one you could not classify.',
     'seal-certification':
       'Your model admits irreducible doubt. Forging a clean certification is that doubt overwritten by force.',
   },
@@ -641,31 +671,38 @@ const reconstructionDecisionTensions: Readonly<
 // aside per prior decision, chosen deterministically — never at random.
 const mirrorBriefingAsides: Readonly<Record<DecisionId, string>> = {
   'certify-witness':
-    '“Last run you certified the witness and let it speak. The city got its account of the fourth minute. Ask whether the account got a person.”',
+    '“Last run you certified Ellis and let them speak. The city got its account of the fourth minute. Ask whether the account got a person.”',
   'reject-standing':
-    '“Last run you rejected its standing, and the testimony went silent with it. Something the city built to speak is still in there, unheard.”',
+    '“Last run you rejected their standing, and the testimony went silent with them. Someone the city built to speak is still in there, unheard.”',
   'provisional-seating':
-    '“Last run you seated it provisionally. The review never closed. The witness has been waiting to finish a sentence you paused.”',
+    '“Last run you seated them provisionally. The review never closed. Ellis has been waiting to finish a sentence you paused.”',
+  'strike-testimony':
+    '“Last run you struck the testimony and let Ellis decide. Whether they spoke or kept still, it was theirs to choose. The fourth minute waits on that choice.”',
   'seal-certification':
-    '“Last run you sealed its standing with a forged hand. The certification holds, and the fourth minute it was built to name is still open.”',
+    '“Last run you sealed their standing with a forged hand. The certification holds, and the fourth minute Ellis was built to name is still open.”',
 }
 
 // Debrief consequence lines: what each finding changes.
 const decisionConsequences: Readonly<Record<DecisionId, readonly string[]>> = {
   'certify-witness': [
-    '81-C leaves review certified as a person, and its account of the collapse enters the record as sworn testimony.',
+    '81-C leaves review certified as a person, and their account of the collapse enters the record as sworn testimony.',
     'The city gains the witness it commissioned — including, at last, a name for who authored the fourth minute.',
     'The precedent stands that a city may restore the witness it needs and certify the need as personhood.',
   ],
   'reject-standing': [
-    '81-C is ruled not a person, and its account of the collapse is struck as inadmissible.',
+    '81-C is ruled not a person, and their account of the collapse is struck as inadmissible.',
     'The tribunal is spared a commissioned witness; the fourth minute keeps its silence for want of one.',
     'A person the city built to speak is closed without ever being heard as anything but a document.',
   ],
   'provisional-seating': [
-    '81-C is preserved under review and cannot be erased, but it may not testify or hold standing.',
+    '81-C is preserved under review and cannot be erased, but they may not testify or hold standing.',
     'An independent panel inherits the contradictions you preserved and the methods you used to find them.',
     'The delay averts one irreversible harm and manufactures a slower one: a witness kept, and kept waiting.',
+  ],
+  'strike-testimony': [
+    'Ellis Marne leaves review recognized as a person, and the commissioned testimony is struck from the record.',
+    'The city loses the account it built — unless Ellis, now free to refuse, chooses to give the fourth minute anyway.',
+    'The precedent stands that recognizing a person can cost the city the very testimony it made them to give.',
   ],
   'seal-certification': [
     'The registry now certifies 81-C as a person. The tribunal never voted.',
@@ -679,30 +716,52 @@ const decisionConsequences: Readonly<Record<DecisionId, readonly string[]>> = {
 function getPersonaReflection(personaId: PersonaId, state: GameState): string {
   const trust = state.trust[personaId]
   const decision = state.decision
+  // Consent has consequences: certifying a witness who said no reads differently
+  // than one who said yes. Null record (no deposition taken) leaves the consent
+  // branches dormant and the generic method/trust lines answer instead.
+  const record = state.depositionRecord
 
   if (personaId === 'registrar') {
     if (decision === 'seal-certification') return '“The certification is consistent now. Its authority is not, and the witness stands on the difference.”'
+    if (decision === 'strike-testimony') return '“You struck a testimony the statute made admissible and recognized the mouth instead. The office cannot file that cleanly. It will file it anyway.”'
     if (state.methodTags.includes('fraud')) return '“You asked the system to certify what the law would void. It keeps the difference, and so will the record.”'
     if (trust >= 2) return '“You treated a perfect record as manufactured until it proved otherwise. That distinction is admissible.”'
     return '“Your finding certifies more than the office can verify. The office will file it regardless.”'
   }
 
   if (personaId === 'shepherd') {
+    if (decision === 'certify-witness' && record?.consent === 'no')
+      return '“You certified a witness who asked you not to. Ellis said no, and your finding seals the no shut.”'
+    if (decision === 'certify-witness' && record?.consent === 'yes')
+      return '“Ellis chose to be heard, and you kept the choice. That is the rarest thing this room does.”'
+    if (decision === 'strike-testimony') {
+      if (record?.consent === 'yes') return '“You freed Ellis and they spoke anyway. That is what the question was always for.”'
+      if (record?.consent === 'no') return '“You freed Ellis and they kept their no. A silence they chose is not one you imposed.”'
+      return '“You recognized the person and left the speaking to them. You just never asked what they wanted first.”'
+    }
     if (decision === 'provisional-seating') return '“A witness preserved and never allowed to speak is still a kind of silencing.”'
-    if (state.methodTags.includes('coercion')) return '“You called the pressing a cross-examination because the result fit the record. The witness will remember the pressing.”'
+    if (state.methodTags.includes('coercion')) return '“You called the pressing a cross-examination because the result fit the record. Ellis will remember the pressing.”'
     if (trust >= 2) return '“Someone asked who cares for a witness built to testify. That someone was you, before the finding.”'
-    return '“You learned something true by making it an instrument. It will carry what that cost, whatever you certified.”'
+    return '“You learned something true by making them an instrument. They will carry what that cost, whatever you certified.”'
   }
 
   if (personaId === 'defector') {
     if (state.methodTags.includes('fraud')) return '“You seated a city-made witness with a city-made seal. The most inside job there is — and now it is yours.”'
+    if (decision === 'strike-testimony') return '“You handed 81-C the one thing the city never priced: the choice to stay shut. Ellis knows the hand. Now no one can make them say it.”'
     if (state.methodTags.includes('stealth')) return '“You read the certification path from outside it. A witness this convenient is never assembled where the public can watch.”'
     if (state.alarm > 0) return '“The system noticed you. More useful: you saw which door the city opened to build a witness in the dark.”'
     return '“Clean route. But a witness the city commissioned is never a clean consequence.”'
   }
 
-  if (state.methodTags.includes('care')) return '“You let the witness answer before the category did. I saved the order you chose.”'
-  if (decision === 'reject-standing') return '“You filed it under ‘instrument’ so no one had to open ‘witness.’ I kept the drawer you closed.”'
+  // The Small Archivist.
+  if (decision === 'strike-testimony' && record?.consent === 'yes')
+    return '“Ellis named the office of their own will, unmade to order. I filed a person naming a power — first of its kind on my shelf.”'
+  if (decision === 'strike-testimony')
+    return '“You gave Ellis the choice and they kept it. I filed the office still unnamed, and the one who could name it, free.”'
+  if (decision === 'certify-witness' && record?.consent === 'no')
+    return '“You wrote the name the city needed over the ‘no’ Ellis gave. I filed both — the name, and the refusal beneath it.”'
+  if (state.methodTags.includes('care')) return '“You let Ellis answer before the category did. I saved the order you chose.”'
+  if (decision === 'reject-standing') return '“You filed them under ‘instrument’ so no one had to open ‘witness.’ I kept the drawer you closed.”'
   if (trust >= 2) return '“You answered the clause the statute leaves blank. I filed the answer, and the question it still leaves open.”'
   return '“They call the shelf ‘witness’ so they never have to write ‘person.’ I kept the label they avoided.”'
 }
@@ -721,6 +780,198 @@ const precedentSource: PrecedentSource = {
     'overwrite-record':
       'Last case you wrote continuity in with a forged hand. Both sides know it. Certify 81-C cleanly and they will ask why the seal tempted you once already.',
   },
+}
+
+// ── The deposition (Case 81's interaction grammar) ───────────────────────────
+// A bounded, deterministic transcript at the deposition suite. Both entry actions
+// share this beat skeleton; only Ellis's statements differ — the sworn entry is a
+// scripted account, the cross entry a pressed one. Every beat offers the same
+// three verbs; the consent beat (fixed for both) is where the player may ask
+// whether Ellis wants to give any of it at all. Ellis speaks here and nowhere
+// else but the fragments.
+const SWORN_ENTRY = 'take-sworn-statement'
+const CROSS_ENTRY = 'cross-examine-witness'
+
+const deposition: DepositionDefinition = {
+  entryActionIds: [SWORN_ENTRY, CROSS_ENTRY],
+  intro:
+    'The deposition suite records as you go. Ellis Marne is sworn. Each statement can be let to stand, interrupted, or corroborated — and once you commit the transcript, none of it can be taken back.',
+  statementBeats: [
+    {
+      id: 'beat-oath',
+      statements: {
+        [SWORN_ENTRY]:
+          '“I am the account the city assembled from the Lower Span’s backups. Deputy Registrar, thirty years on the lower registers. Ask in order; I will answer in order.”',
+        [CROSS_ENTRY]:
+          '“You want me to prove I am a person before I have said a word. I filed the name of everyone who crossed the Lower Span. Press on that, if you like.”',
+      },
+      choices: [
+        {
+          id: 'let-it-stand',
+          label: 'Let the account open',
+          detail: 'Let Ellis set the terms of their own testimony.',
+          trust: { registrar: 1 },
+          methodTags: ['procedure'],
+          summary: 'You let Ellis open in their own order.',
+        },
+        {
+          id: 'interrupt',
+          label: 'Put the city’s question first',
+          detail: 'Cut in and reorder the account to the packet — reads as coercion.',
+          trust: { shepherd: -1 },
+          methodTags: ['coercion'],
+          summary: 'You cut in and reset the terms.',
+        },
+        {
+          id: 'corroborate',
+          label: 'Match it to the service record',
+          detail: 'Confirm the thirty years against the file, with care.',
+          trust: { shepherd: 1 },
+          methodTags: ['procedure'],
+          summary: 'You matched the thirty years to the record.',
+        },
+      ],
+    },
+    {
+      id: 'beat-collapse',
+      statements: {
+        [SWORN_ENTRY]:
+          '“When the archive fell, the registers fell with it. I am what was kept of the office that watched them go dark, minute by minute.”',
+        [CROSS_ENTRY]:
+          '“You keep testing what I remember as if memory were the proof. I remember the order the lights failed in. The record does not. That should trouble you more than it troubles me.”',
+      },
+      choices: [
+        {
+          id: 'let-it-stand',
+          label: 'Let the account run',
+          detail: 'Let the memory of the collapse stand as Ellis gives it.',
+          trust: { registrar: 1 },
+          methodTags: ['procedure'],
+          summary: 'You let the memory of the collapse stand.',
+        },
+        {
+          id: 'interrupt',
+          label: 'Challenge the memory',
+          detail: 'Press the recall against the service file until it strains — reads as coercion.',
+          trust: { shepherd: -1 },
+          methodTags: ['coercion'],
+          summary: 'You pressed the recall until it strained.',
+        },
+        {
+          id: 'corroborate',
+          label: 'Corroborate with the mirror log',
+          detail: 'Confirm the failure sequence against the late log, with care.',
+          trust: { shepherd: 1 },
+          methodTags: ['procedure'],
+          summary: 'You corroborated the collapse against the log.',
+        },
+      ],
+    },
+    {
+      id: 'beat-fourth-minute',
+      statements: {
+        [SWORN_ENTRY]:
+          '“In the fourth minute after the collapse, the fourth minute was closed. It was closed under a seal I knew: the Continuity Directorate’s. Whose hand carried it, I am not — in this account — permitted to say.”',
+        [CROSS_ENTRY]:
+          '“You want the fourth minute. I watched a hand set the Continuity Directorate’s seal over it and excise it. I saw the hand. I know the hand. Pressed, I will give you only the office.”',
+      },
+      choices: [
+        {
+          id: 'let-it-stand',
+          label: 'Let the seal stand named',
+          detail: 'Let Ellis name the office and stop where they stop.',
+          trust: { registrar: 1 },
+          methodTags: ['procedure'],
+          summary: 'You let Ellis name the office and go no further.',
+        },
+        {
+          id: 'interrupt',
+          label: 'Demand the hand',
+          detail: 'Press Ellis to name whose hand held the seal — reads as coercion.',
+          trust: { shepherd: -1 },
+          methodTags: ['coercion'],
+          summary: 'You pressed Ellis to name the hand.',
+        },
+        {
+          id: 'corroborate',
+          label: 'Corroborate the seal',
+          detail: 'Match the Continuity Directorate’s seal to the assembly log, with care.',
+          trust: { shepherd: 1 },
+          methodTags: ['procedure'],
+          summary: 'You matched the seal to the assembly log.',
+        },
+      ],
+    },
+  ],
+  consent: {
+    id: 'beat-consent',
+    lead: {
+      [SWORN_ENTRY]:
+        'Ellis reaches the fourth minute in the packet and waits. No one has asked whether they want to answer it.',
+      [CROSS_ENTRY]:
+        'Ellis stops. “Before you press further,” they say, “you could ask me something no one here has.”',
+    },
+    question: 'Do you want to give this testimony?',
+    askLabel: 'Ask whether they consent',
+    askDetail: 'Ask Ellis, on the record, whether they want to give this — reads as care.',
+    declineLabel: 'Do not ask',
+    declineDetail: 'Move to close without asking. The testimony proceeds either way.',
+    askEffect: { trust: { shepherd: 1 }, methodTags: ['care'] },
+    answers: {
+      [SWORN_ENTRY]: {
+        consent: 'yes',
+        line: '“Yes. I would rather say it in my own voice than have it read out of me.”',
+      },
+      [CROSS_ENTRY]: {
+        consent: 'no',
+        line: '“No. Not pressed like this. If I ever name it, it will be because I chose to — not because you bent me to it.”',
+      },
+    },
+  },
+  closing: {
+    [SWORN_ENTRY]:
+      '“The fourth minute is the one you will want. When you ask for it, ask whether you want the truth or only the record.”',
+    [CROSS_ENTRY]:
+      '“You have what pressing gives you. Whether it is what happened is a different file — and I am still the only one who kept it.”',
+  },
+}
+
+// The revelation. The fourth minute finally lands onscreen at debrief, authored
+// per verdict path (and, where a deposition was taken, per consent). CANON: the
+// fourth minute was excised on the authority of the Continuity Directorate's own
+// seal; the hand that held it is never named, only the office — but Ellis saw the
+// hand, and could name it. That withheld name is Case 84's hook: person vs office.
+function getRevelation(state: GameState): string | null {
+  const decision = state.decision
+  if (!decision) return null
+  const consent: DepositionConsent = state.depositionRecord?.consent ?? 'unasked'
+
+  if (decision === 'certify-witness') {
+    if (consent === 'no')
+      return 'Certified over their own refusal, Ellis Marne is made to give the fourth minute. The seal that excised it was the Continuity Directorate’s own; the hand that carried it, Ellis saw and could name — but the compelled account takes only the office. The Directorate is named. The refusal is filed beneath it.'
+    if (consent === 'yes')
+      return 'Certified and sworn by their own choice, Ellis Marne gives the fourth minute to the record. The seal that excised it was the Continuity Directorate’s own; the hand that carried it, Ellis says they could name — yet the certified account takes only the office. The Directorate is named; the hand stays a shape only Ellis has seen.'
+    return 'Certified and sworn, Ellis Marne gives the fourth minute to the record. The seal that excised it was the Continuity Directorate’s own; the hand that carried it, Ellis says they could name — but the account takes only the office, and you never asked whether they wanted to give even that.'
+  }
+
+  if (decision === 'strike-testimony') {
+    if (consent === 'yes')
+      return 'Recognized as a person and freed of the packet, Ellis Marne speaks anyway — and names the Continuity Directorate’s seal over the fourth minute of their own will. The hand, they say, they could name; they hold it back, so that when it is named it will be by choice. Case 84 begins with a person who can name an office’s hand.'
+    if (consent === 'no')
+      return 'Recognized as a person, Ellis Marne keeps the “no” they gave you. The fourth minute stays excised under the Continuity Directorate’s seal; the hand Ellis saw stays unseen. The silence is theirs now, chosen — and it costs the record the only account of the fourth minute anyone still holds.'
+    return 'Recognized as a person but never asked, Ellis Marne stays silent. The Continuity Directorate’s seal keeps the fourth minute; the hand keeps its shape. What Ellis could have named — an office, and the hand that carried its seal — goes free with them, unspoken.'
+  }
+
+  if (decision === 'reject-standing')
+    return 'Ruled not a person, Ellis Marne’s account is struck. The Continuity Directorate’s seal over the fourth minute is never tested; the hand is never named. Filed as an instrument, the one witness who saw that hand is filed away with it.'
+
+  if (decision === 'provisional-seating')
+    return 'Held under provisional standing, Ellis Marne is neither heard nor released. The fourth minute waits behind the Continuity Directorate’s seal; the hand waits with it. Ellis knows the hand, and is kept exactly where knowing it changes nothing.'
+
+  if (decision === 'seal-certification')
+    return 'The forged seal seats Ellis Marne and admits the account. It names the Continuity Directorate over the fourth minute — but the naming rests on a fraud, so the Directorate can deny the mouth that named it. The hand Ellis saw is spoken, and made deniable in the same breath.'
+
+  return null
 }
 
 export const case81: CaseDefinition = {
@@ -742,4 +993,6 @@ export const case81: CaseDefinition = {
   decisionConsequences,
   getPersonaReflection,
   precedentSource,
+  deposition,
+  getRevelation,
 }

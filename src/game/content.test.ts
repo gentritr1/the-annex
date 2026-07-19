@@ -34,12 +34,15 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
     getReconstructionForFragments,
   } = content
 
-  it('holds the structural template: 4 sites × 2 actions, 4 fragments/models/decisions', () => {
+  it('holds the structural template: 4 sites × 2 actions, 4 fragments/models, ≥4 decisions', () => {
     expect(sites).toHaveLength(4)
     expect(fieldActions).toHaveLength(8)
     expect(fragments).toHaveLength(4)
     expect(reconstructionDefinitions).toHaveLength(4)
-    expect(decisions).toHaveLength(4)
+    // Decisions vary by case (Case 77 has 4; Case 81 adds the fifth verdict), so
+    // the count is a floor, not a fixed number — the tension matrix below is what
+    // holds decisions × reconstructions consistent per case.
+    expect(decisions.length).toBeGreaterThanOrEqual(4)
     expect(approaches).toHaveLength(4)
     sites.forEach((site) => expect(site.actionIds).toHaveLength(2))
   })
@@ -157,7 +160,7 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
     })
   })
 
-  it('maps a nonempty tension line for all 16 reconstruction × decision pairs', () => {
+  it('maps a nonempty tension line for every reconstruction × decision pair', () => {
     let pairs = 0
     reconstructionDefinitions.forEach((model) => {
       decisions.forEach((decision) => {
@@ -167,7 +170,8 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
         pairs += 1
       })
     })
-    expect(pairs).toBe(16)
+    // Derived count: Case 77 keeps 4 × 4 = 16; Case 81 is 4 × 5 = 20.
+    expect(pairs).toBe(reconstructionDefinitions.length * decisions.length)
   })
 
   it('authors a Mirror aside and consequence lines for every decision', () => {
@@ -286,6 +290,98 @@ describe.each(registeredCases)('%s carries no placeholder text', (_caseId, conte
     })
 
     strings.forEach((line) => expect(line).not.toContain('[TODO'))
+  })
+})
+
+describe('consent branches the Case 81 debrief reflections', () => {
+  const content = getCaseContent('case-81')
+
+  function case81State(consent: 'yes' | 'no' | 'unasked', decision: string): GameState {
+    return {
+      ...createInitialGameState(),
+      caseId: 'case-81',
+      decision,
+      depositionRecord: {
+        actionId: 'take-sworn-statement',
+        beats: ['corroborate', 'corroborate', 'corroborate'],
+        askedConsent: consent !== 'unasked',
+        consent,
+      },
+    }
+  }
+
+  it('certifying a witness who said no reads differently than one who said yes', () => {
+    const yes = content.getPersonaReflection('shepherd', case81State('yes', 'certify-witness'))
+    const no = content.getPersonaReflection('shepherd', case81State('no', 'certify-witness'))
+    expect(yes).not.toBe(no)
+    // The refusal must be legible in the "said no" line.
+    expect(no.toLowerCase()).toContain('no')
+  })
+
+  it('striking the testimony branches the archivist on whether Ellis chose to speak', () => {
+    const spoke = content.getPersonaReflection('archivist', case81State('yes', 'strike-testimony'))
+    const silent = content.getPersonaReflection('archivist', case81State('no', 'strike-testimony'))
+    const unasked = content.getPersonaReflection(
+      'archivist',
+      case81State('unasked', 'strike-testimony'),
+    )
+    expect(spoke).not.toBe(silent)
+    expect(silent).toBe(unasked)
+  })
+
+  it('a null deposition record (no deposition taken) falls through to the generic lines', () => {
+    const noRecord: GameState = {
+      ...createInitialGameState(),
+      caseId: 'case-81',
+      decision: 'certify-witness',
+    }
+    // With no record, the consent branch is dormant and a generic line answers.
+    expect(noRecord.depositionRecord).toBeNull()
+    expect(content.getPersonaReflection('shepherd', noRecord).trim().length).toBeGreaterThan(0)
+  })
+})
+
+describe('the fourth-minute revelation (Case 81)', () => {
+  const content = getCaseContent('case-81')
+
+  function revelationFor(decision: string, consent: 'yes' | 'no' | 'unasked' | null): string | null {
+    const state: GameState = {
+      ...createInitialGameState(),
+      caseId: 'case-81',
+      decision,
+      depositionRecord:
+        consent === null
+          ? null
+          : {
+              actionId: 'take-sworn-statement',
+              beats: ['corroborate', 'corroborate', 'corroborate'],
+              askedConsent: consent !== 'unasked',
+              consent,
+            },
+    }
+    return content.getRevelation?.(state) ?? null
+  }
+
+  it('names the office on every verdict path but never the hand', () => {
+    const decisions = content.decisions.map((d) => d.id)
+    decisions.forEach((decision) => {
+      const line = revelationFor(decision, decision === 'strike-testimony' ? 'yes' : null)
+      expect(line).not.toBeNull()
+      expect(line).toContain('Continuity Directorate')
+    })
+  })
+
+  it('lands the person-vs-office hook only when the freed witness chose to speak', () => {
+    const spoke = revelationFor('strike-testimony', 'yes')
+    const silent = revelationFor('strike-testimony', 'no')
+    expect(spoke).toContain('Case 84')
+    expect(spoke).not.toBe(silent)
+    // A silent, freed witness costs the record its account, and does not name.
+    expect(silent).not.toContain('Case 84')
+  })
+
+  it('returns null before a verdict is issued', () => {
+    expect(revelationFor('', null)).toBeNull()
   })
 })
 

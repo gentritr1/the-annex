@@ -189,6 +189,9 @@ export default function App() {
             <Investigation
               state={state}
               onCommitAction={(actionId) => dispatch({ type: 'COMMIT_FIELD_ACTION', actionId })}
+              onCommitDeposition={(actionId, beats, askedConsent) =>
+                dispatch({ type: 'COMMIT_DEPOSITION', actionId, beats, askedConsent })
+              }
               onOpenReconstruction={() => dispatch({ type: 'OPEN_RECONSTRUCTION' })}
               onEnterTribunal={() => dispatch({ type: 'ENTER_TRIBUNAL' })}
             />

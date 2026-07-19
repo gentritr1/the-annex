@@ -43,6 +43,27 @@ export type ReconstructionId = string
 
 export type DecisionId = string
 
+// The deposition interaction grammar (Case 81's unique verb). These are a fixed
+// shared vocabulary — like MethodTag / ApproachId — not per-case content ids, so
+// the engine may reference them without becoming case-specific. Any case that
+// authors a `deposition` block reuses exactly these three per-beat choices and
+// the three consent outcomes.
+export type DepositionChoiceId = 'let-it-stand' | 'interrupt' | 'corroborate'
+
+export type DepositionConsent = 'yes' | 'no' | 'unasked'
+
+// The persisted trace of a committed deposition: which entry action opened it,
+// the per-beat choices, whether the consent question was asked, and — derived
+// from the authored consent answer — what the witness said. Optional-tolerated in
+// decode (a save without it loads with depositionRecord === null), so it needs no
+// schema bump.
+export interface DepositionRecord {
+  actionId: FieldActionId
+  beats: DepositionChoiceId[]
+  askedConsent: boolean
+  consent: DepositionConsent
+}
+
 export interface AccessibilitySettings {
   reducedMotion: boolean
   highContrast: boolean
@@ -96,6 +117,10 @@ export interface GameState {
   selectedFragments: FragmentId[]
   reconstruction: ReconstructionId | null
   decision: DecisionId | null
+  // The committed deposition transcript, or null when the case has no deposition,
+  // its deposition site was resolved by a plain field action, or none was taken.
+  // Optional-tolerated in decode (missing on an old save === null); no schema bump.
+  depositionRecord: DepositionRecord | null
   events: GameEvent[]
   previousRuns: RunSummary[]
   // caseId -> the decision id of the most recently COMPLETED run of that case.
@@ -111,6 +136,19 @@ export type GameAction =
   | { type: 'RESTORE'; state: GameState }
   | { type: 'SELECT_APPROACH'; approachId: ApproachId }
   | { type: 'COMMIT_FIELD_ACTION'; actionId: FieldActionId }
+  // Commit a deposition transcript. Resolves the underlying field action (the
+  // deposition's entry action) exactly as COMMIT_FIELD_ACTION would — files the
+  // site, adds its evidence — and additionally applies the beat-derived trust and
+  // method tags, records a depositionRecord, and logs one transcript-path event.
+  // Validated against the case's authored `deposition` block; a no-op if the case
+  // defines none, the action is not one of its entry actions, or the beats/consent
+  // do not match the block. Generic: the engine reads only authored data.
+  | {
+      type: 'COMMIT_DEPOSITION'
+      actionId: FieldActionId
+      beats: readonly DepositionChoiceId[]
+      askedConsent: boolean
+    }
   | { type: 'OPEN_RECONSTRUCTION' }
   | { type: 'TOGGLE_FRAGMENT'; fragmentId: FragmentId }
   | { type: 'SUBMIT_RECONSTRUCTION' }
@@ -287,6 +325,59 @@ export interface PrecedentSource {
   lines: Readonly<Record<DecisionId, string>>
 }
 
+// ── Deposition (Case 81's interaction grammar) ───────────────────────────────
+// A bounded, deterministic transcript a case may author at one field site. The
+// engine and UI treat it generically: no case knows the beat count, and no beat
+// id or entry-action id is hardcoded in the engine or components.
+
+// One of the three per-beat choices the auditor may make against a statement.
+// `trust` and `methodTags` are the bonus effects folded in on commit; `summary`
+// is the terse clause joined into the transcript-path event detail.
+export interface DepositionChoiceDefinition {
+  id: DepositionChoiceId
+  label: string
+  detail: string
+  trust: Partial<Record<PersonaId, number>>
+  methodTags: readonly MethodTag[]
+  summary: string
+}
+
+// One statement beat: the witness's line (authored per entry action, keyed by the
+// entry action's id) and the three choices the auditor may take against it.
+export interface DepositionBeatDefinition {
+  id: string
+  statements: Readonly<Record<FieldActionId, string>>
+  choices: readonly DepositionChoiceDefinition[]
+}
+
+// The fixed consent beat. The auditor may ask the question or decline; asking
+// applies `askEffect` and surfaces the witness's authored, entry-dependent answer
+// (its `consent` value is what persists on the record).
+export interface DepositionConsentDefinition {
+  id: string
+  lead: Readonly<Record<FieldActionId, string>>
+  question: string
+  askLabel: string
+  askDetail: string
+  declineLabel: string
+  declineDetail: string
+  askEffect: {
+    trust: Partial<Record<PersonaId, number>>
+    methodTags: readonly MethodTag[]
+  }
+  answers: Readonly<Record<FieldActionId, { consent: 'yes' | 'no'; line: string }>>
+}
+
+// A whole deposition: the entry actions that open it, the statement beats (1..N),
+// the consent beat, and the witness's closing line per entry action.
+export interface DepositionDefinition {
+  entryActionIds: readonly FieldActionId[]
+  intro: string
+  statementBeats: readonly DepositionBeatDefinition[]
+  consent: DepositionConsentDefinition
+  closing: Readonly<Record<FieldActionId, string>>
+}
+
 // A complete, self-contained dossier the engine and components resolve through
 // GameState.caseId. Personas and the method vocabulary stay global (same cast,
 // same verbs across every case); everything case-specific lives here.
@@ -317,4 +408,10 @@ export interface CaseDefinition {
   getPersonaReflection: (personaId: PersonaId, state: GameState) => string
   // Optional cross-case precedent citation shown at this case's tribunal.
   precedentSource?: PrecedentSource
+  // Optional bounded transcript interaction authored at one field site.
+  deposition?: DepositionDefinition
+  // Optional debrief revelation authored per verdict path (and, when a deposition
+  // was taken, per consent). Returns null when the case authors no revelation for
+  // the resolved state. Read view-side by the Debrief; the engine never calls it.
+  getRevelation?: (state: GameState) => string | null
 }

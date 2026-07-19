@@ -223,6 +223,9 @@ describe('migrateRawSave (v1 -> current)', () => {
       schemaVersion: CURRENT_SAVE_SCHEMA,
       caseId: 'case-77',
       precedents: {},
+      // Optional-tolerated: a pre-deposition save has no record; decode normalizes
+      // the absent field to null. Progress is otherwise untouched.
+      depositionRecord: null,
     })
     // Spot-check that field progress survived the migration.
     expect(decoded?.completedActions).toEqual(['authenticate-chain'])
@@ -242,6 +245,7 @@ describe('migrateRawSave (v1 -> current)', () => {
       schemaVersion: CURRENT_SAVE_SCHEMA,
       caseId: 'case-77',
       precedents: { 'case-77': 'certify-continuity' },
+      depositionRecord: null,
     })
   })
 
@@ -371,5 +375,66 @@ describe('multi-case persistence', () => {
     // A case-77 evidence id is not part of case-81's vocabulary.
     encoded.evidence = ['custody-chain']
     expect(decodeGameState(encoded)).toBeNull()
+  })
+})
+
+// A Case 81 state whose deposition site was resolved through the transcript, so
+// depositionRecord is populated rather than null.
+function playCase81WithDeposition(): GameState {
+  let s = gameReducer(createInitialGameState(), { type: 'START_NEW' })
+  s = gameReducer(s, { type: 'SELECT_APPROACH', approachId: 'care' })
+  s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
+  s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
+  s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'scar-sensation' })
+  s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'witness-account' })
+  s = gameReducer(s, { type: 'SUBMIT_RECONSTRUCTION' })
+  s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'authenticate-chain' })
+  s = gameReducer(s, { type: 'ENTER_TRIBUNAL' })
+  s = gameReducer(s, { type: 'DECIDE', decisionId: 'charter-new-person' })
+  s = gameReducer(s, { type: 'START_CASE', caseId: 'case-81' })
+  s = gameReducer(s, { type: 'SELECT_APPROACH', approachId: 'care' })
+  return gameReducer(s, {
+    type: 'COMMIT_DEPOSITION',
+    actionId: 'take-sworn-statement',
+    beats: ['corroborate', 'let-it-stand', 'corroborate'],
+    askedConsent: true,
+  })
+}
+
+describe('deposition record persistence (optional-tolerated)', () => {
+  it('round-trips a state carrying a committed deposition record', () => {
+    const state = playCase81WithDeposition()
+    expect(state.depositionRecord).toEqual({
+      actionId: 'take-sworn-statement',
+      beats: ['corroborate', 'let-it-stand', 'corroborate'],
+      askedConsent: true,
+      consent: 'yes',
+    })
+
+    const encoded = JSON.parse(JSON.stringify(state)) as { schemaVersion: number }
+    expect(encoded.schemaVersion).toBe(CURRENT_SAVE_SCHEMA)
+    expect(decodeGameState(migrateRawSave(encoded))).toEqual(state)
+  })
+
+  it('tolerates absence but rejects a present-and-malformed record', () => {
+    const encoded = JSON.parse(JSON.stringify(playCase81WithDeposition())) as Record<string, unknown>
+    // Absence decodes to null (an old save that predates depositions).
+    const withoutRecord = { ...encoded }
+    delete withoutRecord.depositionRecord
+    const decodedAbsent = decodeGameState(withoutRecord)
+    expect(decodedAbsent).not.toBeNull()
+    expect(decodedAbsent?.depositionRecord).toBeNull()
+
+    // Present but with an invalid consent value rejects the whole save.
+    const malformed = {
+      ...encoded,
+      depositionRecord: {
+        actionId: 'take-sworn-statement',
+        beats: ['let-it-stand'],
+        askedConsent: true,
+        consent: 'maybe',
+      },
+    }
+    expect(decodeGameState(malformed)).toBeNull()
   })
 })

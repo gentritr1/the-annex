@@ -2,6 +2,9 @@ import { DEFAULT_CASE_ID, getCaseContent, isRegisteredCase, personas } from './c
 import type {
   AccessibilitySettings,
   CaseDefinition,
+  DepositionChoiceId,
+  DepositionConsent,
+  DepositionRecord,
   GameEvent,
   GamePhase,
   GameState,
@@ -82,6 +85,12 @@ const validEventSourceTypes = new Set<GameEvent['sourceType']>([
   'reconstruction',
   'decision',
 ])
+const validDepositionChoices = new Set<DepositionChoiceId>([
+  'let-it-stand',
+  'interrupt',
+  'corroborate',
+])
+const validDepositionConsent = new Set<DepositionConsent>(['yes', 'no', 'unasked'])
 
 let storageAvailable = true
 const storageListeners = new Set<() => void>()
@@ -189,6 +198,32 @@ function isRunSummary(value: unknown): value is RunSummary {
     return false
   }
   return isTrustState(value.trust)
+}
+
+// A deposition record is optional-tolerated: an old save simply omits it. When
+// present it is validated against the deposition vocabulary and the payload's own
+// case field-action ids; a malformed record rejects the save, matching the strict
+// treatment every other present field gets.
+function isDepositionRecord(value: unknown, sets: CaseIdSets): value is DepositionRecord {
+  if (!isRecord(value)) return false
+  if (typeof value.actionId !== 'string' || !sets.fieldActions.has(value.actionId)) return false
+  if (
+    !Array.isArray(value.beats) ||
+    !value.beats.every(
+      (beat): beat is DepositionChoiceId =>
+        typeof beat === 'string' && validDepositionChoices.has(beat as DepositionChoiceId),
+    )
+  ) {
+    return false
+  }
+  if (typeof value.askedConsent !== 'boolean') return false
+  if (
+    typeof value.consent !== 'string' ||
+    !validDepositionConsent.has(value.consent as DepositionConsent)
+  ) {
+    return false
+  }
+  return true
 }
 
 // Ordered save migrations, keyed by the schemaVersion they upgrade FROM. Each
@@ -300,6 +335,17 @@ export function decodeGameState(value: unknown): GameState | null {
     return null
   }
   if (!Array.isArray(value.previousRuns) || !value.previousRuns.every(isRunSummary)) return null
+  // Optional-tolerated: absent or null decodes to null; present must be valid.
+  let depositionRecord: DepositionRecord | null = null
+  if (value.depositionRecord !== undefined && value.depositionRecord !== null) {
+    if (!isDepositionRecord(value.depositionRecord, sets)) return null
+    depositionRecord = {
+      actionId: value.depositionRecord.actionId,
+      beats: [...value.depositionRecord.beats],
+      askedConsent: value.depositionRecord.askedConsent,
+      consent: value.depositionRecord.consent,
+    }
+  }
   const settings = decodeAccessibilitySettings(value.settings)
   if (!settings || typeof value.announcement !== 'string') return null
 
@@ -328,6 +374,7 @@ export function decodeGameState(value: unknown): GameState | null {
     selectedFragments: value.selectedFragments,
     reconstruction: value.reconstruction as GameState['reconstruction'],
     decision: value.decision as GameState['decision'],
+    depositionRecord,
     events: value.events,
     previousRuns: value.previousRuns,
     precedents: value.precedents,

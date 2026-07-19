@@ -13,6 +13,7 @@ import { CURRENT_SAVE_SCHEMA, MAX_PREVIOUS_RUNS } from './persistence'
 import type {
   AccessibilitySettings,
   ApproachId,
+  DepositionConsent,
   GameAction,
   GameEvent,
   GameState,
@@ -65,6 +66,7 @@ function createRunState(
     selectedFragments: [],
     reconstruction: null,
     decision: null,
+    depositionRecord: null,
     events: [],
     previousRuns,
     precedents: { ...precedents },
@@ -98,6 +100,21 @@ function applyTrust(
   }
 
   return next
+}
+
+// Sum a set of trust-delta maps into one. Used by COMMIT_DEPOSITION so the base
+// action, every beat choice, and the consent ask fold into a single delta map —
+// applied once (clamped once) and reported once in the event detail.
+function mergeTrustDeltas(
+  maps: readonly Partial<Record<PersonaId, number>>[],
+): Partial<Record<PersonaId, number>> {
+  const merged: Partial<Record<PersonaId, number>> = {}
+  for (const map of maps) {
+    for (const personaId of Object.keys(map) as PersonaId[]) {
+      merged[personaId] = (merged[personaId] ?? 0) + (map[personaId] ?? 0)
+    }
+  }
+  return merged
 }
 
 function addUnique<T>(current: T[], additions: T[]): T[] {
@@ -271,6 +288,81 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           methodTags: definition.methodTags,
         }),
         announcement: `${definition.eventTitle}. New evidence added.`,
+      }
+    }
+
+    case 'COMMIT_DEPOSITION': {
+      if (state.phase !== 'investigation') return state
+
+      const content = getCaseContent(state.caseId)
+      const deposition = content.deposition
+      if (!deposition || !deposition.entryActionIds.includes(action.actionId)) return state
+
+      const definition = content.fieldActions.find((item) => item.id === action.actionId)
+      if (!definition || state.completedSites.includes(definition.siteId)) return state
+
+      // The committed beats must match the authored skeleton one-for-one: same
+      // count, and each choice valid for its beat. Validate and resolve each beat
+      // to its authored choice in a single pass; any mismatch is a no-op.
+      if (action.beats.length !== deposition.statementBeats.length) return state
+      const beatChoices = []
+      for (const [index, beat] of deposition.statementBeats.entries()) {
+        const choice = beat.choices.find((item) => item.id === action.beats[index])
+        if (!choice) return state
+        beatChoices.push(choice)
+      }
+
+      // The witness's answer is authored per entry action; unasked stays 'unasked'.
+      const consent: DepositionConsent = action.askedConsent
+        ? deposition.consent.answers[action.actionId]?.consent ?? 'unasked'
+        : 'unasked'
+
+      // Fold the base action, every beat choice, and the consent ask into one
+      // delta map and one method-tag set — applied and reported once.
+      const deltas = mergeTrustDeltas([
+        definition.trust,
+        ...beatChoices.map((choice) => choice.trust),
+        ...(action.askedConsent ? [deposition.consent.askEffect.trust] : []),
+      ])
+      const methodTags = addUnique(state.methodTags, [
+        ...definition.methodTags,
+        ...beatChoices.flatMap((choice) => choice.methodTags),
+        ...(action.askedConsent ? deposition.consent.askEffect.methodTags : []),
+      ])
+
+      const consentClause = action.askedConsent
+        ? consent === 'yes'
+          ? 'Asked whether they wanted to give it, the witness said yes.'
+          : 'Asked whether they wanted to give it, the witness said no.'
+        : 'You never asked whether the witness wanted to give it.'
+      const transcriptDetail = `${beatChoices.map((choice) => choice.summary).join(' ')} ${consentClause}`
+
+      const nextAlarm = Math.max(0, Math.min(3, state.alarm + definition.alarmDelta))
+
+      return {
+        ...state,
+        completedSites: [...state.completedSites, definition.siteId],
+        completedActions: [...state.completedActions, definition.id],
+        evidence: addUnique(state.evidence, [definition.evidenceId]),
+        methodTags,
+        trust: applyTrust(state.trust, deltas),
+        alarm: nextAlarm,
+        tribunalOverride: state.tribunalOverride || definition.grantsTribunalOverride,
+        depositionRecord: {
+          actionId: definition.id,
+          beats: [...action.beats],
+          askedConsent: action.askedConsent,
+          consent,
+        },
+        events: appendEvent(state, {
+          sourceType: 'field-action',
+          sourceId: definition.id,
+          title: definition.eventTitle,
+          detail: `${transcriptDetail}${describeTrustDeltas(deltas)}`,
+          tone: definition.alarmDelta > 0 ? 'warning' : 'neutral',
+          methodTags: definition.methodTags,
+        }),
+        announcement: `${definition.eventTitle}. Testimony recorded.`,
       }
     }
 

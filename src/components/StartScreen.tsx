@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Atmosphere } from '../ambience/Atmosphere'
+import { getRecordEndsLine } from '../game/content'
 import type { AccessibilitySettings, CaseSwitchOption, GameState } from '../game/types'
 
 interface StartScreenProps {
@@ -49,6 +50,12 @@ export function StartScreen({
   // A saved run that has not reached its debrief is still in progress; switching
   // away from it discards the unfinished run, so it needs a confirm step.
   const runInProgress = Boolean(savedState) && savedState?.phase !== 'debrief'
+
+  // W4: the canon rule surfaced — the latest verdict is the record. Show, per
+  // case, where its record currently ends whenever a verdict has been recorded.
+  const continueRecordLine = savedState
+    ? getRecordEndsLine(savedState.caseId, savedState.precedents)
+    : null
 
   function requestNewAudit() {
     if (savedState) {
@@ -113,18 +120,32 @@ export function StartScreen({
               </span>
             </button>
           )}
+          {continueRecordLine && (
+            <p className="record-line" role="note">
+              {continueRecordLine}
+            </p>
+          )}
           {savedState &&
-            switchTargets.map((target) => (
-              <button
-                key={target.caseId}
-                className="button button-secondary"
-                type="button"
-                onClick={() => requestSwitchCase(target.caseId)}
-              >
-                <span>{target.heading}</span>
-                <span className="button-meta">{target.meta}</span>
-              </button>
-            ))}
+            switchTargets.map((target) => {
+              const targetRecordLine = getRecordEndsLine(target.caseId, savedState.precedents)
+              return (
+                <div className="switch-target" key={target.caseId}>
+                  <button
+                    className="button button-secondary"
+                    type="button"
+                    onClick={() => requestSwitchCase(target.caseId)}
+                  >
+                    <span>{target.heading}</span>
+                    <span className="button-meta">{target.meta}</span>
+                  </button>
+                  {targetRecordLine && (
+                    <p className="record-line" role="note">
+                      {targetRecordLine}
+                    </p>
+                  )}
+                </div>
+              )
+            })}
           <button
             className={savedState ? 'button button-secondary' : 'button button-primary'}
             type="button"

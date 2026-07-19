@@ -9,6 +9,7 @@ import type {
   PersonaReaction,
   DecisionId,
   ReconstructionId,
+  RunSummary,
 } from './types'
 
 // ── Global vocabulary (shared by every case) ────────────────────────────────
@@ -150,4 +151,34 @@ export function getPrecedentLine(
   const priorDecision = precedents[source.caseId]
   if (!priorDecision) return null
   return source.lines[priorDecision] ?? null
+}
+
+// The canon rule surfaced (W4): the latest verdict IS the record. One in-voice
+// line naming where a case's record currently ends, or null when that case has
+// no recorded verdict yet. Read on the title switcher/continue area and at the
+// debrief (where it reflects the verdict just issued).
+export function getRecordEndsLine(
+  caseId: string,
+  precedents: Readonly<Record<string, string>>,
+): string | null {
+  const decisionId = precedents[caseId]
+  if (!decisionId) return null
+  const decision = getCaseContent(caseId).decisions.find((item) => item.id === decisionId)
+  if (!decision) return null
+  return `The record currently ends with: ${decision.title}.`
+}
+
+// The most recent verdict recorded for a case in completed run history, or null
+// when there is none. At debrief the run's own verdict is already this case's
+// precedent, so comparing THIS against the prior history entry is how a replay
+// detects that it rewrote an earlier ending (W4). Pure and view-derived.
+export function getPriorVerdictForCase(
+  caseId: string,
+  previousRuns: readonly RunSummary[],
+): string | null {
+  for (let index = previousRuns.length - 1; index >= 0; index -= 1) {
+    const run = previousRuns[index]
+    if ((run?.caseId ?? DEFAULT_CASE_ID) === caseId) return run?.decision ?? null
+  }
+  return null
 }

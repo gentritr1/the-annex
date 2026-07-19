@@ -386,3 +386,124 @@ describe('authored decision & reconstruction semantics (Case 81)', () => {
     expect(event?.tone).toBe('warning')
   })
 })
+
+describe('deposition (Case 81)', () => {
+  // A Case 81 investigation state (an approach already chosen), opened off a
+  // completed Case 77 run so the case is available.
+  function case81Investigation(approach: 'care' | 'procedure' | 'covert' | 'curiosity'): GameState {
+    const opened = gameReducer(case77Debrief(), { type: 'START_CASE', caseId: 'case-81' })
+    return gameReducer(opened, { type: 'SELECT_APPROACH', approachId: approach })
+  }
+
+  it('commits a sworn deposition: resolves the site, records consent yes, tags care', () => {
+    let s = case81Investigation('procedure')
+    s = gameReducer(s, {
+      type: 'COMMIT_DEPOSITION',
+      actionId: 'take-sworn-statement',
+      beats: ['corroborate', 'corroborate', 'let-it-stand'],
+      askedConsent: true,
+    })
+
+    // The underlying field action resolved exactly as a plain commit would.
+    expect(s.completedSites).toContain('deposition-suite')
+    expect(s.completedActions).toContain('take-sworn-statement')
+    expect(s.evidence).toContain('sworn-statement')
+    // The transcript persisted; the sworn entry answers 'yes'.
+    expect(s.depositionRecord).toEqual({
+      actionId: 'take-sworn-statement',
+      beats: ['corroborate', 'corroborate', 'let-it-stand'],
+      askedConsent: true,
+      consent: 'yes',
+    })
+    // Asking = care; no interrupt means no coercion; base action tags fold in.
+    expect(s.methodTags).toEqual(expect.arrayContaining(['procedure', 'care']))
+    expect(s.methodTags).not.toContain('coercion')
+    // One transcript-path event summarizing the run.
+    const event = s.events.at(-1)
+    expect(event?.sourceId).toBe('take-sworn-statement')
+    expect(event?.detail).toContain('yes')
+  })
+
+  it('cross entry answers no when asked; not asking records unasked', () => {
+    let asked = case81Investigation('procedure')
+    asked = gameReducer(asked, {
+      type: 'COMMIT_DEPOSITION',
+      actionId: 'cross-examine-witness',
+      beats: ['interrupt', 'interrupt', 'interrupt'],
+      askedConsent: true,
+    })
+    expect(asked.depositionRecord?.consent).toBe('no')
+    expect(asked.methodTags).toContain('coercion')
+
+    let unasked = case81Investigation('procedure')
+    unasked = gameReducer(unasked, {
+      type: 'COMMIT_DEPOSITION',
+      actionId: 'cross-examine-witness',
+      beats: ['let-it-stand', 'let-it-stand', 'let-it-stand'],
+      askedConsent: false,
+    })
+    expect(unasked.depositionRecord?.consent).toBe('unasked')
+    expect(unasked.depositionRecord?.askedConsent).toBe(false)
+  })
+
+  it('rejects a deposition whose beats or action do not match the authored skeleton', () => {
+    const before = case81Investigation('care')
+    // Too few beats.
+    expect(
+      gameReducer(before, {
+        type: 'COMMIT_DEPOSITION',
+        actionId: 'take-sworn-statement',
+        beats: ['corroborate'],
+        askedConsent: false,
+      }),
+    ).toBe(before)
+    // A field action that is not a deposition entry action.
+    expect(
+      gameReducer(before, {
+        type: 'COMMIT_DEPOSITION',
+        actionId: 'pull-service-record',
+        beats: ['corroborate', 'corroborate', 'corroborate'],
+        askedConsent: false,
+      }),
+    ).toBe(before)
+  })
+
+  it('is a no-op for a case with no deposition block (Case 77)', () => {
+    const before = startInvestigation()
+    expect(
+      gameReducer(before, {
+        type: 'COMMIT_DEPOSITION',
+        actionId: 'authenticate-chain',
+        beats: ['let-it-stand'],
+        askedConsent: false,
+      }),
+    ).toBe(before)
+  })
+
+  it('plays a full strike-testimony run through the deposition to the fifth verdict', () => {
+    let s = case81Investigation('care')
+    s = gameReducer(s, {
+      type: 'COMMIT_DEPOSITION',
+      actionId: 'take-sworn-statement',
+      beats: ['corroborate', 'let-it-stand', 'corroborate'],
+      askedConsent: true,
+    })
+    s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
+    s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'oath-cadence' })
+    s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'unscripted-answer' })
+    s = gameReducer(s, { type: 'SUBMIT_RECONSTRUCTION' })
+    s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'pull-service-record' })
+    s = gameReducer(s, { type: 'ENTER_TRIBUNAL' })
+    s = gameReducer(s, { type: 'DECIDE', decisionId: 'strike-testimony' })
+
+    expect(s.phase).toBe('debrief')
+    expect(s.decision).toBe('strike-testimony')
+    expect(s.depositionRecord?.consent).toBe('yes')
+    // Fifth verdict recorded as the Case 81 precedent; lawful, neutral event.
+    expect(s.precedents['case-81']).toBe('strike-testimony')
+    const event = s.events.at(-1)
+    expect(event?.sourceId).toBe('strike-testimony')
+    expect(event?.tone).toBe('neutral')
+    expect(event?.methodTags).toEqual(['procedure'])
+  })
+})

@@ -1,5 +1,11 @@
 import { MirrorSigil, PersonaSigil } from '../ambience/sigils'
-import { getCaseContent, getTensionLine, personas } from '../game/content'
+import {
+  getCaseContent,
+  getPriorVerdictForCase,
+  getRecordEndsLine,
+  getTensionLine,
+  personas,
+} from '../game/content'
 import { getTrustLabel } from '../game/engine'
 import type {
   CaseDefinition,
@@ -51,6 +57,17 @@ export function Debrief({
     state.reconstruction && state.decision
       ? getTensionLine(state.caseId, state.reconstruction, state.decision)
       : null
+  // The revelation, authored per verdict path (and consent). Null when the case
+  // authors none for this state; the engine never sees it — it is view-only copy.
+  const revelation = content.getRevelation?.(state) ?? null
+  // W4: the record now ends with the verdict just issued. If a different verdict
+  // was recorded for this case on an earlier run, this replay rewrote the ending.
+  const recordEndsLine = getRecordEndsLine(state.caseId, state.precedents)
+  const priorVerdict = getPriorVerdictForCase(state.caseId, state.previousRuns)
+  const rewroteRecord = priorVerdict !== null && priorVerdict !== state.decision
+  const priorDecision = rewroteRecord
+    ? decisions.find((item) => item.id === priorVerdict)
+    : undefined
 
   return (
     <article className="phase-page debrief-page">
@@ -58,6 +75,18 @@ export function Debrief({
         <p className="case-code">Run {state.runNumber} closed · consequence record</p>
         <h1>{decision?.shortLabel}</h1>
         <p>{decision?.cost}</p>
+        {recordEndsLine ? (
+          <p className="record-note" role="note">
+            {recordEndsLine}
+            {rewroteRecord && priorDecision ? (
+              <span className="record-note-rewrite">
+                {' '}
+                The record now ends differently: where it read “{priorDecision.shortLabel},” it now
+                reads “{decision?.shortLabel}.”
+              </span>
+            ) : null}
+          </p>
+        ) : null}
       </header>
 
       <div className="debrief-metrics" aria-label="Run summary">
@@ -98,6 +127,16 @@ export function Debrief({
           </p>
         ) : null}
       </section>
+
+      {revelation ? (
+        <section className="debrief-section revelation-section" aria-labelledby="revelation-heading">
+          <div className="debrief-section-heading">
+            <span>What the fourth minute held</span>
+            <h2 id="revelation-heading">The fourth minute finally lands.</h2>
+          </div>
+          <p className="revelation-body">{revelation}</p>
+        </section>
+      ) : null}
 
       <section className="debrief-section" aria-labelledby="refusals-heading">
         <div className="debrief-section-heading">
