@@ -3215,44 +3215,70 @@ p {
   }
 }
 
-/* Deposition — Case 81's transcript interaction. Rendered as a modal over the
-   investigation phase; abandoning it commits nothing. Reuses the existing palette
-   only (no new colors); the appear animation is collapsed by the reduce-motion
-   rules at the foot of this file. */
-/* The backdrop is a scene-visible DIM, not a veil: the live stage keeps reacting
-   (press / corroborate / refusal) around the transcript while the auditor chooses.
-   No backdrop-filter blur — the room must read. The panel below carries its own
-   solid surface, so transcript legibility does not depend on this dim. */
-.deposition-overlay {
+/* Deposition — Case 81's transcript interaction, rendered as a stage-visible tray
+   docked to the bottom of the investigation content column. It carries modal
+   semantics (the shell behind is `inert`) with tray presentation: there is NO dim
+   veil over the stage anymore — the room performs uncovered above the tray while
+   the auditor conducts the deposition. Abandoning it commits nothing. Reuses the
+   existing palette only (no new colors). The slide is collapsed to instant by the
+   reduce-motion rules at the foot of this file (OS preference) and by
+   .deposition-tray--instant (the app setting — the tray portals to <body>, outside
+   the .reduce-motion class). No backdrop-filter blur anywhere. */
+.deposition-tray {
   position: fixed;
-  inset: 0;
   z-index: 40;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: max(4vh, 24px) 18px 24px;
+  left: 0;
+  right: 380px; /* span the content column; clear the case rail on its right */
+  bottom: 0;
+  max-height: 42vh;
   overflow-y: auto;
-  background: oklch(0.06 0 0 / 0.4);
-}
-
-.deposition-modal {
-  width: min(100%, 680px);
-  margin: auto;
-  padding: 26px 26px 20px;
   background: var(--night-soft);
-  border: 1px solid var(--line-strong);
-  border-radius: 12px;
-  box-shadow: 0 24px 60px -20px oklch(0.03 0 0 / 0.8);
-  animation: deposition-appear 200ms var(--ease-out) 1;
+  border-top: 1px solid var(--line-strong);
+  box-shadow: 0 -18px 48px -26px oklch(0.03 0 0 / 0.75);
+  animation: deposition-tray-in 180ms var(--ease-out) 1;
 }
 
-.deposition-modal:focus {
+.deposition-tray.is-closing {
+  animation: deposition-tray-out 180ms var(--ease-out) 1 forwards;
+}
+
+.deposition-tray.deposition-tray--instant {
+  animation-duration: 0.01ms;
+}
+
+.deposition-tray:focus {
   outline: none;
 }
 
-.deposition-modal:focus-visible {
+.deposition-tray:focus-visible {
   outline: 2px solid var(--focus);
-  outline-offset: 3px;
+  outline-offset: -2px;
+}
+
+.deposition-tray-inner {
+  width: min(100%, 760px);
+  margin: 0 auto;
+  padding: 20px 26px max(18px, env(safe-area-inset-bottom, 0px));
+}
+
+/* Track the case-rail width at each breakpoint so the tray never overlaps it. */
+@media (max-width: 1120px) {
+  .deposition-tray {
+    right: 330px;
+  }
+}
+
+@media (max-width: 900px) {
+  /* Bottom sheet: full width, taller, with the stage still visible above it. */
+  .deposition-tray {
+    right: 0;
+    max-height: 60vh;
+  }
+
+  .deposition-tray-inner {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
 }
 
 .deposition-header {
@@ -3365,14 +3391,25 @@ p {
   margin-bottom: 0;
 }
 
-@keyframes deposition-appear {
+@keyframes deposition-tray-in {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(100%);
   }
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes deposition-tray-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(100%);
   }
 }
 

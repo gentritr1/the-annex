@@ -33,6 +33,17 @@ function focusSiteCard(siteId: SiteId, reducedMotion: boolean) {
   card.focus({ preventScroll: true })
 }
 
+// Whether a meaningful band of the stage already sits within the viewport. Used to
+// keep the witnessed-refusal beat's scroll a no-op guard: while a transcript is
+// open the tray docks below the stage, so the stage is already in view and a
+// second scroll would only jump.
+function stageInView(el: HTMLElement | null): boolean {
+  if (!el) return false
+  const rect = el.getBoundingClientRect()
+  const viewportHeight = window.innerHeight || document.documentElement.clientHeight
+  return rect.bottom > 0 && rect.top < viewportHeight * 0.6
+}
+
 // The one in-voice line the witnessed-refusal beat announces (aria-live). Curly
 // punctuation, ≤ 90 chars. It names what just became permanent: the room holds it.
 const WITNESS_REFUSAL_LINE = 'The room dims. Ellis Marne’s “no” stays in it.'
@@ -72,11 +83,12 @@ export function Investigation({
     [],
   )
 
-  // Finding 1a — when a transcript opens, the stage flips to press/corroborate
-  // above the fold. Bring it into view so its reaction reads around the (now
-  // scene-visible) modal instead of happening off-screen. The modal's own focus
-  // scrolls the page a frame later and would override an immediate scroll, so this
-  // is deferred past it (60ms) and instant — imperceptible under the fading modal.
+  // Finding 1a — when a transcript opens, the stage flips to press/corroborate.
+  // The tray docks to the bottom of the column, so bring the stage into view above
+  // it (the transcript may have been opened from a field card far down the page).
+  // The tray's own focus scrolls the page a frame later and would override an
+  // immediate scroll, so this is deferred past it (60ms) and instant —
+  // imperceptible under the tray sliding up.
   useEffect(() => {
     if (!depositionEntry) return
     const timer = window.setTimeout(() => {
@@ -92,10 +104,15 @@ export function Investigation({
   // announcement, immediate handoff — no smooth scroll, no hold timer.
   function playWitnessedRefusal(siteId: SiteId) {
     setRefusalLine(WITNESS_REFUSAL_LINE)
-    worldViewRef.current?.scrollIntoView({
-      behavior: reducedMotion ? 'auto' : 'smooth',
-      block: 'start',
-    })
+    // The tray kept the stage in view, so this is a guard, not a jump: only scroll
+    // if the stage has left the fold, so the beat never double-scrolls over the
+    // reaction the player is already watching or fights the tray's close.
+    if (!stageInView(worldViewRef.current)) {
+      worldViewRef.current?.scrollIntoView({
+        behavior: reducedMotion ? 'auto' : 'smooth',
+        block: 'start',
+      })
+    }
     if (reducedMotion) {
       focusSiteCard(siteId, true)
       return

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { getCaseContent, resolveFieldAction } from '../game/content'
 import type { DepositionChoiceId, FieldActionId, GameState } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
@@ -18,11 +19,18 @@ const CHOICE_TAG: Record<DepositionChoiceId, string> = {
   corroborate: 'Corroborate',
 }
 
-// A bounded, deterministic transcript rendered as a modal within the investigation
-// phase. Nothing is committed until the final confirm; abandoning (Escape, the
-// leave control, or navigating away) dispatches no action at all. The engine
-// resolves everything from the case's authored `deposition` block — this
-// component references no case-specific ids.
+// How long the tray takes to slide out before the close (abandon/commit) actually
+// dispatches. One transform (translateY) at var(--ease-out); collapsed to instant
+// under reduced motion, where the slide is skipped and the close fires at once.
+const TRAY_EXIT_MS = 180
+
+// A bounded, deterministic transcript rendered as a stage-visible tray docked to
+// the bottom of the investigation content column. The room performs uncovered
+// above it — there is no dim veil — while modal semantics still hold (aria-modal
+// dialog, focus trapped in the tray, the shell inert behind). Nothing is committed
+// until the final confirm; abandoning (Escape, the leave controls, or navigating
+// away) dispatches no action at all. The engine resolves everything from the
+// case's authored `deposition` block — this component references no case ids.
 export function Deposition({ state, entryActionId, onCommit, onAbandon }: DepositionProps) {
   const content = getCaseContent(state.caseId)
   const { deposition } = content
@@ -36,6 +44,19 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
   const [askedConsent, setAskedConsent] = useState(false)
   const [consentRevealed, setConsentRevealed] = useState(false)
   const [commitArmed, setCommitArmed] = useState(false)
+  // Drives the slide-out animation. A ref guards it synchronously so a second
+  // Escape / commit during the slide can't schedule a duplicate close.
+  const [closing, setClosing] = useState(false)
+  const closingRef = useRef(false)
+  const closeTimerRef = useRef<number | null>(null)
+
+  // Reduced motion — the app setting or the OS preference — makes the tray appear
+  // and dismiss instantly (no slide, no delay before the close dispatches).
+  const instant =
+    state.settings.reducedMotion ||
+    (typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches)
 
   const statementCount = deposition?.statementBeats.length ?? 0
   const consentStep = statementCount
@@ -48,14 +69,43 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
     dialogRef.current?.focus()
   }, [stepIndex, consentRevealed])
 
+  // Cancel a pending slide-out timer if the tray unmounts mid-close.
+  useEffect(
+    () => () => {
+      if (closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current)
+    },
+    [],
+  )
+
   if (!deposition || !entryAction || !deposition.entryActionIds.includes(entryActionId)) {
     return null
+  }
+
+  // Slide the tray out, then run the close (abandon dispatches nothing; commit
+  // files the transcript). Instant under reduced motion so the room's reaction —
+  // and, on a refusal, the witnessed beat — is not held behind an animation.
+  function beginClose(after: () => void) {
+    if (closingRef.current) return
+    if (instant) {
+      after()
+      return
+    }
+    closingRef.current = true
+    setClosing(true)
+    closeTimerRef.current = window.setTimeout(() => {
+      closeTimerRef.current = null
+      after()
+    }, TRAY_EXIT_MS)
+  }
+
+  function requestAbandon() {
+    beginClose(onAbandon)
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (event.key === 'Escape') {
       event.stopPropagation()
-      onAbandon()
+      requestAbandon()
       return
     }
     if (event.key !== 'Tab') return
@@ -83,7 +133,7 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
   function stepBack() {
     setCommitArmed(false)
     if (stepIndex === 0) {
-      onAbandon()
+      requestAbandon()
       return
     }
     if (stepIndex === closingStep) {
@@ -114,7 +164,7 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
       setCommitArmed(true)
       return
     }
-    onCommit(entryActionId, beats, askedConsent)
+    beginClose(() => onCommit(entryActionId, beats, askedConsent))
   }
 
   const consentAnswer = deposition.consent.answers[entryActionId]
@@ -124,17 +174,28 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
   const isConsentBeat = stepIndex === consentStep
   const isClosingBeat = stepIndex === closingStep
 
-  return (
-    <div className="deposition-overlay" role="presentation">
-      <div
-        className="deposition-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="deposition-heading"
-        tabIndex={-1}
-        ref={dialogRef}
-        onKeyDown={handleKeyDown}
-      >
+  const trayClass = [
+    'deposition-tray',
+    instant ? 'deposition-tray--instant' : '',
+    closing ? 'is-closing' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  // Portalled to <body> so it sits OUTSIDE the shell App marks `inert` while a
+  // transcript is open: the room, header, and rail behind go inert to pointer and
+  // keyboard, the tray stays live, and the stage keeps performing uncovered.
+  return createPortal(
+    <div
+      className={trayClass}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="deposition-heading"
+      tabIndex={-1}
+      ref={dialogRef}
+      onKeyDown={handleKeyDown}
+    >
+      <div className="deposition-tray-inner">
         <header className="deposition-header">
           <div className="deposition-header-row">
             <p className="case-code">Deposition suite · {entryAction.title}</p>
@@ -240,11 +301,12 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
           <button className="back-button" type="button" onClick={stepBack}>
             <span aria-hidden="true">←</span> {stepIndex === 0 ? 'Leave deposition' : 'Back'}
           </button>
-          <button className="text-button" type="button" onClick={onAbandon}>
+          <button className="text-button" type="button" onClick={requestAbandon}>
             Leave — commit nothing
           </button>
         </footer>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

@@ -119,10 +119,11 @@ export default function App() {
   // Which deposition entry action (if any) has its transcript open. Lifted here
   // from Investigation so the audio scene state — which presses/corroborates
   // while a transcript is open — reads the SAME resolved value the SceneStage
-  // renders, via props (no DOM observation). The transcript is a full-screen
-  // blocking modal that can only be closed by commit or abandon (both clear this),
-  // so it is always null by the time the phase leaves investigation — no reset
-  // needed, and App and SceneStage always read the identical value.
+  // renders, via props (no DOM observation). The transcript is an exclusive
+  // interaction: while it is open the whole shell below is marked `inert` (the tray
+  // portals out to <body>, so it stays live), and it can only be closed by commit
+  // or abandon (both clear this) — so it is always null by the time the phase
+  // leaves investigation, and App and SceneStage always read the identical value.
   const [depositionEntry, setDepositionEntry] = useState<FieldActionId | null>(null)
 
   // The bed for this case, and the resolved scene state that drives its gain.
@@ -261,7 +262,11 @@ export default function App() {
   }
 
   return (
-    <div className={appClassName}>
+    // While a transcript is open the shell is inert — pointer and keyboard both —
+    // so the deposition reads as modal even though the tray only docks at the
+    // bottom. The tray itself portals to <body>, outside this subtree, so it stays
+    // interactive. (Cleared the instant the transcript commits or is abandoned.)
+    <div className={appClassName} inert={depositionEntry !== null}>
       <a className="skip-link" href="#case-scene">
         Skip to current scene
       </a>
