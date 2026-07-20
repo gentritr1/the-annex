@@ -80,6 +80,14 @@ export function SceneStage({
 
   const rasterSrc = scene.layers.find((layer) => layer.raster)?.raster?.src ?? ''
   const LayerArt = scene.LayerArt
+  const figure = scene.figure
+
+  // The stage root carries the room's state treatment; when a figure is authored
+  // its own per-state vars are merged over the same set, so both the room and the
+  // figure plate read their live custom properties from one cascade root.
+  const rootVars = figure
+    ? { ...scene.states[sceneState], ...figure.states[sceneState] }
+    : scene.states[sceneState]
 
   // Flat weather: rain mask + suppression per state.
   const isRain = scene.weather.kind === 'rain'
@@ -141,12 +149,33 @@ export function SceneStage({
   ) : null
 
   return (
-    <div className={stageClass} data-scene-state={sceneState} style={toVarStyle(scene.states[sceneState])}>
+    <div className={stageClass} data-scene-state={sceneState} style={toVarStyle(rootVars)}>
       <div className="scene-frame" ref={frameRef}>
         {diorama ? (
           <div className="scene-stack" aria-hidden="true">
             {LayerArt ? <LayerArt backgroundSrc={rasterSrc} /> : null}
             <canvas className="scene-weather" />
+            {figure ? (
+              // A composited seated presence. motion.ts projects data-x/-y/-h
+              // through the live crop window onto its plane; the plate blends into
+              // the scene (screen) and reads its opacity/brightness/contrast from
+              // the cascaded --fig-* state vars. The breath animation lives on the
+              // inner plate and dies under reduced motion via the global rules.
+              <div
+                className="scene-figure"
+                data-x={figure.x}
+                data-y={figure.y}
+                data-h={figure.height}
+                data-plane={figure.plane}
+              >
+                <img
+                  className="scene-figure-plate"
+                  src={figure.src}
+                  alt=""
+                  style={{ mixBlendMode: figure.blend as CSSProperties['mixBlendMode'] }}
+                />
+              </div>
+            ) : null}
           </div>
         ) : (
           <div className="scene-stack" aria-hidden="true">

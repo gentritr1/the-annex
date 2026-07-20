@@ -288,6 +288,18 @@ export interface DecisionDefinition {
   tone: GameEvent['tone']
 }
 
+// A diegetic registry photograph a case may attach to its case-file surfaces
+// (the briefing subject block + the rail case view). Not scene art: it renders as
+// a flat, slightly desaturated, fog-bordered record with a compact mono caption.
+// Optional — a case with no photograph on file (Case 77) authors none. Pure data,
+// no ids: components render it generically when present, so no case-id literal is
+// needed to gate it.
+export interface CaseFileDossierImage {
+  src: string
+  caption: string
+  alt: string
+}
+
 // The assignment header shown at briefing and echoed across the case rail and
 // tribunal. Pure copy — no ids, no logic.
 export interface CaseFile {
@@ -298,6 +310,8 @@ export interface CaseFile {
   question: string
   publicRecord: string
   mandate: string
+  // Optional registry photograph for this case's subject (see CaseFileDossierImage).
+  dossierImage?: CaseFileDossierImage
 }
 
 // One positioned annotation on the investigation world-map. `className` carries
@@ -499,6 +513,32 @@ export interface SceneArtProps {
   backgroundSrc: string
 }
 
+// An authored figure composited into the diorama — a seated presence in the room
+// (Case 81's Ellis at the deposition table). Optional and generic: a scene with no
+// figure (Case 77) authors none and nothing renders. SceneStage paints it inside
+// the diorama stack; motion.ts projects its master-space anchor through the same
+// crop window as the hotspots, so it sits on its plane's features at rest. It is
+// value-matched into the scene by a CSS blend mode (a lit plate emerging from the
+// dark — the inverse of the background's multiply), never dropped in raw. `src` is
+// the only place the image path lives (kept out of shared runtime, like a layer
+// raster). Per-state treatment vars are authored for all six scene states and
+// cascade to the plate from the stage root exactly like the room's own state vars.
+export interface SceneFigure {
+  src: string
+  // A declared layer name — the plane the figure conceptually registers to.
+  plane: string
+  // Master-normalized anchor: x is the fraction of master width, y the fraction of
+  // master height of the figure's centre; height is the fraction of master height.
+  x: number
+  y: number
+  height: number
+  // CSS mix-blend-mode marrying the plate into the scene ('screen'|'lighten'|'normal').
+  blend: string
+  // Per scene state: the CSS custom-property set applied to the plate (opacity,
+  // brightness/contrast). Every one of the six scene states must be defined.
+  states: Readonly<Record<SceneStateId, SceneTreatment>>
+}
+
 export interface SceneDefinition {
   master: { w: number; h: number }
   perspectivePx: number
@@ -513,6 +553,9 @@ export interface SceneDefinition {
   // SceneStage paints from `layers[0].raster`. A component reference, never a
   // string — invisible to the content string-walk in content.test.ts.
   LayerArt?: ComponentType<SceneArtProps>
+  // Optional seated figure composited into the diorama (see SceneFigure). Absent
+  // for a scene with no figure (Case 77).
+  figure?: SceneFigure
 }
 
 // A complete, self-contained dossier the engine and components resolve through

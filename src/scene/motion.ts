@@ -48,6 +48,8 @@ export function createSceneMotion(
   const canvas = root.querySelector<HTMLCanvasElement>('canvas.scene-weather')
   const ctx = canvas?.getContext('2d') ?? null
   const hotspots = Array.from(root.querySelectorAll<HTMLElement>('.scene-hotspot[data-site]'))
+  // Optional composited figure (generic; data attributes only, no content ids).
+  const figureEl = root.querySelector<HTMLElement>('.scene-figure')
 
   const master = scene.master
   const FAR_SCALE = scene.layers.find((layer) => layer.name === 'far')?.scale ?? 1.4182
@@ -82,6 +84,19 @@ export function createSceneMotion(
 
   function layout() {
     computeWindow()
+    // Project the figure's master-space anchor through the same crop window as the
+    // hotspots (net plane scale is 1 at rest), so it sits on its plane's features.
+    // Centre-anchored (CSS translate(-50%,-50%)); height scales with the window.
+    if (figureEl) {
+      const fx = Number(figureEl.dataset.x)
+      const fy = Number(figureEl.dataset.y)
+      const fh = Number(figureEl.dataset.h)
+      if (Number.isFinite(fx) && Number.isFinite(fy) && Number.isFinite(fh)) {
+        figureEl.style.left = `${((fx - win.x) / win.w) * 100}%`
+        figureEl.style.top = `${((fy - win.y) / win.h) * 100}%`
+        figureEl.style.height = `${(fh / win.h) * H}px`
+      }
+    }
     if (hazeFrame) {
       hazeFrame.style.left = `${(-win.x / win.w) * 100}%`
       hazeFrame.style.top = `${(-win.y / win.h) * 100}%`

@@ -49,6 +49,13 @@ const caseFile: CaseFile = {
     'Instance 81-C was assembled from the Lower Span’s institutional backups to testify about the archive collapse. Under statute the testimony is admissible only if the tribunal first certifies the restoration as a person.',
   mandate:
     'Determine whether 81-C is a witness the tribunal may seat, a document the city is speaking through, or a standing that cannot yet be certified. Your route through the record will become part of the record.',
+  // The registry photograph on file: the faced-in-file image (dossier sheet
+  // right-panel close-up), shown as a diegetic record in the case-file surfaces.
+  dossierImage: {
+    src: '/images/ellis-marne-dossier.webp',
+    caption: '81-C · registry photograph',
+    alt: 'Registry photograph of instance 81-C, formerly Deputy Registrar Ellis Marne.',
+  },
 }
 
 const chrome: CaseChrome = {
@@ -1196,6 +1203,29 @@ const scene: SceneDefinition = {
       { x: 0.29, y: 0.15, w: 0.15, h: 0.55 },
     ],
     suppressed: ['aftermath'],
+  },
+  // Ellis in the room. The averted-in-scene staging (face fully shadowed) is
+  // composited at the mid-plane deposition table, near the deposition-suite
+  // hotspot (0.494, 0.66). The plate is a lit cutout married into the scene by a
+  // screen blend — the dark coat sinks into the room, the lit hair and clasped
+  // hands emerge. Per-state treatment mirrors the room's: press firms the figure,
+  // corroborate softens it, refusal dims it WITH the room while it holds present,
+  // tribunal recedes it formally, aftermath empties the hall (opacity 0).
+  figure: {
+    src: '/images/ellis-marne-scene.webp',
+    plane: 'mid',
+    x: 0.438,
+    y: 0.55,
+    height: 0.56,
+    blend: 'screen',
+    states: {
+      neutral: { '--fig-o': 0.92, '--fig-bright': 1, '--fig-contrast': 1 },
+      press: { '--fig-o': 1, '--fig-bright': 1.08, '--fig-contrast': 1.14 },
+      corroborate: { '--fig-o': 0.84, '--fig-bright': 1, '--fig-contrast': 0.94 },
+      refusal: { '--fig-o': 0.66, '--fig-bright': 0.92, '--fig-contrast': 1.06 },
+      tribunal: { '--fig-o': 0.34, '--fig-bright': 0.96, '--fig-contrast': 1 },
+      aftermath: { '--fig-o': 0, '--fig-bright': 1, '--fig-contrast': 1 },
+    },
   },
   LayerArt: DepositionAnnexArt,
 }

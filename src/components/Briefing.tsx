@@ -3,6 +3,7 @@ import { MirrorSigil } from '../ambience/sigils'
 import { DEFAULT_CASE_ID, getCaseContent, getMirrorBriefingAside, methodLabels } from '../game/content'
 import type { ApproachId, GameState } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
+import { DossierPhoto } from './DossierPhoto'
 
 interface BriefingProps {
   state: GameState
@@ -63,6 +64,9 @@ export function Briefing({ state, onSelectApproach }: BriefingProps) {
           <div>
             <span>Subject</span>
             <strong>{caseFile.subject}</strong>
+            {caseFile.dossierImage && (
+              <DossierPhoto image={caseFile.dossierImage} variant="briefing" />
+            )}
           </div>
           <div>
             <span>Review window</span>

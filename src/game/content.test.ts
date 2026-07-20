@@ -273,6 +273,38 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
     expect(raster?.raster?.src.length ?? 0).toBeGreaterThan(0)
   })
 
+  it('authors a valid figure when one is present (plane, master bounds, six states)', () => {
+    const figure = scene.figure
+    // A scene may author no figure (Case 77): the check applies only when present.
+    if (!figure) return
+    const planeNames = new Set([...scene.layers.map((layer) => layer.name), 'flat'])
+    expect(planeNames.has(figure.plane)).toBe(true)
+    expect(figure.src.trim().length).toBeGreaterThan(0)
+    expect(figure.blend.trim().length).toBeGreaterThan(0)
+    expect(figure.x).toBeGreaterThanOrEqual(0)
+    expect(figure.x).toBeLessThanOrEqual(1)
+    expect(figure.y).toBeGreaterThanOrEqual(0)
+    expect(figure.y).toBeLessThanOrEqual(1)
+    expect(figure.height).toBeGreaterThan(0)
+    expect(figure.height).toBeLessThanOrEqual(1)
+    // Every one of the six scene states defines a nonempty custom-property set.
+    expect(new Set(Object.keys(figure.states))).toEqual(new Set(SCENE_STATES))
+    SCENE_STATES.forEach((stateId) => {
+      const keys = Object.keys(figure.states[stateId])
+      expect(keys.length).toBeGreaterThan(0)
+      keys.forEach((key) => expect(key.startsWith('--')).toBe(true))
+    })
+  })
+
+  it('authors a valid registry photograph when one is present (src, caption, alt)', () => {
+    const dossier = content.caseFile.dossierImage
+    // A case may author no registry photograph (Case 77): checked only when present.
+    if (!dossier) return
+    expect(dossier.src.trim().length).toBeGreaterThan(0)
+    expect(dossier.caption.trim().length).toBeGreaterThan(0)
+    expect(dossier.alt.trim().length).toBeGreaterThan(0)
+  })
+
   it('gives every reaction a valid persona and a nonempty line within 160 characters', () => {
     const validPersonas = new Set(personas.map((persona) => persona.id))
     const allReactions = [
@@ -286,6 +318,28 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
       expect(reaction.line.trim().length).toBeGreaterThan(0)
       expect([...reaction.line].length).toBeLessThanOrEqual(160)
     })
+  })
+})
+
+// Non-vacuity guard: the generic checks above return early when a case authors no
+// figure/photograph, so this asserts the case that DOES author Ellis actually
+// carries both, keeping the generic tests from passing on missing data.
+describe('Case 81 authors Ellis (figure + registry photograph)', () => {
+  const content = getCaseContent('case-81')
+
+  it('composites a seated figure at the mid-plane table', () => {
+    const figure = content.scene.figure
+    expect(figure).toBeDefined()
+    expect(figure?.plane).toBe('mid')
+    expect(figure?.src).toContain('.webp')
+    expect(figure?.states.aftermath['--fig-o']).toBe(0)
+  })
+
+  it('carries an in-voice registry photograph on the case file', () => {
+    const dossier = content.caseFile.dossierImage
+    expect(dossier).toBeDefined()
+    expect(dossier?.src).toContain('.webp')
+    expect(dossier?.alt.toLowerCase()).toContain('ellis marne')
   })
 })
 

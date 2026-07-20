@@ -3,6 +3,7 @@ import { PersonaSigil } from '../ambience/sigils'
 import { getCaseContent, getReactionsForSource, methodLabels, personas } from '../game/content'
 import { getTrustLabel } from '../game/engine'
 import type { EvidenceStatus, GameState, PersonaId } from '../game/types'
+import { DossierPhoto } from './DossierPhoto'
 import { ReactionQuotes } from './ReactionQuotes'
 
 interface CaseRailProps {
@@ -90,6 +91,13 @@ export function CaseRail({ state }: CaseRailProps) {
             <p className="rail-label">Active dilemma</p>
             <h2>{caseFile.question}</h2>
           </section>
+
+          {caseFile.dossierImage && (
+            <section className="rail-block rail-subject">
+              <p className="rail-label">Subject on file</p>
+              <DossierPhoto image={caseFile.dossierImage} variant="rail" />
+            </section>
+          )}
 
           <section className="rail-block rail-status-grid" aria-label="Case status">
             <div>
