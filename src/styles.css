@@ -1013,6 +1013,21 @@ p {
   transform: translateX(3px);
 }
 
+.choice-aside-label {
+  color: var(--fog);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.62rem;
+  font-weight: 750;
+  line-height: 1.25;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.choice-row:hover .choice-aside-label {
+  color: var(--amber-soft);
+  transform: none;
+}
+
 /* Investigation */
 
 .world-view {
@@ -1093,17 +1108,211 @@ p {
     0 0 3px var(--night);
 }
 
-.field-section {
-  margin-top: 38px;
+.investigation-page {
+  width: 100%;
+  max-width: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  padding: 18px 20px 20px;
 }
 
-.site-list {
-  border-top: 1px solid var(--line);
+.field-commandbar,
+.field-workspace,
+.field-dock {
+  width: 100%;
+  min-width: 0;
+}
+
+.field-commandbar {
+  min-height: 54px;
+  display: grid;
+  grid-template-columns: auto minmax(180px, 1fr) auto;
+  align-items: center;
+  gap: 22px;
+}
+
+.field-commandbar .section-context {
+  margin-bottom: 3px;
+}
+
+.field-commandbar h1 {
+  margin: 0;
+  font-size: 1.35rem;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+.field-command-copy {
+  max-width: 52ch;
+  margin: 0;
+  color: var(--fog);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.field-objectives {
+  display: flex;
+  align-items: stretch;
+  border-left: 1px solid var(--line);
+}
+
+.field-objectives > span {
+  min-width: 78px;
+  display: grid;
+  gap: 1px;
+  padding-left: 16px;
+  color: var(--fog-dim);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.field-objectives > span + span {
+  margin-left: 16px;
+  border-left: 1px solid var(--line);
+}
+
+.field-objectives strong {
+  color: var(--record);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.76rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.field-objectives [data-complete='true'] strong {
+  color: var(--cyan);
+}
+
+.field-workspace {
+  min-height: 0;
+  height: max(500px, calc(100svh - 260px));
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(330px, 0.85fr);
+  gap: 14px;
+}
+
+.world-pane {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.world-pane .world-view {
+  min-height: 0;
+}
+
+.site-switcher {
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  overflow: hidden;
+  background: var(--concrete);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.site-switch {
+  min-width: 0;
+  min-height: 70px;
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  padding: 9px 10px;
+  color: var(--fog);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  transition:
+    color 180ms var(--ease-out),
+    background-color 180ms var(--ease-out),
+    box-shadow 180ms var(--ease-out);
+}
+
+.site-switch + .site-switch {
+  border-left: 1px solid var(--line);
+}
+
+.site-switch:hover {
+  color: var(--record);
+  background: var(--raised);
+}
+
+.site-switch[aria-pressed='true'] {
+  color: var(--record-bright);
+  background: var(--raised);
+  box-shadow: inset 0 2px var(--amber);
+}
+
+.site-switch-index {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  color: var(--fog);
+  background: var(--night-soft);
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.66rem;
+  font-weight: 750;
+}
+
+.site-switch[data-filed='true'] .site-switch-index {
+  color: var(--cyan);
+  background: var(--cyan-deep);
+}
+
+.site-switch > span:last-child {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.site-switch small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.site-switch strong {
+  color: inherit;
+  font-size: 0.74rem;
+  line-height: 1.2;
+}
+
+.site-switch small {
+  color: var(--fog-dim);
+  font-size: 0.62rem;
+}
+
+.site-switch[data-filed='true'] small {
+  color: var(--cyan);
 }
 
 .site-record {
-  padding: 0 0 8px;
-  border-bottom: 1px solid var(--line);
+  min-width: 0;
+}
+
+.site-inspector {
+  overflow-y: auto;
+  padding: 0 18px 18px;
+  background: var(--concrete);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.site-inspector:focus {
+  outline: none;
+}
+
+.site-inspector:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 .site-header {
@@ -1111,8 +1320,9 @@ p {
   display: grid;
   grid-template-columns: 42px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 14px;
-  padding: 18px 8px;
+  gap: 13px;
+  padding: 18px 0 15px;
+  border-bottom: 1px solid var(--line);
 }
 
 .site-index {
@@ -1126,18 +1336,20 @@ p {
   border-radius: 5px;
 }
 
-.site-header h2 {
+.site-location-label {
   margin: 0 0 5px;
-  font-size: 1rem;
-  line-height: 1.2;
+  color: var(--fog-dim);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.62rem;
+  font-weight: 650;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
 }
 
-.site-header p {
-  max-width: 66ch;
+.site-header h2 {
   margin: 0;
-  color: var(--fog);
-  font-size: 0.8rem;
-  line-height: 1.45;
+  font-size: 1.02rem;
+  line-height: 1.2;
 }
 
 .site-state {
@@ -1148,22 +1360,57 @@ p {
   color: var(--cyan);
 }
 
+.site-description {
+  margin: 0;
+  padding: 16px 0;
+  color: var(--fog);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
 .site-actions {
-  margin-left: 56px;
+  margin: 0;
   border-top: 1px solid var(--line);
 }
 
-.site-actions .choice-row {
-  min-height: 104px;
-  grid-template-columns: 124px minmax(0, 1fr) 28px;
+.site-action-prompt {
+  margin: 0;
+  padding: 10px 4px;
+  color: var(--fog-dim);
+  font-size: 0.7rem;
+  font-weight: 650;
+}
+
+.site-inspector .site-actions .choice-row {
+  min-height: 0;
+  grid-template-columns: 86px minmax(0, 1fr) 22px;
+  gap: 12px;
+  padding: 16px 4px;
+}
+
+.site-inspector .site-actions .choice-row-has-aside {
+  grid-template-columns: 80px minmax(0, 1fr) 58px;
+  gap: 10px;
+}
+
+.site-inspector .choice-body strong {
+  font-size: 0.9rem;
+}
+
+.site-inspector .choice-body > span {
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.site-inspector .choice-body small {
+  font-size: 0.69rem;
 }
 
 .resolved-action {
   display: flex;
   gap: 13px;
-  margin: 0 8px 12px 56px;
-  padding: 15px;
-  background: var(--concrete);
+  padding: 16px;
+  background: var(--raised);
   border-radius: 6px;
 }
 
@@ -1181,6 +1428,165 @@ p {
   color: var(--fog);
   font-size: 0.77rem;
   line-height: 1.45;
+}
+
+.record-delta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.record-delta > span {
+  min-width: 104px;
+  display: grid;
+  gap: 3px;
+}
+
+.record-delta small {
+  color: var(--fog-dim);
+  font-size: 0.62rem;
+}
+
+.record-delta > span > strong {
+  color: var(--record);
+  font-size: 0.7rem;
+  line-height: 1.3;
+}
+
+.next-location {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.next-location > span {
+  color: var(--fog-dim);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.62rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.next-location > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.next-location button {
+  min-height: 44px;
+  padding: 7px 10px;
+  color: var(--record);
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: 5px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.next-location button:hover {
+  color: var(--night);
+  background: var(--amber);
+  border-color: var(--amber);
+}
+
+.field-dock {
+  min-height: 76px;
+  display: grid;
+  grid-template-columns: auto minmax(180px, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: 11px 13px;
+  background: var(--concrete);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.field-dock-ready {
+  border-color: var(--amber);
+}
+
+.field-route {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--fog-dim);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.field-route > span[aria-hidden='true'] {
+  color: var(--line-strong);
+}
+
+.field-route [data-current='true'] {
+  color: var(--amber);
+}
+
+.field-route [data-ready='true'] {
+  color: var(--cyan);
+}
+
+.field-dock-copy > p {
+  max-width: 54ch;
+  margin: 0;
+  color: var(--fog);
+  font-size: 0.74rem;
+  line-height: 1.4;
+}
+
+.field-dock-copy > p + p {
+  margin-top: 4px;
+  color: var(--amber-soft);
+}
+
+.filed-model summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  color: var(--cyan);
+  font-size: 0.75rem;
+  font-weight: 750;
+  list-style: none;
+}
+
+.filed-model summary::-webkit-details-marker {
+  display: none;
+}
+
+.filed-model summary::after {
+  content: '+';
+  margin-left: 8px;
+  color: var(--fog-dim);
+}
+
+.filed-model[open] summary::after {
+  content: '−';
+}
+
+.filed-model > p {
+  max-width: 54ch;
+  margin: 0 0 8px;
+  color: var(--fog);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.field-dock-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.field-dock-actions .button {
+  white-space: nowrap;
 }
 
 /* In-run persona reactions — the compact attributed quote a persona speaks the
@@ -1218,8 +1624,8 @@ p {
 }
 
 /* Scoped under .reaction-block so these win over the ancestor element selectors
-   they nest inside (.resolved-action p, .event-list p, .convergence-copy p),
-   which would otherwise force the quote to fog at the surrounding body scale. */
+   they nest inside (.resolved-action p and .event-list p), which would otherwise
+   force the quote to fog at the surrounding body scale. */
 .reaction-block .reaction-name {
   display: block;
   margin-bottom: 3px;
@@ -1257,8 +1663,6 @@ p {
   }
 }
 
-.convergence-panel,
-.tribunal-gate,
 .mirror-invitation {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -1268,66 +1672,6 @@ p {
   padding: 22px;
   background: var(--concrete);
   border-radius: 10px;
-}
-
-.convergence-index {
-  width: 46px;
-  height: 46px;
-  display: grid;
-  place-items: center;
-  color: var(--cyan);
-  background: var(--cyan-deep);
-  border-radius: 6px;
-  font-size: 1.35rem;
-}
-
-.convergence-copy h2,
-.tribunal-gate h2 {
-  margin-bottom: 7px;
-  font-size: 1rem;
-}
-
-.convergence-copy p,
-.tribunal-gate p {
-  max-width: 66ch;
-  margin-bottom: 0;
-  color: var(--fog);
-  font-size: 0.82rem;
-  line-height: 1.5;
-}
-
-.convergence-copy .section-context,
-.tribunal-gate .section-context {
-  margin-bottom: 7px;
-  color: var(--fog-dim);
-}
-
-.filed-badge {
-  display: inline-flex;
-  margin-top: 12px;
-  padding: 5px 9px;
-  color: var(--cyan);
-  background: var(--cyan-deep);
-  border-radius: 999px;
-  font-size: 0.68rem;
-  font-weight: 750;
-}
-
-.convergence-hint {
-  grid-column: 2 / -1;
-  margin: -10px 0 0;
-  color: var(--amber-soft) !important;
-  font-size: 0.72rem !important;
-}
-
-.tribunal-gate {
-  background: transparent;
-  border: 1px solid var(--line);
-}
-
-.tribunal-gate-ready {
-  background: oklch(0.2 0.035 70);
-  border-color: var(--amber);
 }
 
 /* Reconstruction */
@@ -2298,6 +2642,23 @@ p {
     padding-left: 26px;
   }
 
+  .investigation-page {
+    padding: 18px 16px 20px;
+  }
+
+  .field-workspace {
+    grid-template-columns: minmax(0, 1fr) 330px;
+    height: max(438px, calc(100svh - 362px));
+  }
+
+  .field-command-copy {
+    max-width: 34ch;
+  }
+
+  .field-dock-actions {
+    flex-direction: column;
+  }
+
   .choice-row,
   .site-actions .choice-row {
     grid-template-columns: 108px minmax(0, 1fr) 24px;
@@ -2305,10 +2666,20 @@ p {
   }
 }
 
-@media (max-width: 900px) {
+@media (min-width: 1121px) and (max-width: 1180px) {
+  .field-workspace {
+    height: max(486px, calc(100svh - 314px));
+  }
+}
+
+@media (max-width: 1180px) {
   .case-layout {
     display: flex;
     flex-direction: column;
+  }
+
+  .phase-page {
+    min-height: calc(100svh - var(--header-height) - 54px);
   }
 
   .case-rail {
@@ -2316,8 +2687,10 @@ p {
     z-index: 12;
     top: var(--header-height);
     order: -1;
+    width: 100%;
     height: 54px;
     min-height: 0;
+    align-self: stretch;
     overflow: hidden;
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
@@ -2373,6 +2746,7 @@ p {
   .debrief-section {
     gap: 32px;
   }
+
 }
 
 @media (max-width: 700px) {
@@ -2430,6 +2804,73 @@ p {
 
   .phase-page {
     padding: 20px 16px 48px;
+  }
+
+  .investigation-page {
+    display: block;
+    padding: 18px 14px 32px;
+  }
+
+  .field-commandbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .field-command-copy {
+    grid-column: 1 / -1;
+    max-width: none;
+  }
+
+  .field-objectives > span {
+    min-width: 64px;
+    padding-left: 10px;
+  }
+
+  .field-objectives > span + span {
+    margin-left: 10px;
+  }
+
+  .field-workspace {
+    min-height: 0;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .world-pane .world-view {
+    min-height: 320px;
+  }
+
+  .site-switcher {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .site-switch:nth-child(3) {
+    border-left: 0;
+  }
+
+  .site-switch:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+
+  .site-inspector {
+    overflow: visible;
+    margin-top: 14px;
+  }
+
+  .field-dock {
+    grid-template-columns: 1fr;
+    margin-top: 14px;
+  }
+
+  .field-dock-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .field-dock-actions .button {
+    width: 100%;
   }
 
   .scene-banner {
@@ -2534,22 +2975,13 @@ p {
     margin-left: 0;
   }
 
-  .convergence-panel,
-  .tribunal-gate,
   .mirror-invitation {
     grid-template-columns: auto minmax(0, 1fr);
   }
 
-  .convergence-panel .button,
-  .tribunal-gate .button,
   .mirror-invitation .button {
     grid-column: 1 / -1;
     width: 100%;
-  }
-
-  .convergence-hint {
-    grid-column: 1 / -1;
-    margin-top: 0;
   }
 
   .lattice-rule {
@@ -2849,6 +3281,23 @@ p {
   transform: translateZ(-460px) scale(1.4182);
 }
 
+/* Exterior background variant (a LayerArt opts in via the modifier): the night
+   photograph carries its own value structure, so instead of the interior's
+   multiply wall field it beds on flat night with only a shallow top/bottom
+   scrim — the raster shows at its authored values. */
+.scene-layer-background--exterior {
+  background:
+    linear-gradient(
+      to bottom,
+      oklch(0.09 0 0 / 0.4) 0 6%,
+      transparent 22% 74%,
+      oklch(0.09 0 0 / 0.45) 94%
+    ),
+    var(--scene-bg) center / cover no-repeat,
+    var(--night);
+  background-blend-mode: normal, normal, normal;
+}
+
 .scene-layer-mid {
   transform: translateZ(-240px) scale(1.2182);
 }
@@ -2886,6 +3335,18 @@ p {
     oklch(0.72 0.018 210 / 0.04)
   );
   opacity: var(--haze-o);
+}
+
+/* Civic-alarm haze veil (Case 81): a fuller fog body than the base haze so the
+   per-tier opacity reads unmistakably; --alarm-haze-o comes from the scene's
+   alarm table (tier 0 = 0). Absent the var it is invisible (Case 77). */
+.scene-fx-alarm-veil {
+  inset: -2%;
+  background:
+    linear-gradient(to bottom, oklch(0.72 0.018 210 / 0.26), transparent 46%),
+    linear-gradient(to top, oklch(0.72 0.018 210 / 0.2), transparent 58%),
+    linear-gradient(to bottom, oklch(0.72 0.018 210 / 0.07), oklch(0.72 0.018 210 / 0.07));
+  opacity: var(--alarm-haze-o, 0);
 }
 
 .scene-fx-floor {
@@ -2976,6 +3437,27 @@ p {
   opacity: var(--dim-o);
 }
 
+/* Clerestory light sweep (Case 81): a soft diagonal light band whose transform
+   is written every frame by the scene rAF. The transition is explicitly off —
+   easing belongs to the frame clock, not the 180ms state token. Static under
+   reduced motion (the loop never starts; motion.ts parks it at rest). */
+.scene-fx-sweep {
+  top: -6%;
+  bottom: -6%;
+  left: 0;
+  width: 42%;
+  transition: none;
+  background: linear-gradient(
+    104deg,
+    transparent,
+    oklch(0.94 0.012 190 / 0.05) 28%,
+    oklch(0.94 0.012 190 / 0.13) 50%,
+    oklch(0.94 0.012 190 / 0.05) 72%,
+    transparent
+  );
+  will-change: transform;
+}
+
 /* SVG plane treatments (opacity/transform only) */
 .scene-svg-fx {
   transition:
@@ -2994,7 +3476,9 @@ p {
 }
 
 .scene-amber {
-  opacity: var(--amber-o, 1);
+  /* --amber-flicker (0–1) is written by the scene rAF for the occasional
+     service-strip dip; absent it defaults to 1 and the state var rules. */
+  opacity: calc(var(--amber-o, 1) * var(--amber-flicker, 1));
 }
 
 .scene-weather {
@@ -3003,6 +3487,22 @@ p {
   width: 100%;
   height: 100%;
   pointer-events: none;
+}
+
+/* Diorama rain (the ambience canvas riding inside a LayerArt stack). The art
+   module receives no state props, so suppression is declarative: a scene state
+   where the weather ceases (data-scene-state on the stage root) and both
+   reduced-motion gates hide the whole atmosphere node — which also idles the
+   rain loop through the atmosphere's own IntersectionObserver. */
+.scene-stage[data-scene-state='aftermath'] .scene-art-rain,
+.reduce-motion .scene-art-rain {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-art-rain {
+    display: none;
+  }
 }
 
 /* ── composited figure (diorama) ───────────────────────────────────── */
@@ -3128,7 +3628,7 @@ p {
   transition: opacity 180ms var(--ease-out);
 }
 
-/* ── hotspot overlay (interactive; NOT aria-hidden) ────────────────── */
+/* ── hotspot overlay (pointer mirrors; keyboard route is the switcher) ── */
 .scene-hotspots {
   position: absolute;
   inset: 0;
@@ -3230,6 +3730,24 @@ p {
   font-size: 11px;
   line-height: 12px;
   text-align: center;
+}
+
+/* The map and the adjacent location inspector share one view-only selection.
+   Amber means the player is acting here; cyan/check remains the filed record. */
+.scene-hotspot[data-selected='true'] .scene-hotspot-ring {
+  inset: 2px;
+  opacity: 1;
+  border-color: var(--amber);
+  background: oklch(0.72 0.14 70 / 0.12);
+}
+
+.scene-hotspot[data-selected='true']:not([data-filed='true']) .scene-hotspot-ring::after {
+  background: var(--amber);
+}
+
+.scene-hotspot[data-selected='true'] .scene-hotspot-label {
+  color: var(--amber-soft);
+  opacity: 1;
 }
 
 /* Fog leader from a fanned label back to its marker point. Width + rotation are
@@ -3352,7 +3870,7 @@ p {
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1180px) {
   /* Bottom sheet: full width, taller, with the stage still visible above it. */
   .deposition-tray {
     right: 0;

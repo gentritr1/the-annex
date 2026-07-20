@@ -36,7 +36,7 @@ export function ChoiceButton({
 
   return (
     <button
-      className={`choice-row choice-row-${tone} ${armed ? 'choice-row-armed' : ''}`}
+      className={`choice-row choice-row-${tone} ${aside ? 'choice-row-has-aside' : ''} ${armed ? 'choice-row-armed' : ''}`}
       type="button"
       aria-pressed={requiresConfirmation ? armed : undefined}
       onClick={handleClick}
@@ -51,7 +51,10 @@ export function ChoiceButton({
         </small>
         {tension ? <span className="choice-tension">{tension}</span> : null}
       </span>
-      <span className="choice-aside" aria-hidden={aside ? undefined : true}>
+      <span
+        className={`choice-aside ${aside ? 'choice-aside-label' : ''}`}
+        aria-hidden={aside ? undefined : true}
+      >
         {armed ? 'Confirm' : (aside ?? '→')}
       </span>
     </button>

@@ -495,6 +495,8 @@ describe('deposition (Case 81)', () => {
     const event = s.events.at(-1)
     expect(event?.sourceId).toBe('take-sworn-statement')
     expect(event?.detail).toContain('yes')
+    expect(event?.methodTags).toEqual(expect.arrayContaining(['procedure', 'care']))
+    expect(event?.methodTags).not.toContain('coercion')
   })
 
   it('cross entry answers no when asked; not asking records unasked', () => {
@@ -507,6 +509,9 @@ describe('deposition (Case 81)', () => {
     })
     expect(asked.depositionRecord?.consent).toBe('no')
     expect(asked.methodTags).toContain('coercion')
+    expect(asked.events.at(-1)?.methodTags).toEqual(
+      expect.arrayContaining(['procedure', 'coercion', 'care']),
+    )
 
     let unasked = case81Investigation('procedure')
     unasked = gameReducer(unasked, {

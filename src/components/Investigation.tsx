@@ -24,8 +24,9 @@ interface InvestigationProps {
   onEnterTribunal: () => void
 }
 
-// A hotspot is wayfinding: activating it scrolls to and focuses that site's card,
-// which stays the canonical interaction surface.
+// Move focus to the selected location workspace. On a tall/narrow viewport the
+// workspace may sit below the map, so preserve the old scroll safety without
+// making scrolling the primary desktop interaction.
 function focusSiteCard(siteId: SiteId, reducedMotion: boolean) {
   const card = document.getElementById(`site-card-${siteId}`)
   if (!card) return
@@ -63,13 +64,25 @@ export function Investigation({
   onEnterTribunal,
 }: InvestigationProps) {
   const content = getCaseContent(state.caseId)
-  const { sites, fieldActions, reconstructionDefinitions, chrome, deposition, scene } = content
+  const {
+    sites,
+    fieldActions,
+    evidenceDefinitions,
+    reconstructionDefinitions,
+    chrome,
+    deposition,
+    scene,
+  } = content
   const reconstruction = reconstructionDefinitions.find((item) => item.id === state.reconstruction)
   const reducedMotion = state.settings.reducedMotion
+  const [selectedSiteId, setSelectedSiteId] = useState<SiteId>(
+    () => sites.find((site) => !state.completedSites.includes(site.id))?.id ?? sites[0]!.id,
+  )
 
   // The live stage wrapper, so both the open-transcript reveal and the witnessed-
   // refusal beat can bring the reacting room into view behind / after the modal.
   const worldViewRef = useRef<HTMLDivElement>(null)
+  const siteInspectorRef = useRef<HTMLElement>(null)
   const holdTimerRef = useRef<number | null>(null)
   // The one-shot witnessed-refusal announcement (aria-live). Set only from a commit
   // callback; empty at rest, so a reload of a persisted refusal never re-announces.
@@ -83,12 +96,17 @@ export function Investigation({
     [],
   )
 
+  // The inspector is a single persistent scroll container whose content changes
+  // with the selected site. Always reveal the new location's heading rather than
+  // inheriting the previous site's reading position.
+  useEffect(() => {
+    siteInspectorRef.current?.scrollTo({ top: 0, behavior: 'auto' })
+  }, [selectedSiteId])
+
   // Finding 1a — when a transcript opens, the stage flips to press/corroborate.
-  // The tray docks to the bottom of the column, so bring the stage into view above
-  // it (the transcript may have been opened from a field card far down the page).
-  // The tray's own focus scrolls the page a frame later and would override an
-  // immediate scroll, so this is deferred past it (60ms) and instant —
-  // imperceptible under the tray sliding up.
+  // The tray docks to the bottom of the column, so keep the stage in view above
+  // it on both the desktop workspace and the sequential fallback. The tray's own
+  // focus may scroll a frame later, so this is deferred past it (60ms) and instant.
   useEffect(() => {
     if (!depositionEntry) return
     const timer = window.setTimeout(() => {
@@ -134,9 +152,25 @@ export function Investigation({
     // Decide the beat from the committed consent (shared vocabulary), not by
     // observing the refusal state after it lands.
     const consent = resolveCommitConsent(deposition, actionId, askedConsent)
-    if (!witnessesRefusalOnCommit(consent)) return
+    if (!witnessesRefusalOnCommit(consent)) {
+      window.requestAnimationFrame(() => {
+        siteInspectorRef.current?.scrollTo({ top: 0, behavior: 'auto' })
+        siteInspectorRef.current?.focus({ preventScroll: true })
+      })
+      return
+    }
     const siteId = fieldActions.find((action) => action.id === actionId)?.siteId
     if (siteId) playWitnessedRefusal(siteId)
+  }
+
+  function handleCommitAction(actionId: FieldActionId) {
+    onCommitAction(actionId)
+    // The confirmed choice unmounts when the filed result replaces it. Keep the
+    // keyboard route in context and reveal the consequence from its first line.
+    window.requestAnimationFrame(() => {
+      siteInspectorRef.current?.scrollTo({ top: 0, behavior: 'auto' })
+      siteInspectorRef.current?.focus({ preventScroll: true })
+    })
   }
   // The scene state is a pure read of GameState + the open-deposition view: the
   // interior presses/corroborates while a transcript is open, and holds refusal
@@ -158,185 +192,265 @@ export function Investigation({
     !reconstruction ? 'File one memory reconstruction.' : null,
   ].filter((requirement): requirement is string => requirement !== null)
   const gateRequirement = gateRequirements.join(' ')
+  const selectedSite = sites.find((site) => site.id === selectedSiteId) ?? sites[0]!
+  const selectedCompletedBase = fieldActions.find(
+    (action) =>
+      action.siteId === selectedSite.id && state.completedActions.includes(action.id),
+  )
+  const selectedCompletedAction = selectedCompletedBase
+    ? resolveFieldAction(content, selectedCompletedBase.id, state.precedents)
+    : undefined
+  const selectedEvidence = selectedCompletedAction
+    ? evidenceDefinitions.find((evidence) => evidence.id === selectedCompletedAction.evidenceId)
+    : undefined
+  const selectedEvent = selectedCompletedAction
+    ? state.events.find(
+        (event) =>
+          event.sourceType === 'field-action' && event.sourceId === selectedCompletedAction.id,
+      )
+    : undefined
+  const openSites = sites.filter((site) => !state.completedSites.includes(site.id))
+
+  function selectSite(siteId: SiteId, moveFocus = false) {
+    setSelectedSiteId(siteId)
+    if (!moveFocus) return
+
+    // React commits the selected location before the next animation frame. If
+    // the same hotspot is re-opened, the existing workspace is focused instead.
+    window.requestAnimationFrame(() => focusSiteCard(siteId, reducedMotion))
+  }
 
   return (
     <article className="phase-page investigation-page">
       <p className="sr-only" role="status" aria-live="polite">
         {refusalLine}
       </p>
-      <div className="world-view" ref={worldViewRef}>
-        {/* The live scene: the diorama (Case 81) or the flat civic map (Case 77),
-            with a plane-registered hotspot overlay. The art stack is aria-hidden;
-            the hotspots are real buttons that focus their site card below. */}
-        <SceneStage
-          scene={scene}
-          sceneState={sceneState}
-          reducedMotion={state.settings.reducedMotion}
-          interactive
-          parallax={diorama}
-          sites={sites}
-          completedSiteIds={state.completedSites}
-          onHotspotActivate={(siteId) => focusSiteCard(siteId, state.settings.reducedMotion)}
-          ariaLabel={chrome.worldAriaLabel}
-        />
-        <div className="world-caption">
-          <span>{chrome.worldCaption[0]}</span>
-          {captionMask !== null && (
-            <span>
-              {chrome.worldCaption[1]}: {Math.round(captionMask * 100)}%
-            </span>
-          )}
+      <header className="field-commandbar">
+        <div>
+          <p className="section-context">Active field record</p>
+          <h1 id="field-heading">Investigate the district</h1>
         </div>
-      </div>
-
-      <section className="phase-section field-section" aria-labelledby="field-heading">
-        <div className="section-heading">
-          <div>
-            <p className="section-context">Active field record</p>
-            <h1 id="field-heading">Choose what becomes admissible</h1>
-            <p>
-              Each site closes after one method. There is no failed route—only a record of what you
-              risked, protected, or refused.
-            </p>
-          </div>
-          <span className="selection-count">
-            {state.completedSites.length} chosen · 2 required
+        <p className="field-command-copy">
+          Choose a location, then decide what becomes admissible there.
+        </p>
+        <div className="field-objectives" aria-label="Tribunal requirements">
+          <span data-complete={state.completedSites.length >= 2 ? 'true' : undefined}>
+            <strong>{Math.min(state.completedSites.length, 2)} / 2</strong>
+            sites
+          </span>
+          <span data-complete={reconstruction ? 'true' : undefined}>
+            <strong>{reconstruction ? 'Filed' : 'Needed'}</strong>
+            model
           </span>
         </div>
+      </header>
 
-        <div className="site-list">
-          {sites.map((site) => {
-            // Resolve the filed action through the precedent seam so its shown
-            // event detail and reactions match what the engine committed.
-            const completedBase = fieldActions.find(
-              (action) => action.siteId === site.id && state.completedActions.includes(action.id),
-            )
-            const completedAction = completedBase
-              ? resolveFieldAction(content, completedBase.id, state.precedents)
-              : undefined
+      <div className="field-workspace">
+        <section className="world-pane" aria-label="District navigation">
+          <div className="world-view" ref={worldViewRef}>
+            {/* The world is now the primary location picker. A hotspot swaps the
+                adjacent workspace in place instead of sending the player down a
+                long document. Canonical game state remains engine-owned. */}
+            <SceneStage
+              scene={scene}
+              sceneState={sceneState}
+              reducedMotion={state.settings.reducedMotion}
+              alarmLevel={state.alarm}
+              interactive
+              parallax={diorama}
+              sites={sites}
+              completedSiteIds={state.completedSites}
+              selectedSiteId={selectedSite.id}
+              onHotspotActivate={(siteId) => selectSite(siteId, true)}
+            />
+            <div className="world-caption">
+              <span>{chrome.worldCaption[0]}</span>
+              {captionMask !== null && (
+                <span>
+                  {chrome.worldCaption[1]}: {Math.round(captionMask * 100)}%
+                </span>
+              )}
+            </div>
+          </div>
 
-            return (
-              <section
-                className={`site-record ${completedAction ? 'site-record-complete' : ''}`}
-                key={site.id}
-                id={`site-card-${site.id}`}
-                tabIndex={-1}
-              >
-                <header className="site-header">
-                  <span className="site-index">{site.index}</span>
-                  <div>
-                    <h2>{site.name}</h2>
-                    <p>{site.description}</p>
-                  </div>
-                  <span className={`site-state ${completedAction ? 'state-filed' : 'state-open'}`}>
-                    {completedAction ? 'Filed' : 'Open'}
+          <nav className="site-switcher" aria-label="Field locations">
+            {sites.map((site) => {
+              const selected = site.id === selectedSite.id
+              const filed = state.completedSites.includes(site.id)
+              return (
+                <button
+                  className="site-switch"
+                  type="button"
+                  key={site.id}
+                  aria-pressed={selected}
+                  data-filed={filed ? 'true' : undefined}
+                  onClick={() => selectSite(site.id)}
+                >
+                  <span className="site-switch-index">{site.index}</span>
+                  <span>
+                    <strong>{site.name}</strong>
+                    <small>{filed ? 'Filed' : selected ? 'In view' : 'Available'}</small>
                   </span>
-                </header>
+                </button>
+              )
+            })}
+          </nav>
+        </section>
 
-                {completedAction ? (
-                  <div className="resolved-action">
-                    <span className="resolved-mark" aria-hidden="true">
-                      ✓
-                    </span>
-                    <div>
-                      <strong>{completedAction.title}</strong>
-                      <p>{completedAction.eventDetail}</p>
-                      <ReactionQuotes reactions={completedAction.reactions} />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="site-actions">
-                    {site.actionIds.map((actionId) => {
-                      // Resolve through the precedent seam so the pre-commit hint
-                      // and risk tone reflect any prior-verdict override.
-                      const action = resolveFieldAction(content, actionId, state.precedents)
-                      if (!action) return null
+        <section
+          className={`site-record site-inspector ${selectedCompletedAction ? 'site-record-complete' : ''}`}
+          id={`site-card-${selectedSite.id}`}
+          ref={siteInspectorRef}
+          tabIndex={-1}
+          aria-labelledby={`site-heading-${selectedSite.id}`}
+        >
+          <header className="site-header">
+            <span className="site-index">{selectedSite.index}</span>
+            <div>
+              <p className="site-location-label">Location in view</p>
+              <h2 id={`site-heading-${selectedSite.id}`}>{selectedSite.name}</h2>
+            </div>
+            <span
+              className={`site-state ${selectedCompletedAction ? 'state-filed' : 'state-open'}`}
+            >
+              {selectedCompletedAction ? 'Filed' : 'Open'}
+            </span>
+          </header>
+          <p className="site-description">{selectedSite.description}</p>
 
-                      // A deposition entry action opens the transcript instead of
-                      // resolving instantly; its own confirm is the final commit.
-                      const isDepositionEntry = Boolean(
-                        deposition?.entryActionIds.includes(action.id),
-                      )
-
-                      return (
-                        <ChoiceButton
-                          key={action.id}
-                          title={action.title}
-                          label={action.methodLabel}
-                          description={action.description}
-                          consequence={action.consequence}
-                          tone={action.alarmDelta > 0 ? 'risk' : 'default'}
-                          aside={isDepositionEntry ? 'Open transcript' : undefined}
-                          requiresConfirmation={!isDepositionEntry}
-                          onClick={
-                            isDepositionEntry
-                              ? () => onDepositionEntryChange(action.id)
-                              : () => onCommitAction(action.id)
-                          }
-                        />
-                      )
-                    })}
-                  </div>
-                )}
-              </section>
-            )
-          })}
-        </div>
-      </section>
-
-      <section className="convergence-panel" aria-labelledby="lattice-heading">
-        <div className="convergence-index" aria-hidden="true">
-          ◫
-        </div>
-        <div className="convergence-copy">
-          <p className="section-context">Required synthesis</p>
-          <h2 id="lattice-heading">Memory lattice</h2>
-          {reconstruction ? (
+          {selectedCompletedAction ? (
             <>
-              <p>
-                <strong>{reconstruction.title}:</strong> {reconstruction.thesis}
-              </p>
-              <span className="filed-badge">Model filed</span>
-              <ReactionQuotes reactions={reconstruction.reactions} />
+              <div className="resolved-action">
+                <span className="resolved-mark" aria-hidden="true">
+                  ✓
+                </span>
+                <div>
+                  <strong>{selectedEvent?.title ?? selectedCompletedAction.title}</strong>
+                  <p>{selectedEvent?.detail ?? selectedCompletedAction.eventDetail}</p>
+                  <div className="record-delta" aria-label="Filed result">
+                    {selectedEvidence && (
+                      <span>
+                        <small>Evidence admitted</small>
+                        <strong>{selectedEvidence.title}</strong>
+                      </span>
+                    )}
+                    <span>
+                      <small>Civic trace</small>
+                      <strong className={selectedCompletedAction.alarmDelta > 0 ? 'text-risk' : ''}>
+                        {selectedCompletedAction.alarmDelta > 0
+                          ? `+${selectedCompletedAction.alarmDelta} alarm`
+                          : 'No new trace'}
+                      </strong>
+                    </span>
+                    {selectedCompletedAction.grantsTribunalOverride && (
+                      <span>
+                        <small>Authority</small>
+                        <strong>Override acquired</strong>
+                      </span>
+                    )}
+                  </div>
+                  <ReactionQuotes reactions={selectedCompletedAction.reactions} />
+                </div>
+              </div>
+              {openSites.length > 0 && (
+                <div className="next-location">
+                  <span>Continue elsewhere</span>
+                  <div>
+                    {openSites.map((site) => (
+                      <button type="button" key={site.id} onClick={() => selectSite(site.id, true)}>
+                        {site.index} · {site.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </>
           ) : (
-            <p>Select two anchors. Every pairing is admissible, but each makes a different claim.</p>
+            <div className="site-actions">
+              <p className="site-action-prompt">Choose one method. This location then closes.</p>
+              {selectedSite.actionIds.map((actionId) => {
+                // Resolve through the precedent seam so the pre-commit hint and
+                // risk tone match the engine's eventual committed result.
+                const action = resolveFieldAction(content, actionId, state.precedents)
+                if (!action) return null
+
+                // A deposition entry opens its authored transcript interaction;
+                // its own final confirmation is the canonical commit.
+                const isDepositionEntry = Boolean(deposition?.entryActionIds.includes(action.id))
+
+                return (
+                  <ChoiceButton
+                    key={action.id}
+                    title={action.title}
+                    label={action.methodLabel}
+                    description={action.description}
+                    consequence={action.consequence}
+                    tone={action.alarmDelta > 0 ? 'risk' : 'default'}
+                    aside={isDepositionEntry ? 'Open transcript' : undefined}
+                    requiresConfirmation={!isDepositionEntry}
+                    onClick={
+                      isDepositionEntry
+                        ? () => onDepositionEntryChange(action.id)
+                        : () => handleCommitAction(action.id)
+                    }
+                  />
+                )
+              })}
+            </div>
+          )}
+        </section>
+      </div>
+
+      <footer className={`field-dock ${tribunalReady ? 'field-dock-ready' : ''}`}>
+        <div className="field-route" aria-label="Case progression">
+          <span data-current="true">Field</span>
+          <span aria-hidden="true">→</span>
+          <span data-ready={state.completedSites.length > 0 ? 'true' : undefined}>Memory</span>
+          <span aria-hidden="true">→</span>
+          <span data-ready={tribunalReady ? 'true' : undefined}>Tribunal</span>
+        </div>
+
+        <div className="field-dock-copy">
+          {reconstruction ? (
+            <details className="filed-model">
+              <summary>{reconstruction.title} · model filed</summary>
+              <p>{reconstruction.thesis}</p>
+              <ReactionQuotes reactions={reconstruction.reactions} />
+            </details>
+          ) : (
+            <p>
+              {state.completedSites.length === 0
+                ? 'Visit one location to unlock the memory lattice.'
+                : 'The memory lattice is ready. File one model to unlock the tribunal.'}
+            </p>
+          )}
+          {!tribunalReady && state.completedSites.length > 0 && reconstruction && (
+            <p>{gateRequirement}</p>
           )}
         </div>
-        {!reconstruction && (
-          <button
-            className="button button-secondary"
-            type="button"
-            onClick={onOpenReconstruction}
-            disabled={state.completedSites.length === 0}
-          >
-            Open lattice <span aria-hidden="true">→</span>
-          </button>
-        )}
-        {!reconstruction && state.completedSites.length === 0 && (
-          <p className="convergence-hint">Visit one field site before reconstructing the record.</p>
-        )}
-      </section>
 
-      <section className={`tribunal-gate ${tribunalReady ? 'tribunal-gate-ready' : ''}`}>
-        <div>
-          <p className="section-context">Convergence point</p>
-          <h2>{tribunalReady ? 'The tribunal is ready' : 'Tribunal channel withheld'}</h2>
-          <p>
-            {tribunalReady
-              ? 'You may continue investigating or resolve the case with the record you have made.'
-              : gateRequirement}
-          </p>
+        <div className="field-dock-actions">
+          {!reconstruction && (
+            <button
+              className="button button-secondary"
+              type="button"
+              onClick={onOpenReconstruction}
+              disabled={state.completedSites.length === 0}
+            >
+              Open memory lattice <span aria-hidden="true">→</span>
+            </button>
+          )}
+          <button
+            className="button button-primary"
+            type="button"
+            onClick={onEnterTribunal}
+            disabled={!tribunalReady}
+          >
+            {tribunalReady ? 'Enter tribunal' : 'Tribunal locked'}{' '}
+            <span aria-hidden="true">→</span>
+          </button>
         </div>
-        <button
-          className="button button-primary"
-          type="button"
-          onClick={onEnterTribunal}
-          disabled={!tribunalReady}
-        >
-          Enter tribunal <span aria-hidden="true">→</span>
-        </button>
-      </section>
+      </footer>
 
       {depositionEntry && (
         <Deposition

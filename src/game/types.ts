@@ -539,6 +539,28 @@ export interface SceneFigure {
   states: Readonly<Record<SceneStateId, SceneTreatment>>
 }
 
+// Ambient scene life driven by the single scene rAF (motion.ts): the clerestory
+// light sweep crossing the far plane and the occasional amber service-strip dip.
+// Authored here so the motion code holds no per-scene constants. Absent = no
+// sweep, no flicker (Case 77).
+export interface SceneAmbience {
+  // One full left-to-right traverse of the light band, in milliseconds.
+  sweepPeriodMs: number
+  // Fraction of the amber strip's state opacity lost at the bottom of a dip
+  // (0 = no flicker). The dip itself is time-derived in motion.ts.
+  amberDipDepth: number
+}
+
+// One civic-alarm tier of atmosphere, in ABSOLUTE authored values (no
+// multipliers on the base scene). `hazeVeil` layers over the state treatment's
+// --haze-o; the dust fields replace the weather defaults for that tier.
+export interface SceneAlarmTier {
+  // Extra haze opacity added to the state's own --haze-o. Tier 0 must be 0.
+  hazeVeil: number
+  maxParticles: number
+  fallSpeed: { min: number; max: number }
+}
+
 export interface SceneDefinition {
   master: { w: number; h: number }
   perspectivePx: number
@@ -556,6 +578,11 @@ export interface SceneDefinition {
   // Optional seated figure composited into the diorama (see SceneFigure). Absent
   // for a scene with no figure (Case 77).
   figure?: SceneFigure
+  // Optional ambient sweep + amber flicker (Case 81). Presentation only.
+  ambience?: SceneAmbience
+  // Optional alarm-driven atmosphere, exactly four tiers indexed by the
+  // engine's clamped 0–3 alarm. Tier 0 must reproduce the base look exactly.
+  alarm?: readonly [SceneAlarmTier, SceneAlarmTier, SceneAlarmTier, SceneAlarmTier]
 }
 
 // A complete, self-contained dossier the engine and components resolve through

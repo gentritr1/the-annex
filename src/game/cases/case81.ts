@@ -1204,6 +1204,20 @@ const scene: SceneDefinition = {
     ],
     suppressed: ['aftermath'],
   },
+  // Ambient life, driven by the single scene rAF: a 120s clerestory light sweep
+  // across the far plane, and the amber service strip occasionally dipping to
+  // 45% of its state opacity (~1 dip every 2 minutes, time-derived).
+  ambience: { sweepPeriodMs: 120000, amberDipDepth: 0.55 },
+  // Civic-alarm atmosphere, absolute values per tier. Tier 0 is byte-identical
+  // to the base look: no haze veil, the weather's own 40 motes, the seeded
+  // 5–13 px/s fall. Each step up thickens the air and hurries the dust; tier 3
+  // is unmistakable side-by-side (veil +0.38, 96 motes at up to 23 px/s).
+  alarm: [
+    { hazeVeil: 0, maxParticles: 40, fallSpeed: { min: 5, max: 13 } },
+    { hazeVeil: 0.12, maxParticles: 56, fallSpeed: { min: 6, max: 15 } },
+    { hazeVeil: 0.24, maxParticles: 74, fallSpeed: { min: 8, max: 19 } },
+    { hazeVeil: 0.38, maxParticles: 96, fallSpeed: { min: 10, max: 23 } },
+  ],
   // Ellis in the room. The averted-in-scene staging (face fully shadowed) is
   // composited at the mid-plane deposition table, near the deposition-suite
   // hotspot (0.494, 0.66). The plate is a lit cutout married into the scene by a

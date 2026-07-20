@@ -1,13 +1,15 @@
 // Scene motion — the single-rAF loop for the Case 81 diorama, ported from the
 // reviewed scene prototype under public/ (PART A JS). One requestAnimationFrame
-// drives pointer drift of the plane group + hotspot mirror AND the dust-mote
-// weather, both with a capped delta time. It hard-pauses on document.hidden,
-// gates on scene visibility
+// drives pointer drift of the plane group + hotspot mirror, the dust-mote
+// weather, AND the ambient life (clerestory light sweep + amber service-strip
+// dips, both time-derived from the frame clock), all with a capped delta time.
+// It hard-pauses on document.hidden, gates on scene visibility
 // (IntersectionObserver) and the reduced-motion signal, and fully tears down on
 // unmount — the same discipline as src/ambience/rain.ts.
 //
-// It reads no content ids: the scene data (layers, hotspots, drift, weather) is
-// passed in, and the DOM hooks are generic class names + data attributes.
+// It reads no content ids: the scene data (layers, hotspots, drift, weather,
+// ambience, alarm tiers) is passed in, and the DOM hooks are generic class
+// names + data attributes.
 import type { SceneDefinition, SceneRect } from '../game/types'
 
 export interface SceneMotionOptions {
@@ -19,11 +21,17 @@ export interface SceneMotionOptions {
   weather: boolean
   // Live reduced-motion signal (settings prop OR prefers-reduced-motion).
   getReducedMotion: () => boolean
+  // Live civic-alarm tier (0–3) for the scene's alarm atmosphere table. Absent =
+  // tier 0 everywhere (the base look).
+  getAlarmTier?: () => number
 }
 
 export interface SceneMotionHandle {
   // Re-evaluate the motion gate (call when the reduced-motion signal changes).
   sync(): void
+  // Re-seed the dust motes (call when the alarm tier changes; count and fall
+  // speed come from the scene's per-tier table).
+  reseed(): void
   destroy(): void
 }
 
@@ -50,11 +58,16 @@ export function createSceneMotion(
   const hotspots = Array.from(root.querySelectorAll<HTMLElement>('.scene-hotspot[data-site]'))
   // Optional composited figure (generic; data attributes only, no content ids).
   const figureEl = root.querySelector<HTMLElement>('.scene-figure')
+  // Optional clerestory sweep band (generic class hook; period authored in
+  // scene.ambience). Only present in diorama art that ships one.
+  const sweepEl = root.querySelector<HTMLElement>('.scene-fx-sweep')
 
   const master = scene.master
   const FAR_SCALE = scene.layers.find((layer) => layer.name === 'far')?.scale ?? 1.4182
   const MAX_PARTICLES = scene.weather.maxParticles ?? 0
   const spawnVolumes = scene.weather.spawnVolumes ?? []
+  const ambience = scene.ambience ?? null
+  const alarmTiers = scene.alarm ?? null
   const minTargetPx = 44
 
   const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -72,6 +85,11 @@ export function createSceneMotion(
   let py = 0
   let gx = 0
   let gy = 0
+  let lastFlicker = 1
+
+  function alarmTier() {
+    return Math.max(0, Math.min(3, Math.round(options.getAlarmTier?.() ?? 0)))
+  }
 
   // Crop window from live container aspect (slice math), identical to what the
   // SVG planes self-apply via preserveAspectRatio="xMidYMid slice".
@@ -154,15 +172,20 @@ export function createSceneMotion(
 
   function seedMotes() {
     motes = []
-    if (spawnVolumes.length === 0 || MAX_PARTICLES === 0) return
+    // Per-tier dust (absolute authored values): the alarm table overrides the
+    // weather defaults; tier 0's row reproduces them exactly.
+    const tier = alarmTiers ? alarmTiers[alarmTier()] : null
+    const maxParticles = tier?.maxParticles ?? MAX_PARTICLES
+    const fall = tier?.fallSpeed ?? { min: 5, max: 13 }
+    if (spawnVolumes.length === 0 || maxParticles === 0) return
     const vols = spawnVolumes.map(shaftPx)
-    for (let i = 0; i < MAX_PARTICLES; i += 1) {
+    for (let i = 0; i < maxParticles; i += 1) {
       const v = vols[i % vols.length]
       motes.push({
         v,
         x: v.px + Math.random() * v.pw,
         y: v.py + Math.random() * v.ph,
-        vy: 5 + Math.random() * 8,
+        vy: fall.min + Math.random() * (fall.max - fall.min),
         sway: Math.random() * 6.28,
         r: 0.5 + Math.random() * 0.7,
         a: 0.08 + Math.random() * 0.14,
@@ -222,6 +245,27 @@ export function createSceneMotion(
       }
     }
 
+    // Ambient life on this same clock (both die with the loop: hidden tab,
+    // off-screen scene, or reduced motion).
+    if (ambience) {
+      // Clerestory sweep: one soft band crossing the far plane per period.
+      if (sweepEl) {
+        const phase = (t % ambience.sweepPeriodMs) / ambience.sweepPeriodMs
+        sweepEl.style.transform = `translateX(${(-110 + phase * 360).toFixed(1)}%)`
+      }
+      // Amber service-strip dip: three layered sinusoids crossing a high
+      // threshold (~1 dip / 2 min, time-derived — never per-frame random).
+      if (ambience.amberDipDepth > 0) {
+        const w = Math.sin(t / 47000) + Math.sin(t / 11300 + 1.9) + Math.sin(t / 3100 + 4.1)
+        const over = Math.max(0, Math.min(1, w - 2))
+        const flicker = 1 - ambience.amberDipDepth * over
+        if (Math.abs(flicker - lastFlicker) > 0.004) {
+          lastFlicker = flicker
+          root.style.setProperty('--amber-flicker', flicker.toFixed(3))
+        }
+      }
+    }
+
     if (weatherAllowed()) drawMotes(t, dt)
     else if (ctx) ctx.clearRect(0, 0, W, H)
   }
@@ -249,6 +293,11 @@ export function createSceneMotion(
       if (pgroup) pgroup.style.transform = 'none'
       if (hgroup) hgroup.style.transform = 'none'
       if (ctx) ctx.clearRect(0, 0, W, H)
+      // Park the ambience fully static: the sweep rests mid-frame and the amber
+      // strip returns to its state opacity (no frozen mid-dip).
+      if (sweepEl) sweepEl.style.transform = 'translateX(35%)'
+      lastFlicker = 1
+      root.style.removeProperty('--amber-flicker')
     }
   }
 
@@ -314,6 +363,7 @@ export function createSceneMotion(
 
   return {
     sync,
+    reseed: seedMotes,
     destroy() {
       stop()
       mq.removeEventListener('change', onMqChange)
@@ -325,6 +375,8 @@ export function createSceneMotion(
       if (pgroup) pgroup.style.transform = 'none'
       if (hgroup) hgroup.style.transform = 'none'
       if (ctx) ctx.clearRect(0, 0, W, H)
+      if (sweepEl) sweepEl.style.transform = ''
+      root.style.removeProperty('--amber-flicker')
     },
   }
 }

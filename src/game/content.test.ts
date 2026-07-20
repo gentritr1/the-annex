@@ -258,6 +258,34 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
     }
   })
 
+  it('locks the alarm-tier atmosphere invariants when a table is authored', () => {
+    const tiers = scene.alarm
+    if (!tiers) return
+    // One tier per clamped engine alarm value (0–3).
+    expect(tiers).toHaveLength(4)
+    // Tier 0 must reproduce the base look exactly: no veil, the weather's own
+    // particle count, and the motion loop's seeded 5–13 px/s fall (the fallback
+    // literals in motion.ts seedMotes).
+    expect(tiers[0].hazeVeil).toBe(0)
+    expect(tiers[0].maxParticles).toBe(scene.weather.maxParticles)
+    expect(tiers[0].fallSpeed).toEqual({ min: 5, max: 13 })
+    tiers.forEach((tier, index) => {
+      expect(tier.hazeVeil).toBeGreaterThanOrEqual(0)
+      expect(tier.hazeVeil).toBeLessThan(1)
+      expect(tier.fallSpeed.min).toBeLessThan(tier.fallSpeed.max)
+      if (index === 0) return
+      const prev = tiers[index - 1]
+      // Rising alarm may never read as calmer air.
+      expect(tier.hazeVeil).toBeGreaterThanOrEqual(prev.hazeVeil)
+      expect(tier.maxParticles).toBeGreaterThanOrEqual(prev.maxParticles)
+      expect(tier.fallSpeed.min).toBeGreaterThanOrEqual(prev.fallSpeed.min)
+      expect(tier.fallSpeed.max).toBeGreaterThanOrEqual(prev.fallSpeed.max)
+    })
+    // The ceiling must be unmistakable next to the base look.
+    expect(tiers[3].hazeVeil).toBeGreaterThan(tiers[0].hazeVeil)
+    expect(tiers[3].maxParticles).toBeGreaterThan(tiers[0].maxParticles)
+  })
+
   it('keeps every hotspot inside the declared mobile crop window', () => {
     const win = scene.crops.mobile.window
     scene.hotspots.forEach((hotspot) => {

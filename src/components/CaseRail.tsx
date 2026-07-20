@@ -20,7 +20,7 @@ const statusLabels: Record<EvidenceStatus, string> = {
 }
 
 export function CaseRail({ state }: CaseRailProps) {
-  const { caseFile, evidenceDefinitions } = getCaseContent(state.caseId)
+  const { caseFile, evidenceDefinitions, sites } = getCaseContent(state.caseId)
   const [activeTab, setActiveTab] = useState<RailTab>('case')
   const [mobileOpen, setMobileOpen] = useState(false)
   const evidence = evidenceDefinitions.filter((item) => state.evidence.includes(item.id))
@@ -101,8 +101,8 @@ export function CaseRail({ state }: CaseRailProps) {
 
           <section className="rail-block rail-status-grid" aria-label="Case status">
             <div>
-              <span>Field sites</span>
-              <strong>{state.completedSites.length} / 4</strong>
+              <span>Locations filed</span>
+              <strong>{state.completedSites.length} / {sites.length}</strong>
             </div>
             <div>
               <span>Reconstruction</span>

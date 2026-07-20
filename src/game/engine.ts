@@ -334,11 +334,11 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...beatChoices.map((choice) => choice.trust),
         ...(action.askedConsent ? [deposition.consent.askEffect.trust] : []),
       ])
-      const methodTags = addUnique(state.methodTags, [
-        ...definition.methodTags,
+      const committedMethodTags = addUnique(definition.methodTags, [
         ...beatChoices.flatMap((choice) => choice.methodTags),
         ...(action.askedConsent ? deposition.consent.askEffect.methodTags : []),
       ])
+      const methodTags = addUnique(state.methodTags, committedMethodTags)
 
       const consentClause = action.askedConsent
         ? consent === 'yes'
@@ -370,7 +370,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           title: definition.eventTitle,
           detail: `${transcriptDetail}${describeTrustDeltas(deltas)}`,
           tone: definition.alarmDelta > 0 ? 'warning' : 'neutral',
-          methodTags: definition.methodTags,
+          methodTags: committedMethodTags,
         }),
         announcement: `${definition.eventTitle}. Testimony recorded.`,
       }

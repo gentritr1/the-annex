@@ -290,12 +290,21 @@ export function DepositionAnnexArt({ backgroundSrc }: SceneArtProps) {
       <div className="scene-haze">
         <div className="scene-haze-frame">
           <div className="scene-fx scene-fx-haze" />
+          {/* Alarm veil: the civic-alarm haze layer. Its opacity IS the per-tier
+              table value (--alarm-haze-o; tier 0 = 0 = invisible, so the base
+              look is untouched). Sits over the base haze, under shafts/dim. */}
+          <div className="scene-fx scene-fx-alarm-veil" />
           <div className="scene-fx scene-fx-floor" />
           <div className="scene-fx scene-fx-floor-calm" />
           <div className="scene-fx scene-fx-shafts scene-fx-shafts-soft" />
           <div className="scene-fx scene-fx-shafts scene-fx-shafts-hard" />
           <div className="scene-fx scene-fx-center" />
           <div className="scene-fx scene-fx-table-spot" />
+          {/* Clerestory light sweep: one soft light band drifting across the far
+              plane on the scene's single rAF (motion.ts sets its transform from
+              the frame clock; scene.ambience authors the period). Static under
+              reduced motion. Sits under the dim veils so dark states keep it. */}
+          <div className="scene-fx scene-fx-sweep" />
           <div className="scene-fx scene-fx-near-dim" />
           <div className="scene-fx scene-fx-dim" />
         </div>

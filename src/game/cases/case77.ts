@@ -1,3 +1,4 @@
+import { CivicArchiveArt } from '../../scene/CivicArchiveArt'
 import type {
   ApproachDefinition,
   CaseDefinition,
@@ -700,29 +701,64 @@ function getPersonaReflection(personaId: PersonaId, state: GameState): string {
 }
 
 // ── Scene direction ──────────────────────────────────────────────────────────
-// Case 77 is a FLAT map: the civic-archive exterior + rain (its identity is the
-// weather). No parallax planes and no deposition, so the press/corroborate/
-// refusal treatments are authored for completeness but never fire — sceneStateFor
-// resolves this case's investigation to 'neutral' throughout. Only neutral (map),
-// tribunal (world window), and aftermath (world window, rain stops) render in
-// play. Hotspot coordinates match the tuned world-label positions they replace.
+// The civic records hall exterior diorama. Same plane contract as Case 81: the
+// layer z-ladder (scales pinned to the shared CSS transforms), plane-registered
+// hotspots (1:1 with the four sites), the six state treatments as CSS custom-
+// property sets, and the drift coefficients. The weather stays RAIN — the
+// scene's identity — carried by the existing ambience canvas inside
+// CivicArchiveArt; the per-state intensities below remain the registered
+// contract (suppression in aftermath is enforced by the stage's
+// data-scene-state CSS gate, which also idles the rain loop). The SVG plane +
+// haze art is CivicArchiveArt. Case 77 has no deposition, so press/corroborate/
+// refusal are authored for completeness but never fire — sceneStateFor resolves
+// this case's investigation to 'neutral' throughout; tribunal and aftermath
+// render as world-window strips (aftermath stops the rain).
 const scene: SceneDefinition = {
   master: { w: 1600, h: 900 },
   perspectivePx: 1100,
-  drift: { yawDeg: 0, pitchDeg: 0 },
+  drift: { yawDeg: 0.26, pitchDeg: 0.2 },
   layers: [
-    { name: 'flat', z: 0, scale: 1, kind: 'raster', raster: { src: '/images/civic-archive.webp', blend: 'normal' } },
+    {
+      name: 'background',
+      z: -720,
+      scale: 1.6545,
+      kind: 'raster',
+      raster: { src: '/images/civic-archive.webp', blend: 'multiply' },
+    },
+    { name: 'far', z: -460, scale: 1.4182, kind: 'svg' },
+    { name: 'mid', z: -240, scale: 1.2182, kind: 'svg' },
+    { name: 'near', z: -80, scale: 1.0727, kind: 'svg' },
+    { name: 'haze', z: 0, scale: 1, kind: 'css-gradients' },
   ],
   hotspots: [
-    { siteId: 'registry', x: 0.8, y: 0.19, r: 0.02, plane: 'flat' },
-    { siteId: 'care-ward', x: 0.58, y: 0.48, r: 0.02, plane: 'flat' },
-    { siteId: 'maintenance', x: 0.26, y: 0.78, r: 0.02, plane: 'flat' },
-    { siteId: 'small-archive', x: 0.1, y: 0.32, r: 0.02, plane: 'flat' },
+    // The registry marker sits at the intake portal in the tower base; its
+    // label fans left-down (clear of the ward + cart labels) with a fog leader.
+    {
+      siteId: 'registry',
+      x: 0.76,
+      y: 0.6,
+      r: 0.02,
+      plane: 'far',
+      labelOffset: { dx: -0.03, dy: 0.02 },
+    },
+    { siteId: 'care-ward', x: 0.45, y: 0.6, r: 0.02, plane: 'mid' },
+    { siteId: 'maintenance', x: 0.58, y: 0.72, r: 0.02, plane: 'mid' },
+    // The Small Archive booth is the leftmost marker; its label fans right-down
+    // so it stays on-canvas in the mobile crop. Verified collision-free by
+    // sceneLabels.test.ts across both desktop crops + mobile.
+    {
+      siteId: 'small-archive',
+      x: 0.24,
+      y: 0.66,
+      r: 0.02,
+      plane: 'mid',
+      labelOffset: { dx: 0.04, dy: 0.02 },
+    },
   ],
   crops: {
-    desktop: { window: { x: 0, y: 0, w: 1, h: 1 }, containerAspect: '3:2' },
-    // Flat cover-map: the mobile view shows the whole container, so the window is
-    // full and every hotspot stays inside it.
+    desktop: { window: { x: 0, y: 0, w: 1, h: 1 }, containerAspect: '16:9' },
+    // The four markers span the full width of the hall approach, so the mobile
+    // crop keeps the whole master (the live slice math still applies).
     mobile: { window: { x: 0, y: 0, w: 1, h: 1 }, containerAspect: 'flexible' },
   },
   safeTextZones: {
@@ -730,12 +766,66 @@ const scene: SceneDefinition = {
     mobile: [{ x: 0.05, y: 0.8, w: 0.9, h: 0.16 }],
   },
   states: {
-    neutral: { '--scene-dim-o': 0, '--scene-center-o': 0, '--marker-o': 1 },
-    press: { '--scene-dim-o': 0.06, '--scene-center-o': 0, '--marker-o': 1 },
-    corroborate: { '--scene-dim-o': 0, '--scene-center-o': 0, '--marker-o': 1 },
-    refusal: { '--scene-dim-o': 0, '--scene-center-o': 0, '--marker-o': 1 },
-    tribunal: { '--scene-dim-o': 0.12, '--scene-center-o': 1, '--marker-o': 0.4 },
-    aftermath: { '--scene-dim-o': 0.34, '--scene-center-o': 0, '--marker-o': 1 },
+    neutral: {
+      '--dim-o': 0,
+      '--haze-o': 0.5,
+      '--floor-o': 0.4,
+      '--floor-calm-o': 0,
+      '--near-dim-o': 0.12,
+      '--center-o': 0,
+      '--marker-o': 1,
+      '--amber-o': 1,
+    },
+    press: {
+      '--dim-o': 0.08,
+      '--haze-o': 0.3,
+      '--floor-o': 0.55,
+      '--floor-calm-o': 0,
+      '--near-dim-o': 0.35,
+      '--center-o': 0,
+      '--marker-o': 1,
+      '--amber-o': 0.7,
+    },
+    corroborate: {
+      '--dim-o': 0,
+      '--haze-o': 0.75,
+      '--floor-o': 0.25,
+      '--floor-calm-o': 0.7,
+      '--near-dim-o': 0.05,
+      '--center-o': 0,
+      '--marker-o': 1,
+      '--amber-o': 0.85,
+    },
+    refusal: {
+      '--dim-o': 0.4,
+      '--haze-o': 0.3,
+      '--floor-o': 0.1,
+      '--floor-calm-o': 0,
+      '--near-dim-o': 0.3,
+      '--center-o': 0,
+      '--marker-o': 1,
+      '--amber-o': 0.35,
+    },
+    tribunal: {
+      '--dim-o': 0.08,
+      '--haze-o': 0.4,
+      '--floor-o': 0.3,
+      '--floor-calm-o': 0,
+      '--near-dim-o': 0.22,
+      '--center-o': 1,
+      '--marker-o': 0.4,
+      '--amber-o': 0.6,
+    },
+    aftermath: {
+      '--dim-o': 0.32,
+      '--haze-o': 0.55,
+      '--floor-o': 0.08,
+      '--floor-calm-o': 0,
+      '--near-dim-o': 0.15,
+      '--center-o': 0,
+      '--marker-o': 1,
+      '--amber-o': 0.4,
+    },
   },
   weather: {
     kind: 'rain',
@@ -749,6 +839,7 @@ const scene: SceneDefinition = {
     },
     suppressed: ['aftermath'],
   },
+  LayerArt: CivicArchiveArt,
 }
 
 export const case77: CaseDefinition = {
