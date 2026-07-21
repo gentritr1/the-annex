@@ -916,7 +916,9 @@ p {
   background: transparent;
   border: 0;
   border-bottom: 1px solid var(--line);
-  transition: background-color 180ms var(--ease-out);
+  transition:
+    background-color 180ms var(--ease-out),
+    opacity 180ms var(--ease-out);
 }
 
 .choice-row:hover {
@@ -927,9 +929,54 @@ p {
   background: var(--raised);
 }
 
+/* Armed commit: the row fills warm and gains an amber frame + leading bar. The
+   frame is an inset box-shadow, not an outline, so it never competes with the
+   global button:focus-visible ring. The .site-inspector / media-query overrides
+   only set columns, padding, and min-height, so this transform lands on every
+   commit surface (field methods and tribunal findings alike). */
 .choice-row-armed,
 .choice-row-armed:hover {
-  background: oklch(0.24 0.045 70);
+  background: oklch(0.26 0.06 70);
+  box-shadow:
+    inset 3px 0 0 var(--amber),
+    inset 0 0 0 1px var(--amber);
+}
+
+/* While one choice is armed, its un-chosen siblings recede. A pure read of the
+   same state class; where :has() is unsupported it degrades to no recede and
+   the armed transform above still carries the state. */
+.site-actions:has(.choice-row-armed) .choice-row:not(.choice-row-armed),
+.decision-list:has(.choice-row-armed) .choice-row:not(.choice-row-armed) {
+  opacity: 0.42;
+}
+
+/* Double class so the armed method tag outranks .choice-row-risk's coral
+   regardless of source order. */
+.choice-row.choice-row-armed .choice-method {
+  color: var(--amber-soft);
+}
+
+/* The armed aside reads "Confirm" (7 monospace glyphs) — wider than the 22px
+   arrow column the tighter site-inspector grid reserves, and the inspector's
+   scroll overflow clips the spill. Widen just the aside column while armed.
+   The double class is required: at equal (0,3,0) specificity the
+   .site-inspector grid override above would win by source order. */
+.site-inspector .site-actions .choice-row.choice-row-armed {
+  grid-template-columns: 86px minmax(0, 1fr) 56px;
+}
+
+/* The tribunal grid reserves 28px for the arrow glyph — give the armed aside
+   the same room there. The site-inspector rule above outranks this one inside
+   the inspector; the narrow-viewport rule below outranks it under 700px. */
+.choice-row.choice-row-armed {
+  grid-template-columns: 130px minmax(0, 1fr) 56px;
+}
+
+/* The pre-commit cost (alarm, trust) is emphasized at the moment of decision,
+   not swapped out for instructions — the instruction lives in the title. */
+.choice-row-armed .choice-body small {
+  color: var(--amber-soft);
+  font-weight: 650;
 }
 
 .choice-row-armed .choice-aside {
@@ -942,11 +989,14 @@ p {
   transform: none;
 }
 
+/* The lattice commit arms to the same amber emphasis as the commit rows:
+   lighter amber fill plus a hard inner ring (inset shadow, so the focus ring
+   stays untouched). */
 .button-armed,
 .button-armed:hover {
-  color: var(--record-bright);
-  background: var(--coral-deep);
-  outline: 1px solid var(--coral);
+  color: var(--night);
+  background: var(--amber-soft);
+  box-shadow: inset 0 0 0 2px var(--night);
 }
 
 .choice-method {
@@ -1855,6 +1905,12 @@ p {
   margin: 5px 0 0;
   color: var(--fog);
   font-size: 0.76rem;
+}
+
+/* The lattice's irreversibility warning gains amber emphasis while the commit
+   is armed — the cost is read at the moment of decision, not after. */
+.lattice-cost-armed strong {
+  color: var(--amber-soft);
 }
 
 /* Tribunal */
@@ -2919,6 +2975,14 @@ p {
     grid-template-columns: minmax(0, 1fr) 22px;
     gap: 10px;
     padding: 18px 10px;
+  }
+
+  /* Same armed-aside room on the narrow layout: the desktop site-inspector
+     armed rule above is three-column at (0,4,0), so this repeats at equal
+     strength and wins by position inside the small-viewport layout. */
+  .choice-row-armed,
+  .site-inspector .site-actions .choice-row.choice-row-armed {
+    grid-template-columns: minmax(0, 1fr) 56px;
   }
 
   .choice-method {

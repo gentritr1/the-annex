@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getCaseContent } from '../game/content'
 import type { FragmentId, GameState } from '../game/types'
 
@@ -17,6 +17,26 @@ export function Reconstruction({
 }: ReconstructionProps) {
   const { fragments, fragmentEvidenceLinks, evidenceDefinitions } = getCaseContent(state.caseId)
   const [commitArmed, setCommitArmed] = useState(false)
+  const commitRef = useRef<HTMLButtonElement>(null)
+
+  // Same step-back gestures as the field/tribunal commit rows: pointer down
+  // outside the commit button, Escape, or focus loss (onBlur) disarm silently.
+  useEffect(() => {
+    if (!commitArmed) return
+    function onPointerDown(event: PointerEvent) {
+      if (commitRef.current?.contains(event.target as Node)) return
+      setCommitArmed(false)
+    }
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setCommitArmed(false)
+    }
+    document.addEventListener('pointerdown', onPointerDown)
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown)
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [commitArmed])
 
   function commitReconstruction() {
     if (!commitArmed) {
@@ -87,11 +107,17 @@ export function Reconstruction({
       </div>
 
       <footer className="phase-footer lattice-footer">
-        <div>
+        <div className={`lattice-cost ${commitArmed ? 'lattice-cost-armed' : ''}`}>
           <strong>Filing is irreversible for this run.</strong>
           <p>You can inspect another interpretation on the next loop.</p>
         </div>
+        {/* Same view-layer arm announcement as the field/tribunal rows; empty
+            at rest, so every arm announces and every disarm stays silent. */}
+        <span className="sr-only" role="status" aria-live="polite">
+          {commitArmed ? 'Reconstruction filing — select again to file.' : ''}
+        </span>
         <button
+          ref={commitRef}
           className={`button button-primary ${commitArmed ? 'button-armed' : ''}`}
           type="button"
           aria-pressed={commitArmed}
@@ -99,7 +125,7 @@ export function Reconstruction({
           onBlur={() => setCommitArmed(false)}
           disabled={state.selectedFragments.length !== 2}
         >
-          {commitArmed ? 'Confirm irreversible filing' : 'File reconstruction'}{' '}
+          {commitArmed ? 'Confirm irreversible filing — select again to file' : 'File reconstruction'}{' '}
           <span aria-hidden="true">{commitArmed ? '✓' : '→'}</span>
         </button>
       </footer>

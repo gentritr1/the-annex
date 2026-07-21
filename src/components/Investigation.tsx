@@ -366,7 +366,9 @@ export function Investigation({
               )}
             </>
           ) : (
-            <div className="site-actions">
+            // Keyed by site: switching location remounts the method list, so any
+            // armed commit resets silently with it (one of the three disarms).
+            <div className="site-actions" key={selectedSite.id}>
               <p className="site-action-prompt">Choose one method. This location then closes.</p>
               {selectedSite.actionIds.map((actionId) => {
                 // Resolve through the precedent seam so the pre-commit hint and

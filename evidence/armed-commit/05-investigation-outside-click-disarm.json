@@ -1,0 +1,40 @@
+{
+  "rows": [
+    {
+      "armed": false,
+      "ariaPressed": "false",
+      "titleText": "Let 77-A tell one memory uninterrupted",
+      "asideText": "→",
+      "hintText": "Builds relational trust · leaves one contradiction unresolved",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "boxShadow": "none",
+      "opacity": "1",
+      "hovered": false,
+      "asideClientWidth": 22,
+      "asideScrollWidth": 22,
+      "methodColor": "oklch(0.72 0.14 70)",
+      "hintColor": "oklch(0.59 0.018 215)",
+      "hintWeight": "400"
+    },
+    {
+      "armed": false,
+      "ariaPressed": "false",
+      "titleText": "Pressure-test the contradiction",
+      "asideText": "→",
+      "hintText": "Produces precise evidence · harms care-ward trust",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "boxShadow": "none",
+      "opacity": "1",
+      "hovered": false,
+      "asideClientWidth": 22,
+      "asideScrollWidth": 22,
+      "methodColor": "oklch(0.72 0.14 70)",
+      "hintColor": "oklch(0.59 0.018 215)",
+      "hintWeight": "400"
+    }
+  ],
+  "armLiveRegion": [
+    "",
+    ""
+  ]
+}

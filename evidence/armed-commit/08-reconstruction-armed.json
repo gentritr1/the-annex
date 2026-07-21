@@ -1,0 +1,11 @@
+{
+  "armed": true,
+  "disabled": false,
+  "ariaPressed": "true",
+  "buttonText": "Confirm irreversible filing — select again to file ✓",
+  "backgroundColor": "oklch(0.86 0.08 78)",
+  "boxShadow": "oklch(0.09 0 0) 0px 0px 0px 2px inset",
+  "color": "oklch(0.09 0 0)",
+  "costColor": "oklch(0.86 0.08 78)",
+  "liveText": "Reconstruction filing — select again to file."
+}

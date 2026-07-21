@@ -1,0 +1,11 @@
+{
+  "armed": false,
+  "disabled": false,
+  "ariaPressed": "false",
+  "buttonText": "File reconstruction →",
+  "backgroundColor": "oklch(0.72 0.14 70)",
+  "boxShadow": "none",
+  "color": "oklch(0.09 0 0)",
+  "costColor": "oklch(0.94 0.012 190)",
+  "liveText": ""
+}

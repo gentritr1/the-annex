@@ -1,0 +1,57 @@
+{
+  "rows": [
+    {
+      "armed": true,
+      "ariaPressed": "true",
+      "titleText": "Certify Mara Vale as continuous — select again to file",
+      "asideText": "Confirm",
+      "hintText": "Protects continuity by asking the city to treat uncertainty as resolved. — final for this run",
+      "backgroundColor": "oklch(0.26 0.06 70)",
+      "boxShadow": "oklch(0.72 0.14 70) 3px 0px 0px 0px inset, oklch(0.72 0.14 70) 0px 0px 0px 1px inset",
+      "opacity": "1",
+      "hovered": true,
+      "asideClientWidth": 56,
+      "asideScrollWidth": 56,
+      "methodColor": "oklch(0.86 0.08 78)",
+      "hintColor": "oklch(0.86 0.08 78)",
+      "hintWeight": "650"
+    },
+    {
+      "armed": false,
+      "ariaPressed": "false",
+      "titleText": "Charter 77-A as a new person",
+      "asideText": "→",
+      "hintText": "Protects the present self while severing inherited relationships and claims.",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "boxShadow": "none",
+      "opacity": "0.42",
+      "hovered": false,
+      "asideClientWidth": 28,
+      "asideScrollWidth": 28,
+      "methodColor": "oklch(0.72 0.14 70)",
+      "hintColor": "oklch(0.59 0.018 215)",
+      "hintWeight": "400"
+    },
+    {
+      "armed": false,
+      "ariaPressed": "false",
+      "titleText": "Order protected review",
+      "asideText": "→",
+      "hintText": "Prevents immediate erasure but suspends movement, property, and public identity.",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "boxShadow": "none",
+      "opacity": "0.42",
+      "hovered": false,
+      "asideClientWidth": 28,
+      "asideScrollWidth": 28,
+      "methodColor": "oklch(0.72 0.14 70)",
+      "hintColor": "oklch(0.59 0.018 215)",
+      "hintWeight": "400"
+    }
+  ],
+  "armLiveRegion": [
+    "Certify Mara Vale as continuous — select again to file.",
+    "",
+    ""
+  ]
+}

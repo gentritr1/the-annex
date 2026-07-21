@@ -1,0 +1,83 @@
+STEP: cold-eyes: fresh save, title screen
+STEP: single-click "Open a new audit"
+STEP: single-click first briefing approach (single click — reversible, not a commit)
+STEP: cold-eyes: first location, methods shown — dump UNARMED live state
+PASS  field: two methods at rest, neither armed
+STEP: single-click first method (click 1 — the arm)
+PASS  field: row reports armed (class + aria-pressed)
+PASS  field: armed label appends "— select again to file" → "Authenticate the custody chain — select again to file"
+PASS  field: aside reads Confirm
+PASS  field: "Confirm" fits its column (scroll 56px ≤ client 56px — no clipped glyphs)
+PASS  field: armed computed style transforms (bg oklch(0.26 0.06 70); shadow oklch(0.72 0.14 70) 3px 0px 0px 0px inset, oklch(0.72 0.14 70) 0px 0px 0px 1px inset)
+PASS  field: pre-commit cost emphasized at the decision (650, " standing — final for this run")
+PASS  field: un-chosen siblings recede to opacity 0.42
+PASS  field: aria-live announces the arm → "Authenticate the custody chain — select again to file."
+STEP: single-click same method (click 2 — guided by the appended label)
+PASS  cold-eyes: first action FILED using only single clicks + the armed label
+PASS  field: arm channel quiet again after the commit
+STEP: disarm checks: switch to location B, arm, Escape
+STEP: single-click location B
+STEP: single-click method (arm)
+STEP: press Escape
+PASS  field: Escape disarms (no .choice-row-armed)
+PASS  field: Escape disarm visibly reverts (rest bg/shadow/opacity on live elements)
+PASS  field: Escape disarm is silent (live regions empty)
+STEP: disarm checks: re-arm, click outside the button
+STEP: single-click method (arm)
+STEP: single-click outside click (site description)
+PASS  field: outside-click disarms (no .choice-row-armed)
+PASS  field: outside-click disarm visibly reverts (rest bg/shadow/opacity on live elements)
+PASS  field: outside-click disarm is silent (live regions empty)
+STEP: disarm checks: re-arm, switch location away and back
+STEP: single-click method (arm)
+STEP: single-click location C (switches away)
+STEP: single-click location B (back)
+PASS  field: location-switch disarms (no .choice-row-armed)
+PASS  field: location-switch disarm visibly reverts (rest bg/shadow/opacity on live elements)
+PASS  field: location-switch disarm is silent (live regions empty)
+STEP: file location B (arm + confirm) to open the tribunal gate
+STEP: single-click method (arm)
+STEP: single-click same method (confirm)
+STEP: reconstruction: open lattice, pick two anchors
+STEP: single-click "Open memory lattice"
+STEP: single-click anchor 1
+STEP: single-click anchor 2
+PASS  lattice: commit at rest, enabled ("File reconstruction →", bg oklch(0.72 0.14 70))
+STEP: single-click "File reconstruction" (arm)
+PASS  lattice: armed label → "Confirm irreversible filing — select again to file ✓"
+PASS  lattice: armed computed style transforms (bg oklch(0.72 0.14 70) → oklch(0.86 0.08 78); ring oklch(0.09 0 0) 0px 0px 0px 2px inset)
+PASS  lattice: irreversibility warning gains emphasis (oklch(0.94 0.012 190) → oklch(0.86 0.08 78))
+PASS  lattice: aria-live announces the arm → "Reconstruction filing — select again to file."
+STEP: press Escape
+PASS  lattice: Escape disarms visibly (label + fill revert)
+PASS  lattice: Escape disarm is silent
+STEP: single-click "File reconstruction" (re-arm)
+STEP: single-click outside click (the rule note)
+PASS  lattice: outside-click disarms, silently
+STEP: single-click "File reconstruction" (re-arm)
+STEP: single-click "Confirm irreversible filing" (confirm)
+PASS  lattice: second click files the model, back in the field
+STEP: tribunal: enter, dump unarmed findings
+STEP: single-click "Enter tribunal"
+PASS  tribunal: 3 findings at rest
+STEP: single-click first finding (arm)
+PASS  tribunal: row reports armed (class + aria-pressed)
+PASS  tribunal: armed label appends "— select again to file" → "Certify Mara Vale as continuous — select again to file"
+PASS  tribunal: aside reads Confirm
+PASS  tribunal: "Confirm" fits its column (scroll 56px ≤ client 56px — no clipped glyphs)
+PASS  tribunal: armed computed style transforms (bg oklch(0.26 0.06 70); shadow oklch(0.72 0.14 70) 3px 0px 0px 0px inset, oklch(0.72 0.14 70) 0px 0px 0px 1px inset)
+PASS  tribunal: pre-commit cost emphasized at the decision (650, "resolved. — final for this run")
+PASS  tribunal: un-chosen siblings recede to opacity 0.42
+PASS  tribunal: aria-live announces the arm → "Certify Mara Vale as continuous — select again to file."
+STEP: press Escape
+PASS  tribunal: Escape disarms (no .choice-row-armed)
+PASS  tribunal: Escape disarm visibly reverts (rest bg/shadow/opacity on live elements)
+PASS  tribunal: Escape disarm is silent (live regions empty)
+STEP: single-click finding (re-arm)
+STEP: single-click outside click (admitted record)
+PASS  tribunal: outside-click disarms (no .choice-row-armed)
+PASS  tribunal: outside-click disarm visibly reverts (rest bg/shadow/opacity on live elements)
+PASS  tribunal: outside-click disarm is silent (live regions empty)
+STEP: single-click finding (re-arm)
+STEP: single-click same finding (confirm)
+PASS  tribunal: second click files the verdict ({"decision":"certify-continuity","phase":"debrief"})
