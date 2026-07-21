@@ -839,6 +839,11 @@ const scene: SceneDefinition = {
     },
     suppressed: ['aftermath'],
   },
+  // Selection camera travel (shared keys with Case 81; absolute authored
+  // values). The records-hall approach is wide, so the push-in is a touch
+  // gentler and slower: at most 2.5% of the container toward the marker, a 4.5%
+  // scale-up, 520ms in / 440ms back out.
+  travel: { maxOffset: 0.025, focusScale: 1.045, travelInMs: 520, settleOutMs: 440 },
   LayerArt: CivicArchiveArt,
 }
 

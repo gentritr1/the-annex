@@ -61,6 +61,9 @@ export function SceneStage({
   const handleRef = useRef<SceneMotionHandle | null>(null)
   const reducedRef = useRef(reducedMotion)
   const alarmRef = useRef(alarmLevel ?? 0)
+  // Live selection for the camera travel, ref-backed like the alarm tier: a
+  // selection change never recreates the motion handle or re-renders the loop.
+  const selectionRef = useRef<SiteId | undefined>(selectedSiteId)
   // Clamped tier used by both the root vars (this render) and the motion ref.
   const alarmTier = Math.max(0, Math.min(3, Math.round(alarmLevel ?? 0)))
 
@@ -78,6 +81,12 @@ export function SceneStage({
       weather: scene.weather.kind === 'dust',
       getReducedMotion: () => reducedRef.current,
       getAlarmTier: () => alarmRef.current,
+      getFocusTarget: () => {
+        const id = selectionRef.current
+        if (!id) return null
+        const hotspot = scene.hotspots.find((item) => item.siteId === id)
+        return hotspot ? { x: hotspot.x, y: hotspot.y } : null
+      },
     })
     handleRef.current = handle
     return () => {
@@ -98,6 +107,13 @@ export function SceneStage({
     alarmRef.current = alarmTier
     handleRef.current?.reseed()
   }, [alarmTier])
+
+  // Selection changes update the ref only; the motion loop reads it next frame.
+  // The travel is purely visual — nothing here gates the location panel, focus
+  // management, or any engine dispatch.
+  useEffect(() => {
+    selectionRef.current = selectedSiteId
+  }, [selectedSiteId])
 
   const rasterSrc = scene.layers.find((layer) => layer.raster)?.raster?.src ?? ''
   const LayerArt = scene.LayerArt

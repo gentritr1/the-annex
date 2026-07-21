@@ -551,6 +551,25 @@ export interface SceneAmbience {
   amberDipDepth: number
 }
 
+// Camera travel when a location is selected: the plane group (and its hotspot
+// mirror) eases toward the selected hotspot's projected position and scales up
+// slightly, holds while selected, and eases back on deselect. Composed inside
+// the single scene rAF (motion.ts) — never a CSS transition, so there is still
+// exactly one transform writer. ABSOLUTE authored values (no multipliers on
+// small constants); the same keys for every scene, each scene tunes its own
+// numbers. Absent = no travel (the rest framing holds).
+export interface SceneTravel {
+  // Max camera translate toward the selected hotspot, per axis, as a fraction
+  // of the container (0.025 = at most 2.5% of the container width/height).
+  maxOffset: number
+  // Group scale while a location is selected (1.05 = a 5% push-in).
+  focusScale: number
+  // Ease-in duration toward the selected framing, in milliseconds.
+  travelInMs: number
+  // Ease-out duration back to the rest framing, in milliseconds.
+  settleOutMs: number
+}
+
 // One civic-alarm tier of atmosphere, in ABSOLUTE authored values (no
 // multipliers on the base scene). `hazeVeil` layers over the state treatment's
 // --haze-o; the dust fields replace the weather defaults for that tier.
@@ -580,6 +599,9 @@ export interface SceneDefinition {
   figure?: SceneFigure
   // Optional ambient sweep + amber flicker (Case 81). Presentation only.
   ambience?: SceneAmbience
+  // Optional selection camera travel (both cases). Presentation only: it never
+  // gates the location panel, focus management, or any engine dispatch.
+  travel?: SceneTravel
   // Optional alarm-driven atmosphere, exactly four tiers indexed by the
   // engine's clamped 0–3 alarm. Tier 0 must reproduce the base look exactly.
   alarm?: readonly [SceneAlarmTier, SceneAlarmTier, SceneAlarmTier, SceneAlarmTier]

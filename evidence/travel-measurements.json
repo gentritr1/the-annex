@@ -1,0 +1,1122 @@
+[
+  {
+    "caseId": "case-77",
+    "reduced": false,
+    "authored": {
+      "master": {
+        "w": 1600,
+        "h": 900
+      },
+      "travel": {
+        "maxOffset": 0.025,
+        "focusScale": 1.045,
+        "travelInMs": 520,
+        "settleOutMs": 440
+      },
+      "clickSite": "small-archive"
+    },
+    "mount": {
+      "samples": [
+        [
+          42,
+          "none"
+        ],
+        [
+          49,
+          "translate(-2.4px, -2.13px) scale(1.0084) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          58,
+          "translate(-3.07px, -2.72px) scale(1.0107) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          65,
+          "translate(-3.59px, -3.19px) scale(1.0125) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          98,
+          "translate(-5.88px, -5.22px) scale(1.0205) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          105,
+          "translate(-6.28px, -5.57px) scale(1.0219) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          113,
+          "translate(-6.79px, -6.02px) scale(1.0237) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          121,
+          "translate(-7.16px, -6.35px) scale(1.025) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          129,
+          "translate(-7.52px, -6.68px) scale(1.0262) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          136,
+          "translate(-7.86px, -6.98px) scale(1.0274) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          145,
+          "translate(-8.18px, -7.26px) scale(1.0285) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          152,
+          "translate(-8.48px, -7.53px) scale(1.0296) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          160,
+          "translate(-8.76px, -7.77px) scale(1.0305) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          169,
+          "translate(-8.98px, -7.97px) scale(1.0313) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          177,
+          "translate(-9.26px, -8.22px) scale(1.0323) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          193,
+          "translate(-9.49px, -8.43px) scale(1.0331) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          202,
+          "translate(-9.91px, -8.79px) scale(1.0346) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          209,
+          "translate(-10.06px, -8.93px) scale(1.0351) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          217,
+          "translate(-10.25px, -9.1px) scale(1.0358) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          227,
+          "translate(-10.44px, -9.27px) scale(1.0364) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          242,
+          "translate(-10.6px, -9.41px) scale(1.037) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          250,
+          "translate(-10.73px, -9.53px) scale(1.0374) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          258,
+          "translate(-10.88px, -9.66px) scale(1.038) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          266,
+          "translate(-11.01px, -9.77px) scale(1.0384) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          274,
+          "translate(-11.12px, -9.87px) scale(1.0388) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          281,
+          "translate(-11.24px, -9.97px) scale(1.0392) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          289,
+          "translate(-11.34px, -10.06px) scale(1.0396) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          298,
+          "translate(-11.42px, -10.14px) scale(1.0398) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          306,
+          "translate(-11.52px, -10.22px) scale(1.0402) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          313,
+          "translate(-11.62px, -10.32px) scale(1.0405) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          321,
+          "translate(-11.69px, -10.38px) scale(1.0408) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          329,
+          "translate(-11.78px, -10.45px) scale(1.0411) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          337,
+          "translate(-11.84px, -10.51px) scale(1.0413) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          346,
+          "translate(-11.9px, -10.56px) scale(1.0415) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          352,
+          "translate(-11.98px, -10.63px) scale(1.0418) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          360,
+          "translate(-12.03px, -10.68px) scale(1.042) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          368,
+          "translate(-12.08px, -10.73px) scale(1.0422) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          377,
+          "translate(-12.13px, -10.77px) scale(1.0423) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          385,
+          "translate(-12.19px, -10.82px) scale(1.0425) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          393,
+          "translate(-12.23px, -10.86px) scale(1.0427) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          400,
+          "translate(-12.27px, -10.89px) scale(1.0428) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          418,
+          "translate(-12.31px, -10.93px) scale(1.043) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          427,
+          "translate(-12.38px, -10.99px) scale(1.0432) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          435,
+          "translate(-12.42px, -11.02px) scale(1.0433) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          442,
+          "translate(-12.44px, -11.05px) scale(1.0434) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          457,
+          "translate(-12.48px, -11.08px) scale(1.0435) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          465,
+          "translate(-12.5px, -11.1px) scale(1.0436) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          473,
+          "translate(-12.52px, -11.12px) scale(1.0437) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          480,
+          "translate(-12.55px, -11.14px) scale(1.0438) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          490,
+          "translate(-12.57px, -11.16px) scale(1.0439) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          498,
+          "translate(-12.6px, -11.18px) scale(1.0439) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          505,
+          "translate(-12.61px, -11.2px) scale(1.044) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          514,
+          "translate(-12.63px, -11.21px) scale(1.0441) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          522,
+          "translate(-12.65px, -11.23px) scale(1.0441) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          528,
+          "translate(-12.67px, -11.24px) scale(1.0442) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          537,
+          "translate(-12.9px, -11.45px) scale(1.045) rotateX(0deg) rotateY(0deg)"
+        ]
+      ],
+      "restFraming": true,
+      "travelStartMs": 49,
+      "settleMs": 537,
+      "travelDurationMs": 488,
+      "travelInMs": 520,
+      "settled": {
+        "txPx": -12.9,
+        "tyPx": -11.45,
+        "scale": 1.045
+      },
+      "expected": {
+        "site": "registry",
+        "txPx": -12.899609375,
+        "tyPx": -11.450000000000001,
+        "scale": 1.045
+      },
+      "within5": true
+    },
+    "selectionChange": {
+      "samples": [
+        [
+          8,
+          "translate(-12.9px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.004deg)"
+        ],
+        [
+          25,
+          "translate(-9.45px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.011deg)"
+        ],
+        [
+          39,
+          "translate(-8.09px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.01deg)"
+        ],
+        [
+          47,
+          "translate(-6.75px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.01deg)"
+        ],
+        [
+          56,
+          "translate(-5.47px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.01deg)"
+        ],
+        [
+          64,
+          "translate(-4.34px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.009deg)"
+        ],
+        [
+          73,
+          "translate(-2.34px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.009deg)"
+        ],
+        [
+          86,
+          "translate(-1.37px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.009deg)"
+        ],
+        [
+          96,
+          "translate(-0.42px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.008deg)"
+        ],
+        [
+          104,
+          "translate(0.39px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.008deg)"
+        ],
+        [
+          111,
+          "translate(1.38px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.008deg)"
+        ],
+        [
+          119,
+          "translate(1.99px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.008deg)"
+        ],
+        [
+          126,
+          "translate(2.73px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.007deg)"
+        ],
+        [
+          135,
+          "translate(3.44px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.007deg)"
+        ],
+        [
+          142,
+          "translate(4px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.007deg)"
+        ],
+        [
+          150,
+          "translate(4.6px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.007deg)"
+        ],
+        [
+          159,
+          "translate(5.11px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.006deg)"
+        ],
+        [
+          166,
+          "translate(5.64px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.006deg)"
+        ],
+        [
+          174,
+          "translate(6.1px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.006deg)"
+        ],
+        [
+          183,
+          "translate(6.48px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.006deg)"
+        ],
+        [
+          190,
+          "translate(6.89px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.006deg)"
+        ],
+        [
+          198,
+          "translate(7.29px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.006deg)"
+        ],
+        [
+          207,
+          "translate(7.64px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.005deg)"
+        ],
+        [
+          215,
+          "translate(7.99px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.005deg)"
+        ],
+        [
+          224,
+          "translate(8.34px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.005deg)"
+        ],
+        [
+          232,
+          "translate(8.61px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.005deg)"
+        ],
+        [
+          240,
+          "translate(8.89px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.005deg)"
+        ],
+        [
+          255,
+          "translate(9.16px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.005deg)"
+        ],
+        [
+          263,
+          "translate(9.37px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.004deg)"
+        ],
+        [
+          272,
+          "translate(9.63px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.004deg)"
+        ],
+        [
+          279,
+          "translate(9.83px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.004deg)"
+        ],
+        [
+          287,
+          "translate(10.03px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.004deg)"
+        ],
+        [
+          296,
+          "translate(10.2px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.004deg)"
+        ],
+        [
+          303,
+          "translate(10.35px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.004deg)"
+        ],
+        [
+          312,
+          "translate(10.51px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.004deg)"
+        ],
+        [
+          318,
+          "translate(10.7px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.004deg)"
+        ],
+        [
+          327,
+          "translate(10.84px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.004deg)"
+        ],
+        [
+          335,
+          "translate(10.97px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          343,
+          "translate(11.08px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          351,
+          "translate(11.21px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          358,
+          "translate(11.32px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          366,
+          "translate(11.42px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          374,
+          "translate(11.52px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          383,
+          "translate(11.59px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          391,
+          "translate(11.67px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          399,
+          "translate(11.75px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          406,
+          "translate(11.83px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          415,
+          "translate(11.89px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          432,
+          "translate(12.03px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          440,
+          "translate(12.09px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          456,
+          "translate(12.14px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          464,
+          "translate(12.19px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          471,
+          "translate(12.23px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          479,
+          "translate(12.28px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          488,
+          "translate(12.31px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          495,
+          "translate(12.35px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          503,
+          "translate(12.39px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          511,
+          "translate(12.42px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          519,
+          "translate(12.45px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          527,
+          "translate(12.47px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          535,
+          "translate(12.9px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          559,
+          "translate(12.9px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          871,
+          "translate(12.9px, -11.45px) scale(1.045) rotateX(0deg) rotateY(0deg)"
+        ]
+      ],
+      "travelStartMs": 25,
+      "settleMs": 535,
+      "travelDurationMs": 510,
+      "travelInMs": 520,
+      "settled": {
+        "txPx": 12.9,
+        "tyPx": -11.45,
+        "scale": 1.045
+      },
+      "expected": {
+        "site": "small-archive",
+        "txPx": 12.899609375,
+        "tyPx": -11.450000000000001,
+        "scale": 1.045
+      },
+      "within5": true
+    },
+    "hitAreas": [
+      {
+        "site": "registry",
+        "w": 45.98,
+        "h": 45.98
+      },
+      {
+        "site": "care-ward",
+        "w": 45.98,
+        "h": 45.98
+      },
+      {
+        "site": "maintenance",
+        "w": 45.98,
+        "h": 45.98
+      },
+      {
+        "site": "small-archive",
+        "w": 45.98,
+        "h": 45.98
+      }
+    ],
+    "hitAreasOk": true
+  },
+  {
+    "caseId": "case-77",
+    "reduced": true,
+    "authored": {
+      "master": {
+        "w": 1600,
+        "h": 900
+      },
+      "travel": {
+        "maxOffset": 0.025,
+        "focusScale": 1.045,
+        "travelInMs": 520,
+        "settleOutMs": 440
+      },
+      "clickSite": "small-archive"
+    },
+    "reducedMotion": {
+      "mountSamples": [
+        [
+          42,
+          "none"
+        ]
+      ],
+      "clickSamples": [
+        [
+          7,
+          "none"
+        ]
+      ],
+      "distinctTransforms": [
+        "none"
+      ],
+      "zeroChange": true
+    }
+  },
+  {
+    "caseId": "case-81",
+    "reduced": false,
+    "authored": {
+      "master": {
+        "w": 1600,
+        "h": 900
+      },
+      "travel": {
+        "maxOffset": 0.025,
+        "focusScale": 1.05,
+        "travelInMs": 480,
+        "settleOutMs": 420
+      },
+      "clickSite": "restoration-lab"
+    },
+    "mount": {
+      "samples": [
+        [
+          46,
+          "translate(1px, -2.34px) scale(1.0102) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          57,
+          "translate(1.27px, -2.97px) scale(1.013) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          65,
+          "translate(1.52px, -3.57px) scale(1.0156) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          112,
+          "translate(2.78px, -6.51px) scale(1.0284) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          128,
+          "translate(3.06px, -7.16px) scale(1.0313) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          136,
+          "translate(3.19px, -7.47px) scale(1.0326) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          145,
+          "translate(3.31px, -7.75px) scale(1.0339) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          153,
+          "translate(3.4px, -7.96px) scale(1.0348) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          162,
+          "translate(3.52px, -8.25px) scale(1.036) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          177,
+          "translate(3.62px, -8.47px) scale(1.037) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          185,
+          "translate(3.77px, -8.84px) scale(1.0386) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          203,
+          "translate(3.93px, -9.22px) scale(1.0403) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          218,
+          "translate(4.05px, -9.49px) scale(1.0414) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          227,
+          "translate(4.11px, -9.64px) scale(1.0421) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          242,
+          "translate(4.16px, -9.76px) scale(1.0426) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          251,
+          "translate(4.21px, -9.87px) scale(1.0431) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          257,
+          "translate(4.27px, -10.01px) scale(1.0437) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          266,
+          "translate(4.3px, -10.09px) scale(1.044) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          273,
+          "translate(4.34px, -10.18px) scale(1.0445) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          281,
+          "translate(4.38px, -10.27px) scale(1.0448) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          289,
+          "translate(4.43px, -10.37px) scale(1.0453) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          297,
+          "translate(4.46px, -10.44px) scale(1.0456) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          305,
+          "translate(4.48px, -10.5px) scale(1.0459) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          313,
+          "translate(4.51px, -10.57px) scale(1.0461) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          321,
+          "translate(4.54px, -10.63px) scale(1.0464) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          328,
+          "translate(4.56px, -10.7px) scale(1.0467) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          337,
+          "translate(4.58px, -10.74px) scale(1.0469) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          345,
+          "translate(4.61px, -10.8px) scale(1.0472) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          353,
+          "translate(4.63px, -10.84px) scale(1.0474) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          361,
+          "translate(4.64px, -10.88px) scale(1.0475) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          376,
+          "translate(4.67px, -10.95px) scale(1.0478) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          386,
+          "translate(4.69px, -10.99px) scale(1.048) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          393,
+          "translate(4.7px, -11.02px) scale(1.0481) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          403,
+          "translate(4.72px, -11.05px) scale(1.0483) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          410,
+          "translate(4.73px, -11.08px) scale(1.0484) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          426,
+          "translate(4.74px, -11.11px) scale(1.0485) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          433,
+          "translate(4.75px, -11.13px) scale(1.0486) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          441,
+          "translate(4.76px, -11.16px) scale(1.0487) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          449,
+          "translate(4.77px, -11.18px) scale(1.0488) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          458,
+          "translate(4.78px, -11.19px) scale(1.0489) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          465,
+          "translate(4.78px, -11.21px) scale(1.0489) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          474,
+          "translate(4.79px, -11.23px) scale(1.049) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          481,
+          "translate(4.8px, -11.24px) scale(1.0491) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          489,
+          "translate(4.8px, -11.26px) scale(1.0492) rotateX(0deg) rotateY(0deg)"
+        ],
+        [
+          497,
+          "translate(4.89px, -11.45px) scale(1.05) rotateX(0deg) rotateY(0deg)"
+        ]
+      ],
+      "restFraming": false,
+      "travelStartMs": 57,
+      "settleMs": 497,
+      "travelDurationMs": 440,
+      "travelInMs": 480,
+      "settled": {
+        "txPx": 4.89,
+        "tyPx": -11.45,
+        "scale": 1.05
+      },
+      "expected": {
+        "site": "deposition-suite",
+        "txPx": 4.885333333333332,
+        "tyPx": -11.450000000000001,
+        "scale": 1.05
+      },
+      "within5": true
+    },
+    "selectionChange": {
+      "samples": [
+        [
+          4,
+          "translate(4.89px, -11.45px) scale(1.05) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          22,
+          "translate(2.63px, -9.36px) scale(1.05) rotateX(0.001deg) rotateY(-0.004deg)"
+        ],
+        [
+          28,
+          "translate(1.82px, -8.61px) scale(1.05) rotateX(0.001deg) rotateY(-0.003deg)"
+        ],
+        [
+          37,
+          "translate(0.81px, -7.67px) scale(1.05) rotateX(0.001deg) rotateY(-0.003deg)"
+        ],
+        [
+          51,
+          "translate(-0.13px, -6.8px) scale(1.05) rotateX(0.001deg) rotateY(-0.003deg)"
+        ],
+        [
+          58,
+          "translate(-0.84px, -6.14px) scale(1.05) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          67,
+          "translate(-1.72px, -5.33px) scale(1.05) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          75,
+          "translate(-2.31px, -4.78px) scale(1.05) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          84,
+          "translate(-2.98px, -4.16px) scale(1.05) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          92,
+          "translate(-3.67px, -3.52px) scale(1.05) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          99,
+          "translate(-4.34px, -2.89px) scale(1.05) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          107,
+          "translate(-4.88px, -2.4px) scale(1.05) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          115,
+          "translate(-5.33px, -1.98px) scale(1.05) rotateX(0deg) rotateY(-0.003deg)"
+        ],
+        [
+          124,
+          "translate(-5.81px, -1.53px) scale(1.05) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          131,
+          "translate(-6.34px, -1.05px) scale(1.05) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          139,
+          "translate(-6.74px, -0.67px) scale(1.05) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          147,
+          "translate(-7.14px, -0.3px) scale(1.05) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          155,
+          "translate(-7.48px, 0.01px) scale(1.05) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          162,
+          "translate(-7.79px, 0.3px) scale(1.05) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          171,
+          "translate(-8.13px, 0.62px) scale(1.05) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          180,
+          "translate(-8.49px, 0.95px) scale(1.05) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          187,
+          "translate(-8.76px, 1.2px) scale(1.05) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          196,
+          "translate(-9.03px, 1.45px) scale(1.05) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          203,
+          "translate(-9.26px, 1.66px) scale(1.05) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          212,
+          "translate(-9.51px, 1.9px) scale(1.05) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          220,
+          "translate(-9.73px, 2.1px) scale(1.05) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          229,
+          "translate(-9.93px, 2.29px) scale(1.05) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          244,
+          "translate(-10.12px, 2.47px) scale(1.05) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          251,
+          "translate(-10.3px, 2.63px) scale(1.05) rotateX(0deg) rotateY(-0.002deg)"
+        ],
+        [
+          261,
+          "translate(-10.44px, 2.75px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          268,
+          "translate(-10.63px, 2.93px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          275,
+          "translate(-10.76px, 3.05px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          284,
+          "translate(-10.9px, 3.18px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          291,
+          "translate(-11.03px, 3.31px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          299,
+          "translate(-11.15px, 3.42px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          307,
+          "translate(-11.27px, 3.52px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          315,
+          "translate(-11.37px, 3.62px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          323,
+          "translate(-11.47px, 3.71px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          332,
+          "translate(-11.54px, 3.78px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          338,
+          "translate(-11.65px, 3.88px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          346,
+          "translate(-11.73px, 3.95px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          355,
+          "translate(-11.8px, 4.02px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          363,
+          "translate(-11.86px, 4.08px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          371,
+          "translate(-11.93px, 4.14px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          378,
+          "translate(-12px, 4.2px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          386,
+          "translate(-12.05px, 4.25px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          394,
+          "translate(-12.11px, 4.3px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          404,
+          "translate(-12.17px, 4.36px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          412,
+          "translate(-12.21px, 4.4px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          420,
+          "translate(-12.25px, 4.44px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          435,
+          "translate(-12.3px, 4.48px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          442,
+          "translate(-12.33px, 4.51px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          453,
+          "translate(-12.4px, 4.58px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          467,
+          "translate(-12.43px, 4.6px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          475,
+          "translate(-12.46px, 4.63px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          483,
+          "translate(-12.49px, 4.66px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          492,
+          "translate(-12.9px, 5.04px) scale(1.05) rotateX(0deg) rotateY(-0.001deg)"
+        ],
+        [
+          563,
+          "translate(-12.9px, 5.04px) scale(1.05) rotateX(0deg) rotateY(0deg)"
+        ]
+      ],
+      "travelStartMs": 22,
+      "settleMs": 492,
+      "travelDurationMs": 470,
+      "travelInMs": 480,
+      "settled": {
+        "txPx": -12.9,
+        "tyPx": 5.04,
+        "scale": 1.05
+      },
+      "expected": {
+        "site": "restoration-lab",
+        "txPx": -12.899609375,
+        "tyPx": 5.038000000000005,
+        "scale": 1.05
+      },
+      "within5": true
+    },
+    "hitAreas": [
+      {
+        "site": "deposition-suite",
+        "w": 46.2,
+        "h": 46.2
+      },
+      {
+        "site": "restoration-lab",
+        "w": 46.2,
+        "h": 46.2
+      },
+      {
+        "site": "records-annex",
+        "w": 46.2,
+        "h": 46.2
+      },
+      {
+        "site": "counsel-office",
+        "w": 46.2,
+        "h": 46.2
+      }
+    ],
+    "hitAreasOk": true
+  },
+  {
+    "caseId": "case-81",
+    "reduced": true,
+    "authored": {
+      "master": {
+        "w": 1600,
+        "h": 900
+      },
+      "travel": {
+        "maxOffset": 0.025,
+        "focusScale": 1.05,
+        "travelInMs": 480,
+        "settleOutMs": 420
+      },
+      "clickSite": "restoration-lab"
+    },
+    "reducedMotion": {
+      "mountSamples": [
+        [
+          50,
+          "none"
+        ]
+      ],
+      "clickSamples": [
+        [
+          3,
+          "none"
+        ]
+      ],
+      "distinctTransforms": [
+        "none"
+      ],
+      "zeroChange": true
+    }
+  }
+]

@@ -7,6 +7,13 @@
 // (IntersectionObserver) and the reduced-motion signal, and fully tears down on
 // unmount — the same discipline as src/ambience/rain.ts.
 //
+// The same frame() also composes the selection camera travel: when the live
+// focus target (a ref-backed callback, like the alarm tier) names a hotspot,
+// the plane group + hotspot mirror ease toward its projected position at the
+// authored focus scale, hold while selected, and ease back on deselect — one
+// transform writer, no CSS transitions, and under reduced motion an instant
+// cut to the rest framing.
+//
 // It reads no content ids: the scene data (layers, hotspots, drift, weather,
 // ambience, alarm tiers) is passed in, and the DOM hooks are generic class
 // names + data attributes.
@@ -24,6 +31,10 @@ export interface SceneMotionOptions {
   // Live civic-alarm tier (0–3) for the scene's alarm atmosphere table. Absent =
   // tier 0 everywhere (the base look).
   getAlarmTier?: () => number
+  // Live selection focus: the selected hotspot's master-normalized coords, or
+  // null at the rest framing. Ref-backed like the alarm tier — selection changes
+  // never recreate the motion handle. Absent = no travel.
+  getFocusTarget?: () => { x: number; y: number } | null
 }
 
 export interface SceneMotionHandle {
@@ -68,7 +79,11 @@ export function createSceneMotion(
   const spawnVolumes = scene.weather.spawnVolumes ?? []
   const ambience = scene.ambience ?? null
   const alarmTiers = scene.alarm ?? null
+  const travelCfg = scene.travel ?? null
   const minTargetPx = 44
+  // Travel snap epsilon (container-fraction / scale units): sub-pixel at any
+  // realistic stage width, far inside the 5% verification tolerance.
+  const TRAVEL_EPS = 0.0008
 
   const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
   const motionOK = () => !options.getReducedMotion() && !mq.matches
@@ -86,6 +101,23 @@ export function createSceneMotion(
   let gx = 0
   let gy = 0
   let lastFlicker = 1
+  // Camera travel (selection focus). f* is the eased current value, t* the
+  // target — the same easing-toward-target pattern as the drift's gx/gy. f* are
+  // container fractions (x/y) and a unit scale (s). Each new focus (selection
+  // change, deselect) opens a travel window of the authored duration on the
+  // frame clock; the per-frame rate is derived from the live distance and the
+  // REMAINING window, so the snap lands inside the authored duration even when
+  // a mid-travel resize shifts the projected target (a resize alone never
+  // re-opens the window — the framing tracks it instantly).
+  let fx = 0
+  let fy = 0
+  let fs = 1
+  let ttx = 0
+  let tty = 0
+  let tts = 1
+  let focusKey = ''
+  let travelEnd = 0
+  let travelDirty = false
 
   function alarmTier() {
     return Math.max(0, Math.min(3, Math.round(options.getAlarmTier?.() ?? 0)))
@@ -227,6 +259,56 @@ export function createSceneMotion(
     return !scene.weather.suppressed.includes(stateId as never)
   }
 
+  // Selection camera travel: project the focused hotspot's master coords through
+  // the live crop window (the same math layout() uses for the markers), clamp
+  // the per-axis offset to the authored maxOffset, and ease f* toward it inside
+  // the travel window opened for the current focus. A focused target uses
+  // travelInMs, the rest framing uses settleOutMs.
+  function stepTravel(t: number, dt: number) {
+    if (!travelCfg) return
+    const focus = options.getFocusTarget?.() ?? null
+    const key = focus ? `${focus.x},${focus.y}` : ''
+    if (key !== focusKey) {
+      focusKey = key
+      travelEnd = t + (focus ? travelCfg.travelInMs : travelCfg.settleOutMs)
+    }
+    let tx = 0
+    let ty = 0
+    let ts = 1
+    if (focus) {
+      const nx = (focus.x - win.x) / win.w - 0.5
+      const ny = (focus.y - win.y) / win.h - 0.5
+      const m = travelCfg.maxOffset
+      tx = -Math.max(-m, Math.min(m, nx))
+      ty = -Math.max(-m, Math.min(m, ny))
+      ts = travelCfg.focusScale
+    }
+    ttx = tx
+    tty = ty
+    tts = ts
+    const d0 = Math.max(Math.abs(ttx - fx), Math.abs(tty - fy), Math.abs(tts - fs))
+    if (d0 <= TRAVEL_EPS || t >= travelEnd) {
+      fx = ttx
+      fy = tty
+      fs = tts
+      return
+    }
+    const rate = Math.log(d0 / TRAVEL_EPS) / ((travelEnd - t) / 1000)
+    const step = 1 - Math.exp(-rate * dt)
+    fx += (ttx - fx) * step
+    fy += (tty - fy) * step
+    fs += (tts - fs) * step
+    if (
+      Math.abs(ttx - fx) <= TRAVEL_EPS &&
+      Math.abs(tty - fy) <= TRAVEL_EPS &&
+      Math.abs(tts - fs) <= TRAVEL_EPS
+    ) {
+      fx = ttx
+      fy = tty
+      fs = tts
+    }
+  }
+
   function frame(t: number) {
     raf = requestAnimationFrame(frame)
     if (!last) last = t
@@ -236,13 +318,31 @@ export function createSceneMotion(
     if (options.parallax) {
       gx += (px - gx) * 0.03
       gy += (py - gy) * 0.03
-      if (Math.abs(gx) + Math.abs(gy) > 0.0004) {
-        const tr = `rotateX(${(-gy * scene.drift.pitchDeg).toFixed(3)}deg) rotateY(${(
-          gx * scene.drift.yawDeg
-        ).toFixed(3)}deg)`
-        if (pgroup) pgroup.style.transform = tr
-        if (hgroup) hgroup.style.transform = tr
-      }
+    }
+    stepTravel(t, dt)
+
+    // One transform writer: the selection travel composes with the pointer drift
+    // right here — translate in screen px (container fractions × live size),
+    // then the uniform focus scale, then the drift rotation (a uniform scale
+    // commutes with the rotation). The hotspot mirror gets the identical string.
+    const driftOn = options.parallax && Math.abs(gx) + Math.abs(gy) > 0.0004
+    const travelOn = fx !== 0 || fy !== 0 || fs !== 1
+    if (driftOn || travelOn) {
+      const rot = `rotateX(${(-gy * scene.drift.pitchDeg).toFixed(3)}deg) rotateY(${(
+        gx * scene.drift.yawDeg
+      ).toFixed(3)}deg)`
+      const tr = travelOn
+        ? `translate(${(fx * W).toFixed(2)}px, ${(fy * H).toFixed(2)}px) scale(${fs.toFixed(4)}) ${rot}`
+        : rot
+      if (pgroup) pgroup.style.transform = tr
+      if (hgroup) hgroup.style.transform = tr
+      travelDirty = travelOn
+    } else if (travelDirty) {
+      // Settle-out snapped to the exact rest framing: clear the composed string
+      // once so the rest state is byte-identical to never having travelled.
+      if (pgroup) pgroup.style.transform = 'none'
+      if (hgroup) hgroup.style.transform = 'none'
+      travelDirty = false
     }
 
     // Ambient life on this same clock (both die with the loop: hidden tab,
@@ -290,6 +390,13 @@ export function createSceneMotion(
     } else {
       stop()
       gx = gy = px = py = 0
+      // Reduced motion: no travel at all — an instant cut to the rest framing,
+      // matching how the drift dies (never a slowed tween).
+      fx = fy = ttx = tty = 0
+      fs = tts = 1
+      focusKey = ''
+      travelEnd = 0
+      travelDirty = false
       if (pgroup) pgroup.style.transform = 'none'
       if (hgroup) hgroup.style.transform = 'none'
       if (ctx) ctx.clearRect(0, 0, W, H)

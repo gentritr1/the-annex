@@ -1208,6 +1208,11 @@ const scene: SceneDefinition = {
   // across the far plane, and the amber service strip occasionally dipping to
   // 45% of its state opacity (~1 dip every 2 minutes, time-derived).
   ambience: { sweepPeriodMs: 120000, amberDipDepth: 0.55 },
+  // Selection camera travel (shared keys with Case 77; absolute authored
+  // values). The deposition room reads tighter, so the push-in is slightly
+  // stronger and quicker: at most 2.5% of the container toward the marker, a 5%
+  // scale-up, 480ms in / 420ms back out.
+  travel: { maxOffset: 0.025, focusScale: 1.05, travelInMs: 480, settleOutMs: 420 },
   // Civic-alarm atmosphere, absolute values per tier. Tier 0 is byte-identical
   // to the base look: no haze veil, the weather's own 40 motes, the seeded
   // 5–13 px/s fall. Each step up thickens the air and hurries the dust; tier 3
