@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { getCaseContent } from './content'
 import {
   activeCard,
+  canProceed,
   filedRoutineCount,
   initialRoomState,
   pocketCard,
@@ -194,6 +195,75 @@ describe('classification room reducer', () => {
     expect(roomUnlocked(both)).toBe(true)
   })
 
+  // ── The reading beat: selection + proceed gating (view-level phase) ──────────
+  function atLog(): RoomState {
+    return roomReducer(refuseAll(fileAllRoutine()), { type: 'FILE_ON_SHELF_ZERO' }, room)
+  }
+
+  it('selects a slip on turn and shows its fragment as the announcement', () => {
+    const placed = atLog()
+    expect(placed.selectedSlipId).toBeNull()
+    const turned = roomReducer(placed, { type: 'TURN_SLIP', slipId: room.slips[1]!.id }, room)
+    expect(turned.turnedSlips).toEqual([room.slips[1]!.id])
+    expect(turned.selectedSlipId).toBe(room.slips[1]!.id)
+    expect(turned.lastAnnouncement).toBe(room.slips[1]!.fragment)
+  })
+
+  it('re-selecting a DIFFERENT already-turned slip re-announces; the SAME one is a no-op', () => {
+    const placed = atLog()
+    const first = roomReducer(placed, { type: 'TURN_SLIP', slipId: room.slips[0]!.id }, room)
+    const second = roomReducer(first, { type: 'TURN_SLIP', slipId: room.slips[1]!.id }, room)
+    expect(second.turnedSlips).toEqual([room.slips[0]!.id, room.slips[1]!.id])
+    expect(second.selectedSlipId).toBe(room.slips[1]!.id)
+
+    // Re-selecting slip 0 (already turned) selects it and re-announces its fragment.
+    const backToFirst = roomReducer(second, { type: 'TURN_SLIP', slipId: room.slips[0]!.id }, room)
+    expect(backToFirst.selectedSlipId).toBe(room.slips[0]!.id)
+    expect(backToFirst.lastAnnouncement).toBe(room.slips[0]!.fragment)
+    expect(backToFirst.turnedSlips).toEqual([room.slips[0]!.id, room.slips[1]!.id])
+
+    // Re-selecting the already-selected slip is a strict no-op (never re-announces).
+    const again = roomReducer(backToFirst, { type: 'TURN_SLIP', slipId: room.slips[0]!.id }, room)
+    expect(again).toBe(backToFirst)
+  })
+
+  it('canProceed exactly mirrors the canonical unlock rule', () => {
+    expect(canProceed(initialRoomState())).toBe(false)
+    const shelfOnly = roomReducer(refuseAll(fileAllRoutine()), { type: 'FILE_ON_SHELF_ZERO' }, room)
+    expect(canProceed(shelfOnly)).toBe(roomUnlocked(shelfOnly))
+    expect(canProceed(shelfOnly)).toBe(false)
+    const reading = roomReducer(shelfOnly, { type: 'TURN_SLIP', slipId: room.slips[0]!.id }, room)
+    expect(canProceed(reading)).toBe(roomUnlocked(reading))
+    expect(canProceed(reading)).toBe(true)
+  })
+
+  it('PROCEED_TO_METHODS is inert until the room is unlocked, then swaps the phase', () => {
+    // Before any slip: unlocked is false, so proceeding is a no-op.
+    const placed = atLog()
+    const early = roomReducer(placed, { type: 'PROCEED_TO_METHODS' }, room)
+    expect(early).toBe(placed)
+    expect(early.proceeded).toBe(false)
+    expect(roomPhase(early, room)).toBe('log')
+
+    // After a slip: proceeding flips proceeded, clears the announcement, unlocks the view.
+    const reading = roomReducer(placed, { type: 'TURN_SLIP', slipId: room.slips[0]!.id }, room)
+    expect(roomPhase(reading, room)).toBe('log')
+    const proceeded = roomReducer(reading, { type: 'PROCEED_TO_METHODS' }, room)
+    expect(proceeded.proceeded).toBe(true)
+    expect(proceeded.lastAnnouncement).toBe('')
+    expect(roomPhase(proceeded, room)).toBe('unlocked')
+    // The canonical unlock rule is unchanged by proceeding.
+    expect(roomUnlocked(proceeded)).toBe(roomUnlocked(reading))
+  })
+
+  it('reading all three slips stays optional — one turn is enough to proceed', () => {
+    const reading = roomReducer(atLog(), { type: 'TURN_SLIP', slipId: room.slips[0]!.id }, room)
+    expect(canProceed(reading)).toBe(true)
+    const proceeded = roomReducer(reading, { type: 'PROCEED_TO_METHODS' }, room)
+    expect(roomPhase(proceeded, room)).toBe('unlocked')
+    expect(proceeded.turnedSlips).toHaveLength(1)
+  })
+
   it('never unlocks from slips alone (slips are inert before shelf zero)', () => {
     const state = play([
       { type: 'TURN_SLIP', slipId: room.slips[0]!.id },
@@ -220,7 +290,15 @@ describe('classification room reducer', () => {
     expect(roomPhase(placed, room)).toBe('log')
     expect(roomStageFor('log')).toBe('restriction-log')
 
-    const unlockedState = roomReducer(placed, { type: 'TURN_SLIP', slipId: room.slips[0]!.id }, room)
+    // Turning a slip unlocks the room canonically but the phase STAYS on the log —
+    // the reading beat is not rushed off stage until the player acknowledges it.
+    const reading = roomReducer(placed, { type: 'TURN_SLIP', slipId: room.slips[0]!.id }, room)
+    expect(roomUnlocked(reading)).toBe(true)
+    expect(roomPhase(reading, room)).toBe('log')
+    expect(roomStageFor('log')).toBe('restriction-log')
+
+    // Only PROCEED_TO_METHODS swaps the tableau to the methods.
+    const unlockedState = roomReducer(reading, { type: 'PROCEED_TO_METHODS' }, room)
     expect(roomPhase(unlockedState, room)).toBe('unlocked')
     expect(roomStageFor('unlocked')).toBe('methods')
   })

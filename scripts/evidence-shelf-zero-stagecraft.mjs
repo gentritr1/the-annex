@@ -17,7 +17,7 @@ import { join } from 'node:path'
 
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const APP_URL = process.argv[2] ?? 'http://127.0.0.1:4174/'
-const OUT_DIR = new URL('../evidence/shelf-zero-stagecraft/', import.meta.url).pathname
+const OUT_DIR = new URL('../evidence/shelf-zero-reading-beat/', import.meta.url).pathname
 const SAVE_KEY = 'the-annex.case-77.save.v1'
 mkdirSync(OUT_DIR, { recursive: true })
 
@@ -131,7 +131,7 @@ async function newSession({ width = 1280, height = 800 } = {}) {
     }
     proc.kill('SIGKILL')
   }
-  return { send, evaluate, click, waitFor, waitText, shot, seed, kill }
+  return { send, evaluate, click, waitFor, waitText, shot, kill }
 }
 
 // Navigate the full UI: start → curiosity approach → enter the Small Archive.
@@ -166,6 +166,18 @@ const geometryExpr = `JSON.stringify((() => {
     pocketCardInDom: room ? room.textContent.includes('If Mara ended') : null,
     shelfZeroInDom: Boolean(document.querySelector('.room-shelf-zero')),
     activeCardTitle: document.querySelector('.room-active-card .room-card-title')?.textContent ?? null,
+    // Reading-beat instrumentation: the stable reading area's box vs its content, the
+    // selected slip, how many slips are turned, and whether the proceed control and
+    // methods have appeared (methods must stay 0 until proceed is activated).
+    reading: (() => {
+      const r = document.querySelector('.room-reading')
+      if (!r) return null
+      return { clientH: r.clientHeight, scrollH: r.scrollHeight, noScroll: r.scrollHeight <= r.clientHeight }
+    })(),
+    selectedSlip: document.querySelector('.room-slip[data-selected="true"] .room-slip-label')?.textContent ?? null,
+    turnedSlips: document.querySelectorAll('.room-slip[data-turned="true"]').length,
+    proceedPresent: Boolean(document.querySelector('.room-proceed')),
+    methodsCount: document.querySelectorAll('.classification-room .choice-row').length,
     docScrollWidth: document.documentElement.scrollWidth,
     docClientWidth: document.documentElement.clientWidth,
     minInteractive: (() => {
@@ -218,14 +230,37 @@ async function desktopWalk() {
     await s.click('.room-shelf-zero')
     await s.waitFor(`document.querySelector('.classification-room').dataset.roomPhase === 'log'`)
     await sleep(300)
-    await record(s)
-    await s.shot('06-restriction-log-1280x800.png')
+    await record(s) // log, 0 turned: reading rest state, proceed absent, methods 0
+    await s.shot('06-reading-log-zero-turned-1280x800.png')
 
-    await s.click('.room-slip')
+    // The reading beat: turn the first slip (room unlocks, phase STAYS log), then turn
+    // all three, then re-select each so its full fragment is measured for readability.
+    const tab = (i) => s.evaluate(`document.querySelectorAll('.room-slip-tabs .room-slip')[${i}].click()`)
+    await tab(0)
+    await sleep(300)
+    await record(s) // reading, 1 turned: proceed present, methods still 0
+    await s.shot('07-reading-one-turned-1280x800.png')
+
+    await tab(1)
+    await sleep(280)
+    await tab(2)
+    await sleep(300)
+    await record(s) // reading, 3 turned, third selected: methods still 0 (no proceed yet)
+    await s.shot('08-reading-three-turned-1280x800.png')
+
+    for (let i = 0; i < 3; i += 1) {
+      await tab(i)
+      await sleep(260)
+      await record(s) // each fragment selected — per-fragment readability captured
+      await s.shot(`09-reading-fragment-${i + 1}-1280x800.png`)
+    }
+
+    // Acknowledge the beat → methods replace the tableau in place.
+    await s.click('.room-proceed')
     await s.waitFor(`document.querySelector('.classification-room').dataset.roomPhase === 'unlocked'`)
     await sleep(300)
     await record(s)
-    await s.shot('07-unlocked-methods-1280x800.png')
+    await s.shot('10-unlocked-methods-1280x800.png')
 
     const heights = geometry.map((g) => g.roomRectHeight).filter((h) => typeof h === 'number')
     const summary = {
@@ -260,7 +295,12 @@ async function outcomeRun({ methodText, tag, expectedOutcome }) {
     await s.click('.room-shelf-zero')
     await s.waitFor(`document.querySelectorAll('.room-slip').length === 3`)
     await sleep(250)
+    // Turn a slip (unlocks the room, phase stays log), then acknowledge the reading
+    // beat via the proceed control before the methods render.
     await s.click('.room-slip')
+    await s.waitFor(`Boolean(document.querySelector('.room-proceed'))`)
+    await sleep(200)
+    await s.click('.room-proceed')
     await s.waitFor(`document.querySelectorAll('.classification-room .choice-row').length === 2`)
     await sleep(250)
     // Two-step confirm of the chosen method, via real activations.
@@ -339,7 +379,13 @@ async function variantRun({ tag, appClass, width = 1280, height = 800, emulatedM
     await s.click('.room-shelf-zero')
     await s.waitFor(`document.querySelectorAll('.room-slip').length === 3`)
     await sleep(200)
+    // Turn a slip, capture the reading beat, then proceed to the methods.
     await s.click('.room-slip')
+    await s.waitFor(`Boolean(document.querySelector('.room-proceed'))`)
+    await sleep(200)
+    const gReading = JSON.parse(await s.evaluate(geometryExpr))
+    await s.shot(`variant-${tag}-reading.png`)
+    await s.click('.room-proceed')
     await s.waitFor(`document.querySelectorAll('.classification-room .choice-row').length === 2`)
     await sleep(250)
     const gUnlocked = JSON.parse(await s.evaluate(geometryExpr))
@@ -348,11 +394,15 @@ async function variantRun({ tag, appClass, width = 1280, height = 800, emulatedM
       overflow: gShelf.inspectorOverflow,
       docOverflow: gShelf.docScrollWidth - gShelf.docClientWidth,
       minInteractive: gShelf.minInteractive,
+    }, 'reading', {
+      overflow: gReading.inspectorOverflow,
+      readingNoScroll: gReading.reading?.noScroll,
+      minInteractive: gReading.minInteractive,
     }, 'unlocked', {
       overflow: gUnlocked.inspectorOverflow,
       minInteractive: gUnlocked.minInteractive,
     })
-    return { tag, shelf: gShelf, unlocked: gUnlocked }
+    return { tag, shelf: gShelf, reading: gReading, unlocked: gUnlocked }
   } finally {
     s.kill()
   }

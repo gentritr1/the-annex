@@ -40,6 +40,13 @@ export interface RoomState {
   cardOnShelfZero: boolean
   // Discovery #2 progress: which restriction-log slips have been turned.
   turnedSlips: readonly string[]
+  // The slip currently shown in the reading area (the last turned or re-selected).
+  // Null until the first slip is turned. Reading all three stays optional.
+  selectedSlipId: string | null
+  // The reading beat has been acknowledged: the player asked to move to the two
+  // canonical methods. The canonical unlock rule (roomUnlocked) is untouched; this
+  // only gates the VIEW's swap from the log tableau to the methods.
+  proceeded: boolean
   // The last state-change line, for the view's aria-live region. Empty at rest so
   // an initial render never announces.
   lastAnnouncement: string
@@ -49,6 +56,7 @@ export type RoomEvent =
   | { type: 'FILE_UNDER_CATEGORY'; categoryId: string }
   | { type: 'FILE_ON_SHELF_ZERO' }
   | { type: 'TURN_SLIP'; slipId: string }
+  | { type: 'PROCEED_TO_METHODS' }
 
 export function initialRoomState(): RoomState {
   return {
@@ -56,6 +64,8 @@ export function initialRoomState(): RoomState {
     triedCategories: [],
     cardOnShelfZero: false,
     turnedSlips: [],
+    selectedSlipId: null,
+    proceeded: false,
     lastAnnouncement: '',
   }
 }
@@ -95,9 +105,17 @@ export function activeCard(state: RoomState, room: ClassificationRoomDefinition)
 }
 
 // Discovery #1 (card on shelf zero) AND discovery #2 (≥1 slip turned) — the exact
-// gate the two canonical methods unlock behind. Pure read of state.
+// gate the two canonical methods unlock behind. Pure read of state. UNTOUCHED: name,
+// signature, and semantics are the canonical unlock rule and must not change.
 export function roomUnlocked(state: RoomState): boolean {
   return state.cardOnShelfZero && state.turnedSlips.length >= 1
+}
+
+// Whether the reading beat may be acknowledged (the proceed control is offered).
+// Identical to the canonical unlock rule — proceeding is the view-level beat that
+// turns an unlocked room into the methods phase, never a second gate.
+export function canProceed(state: RoomState): boolean {
+  return roomUnlocked(state)
 }
 
 // Whether shelf zero — the label-less fourth target — is available yet. It appears
@@ -116,7 +134,10 @@ export function roomPhase(
   state: RoomState,
   room: ClassificationRoomDefinition,
 ): RoomPhaseId {
-  if (roomUnlocked(state)) return 'unlocked'
+  // The methods take the stage only once the reading beat is acknowledged. Until
+  // then an unlocked room stays on the log so its central discovery is read, not
+  // rushed off — the canonical unlock rule (roomUnlocked) is unchanged.
+  if (roomUnlocked(state) && state.proceeded) return 'unlocked'
   if (state.cardOnShelfZero) return 'log'
   if (filedRoutineCount(state, room) < routineCards(room).length) return 'routine'
   // Every routine card is filed: the pocket card is in the slot.
@@ -190,16 +211,36 @@ export function roomReducer(
     }
 
     case 'TURN_SLIP': {
-      // Slips only exist once the card is on shelf zero. Turning an already-turned
-      // or unknown slip is a no-op.
+      // Slips only exist once the card is on shelf zero. Turning an unknown slip is
+      // a no-op.
       if (!state.cardOnShelfZero) return state
       const slip = room.slips.find((candidate) => candidate.id === event.slipId)
-      if (!slip || state.turnedSlips.includes(event.slipId)) return state
+      if (!slip) return state
+
+      if (state.turnedSlips.includes(event.slipId)) {
+        // Already turned: re-selecting the SAME slip never re-announces (no-op);
+        // selecting a DIFFERENT already-turned slip re-selects it and announces its
+        // fragment once. Reading is non-destructive and repeatable.
+        if (state.selectedSlipId === event.slipId) return state
+        return { ...state, selectedSlipId: event.slipId, lastAnnouncement: slip.fragment }
+      }
+
+      // A freshly turned slip: mark it turned, select it, announce its fragment.
       return {
         ...state,
         turnedSlips: [...state.turnedSlips, event.slipId],
+        selectedSlipId: event.slipId,
         lastAnnouncement: slip.fragment,
       }
+    }
+
+    case 'PROCEED_TO_METHODS': {
+      // The view-level acknowledgement of the reading beat. Inert unless the room is
+      // canonically unlocked; it clears the announcement because the methods phase
+      // speaks for itself (focus lands on the first method and the unlock line is
+      // already in the DOM) — no announcement duplication.
+      if (!roomUnlocked(state)) return state
+      return { ...state, proceeded: true, lastAnnouncement: '' }
     }
 
     default:

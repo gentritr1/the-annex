@@ -450,20 +450,26 @@ const smallArchiveRoom: ClassificationRoomDefinition = {
   slips: [
     {
       id: 'slip-one',
+      label: 'Row nine',
       fragment:
         'A slip where a name used to be: “Composite — recovered, contested, withdrawn from taxonomy at office request.” The name itself is a clean rectangle of nothing.',
     },
     {
       id: 'slip-two',
+      label: 'Row ten',
       fragment:
         '“Held eleven months. Recognised by two. Reclassified as property of the estate that paid for the recovery.” No one signed for the person.',
     },
     {
       id: 'slip-three',
+      label: 'Row eleven',
       fragment:
         'The last slip is only a date and a verdict: “Failed recovery. File closed.” Whoever they were, the closing is all the record kept.',
     },
   ],
+  readingLead:
+    'Beside shelf zero, three removal slips mark where cards used to sit. Turn each and read what the register kept.',
+  proceedLabel: 'Take your reading to the Archivist',
   lockedLine: 'The Archivist is still waiting. She will not take your answer until you have read the drawer.',
   unlockLine:
     'The Archivist slides the drawer aside and looks up. “Now — hand me your answer, or close the drawer on the slips.”',

@@ -13,7 +13,7 @@ import { join } from 'node:path'
 
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const APP_URL = process.argv[2] ?? 'http://127.0.0.1:4174/'
-const OUT_DIR = new URL('../evidence/shelf-zero-stagecraft/', import.meta.url).pathname
+const OUT_DIR = new URL('../evidence/shelf-zero-reading-beat/', import.meta.url).pathname
 
 // The keyboard sequence is entirely in the DOM room (no WebGL); the concourse only
 // appears for the final "Return to concourse" read, where its portal DOM (with
@@ -306,8 +306,23 @@ try {
     extra: (s) => s.slips === 3,
   })
 
-  // Turn a slip → methods unlock and replace the tableau, focus first method.
-  await enterAndCheck('turn slip → methods unlock, first method focused', {
+  // Turn a slip → the room is canonically unlocked, but the reading BEAT holds: the
+  // phase stays 'log', no methods render yet, and focus hands to the reading area so
+  // the fragment is announced where a reader is looking. This is the beat under test.
+  await enterAndCheck('turn slip → reading area focused, phase stays log (no methods yet)', {
+    expectPhase: 'log',
+    expectActiveOneOf: ['room-reading'],
+    extra: (s) => s.methods === 0 && s.slips === 3,
+  })
+
+  // Proceed control appeared once the room unlocked; focusing it stands in for a Tab
+  // from the reading area. Enter on it acknowledges the beat → methods replace the
+  // tableau and the first method takes focus (never <body>).
+  const proceedFocused = await focusSelector('.room-proceed')
+  record('proceed control reachable + focusable (not <body>)', proceedFocused, {
+    proceedFocused,
+  })
+  await enterAndCheck('proceed → methods unlock, first method focused', {
     expectPhase: 'unlocked',
     expectActiveOneOf: ['choice-row'],
     extra: (s) => s.methods === 2,

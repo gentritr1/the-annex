@@ -312,9 +312,11 @@ export interface ClassificationShelfZeroDefinition {
 
 // One removal slip in the adjacent restriction log — a place a card used to sit.
 // Turning it shows an authored fragment about a removed composite (no names: the
-// names are gone, which is the point).
+// names are gone, which is the point). `label` is the short in-voice tab copy (the
+// register row it was pulled from) — no spoiler of the fragment beneath it.
 export interface ClassificationSlipDefinition {
   id: string
+  label: string
   fragment: string
 }
 
@@ -346,6 +348,11 @@ export interface ClassificationRoomDefinition {
   shelfZero: ClassificationShelfZeroDefinition
   // Exactly three removal slips.
   slips: readonly ClassificationSlipDefinition[]
+  // The short in-voice line above the reading area in the log's reading beat.
+  readingLead: string
+  // The explicit control text that acknowledges the reading and moves to the two
+  // canonical methods (plain "proceed to the methods" meaning, authored in voice).
+  proceedLabel: string
   // The one-line reason shown on the locked method placeholders before unlock.
   lockedLine: string
   // Introduces the two canonical methods as physical acts once they unlock.

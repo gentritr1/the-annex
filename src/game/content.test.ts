@@ -250,11 +250,19 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
       expect(room.shelfZero.holdingLine.trim().length).toBeGreaterThan(0)
       expect(room.lockedLine.trim().length).toBeGreaterThan(0)
       expect(room.unlockLine.trim().length).toBeGreaterThan(0)
+      // The reading beat's authored lines: the lead above the reading area and the
+      // explicit proceed control text.
+      expect(room.readingLead.trim().length).toBeGreaterThan(0)
+      expect(room.proceedLabel.trim().length).toBeGreaterThan(0)
 
-      // Exactly three removal slips, unique ids, each with a fragment.
+      // Exactly three removal slips, unique ids, each with a fragment AND a short
+      // in-voice tab label (the reading-beat slip tabs).
       expect(room.slips).toHaveLength(3)
       expectUnique(room.slips.map((slip) => slip.id))
-      room.slips.forEach((slip) => expect(slip.fragment.trim().length).toBeGreaterThan(0))
+      room.slips.forEach((slip) => {
+        expect(slip.fragment.trim().length).toBeGreaterThan(0)
+        expect(slip.label.trim().length).toBeGreaterThan(0)
+      })
 
       // Plate zone anchors reference stages that exist, in master-normalized bounds.
       Object.entries(room.zones).forEach(([stage, anchor]) => {
@@ -596,6 +604,11 @@ describe('Case 77 authors the Small Archive classification room', () => {
     expect(strings).toContain(room.cards[0]!.question)
     expect(strings).toContain(room.shelfZero.holdingLine)
     expect(strings).toContain(room.slips[0]!.fragment)
+    // The reading-beat strings (slip tab label, reading lead, proceed label) are on
+    // the walked tree too, so the no-placeholder guard covers them.
+    expect(strings).toContain(room.slips[0]!.label)
+    expect(strings).toContain(room.readingLead)
+    expect(strings).toContain(room.proceedLabel)
   })
 })
 

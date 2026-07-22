@@ -1981,6 +1981,15 @@ p {
   background: transparent;
 }
 
+/* While a classification room is active and its methods have not yet unlocked, the
+   plate's PROCEDURE / INQUIRY zone markers would preview a choice the player has not
+   reached — so they are suppressed for every room phase but 'unlocked', where they
+   return with the methods. Non-room sites (no data-room-phase) are unaffected. */
+.site-closeup-stage[data-room-phase]:not([data-room-phase='unlocked']) .site-closeup-zone {
+  opacity: 0;
+  transition: opacity 300ms var(--ease-out);
+}
+
 @keyframes site-closeup-enter {
   0% {
     clip-path: ellipse(2% 7% at var(--site-entry-x, 50%) var(--site-entry-y, 50%));
@@ -7086,6 +7095,23 @@ p {
   color: var(--amber-soft);
 }
 
+/* In the log and unlocked phases the visible text lives elsewhere — the reading
+   area carries the fragment, the unlock line + methods carry the outcome — so the
+   ONE live region becomes sr-only (still present and polite, never a second region)
+   and frees its reserved height for the reading area and the larger method type. */
+.classification-room[data-room-phase='log'] .room-announce,
+.classification-room[data-room-phase='unlocked'] .room-announce {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* The bounded surface whose content swaps in place (worktop → log → methods). It
    fills the room's fixed height; a phase taller than the surface scrolls WITHIN it
    (a safety net) so the inspector itself never grows. */
@@ -7115,8 +7141,11 @@ p {
 }
 
 /* The active card sits in one fixed slot; its min-height absorbs the longest
-   question, so advancing cards never resize the tableau. */
+   question, so advancing cards never resize the tableau. A document-native
+   treatment: a full thin keyline plus a dog-eared corner-fold (built from palette
+   surfaces, no new assets) marks it as the pulled card, not a generic panel. */
 .room-active-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -7124,8 +7153,25 @@ p {
   padding: 14px 16px;
   background: var(--concrete);
   border: 1px solid var(--line-strong);
-  border-left: 3px solid var(--amber);
   border-radius: 7px;
+}
+.room-active-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 17px;
+  height: 17px;
+  background: linear-gradient(
+    225deg,
+    var(--raised) 0 46%,
+    var(--line-strong) 46% 52%,
+    var(--concrete) 52%
+  );
+  border-left: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong);
+  border-top-right-radius: 7px;
+  border-bottom-left-radius: 4px;
 }
 .room-card-title {
   font-weight: 700;
@@ -7198,10 +7244,20 @@ p {
   color: var(--amber);
 }
 
-/* The reserved aperture cell — empty until the third refusal, so no height jump. */
+/* The reserved aperture cell — empty until the third refusal, so no height jump.
+   Before shelf zero appears the empty slot reads as a cut slot in the desk: a
+   recessed keyline + inset shadow, no label and no hover/focus affordance, so it
+   never looks like an interactive control. */
 .room-shelf-slot {
   min-height: 56px;
   display: flex;
+}
+.room-shelf-slot:empty {
+  border-radius: 6px;
+  background: oklch(0.1 0.01 78 / 0.4);
+  box-shadow:
+    inset 0 2px 5px oklch(0 0 0 / 0.5),
+    inset 0 0 0 1px var(--line);
 }
 .room-shelf-zero {
   width: 100%;
@@ -7220,50 +7276,126 @@ p {
   color: var(--amber-soft);
 }
 
-/* Restriction log: the removal slips fan in the same bounded surface. */
+/* Restriction log — the reading beat. The lead, a row of slip tabs, one stable
+   reading area, and a reserved proceed slot fill the bounded surface. The reading
+   area flexes to the leftover height, which is constant across selections (the lead,
+   tabs, and proceed slot are fixed), so every fragment reads in a stationary block. */
 .room-log {
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-.room-slip-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+
+/* Three compact slip tabs in one fixed row. Each is a ≥44px target; they never move
+   and stay mounted through the whole beat, so a turn is never an unmount hole. */
+.room-slip-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
 }
 .room-slip {
-  width: 100%;
-  min-height: 48px;
+  min-height: 46px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 3px;
   text-align: left;
-  padding: 11px 14px;
+  padding: 6px 9px;
   color: var(--record);
   background: var(--concrete);
   border: 1px solid var(--line);
   border-radius: 6px;
-  transition: border-color 160ms var(--ease-out);
+  transition:
+    border-color 160ms var(--ease-out),
+    background-color 160ms var(--ease-out);
 }
-.room-slip-tab {
-  font-size: 0.66rem;
-  font-weight: 700;
+.room-slip:hover {
+  background: var(--raised-hover);
+}
+.room-slip-label {
+  font-size: 0.74rem;
+  font-weight: 650;
+  color: var(--record);
+}
+.room-slip-state {
+  font-size: 0.58rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--fog-dim);
 }
-.room-slip--turned {
+/* Turned: the tab reads as read (cyan keyline + state). */
+.room-slip[data-turned='true'] {
   border-color: var(--cyan-deep);
 }
-.room-slip--turned .room-slip-tab {
+.room-slip[data-turned='true'] .room-slip-state {
   color: var(--cyan);
 }
-.room-slip-fragment {
+/* Selected: the tab whose fragment is in the reading area — distinct beyond colour
+   via a solid keyline and an inset ring, not hue alone. */
+.room-slip[data-selected='true'] {
+  border-color: var(--cyan);
+  box-shadow: inset 0 0 0 1px var(--cyan);
+}
+.room-slip[data-selected='true'] .room-slip-label {
+  color: var(--record-bright);
+}
+
+/* The stable reading area: fixed (flexed) height, no inner scroll. Every one of the
+   three authored fragments fits fully — verified by measurement in the evidence run. */
+.room-reading {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  padding: 11px 13px;
+  background: var(--concrete);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.room-reading:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+.room-reading-fragment {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.42;
+  color: var(--record-bright);
+}
+.room-reading-rest {
+  margin: 0;
   font-size: 0.76rem;
   line-height: 1.4;
+  color: var(--fog-dim);
+}
+
+/* The proceed slot is reserved from the first log render (fixed height), so the
+   control appearing on unlock never shifts the reading area. */
+.room-proceed-slot {
+  min-height: 46px;
+  display: flex;
+}
+.room-proceed {
+  width: 100%;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  font-weight: 650;
+  color: var(--amber-soft);
+  background: oklch(0.16 0.03 78 / 0.35);
+  border: 1px solid var(--amber);
+  border-radius: 6px;
+  transition:
+    background-color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out);
+}
+.room-proceed:hover {
+  background: oklch(0.2 0.04 78 / 0.45);
 }
 
 /* Methods replace the tableau in place; nothing accumulates below. */
@@ -7307,13 +7439,16 @@ p {
 .classification-room .choice-body strong {
   font-size: 0.82rem;
 }
+/* With the announce region's reserved height freed in the unlocked phase, the room
+   method description and consequence line read at a comfortable size (still scoped
+   to .classification-room, so the shared ChoiceButton elsewhere is untouched). */
 .classification-room .choice-body > span {
-  font-size: 0.72rem;
-  line-height: 1.32;
+  font-size: 0.78rem;
+  line-height: 1.34;
 }
 .classification-room .choice-body small {
-  font-size: 0.66rem;
-  line-height: 1.28;
+  font-size: 0.7rem;
+  line-height: 1.3;
 }
 
 /* When the workstation is present, the site description yields its vertical space
@@ -7415,15 +7550,24 @@ p {
   height: 2.5px;
 }
 
-/* High contrast: the turned slip and refused target get a shape cue, never colour
-   alone (they already carry aria-pressed / text). */
-.high-contrast .room-slip--turned {
+/* High contrast: the turned/selected slip, refused target, and active card get a
+   shape cue, never colour alone (they already carry aria-pressed / aria-current /
+   text; the card carries its corner-fold). */
+.high-contrast .room-slip[data-turned='true'] {
   outline: 2px solid var(--cyan);
   outline-offset: -2px;
+}
+.high-contrast .room-slip[data-selected='true'] {
+  outline: 3px double var(--cyan);
+  outline-offset: -3px;
 }
 .high-contrast .room-category[data-refused='true'] {
   outline: 2px dashed var(--fog);
   outline-offset: -2px;
+}
+.high-contrast .room-active-card {
+  outline: 1px solid var(--record);
+  outline-offset: -1px;
 }
 .high-contrast .annex-world-portal-shutter {
   background: var(--night);

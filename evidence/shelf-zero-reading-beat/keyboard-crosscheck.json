@@ -1,0 +1,13 @@
+{
+  "what": "Live-runtime cross-check of the reading-beat focus handoffs, for the steps the trusted-keyboard harness could not reach on this host.",
+  "why": "scripts/evidence-shelf-zero-keyboard.mjs wedged at the same early Runtime.evaluate across 3 consecutive runs (host-level headless-Chrome wedge documented in the project memory and the brief). The 3 steps it DID complete on every run prove trusted Enter activates room buttons and the pending-focus fallback chain lands on a real control, never <body>. The reading-beat steps use the identical dispatch+pending-focus mechanism, which is source-independent (it fires after React commits, regardless of whether a click or a trusted Enter triggered the dispatch).",
+  "method": "Driven in the live Vite app (http://127.0.0.1:4174) inside the Claude Browser pane at 1280x800; real DOM activations (element.click()) plus the component's own pending-focus effect; document.activeElement read after each commit settled.",
+  "measurements": {
+    "place_on_shelf_zero_then_log": { "phase": "log", "activeElement": "room-slip", "notBody": true },
+    "turn_slip_row_nine":  { "phase": "log", "activeElement": "room-reading", "methods": 0, "notBody": true },
+    "turn_slip_row_ten":   { "phase": "log", "activeElement": "room-reading", "methods": 0, "notBody": true },
+    "turn_slip_row_eleven":{ "phase": "log", "activeElement": "room-reading", "methods": 0, "notBody": true },
+    "proceed_to_methods":  { "phase": "unlocked", "activeElement": "choice-row", "methods": 2, "notBody": true }
+  },
+  "conclusion": "slip turn -> focus on reading area; proceed -> focus on first method; document.activeElement is never <body> at any step; methods render only after proceed."
+}
