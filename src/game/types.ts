@@ -602,6 +602,19 @@ export interface SceneWorldCamera {
   target: SceneVector3
 }
 
+// Presentation-only acoustic perspective for one bounded-world camera pose.
+// Levels are normalized targets under the audio runtime's deliberately quiet
+// ceilings; cutoff and hum values are authored in Hz so each place has an
+// inspectable material identity without carrying evidence or instructions.
+export interface SceneAcousticTreatment {
+  weatherLevel: number
+  weatherCutoffHz: number
+  roomLevel: number
+  roomCutoffHz: number
+  humHz: number
+  humLevel: number
+}
+
 // One pointer-facing threshold inside an optional spatial world. The site id is
 // the only bridge back to authored gameplay content: activating a portal calls
 // the same location-selection path as the canonical DOM switcher.
@@ -614,6 +627,7 @@ export interface SceneWorldPortal {
   // pointer route available before WebGL loads and whenever it is unavailable.
   posterAnchor: { x: number; y: number }
   camera: SceneWorldCamera
+  acoustics: SceneAcousticTreatment
 }
 
 // Presentation-only authored data for a bounded WebGL place. It is deliberately
@@ -626,6 +640,7 @@ export interface SceneWorldDefinition {
   terrazzoSrc: string
   room: { width: number; depth: number; height: number }
   homeCamera: SceneWorldCamera
+  acoustics: SceneAcousticTreatment
   travelMs: number
   caption: { title: string; detail: string }
   portals: readonly SceneWorldPortal[]

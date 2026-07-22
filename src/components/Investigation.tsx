@@ -5,7 +5,13 @@ import { SceneStage } from '../scene/SceneStage'
 import { SITE_CLOSEUP_ENTRY_MS, SiteCloseupStage } from '../scene/SiteCloseupStage'
 import { resolveCommitConsent, sceneStateFor, witnessesRefusalOnCommit } from '../scene/sceneState'
 import { AnnexWorldStage } from '../world/AnnexWorldStage'
-import type { DepositionChoiceId, FieldActionId, GameState, SiteId } from '../game/types'
+import type {
+  DepositionChoiceId,
+  FieldActionId,
+  GameState,
+  SceneAcousticTreatment,
+  SiteId,
+} from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
 import { Deposition } from './Deposition'
 import { ReactionQuotes } from './ReactionQuotes'
@@ -16,6 +22,9 @@ interface InvestigationProps {
   // so the ambient-audio scene state reads the same value (view-local otherwise).
   depositionEntry: FieldActionId | null
   onDepositionEntryChange: (entry: FieldActionId | null) => void
+  // Reports presentation-only bounded-world acoustics to App's single audio
+  // handle. It never dispatches or writes canonical/persisted game state.
+  onAcousticTreatmentChange: (treatment: SceneAcousticTreatment | null) => void
   onCommitAction: (actionId: FieldActionId) => void
   onCommitDeposition: (
     actionId: FieldActionId,
@@ -80,6 +89,7 @@ export function Investigation({
   state,
   depositionEntry,
   onDepositionEntryChange,
+  onAcousticTreatmentChange,
   onCommitAction,
   onCommitDeposition,
   onOpenReconstruction,
@@ -345,6 +355,26 @@ export function Investigation({
           origin: worldPresentation.origin,
         }
       : worldPresentation
+  const acousticTreatment = scene.world
+    ? presentationForRender.kind === 'concourse'
+      ? scene.world.acoustics
+      : presentationForRender.kind === 'map'
+        ? null
+        : (scene.world.portals.find((portal) => portal.siteId === presentationForRender.siteId)
+            ?.acoustics ?? null)
+    : null
+
+  // Keep the audio graph synchronized from authored view data only. Returning to
+  // the hub restores its treatment; leaving Investigation restores the dry bed.
+  useEffect(() => {
+    onAcousticTreatmentChange(acousticTreatment)
+  }, [acousticTreatment, onAcousticTreatmentChange])
+  useEffect(
+    () => () => {
+      onAcousticTreatmentChange(null)
+    },
+    [onAcousticTreatmentChange],
+  )
   const presentationMatchesSelection =
     presentationForRender.kind !== 'map' &&
     presentationForRender.kind !== 'concourse' &&

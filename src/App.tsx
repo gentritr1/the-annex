@@ -20,8 +20,13 @@ import {
   subscribeStorageAvailability,
 } from './game/persistence'
 import { sceneStateFor } from './scene/sceneState'
-import type { CaseSwitchOption, FieldActionId, SceneStateId } from './game/types'
-import type { AccessibilitySettings } from './game/types'
+import type {
+  AccessibilitySettings,
+  CaseSwitchOption,
+  FieldActionId,
+  SceneAcousticTreatment,
+  SceneStateId,
+} from './game/types'
 
 // Resolve a switchable case id into the presentation model the title and debrief
 // switchers render. A case the player has already ruled on reads as a return; an
@@ -50,12 +55,23 @@ interface AmbientAudioParams {
   weatherKind: WeatherBedKind
   // The resolved scene state driving the gain/filter treatment.
   sceneState: SceneStateId
+  // View-local bounded-world perspective; null preserves the existing dry bed.
+  spatialTreatment: SceneAcousticTreatment | null
+  // Read-only canonical pressure tier. The audio engine clamps it to 0..3.
+  alarmLevel: number
 }
 
 // Wire the (React-free) ambient audio engine to game state. One engine per App
 // lifetime, created inside an effect (StrictMode-safe: fully torn down and
 // recreated) and driven entirely by props — no DOM observation of the scene.
-function useAmbientAudio({ enabled, active, weatherKind, sceneState }: AmbientAudioParams): void {
+function useAmbientAudio({
+  enabled,
+  active,
+  weatherKind,
+  sceneState,
+  spatialTreatment,
+  alarmLevel,
+}: AmbientAudioParams): void {
   const handleRef = useRef<AmbientAudioHandle | null>(null)
 
   // Create once; destroy (and close the AudioContext) on unmount.
@@ -80,6 +96,12 @@ function useAmbientAudio({ enabled, active, weatherKind, sceneState }: AmbientAu
   useEffect(() => {
     handleRef.current?.setSceneState(sceneState)
   }, [sceneState])
+  useEffect(() => {
+    handleRef.current?.setSpatialTreatment(spatialTreatment)
+  }, [spatialTreatment])
+  useEffect(() => {
+    handleRef.current?.setAlarm(alarmLevel)
+  }, [alarmLevel])
 
   // Enable / active lifecycle + gesture arming. The engine only ever constructs
   // or resumes the AudioContext inside a real user gesture: on toggle-on we are
@@ -125,6 +147,10 @@ export default function App() {
   // or abandon (both clear this) — so it is always null by the time the phase
   // leaves investigation, and App and SceneStage always read the identical value.
   const [depositionEntry, setDepositionEntry] = useState<FieldActionId | null>(null)
+  // The active bounded-world camera perspective is view-local like the open
+  // deposition entry. Investigation reports authored audio data only; this never
+  // enters the reducer, save payload, or event log.
+  const [spatialTreatment, setSpatialTreatment] = useState<SceneAcousticTreatment | null>(null)
 
   // The bed for this case, and the resolved scene state that drives its gain.
   // Only rain (Case 77) and dust (Case 81) are synthesized; a weatherless case
@@ -148,6 +174,8 @@ export default function App() {
     active: state.phase !== 'landing' && weatherBed !== null,
     weatherKind: weatherBed ?? 'rain',
     sceneState: audioSceneState,
+    spatialTreatment: state.phase === 'investigation' ? spatialTreatment : null,
+    alarmLevel: state.alarm,
   })
 
   useEffect(() => {
@@ -295,6 +323,7 @@ export default function App() {
               state={state}
               depositionEntry={depositionEntry}
               onDepositionEntryChange={setDepositionEntry}
+              onAcousticTreatmentChange={setSpatialTreatment}
               onCommitAction={(actionId) => dispatch({ type: 'COMMIT_FIELD_ACTION', actionId })}
               onCommitDeposition={(actionId, beats, askedConsent) =>
                 dispatch({ type: 'COMMIT_DEPOSITION', actionId, beats, askedConsent })

@@ -891,6 +891,17 @@ const scene: SceneDefinition = {
       position: [0, 1.62, 5.9],
       target: [0, 1.3, -1.8],
     },
+    // Acoustic perspective is presentation-only. Rain remains the case identity,
+    // but concrete occludes it while a quiet ventilation/hum bed gives each
+    // threshold a distinct material character. Levels sit under runtime ceilings.
+    acoustics: {
+      weatherLevel: 0.38,
+      weatherCutoffHz: 720,
+      roomLevel: 0.85,
+      roomCutoffHz: 190,
+      humHz: 54,
+      humLevel: 0.42,
+    },
     travelMs: 640,
     caption: {
       title: 'Civic Archive concourse',
@@ -907,6 +918,14 @@ const scene: SceneDefinition = {
           position: [-2.6, 1.6, 0],
           target: [-5.65, 1.35, -1.2],
         },
+        acoustics: {
+          weatherLevel: 0.18,
+          weatherCutoffHz: 560,
+          roomLevel: 0.68,
+          roomCutoffHz: 230,
+          humHz: 61,
+          humLevel: 0.28,
+        },
       },
       {
         siteId: 'care-ward',
@@ -917,6 +936,14 @@ const scene: SceneDefinition = {
         camera: {
           position: [-1.2, 1.6, 1.5],
           target: [-1.7, 1.35, -5.2],
+        },
+        acoustics: {
+          weatherLevel: 0.52,
+          weatherCutoffHz: 1450,
+          roomLevel: 0.42,
+          roomCutoffHz: 260,
+          humHz: 48,
+          humLevel: 0.12,
         },
       },
       {
@@ -929,6 +956,14 @@ const scene: SceneDefinition = {
           position: [1.2, 1.5, 1.2],
           target: [1.7, 1.15, -5.2],
         },
+        acoustics: {
+          weatherLevel: 0.32,
+          weatherCutoffHz: 850,
+          roomLevel: 0.9,
+          roomCutoffHz: 170,
+          humHz: 52,
+          humLevel: 0.65,
+        },
       },
       {
         siteId: 'small-archive',
@@ -939,6 +974,14 @@ const scene: SceneDefinition = {
         camera: {
           position: [2.6, 1.6, 0],
           target: [5.65, 1.35, -1.2],
+        },
+        acoustics: {
+          weatherLevel: 0.12,
+          weatherCutoffHz: 460,
+          roomLevel: 0.55,
+          roomCutoffHz: 150,
+          humHz: 63,
+          humLevel: 0.2,
         },
       },
     ],

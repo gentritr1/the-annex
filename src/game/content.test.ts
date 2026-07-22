@@ -11,7 +11,7 @@ import {
 } from './content'
 import { createInitialGameState } from './engine'
 import { SCENE_STATES } from './types'
-import type { CaseDefinition, GameState, MethodTag } from './types'
+import type { CaseDefinition, GameState, MethodTag, SceneAcousticTreatment } from './types'
 
 function expectUnique(ids: readonly string[]) {
   expect(new Set(ids).size).toBe(ids.length)
@@ -20,6 +20,20 @@ function expectUnique(ids: readonly string[]) {
 function expectFiniteVector3(vector: readonly [number, number, number]) {
   expect(vector).toHaveLength(3)
   vector.forEach((value) => expect(Number.isFinite(value)).toBe(true))
+}
+
+function expectBoundedAcoustics(treatment: SceneAcousticTreatment) {
+  ;[treatment.weatherLevel, treatment.roomLevel, treatment.humLevel].forEach((level) => {
+    expect(Number.isFinite(level)).toBe(true)
+    expect(level).toBeGreaterThanOrEqual(0)
+    expect(level).toBeLessThanOrEqual(1)
+  })
+  expect(treatment.weatherCutoffHz).toBeGreaterThanOrEqual(200)
+  expect(treatment.weatherCutoffHz).toBeLessThanOrEqual(12_000)
+  expect(treatment.roomCutoffHz).toBeGreaterThanOrEqual(80)
+  expect(treatment.roomCutoffHz).toBeLessThanOrEqual(2_000)
+  expect(treatment.humHz).toBeGreaterThanOrEqual(30)
+  expect(treatment.humHz).toBeLessThanOrEqual(120)
 }
 
 // Every registered case is held to the same structural contract. Case 81's stub
@@ -262,6 +276,7 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
     expect(world.travelMs).toBeGreaterThan(0)
     expectFiniteVector3(world.homeCamera.position)
     expectFiniteVector3(world.homeCamera.target)
+    expectBoundedAcoustics(world.acoustics)
 
     const portalSiteIds = world.portals.map((portal) => portal.siteId)
     expectUnique(portalSiteIds)
@@ -281,6 +296,7 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
         expect(coordinate).toBeGreaterThanOrEqual(0)
         expect(coordinate).toBeLessThanOrEqual(1)
       })
+      expectBoundedAcoustics(portal.acoustics)
     })
   })
 
@@ -444,6 +460,18 @@ describe('bounded spatial world coverage', () => {
   it('progressively enhances Case 77 and leaves Case 81 on its authored non-WebGL scene', () => {
     expect(getCaseContent('case-77').scene.world).toBeDefined()
     expect(getCaseContent('case-81').scene.world).toBeUndefined()
+  })
+
+  it('gives the Case 77 hub and every registered threshold a distinct acoustic perspective', () => {
+    const world = getCaseContent('case-77').scene.world
+    expect(world).toBeDefined()
+    if (!world) return
+
+    const treatments = [world.acoustics, ...world.portals.map((portal) => portal.acoustics)]
+    expect(treatments).toHaveLength(world.portals.length + 1)
+    expect(new Set(treatments.map((treatment) => JSON.stringify(treatment))).size).toBe(
+      treatments.length,
+    )
   })
 })
 

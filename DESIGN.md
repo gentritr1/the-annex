@@ -195,6 +195,13 @@ The interface is flat by default. Depth comes from tonal layering, the world ima
 - Render initial, state-change, and camera-travel frames on demand, then return the world to idle; do not add perpetual loops for shimmer, particles, pulse, or flicker. Reduced motion remains the authored poster, not a flattened animated world.
 - Render only while the world is visible and active; pause or dispose it when a close read covers it or the phase unmounts.
 - World geometry, camera pose, and renderer state stay presentation-only and never enter persistence or mutate the engine.
+- When the separately opt-in ambient-sound preference is enabled, a world may
+  author quiet acoustic perspectives for its hub and thresholds: weather
+  occlusion, ventilation, and restrained machinery may crossfade with the camera
+  journey, but never announce selection, evidence, cost, instructions, or state.
+- Acoustic perspective is presentation-only and defaults to the established dry
+  weather bed. It constructs no audio before a real user gesture, adds no
+  scheduling loop or source churn, and restores the hub treatment on return.
 
 ## 6. Do's and Don'ts
 

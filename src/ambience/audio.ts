@@ -9,14 +9,15 @@
 //     importable and constructible in the Node/jsdom test environment, and
 //     honours the browser rule: never construct or resume an AudioContext
 //     outside a user gesture.
-//   • Two authored beds keyed by the case's scene weather kind. Both beds are
-//     built once and left running behind a per-bed "bus" gain; switching cases
-//     crossfades the buses rather than rebuilding nodes (no node churn).
-//   • Scene state drives gain/filter multipliers, ramped ~1.5s — never jumped.
+//   • Two authored weather beds plus one normally-silent bounded-world room bed
+//     are built once behind gains; switching state only ramps existing nodes (no
+//     source churn).
+//   • Scene state and spatial perspective drive gain/filter targets, always
+//     ramped — never jumped while audible.
 //
 // The bed parameters (describeBed) and the scene→gain map (sceneGainMap) are
 // PURE data, exported so tests can assert them without any Web Audio at all.
-import type { SceneStateId } from '../game/types'
+import type { SceneAcousticTreatment, SceneStateId } from '../game/types'
 
 // The two weather beds this module authors. Case 77 is 'rain', Case 81 is 'dust'.
 // A case whose scene weather is 'none' simply gets no bed (the hook keeps the
@@ -140,6 +141,88 @@ export function sceneAudioTreatment(
   return sceneGainMap[kind][state]
 }
 
+// ── Bounded-world acoustic perspective (pure) ───────────────────────────────
+// The room layers live beneath their own hard ceilings. Even the loudest authored
+// portal at alarm tier 3 remains quieter than either weather bed's ceiling.
+export const ROOM_TONE_CEILING = 0.014
+export const ROOM_HUM_CEILING = 0.0014
+
+const OPEN_WEATHER_CUTOFF_HZ = 12_000
+const REST_ROOM_CUTOFF_HZ = 180
+const REST_HUM_HZ = 54
+
+interface AlarmPressure {
+  roomMul: number
+  humMul: number
+  cutoffMul: number
+}
+
+const alarmPressure: readonly [AlarmPressure, AlarmPressure, AlarmPressure, AlarmPressure] = [
+  { roomMul: 1, humMul: 1, cutoffMul: 1 },
+  { roomMul: 1.03, humMul: 1.08, cutoffMul: 0.98 },
+  { roomMul: 1.07, humMul: 1.18, cutoffMul: 0.94 },
+  { roomMul: 1.12, humMul: 1.3, cutoffMul: 0.9 },
+]
+
+export interface SpatialAudioTargets {
+  alarmTier: number
+  weatherDryTarget: number
+  weatherSpatialTarget: number
+  weatherCutoffTarget: number
+  roomToneTarget: number
+  roomCutoffTarget: number
+  roomHumFrequencyTarget: number
+  roomHumTarget: number
+}
+
+function clampAlarmTier(level: number): number {
+  if (!Number.isFinite(level)) return 0
+  return Math.max(0, Math.min(3, Math.round(level)))
+}
+
+function clampToCeiling(level: number, multiplier: number, ceiling: number): number {
+  const target = level * multiplier * ceiling
+  if (!Number.isFinite(target)) return 0
+  return Math.max(0, Math.min(ceiling, target))
+}
+
+// Resolve exact runtime targets without touching Web Audio. `null` is the dry,
+// existing two-bed mix used by Case 81 and every non-world surface.
+export function resolveSpatialAudioTargets(
+  treatment: SceneAcousticTreatment | null,
+  alarmLevel: number,
+): SpatialAudioTargets {
+  const alarmTier = clampAlarmTier(alarmLevel)
+  if (!treatment) {
+    return {
+      alarmTier,
+      weatherDryTarget: 1,
+      weatherSpatialTarget: 0,
+      weatherCutoffTarget: OPEN_WEATHER_CUTOFF_HZ,
+      roomToneTarget: 0,
+      roomCutoffTarget: REST_ROOM_CUTOFF_HZ,
+      roomHumFrequencyTarget: REST_HUM_HZ,
+      roomHumTarget: 0,
+    }
+  }
+
+  const pressure = alarmPressure[alarmTier]!
+  return {
+    alarmTier,
+    weatherDryTarget: 0,
+    weatherSpatialTarget: treatment.weatherLevel,
+    weatherCutoffTarget: treatment.weatherCutoffHz,
+    roomToneTarget: clampToCeiling(
+      treatment.roomLevel,
+      pressure.roomMul,
+      ROOM_TONE_CEILING,
+    ),
+    roomCutoffTarget: treatment.roomCutoffHz * pressure.cutoffMul,
+    roomHumFrequencyTarget: treatment.humHz,
+    roomHumTarget: clampToCeiling(treatment.humLevel, pressure.humMul, ROOM_HUM_CEILING),
+  }
+}
+
 // ── Runtime handle ───────────────────────────────────────────────────────────
 export type AmbientContextState = 'unbuilt' | 'suspended' | 'running' | 'closed'
 
@@ -160,6 +243,17 @@ export interface AmbientAudioSnapshot {
   dustBedTarget: number
   dustHumTarget: number
   rainNoiseFreqTarget: number
+  // Exact post-weather and synthesized-room targets. They make the acoustic
+  // perspective falsifiable even when a headless browser mutes audible output.
+  alarmTier: number
+  spatialActive: boolean
+  weatherDryTarget: number
+  weatherSpatialTarget: number
+  weatherCutoffTarget: number
+  roomToneTarget: number
+  roomCutoffTarget: number
+  roomHumFrequencyTarget: number
+  roomHumTarget: number
 }
 
 export interface AmbientAudioHandle {
@@ -172,6 +266,11 @@ export interface AmbientAudioHandle {
   setWeather(kind: WeatherBedKind): void
   // Apply a scene state's gain/filter treatment (ramped ~1.5s). Safe before start().
   setSceneState(state: SceneStateId): void
+  // Morph between the unoccluded weather bed and one authored bounded-world
+  // perspective. Null restores the exact existing dry path (Case 81/default).
+  setSpatialTreatment(treatment: SceneAcousticTreatment | null): void
+  // Read-only canonical alarm pressure. Clamped to the four engine tiers.
+  setAlarm(level: number): void
   isRunning(): boolean
   getSnapshot(): AmbientAudioSnapshot
   // Full teardown: cancel timers, remove listeners, disconnect nodes, close ctx.
@@ -180,6 +279,7 @@ export interface AmbientAudioHandle {
 
 const FADE_SECONDS = 2.5 // start / stop / weather crossfade
 const SCENE_RAMP_SECONDS = 1.5 // scene-state gain/filter transitions
+const SPATIAL_RAMP_SECONDS = 1.2 // concrete/weather perspective morph
 
 type WindowWithWebkit = Window &
   typeof globalThis & {
@@ -218,6 +318,8 @@ export function createAmbientAudio(): AmbientAudioHandle {
   let wantPlaying = false
   let weather: WeatherBedKind = 'rain'
   let sceneState: SceneStateId = 'neutral'
+  let spatialTreatment: SceneAcousticTreatment | null = null
+  let alarmLevel = 0
   let suspendTimer: ReturnType<typeof setTimeout> | null = null
 
   // Graph nodes (null until buildGraph runs).
@@ -228,6 +330,13 @@ export function createAmbientAudio(): AmbientAudioHandle {
   let dustBedGain: GainNode | null = null
   let rainBand: BiquadFilterNode | null = null
   let dustHumGain: GainNode | null = null
+  let weatherDryGain: GainNode | null = null
+  let weatherSpatialFilter: BiquadFilterNode | null = null
+  let weatherSpatialGain: GainNode | null = null
+  let roomFilter: BiquadFilterNode | null = null
+  let roomToneGain: GainNode | null = null
+  let roomHum: OscillatorNode | null = null
+  let roomHumGain: GainNode | null = null
   const sources: AudioScheduledSourceNode[] = []
 
   // Target mirrors (so the snapshot is exact regardless of mid-ramp reads).
@@ -238,6 +347,7 @@ export function createAmbientAudio(): AmbientAudioHandle {
   let dustBedTarget = 0
   let dustHumTarget = 0
   let rainNoiseFreqTarget = rainBed.noise.frequency
+  let spatialTargets = resolveSpatialAudioTargets(null, 0)
 
   function rampTo(param: AudioParam, value: number, seconds: number): void {
     if (!ctx) return
@@ -256,10 +366,25 @@ export function createAmbientAudio(): AmbientAudioHandle {
     master.gain.value = 0
     master.connect(context.destination)
 
+    // The existing weather buses retain a completely dry path. A bounded-world
+    // treatment crossfades to the parallel low-passed path, so null leaves Case
+    // 81's established dust bed bit-for-bit on the original route.
+    weatherDryGain = context.createGain()
+    weatherDryGain.gain.value = spatialTargets.weatherDryTarget
+    weatherDryGain.connect(master)
+    weatherSpatialFilter = context.createBiquadFilter()
+    weatherSpatialFilter.type = 'lowpass'
+    weatherSpatialFilter.frequency.value = spatialTargets.weatherCutoffTarget
+    weatherSpatialFilter.Q.value = 0.35
+    weatherSpatialGain = context.createGain()
+    weatherSpatialGain.gain.value = spatialTargets.weatherSpatialTarget
+    weatherSpatialFilter.connect(weatherSpatialGain).connect(master)
+
     // ── Rain bed ──────────────────────────────────────────────────────────
     rainBus = context.createGain()
     rainBus.gain.value = 0
-    rainBus.connect(master)
+    rainBus.connect(weatherDryGain)
+    rainBus.connect(weatherSpatialFilter)
     rainBedGain = context.createGain()
     rainBedGain.gain.value = rainBed.ceiling
     rainBedGain.connect(rainBus)
@@ -298,7 +423,8 @@ export function createAmbientAudio(): AmbientAudioHandle {
     // ── Dust bed ──────────────────────────────────────────────────────────
     dustBus = context.createGain()
     dustBus.gain.value = 0
-    dustBus.connect(master)
+    dustBus.connect(weatherDryGain)
+    dustBus.connect(weatherSpatialFilter)
     dustBedGain = context.createGain()
     dustBedGain.gain.value = dustBed.ceiling
     dustBedGain.connect(dustBus)
@@ -329,8 +455,49 @@ export function createAmbientAudio(): AmbientAudioHandle {
     dustHumGain.gain.value = dustBed.hum!.level
     dustHum.connect(dustHumGain).connect(dustBedGain)
 
+    // ── Bounded-world room perspective ───────────────────────────────────
+    // One quiet brown-noise ventilation source, one slow drift LFO, and one
+    // transformer-like hum are constructed once with the weather beds. Their
+    // gains rest at zero outside an authored world treatment.
+    const roomNoise = context.createBufferSource()
+    roomNoise.buffer = makeNoiseBuffer(context, 'brown')
+    roomNoise.loop = true
+    roomFilter = context.createBiquadFilter()
+    roomFilter.type = 'lowpass'
+    roomFilter.frequency.value = spatialTargets.roomCutoffTarget
+    roomFilter.Q.value = 0.45
+    const roomNoiseGain = context.createGain()
+    roomNoiseGain.gain.value = 0.72
+    roomToneGain = context.createGain()
+    roomToneGain.gain.value = spatialTargets.roomToneTarget
+    roomNoise.connect(roomFilter).connect(roomNoiseGain).connect(roomToneGain).connect(master)
+
+    const roomLfo = context.createOscillator()
+    roomLfo.type = 'sine'
+    roomLfo.frequency.value = 1 / 31
+    const roomLfoGain = context.createGain()
+    roomLfoGain.gain.value = 0.72 * 0.06
+    roomLfo.connect(roomLfoGain).connect(roomNoiseGain.gain)
+
+    roomHum = context.createOscillator()
+    roomHum.type = 'sine'
+    roomHum.frequency.value = spatialTargets.roomHumFrequencyTarget
+    roomHumGain = context.createGain()
+    roomHumGain.gain.value = spatialTargets.roomHumTarget
+    roomHum.connect(roomHumGain).connect(master)
+
     // Start every continuous source once. They never restart (no accumulation).
-    sources.push(rainNoise, rainLowNoise, rainLfo, dustNoise, dustLfo, dustHum)
+    sources.push(
+      rainNoise,
+      rainLowNoise,
+      rainLfo,
+      dustNoise,
+      dustLfo,
+      dustHum,
+      roomNoise,
+      roomLfo,
+      roomHum,
+    )
     sources.forEach((node) => node.start())
 
     built = true
@@ -366,6 +533,47 @@ export function createAmbientAudio(): AmbientAudioHandle {
     if (rainBand) rampTo(rainBand.frequency, rainNoiseFreqTarget, SCENE_RAMP_SECONDS)
   }
 
+  function applySpatial(instant: boolean): void {
+    spatialTargets = resolveSpatialAudioTargets(spatialTreatment, alarmLevel)
+    if (
+      !built ||
+      !ctx ||
+      !weatherDryGain ||
+      !weatherSpatialFilter ||
+      !weatherSpatialGain ||
+      !roomFilter ||
+      !roomToneGain ||
+      !roomHum ||
+      !roomHumGain
+    ) {
+      return
+    }
+
+    if (instant) {
+      const now = ctx.currentTime
+      weatherDryGain.gain.setValueAtTime(spatialTargets.weatherDryTarget, now)
+      weatherSpatialGain.gain.setValueAtTime(spatialTargets.weatherSpatialTarget, now)
+      weatherSpatialFilter.frequency.setValueAtTime(spatialTargets.weatherCutoffTarget, now)
+      roomToneGain.gain.setValueAtTime(spatialTargets.roomToneTarget, now)
+      roomFilter.frequency.setValueAtTime(spatialTargets.roomCutoffTarget, now)
+      roomHum.frequency.setValueAtTime(spatialTargets.roomHumFrequencyTarget, now)
+      roomHumGain.gain.setValueAtTime(spatialTargets.roomHumTarget, now)
+      return
+    }
+
+    rampTo(weatherDryGain.gain, spatialTargets.weatherDryTarget, SPATIAL_RAMP_SECONDS)
+    rampTo(weatherSpatialGain.gain, spatialTargets.weatherSpatialTarget, SPATIAL_RAMP_SECONDS)
+    rampTo(
+      weatherSpatialFilter.frequency,
+      spatialTargets.weatherCutoffTarget,
+      SPATIAL_RAMP_SECONDS,
+    )
+    rampTo(roomToneGain.gain, spatialTargets.roomToneTarget, SPATIAL_RAMP_SECONDS)
+    rampTo(roomFilter.frequency, spatialTargets.roomCutoffTarget, SPATIAL_RAMP_SECONDS)
+    rampTo(roomHum.frequency, spatialTargets.roomHumFrequencyTarget, SPATIAL_RAMP_SECONDS)
+    rampTo(roomHumGain.gain, spatialTargets.roomHumTarget, SPATIAL_RAMP_SECONDS)
+  }
+
   function start(): void {
     wantPlaying = true
     if (suspendTimer) {
@@ -383,6 +591,7 @@ export function createAmbientAudio(): AmbientAudioHandle {
     // gains are set (no ramp visible under the master fade), then master fades in.
     applyWeather(true)
     applyScene()
+    applySpatial(true)
     if (master) rampTo(master.gain, 1, FADE_SECONDS)
     masterTarget = 1
   }
@@ -414,6 +623,19 @@ export function createAmbientAudio(): AmbientAudioHandle {
     if (state === sceneState) return
     sceneState = state
     applyScene()
+  }
+
+  function setSpatialTreatment(treatment: SceneAcousticTreatment | null): void {
+    if (treatment === spatialTreatment) return
+    spatialTreatment = treatment
+    applySpatial(false)
+  }
+
+  function setAlarm(level: number): void {
+    const tier = clampAlarmTier(level)
+    if (tier === alarmLevel) return
+    alarmLevel = tier
+    applySpatial(false)
   }
 
   function onVisibility(): void {
@@ -455,6 +677,15 @@ export function createAmbientAudio(): AmbientAudioHandle {
       dustBedTarget,
       dustHumTarget,
       rainNoiseFreqTarget,
+      alarmTier: spatialTargets.alarmTier,
+      spatialActive: spatialTreatment !== null,
+      weatherDryTarget: spatialTargets.weatherDryTarget,
+      weatherSpatialTarget: spatialTargets.weatherSpatialTarget,
+      weatherCutoffTarget: spatialTargets.weatherCutoffTarget,
+      roomToneTarget: spatialTargets.roomToneTarget,
+      roomCutoffTarget: spatialTargets.roomCutoffTarget,
+      roomHumFrequencyTarget: spatialTargets.roomHumFrequencyTarget,
+      roomHumTarget: spatialTargets.roomHumTarget,
     }
   }
 
@@ -484,6 +715,12 @@ export function createAmbientAudio(): AmbientAudioHandle {
         dustBedGain?.disconnect()
         rainBand?.disconnect()
         dustHumGain?.disconnect()
+        weatherDryGain?.disconnect()
+        weatherSpatialFilter?.disconnect()
+        weatherSpatialGain?.disconnect()
+        roomFilter?.disconnect()
+        roomToneGain?.disconnect()
+        roomHumGain?.disconnect()
       } catch {
         // Best-effort teardown: never throw out of destroy().
       }
@@ -494,5 +731,15 @@ export function createAmbientAudio(): AmbientAudioHandle {
     built = false
   }
 
-  return { start, stop, setWeather, setSceneState, isRunning, getSnapshot, destroy }
+  return {
+    start,
+    stop,
+    setWeather,
+    setSceneState,
+    setSpatialTreatment,
+    setAlarm,
+    isRunning,
+    getSnapshot,
+    destroy,
+  }
 }
