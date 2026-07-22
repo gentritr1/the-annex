@@ -64,15 +64,17 @@ const portalRingStyle: CSSProperties = {
   pointerEvents: 'none',
 }
 
-const portalDotStyle: CSSProperties = {
+const portalCodeStyle: CSSProperties = {
   position: 'absolute',
-  top: '50%',
-  left: '50%',
-  width: 5,
-  height: 5,
-  borderRadius: '50%',
-  background: 'currentColor',
-  transform: 'translate(-50%, -50%)',
+  inset: 0,
+  display: 'grid',
+  placeItems: 'center',
+  color: 'currentColor',
+  fontFamily: 'ui-monospace, SFMono-Regular, Consolas, monospace',
+  fontSize: '0.62rem',
+  fontWeight: 800,
+  lineHeight: 1,
+  letterSpacing: '0.02em',
 }
 
 const portalLabelStyle: CSSProperties = {
@@ -90,12 +92,15 @@ const portalLabelStyle: CSSProperties = {
   lineHeight: 1.2,
   letterSpacing: '0.035em',
   whiteSpace: 'nowrap',
-  transform: 'translateX(-50%)',
   pointerEvents: 'none',
 }
 
 function portalName(sites: readonly SiteDefinition[], siteId: SiteId): string {
   return sites.find((site) => site.id === siteId)?.name ?? siteId
+}
+
+function portalIndex(sites: readonly SiteDefinition[], siteId: SiteId): string {
+  return sites.find((site) => site.id === siteId)?.index ?? '·'
 }
 
 /**
@@ -143,6 +148,7 @@ export function AnnexWorldStage({
           signal: abort.signal,
           onContextLost: () => {
             if (disposed) return
+            handleRef.current = null
             setRendererState('fallback')
             setLoopRunning(false)
           },
@@ -209,11 +215,13 @@ export function AnnexWorldStage({
   const effectiveRendererState = !active || reducedMotion ? 'poster' : rendererState
   const webglVisible = effectiveRendererState === 'webgl'
   const posterOpacity = webglVisible ? 0 : 1
+  const alarmTier = Math.max(0, Math.min(3, Math.round(alarmLevel)))
 
   return (
     <div
       className="annex-world-stage"
       data-active={active ? 'true' : 'false'}
+      data-alarm={alarmTier}
       data-renderer={effectiveRendererState}
       data-world-loop={active && !reducedMotion && loopRunning ? 'running' : 'idle'}
       ref={rootRef}
@@ -257,7 +265,8 @@ export function AnnexWorldStage({
           const raiseLabel = liftLabel || portal.posterAnchor.x < 0.25
           const lowerRightLabel = portal.posterAnchor.x > 0.8
           const labelShift =
-            portal.posterAnchor.x < 0.25 ? 36 : portal.posterAnchor.x > 0.8 ? -48 : 0
+            portal.posterAnchor.x < 0.25 ? 42 : portal.posterAnchor.x > 0.8 ? -50 : 0
+          const name = portalName(sites, portal.siteId)
           return (
             <button
               type="button"
@@ -265,14 +274,18 @@ export function AnnexWorldStage({
               data-filed={filed ? 'true' : undefined}
               data-selected={selected ? 'true' : undefined}
               data-site={portal.siteId}
-              aria-hidden="true"
-              tabIndex={-1}
+              aria-label={`Enter ${name}`}
               key={portal.siteId}
               ref={(element) => {
                 if (element) portalButtonsRef.current.set(portal.siteId, element)
                 else portalButtonsRef.current.delete(portal.siteId)
               }}
-              title={portalName(sites, portal.siteId)}
+              title={name}
+              onPointerEnter={() => handleRef.current?.setPreview(portal.siteId)}
+              onPointerLeave={() => handleRef.current?.setPreview(undefined)}
+              onPointerCancel={() => handleRef.current?.setPreview(undefined)}
+              onFocus={() => handleRef.current?.setPreview(portal.siteId)}
+              onBlur={() => handleRef.current?.setPreview(undefined)}
               onClick={(event) => onPortalActivate(portal.siteId, event.currentTarget)}
               style={{
                 ...portalButtonStyle,
@@ -282,17 +295,23 @@ export function AnnexWorldStage({
                 pointerEvents: active ? 'auto' : 'none',
               }}
             >
-              <span style={{ ...portalRingStyle, borderColor: color }}>
-                <span style={portalDotStyle} />
+              <span
+                className="annex-world-portal-ring"
+                style={{ ...portalRingStyle, borderColor: color }}
+              >
+                <span className="annex-world-portal-code" style={portalCodeStyle}>
+                  {portalIndex(sites, portal.siteId)}
+                </span>
               </span>
               <span
+                className="annex-world-portal-label"
                 style={{
                   ...portalLabelStyle,
                   top: raiseLabel ? -28 : lowerRightLabel ? 78 : 50,
                   left: `calc(50% + ${labelShift}px)`,
                 }}
               >
-                {portalName(sites, portal.siteId)}
+                {name}
               </span>
             </button>
           )

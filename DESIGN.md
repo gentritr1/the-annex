@@ -190,6 +190,9 @@ The interface is flat by default. Depth comes from tonal layering, the world ima
 - A bounded WebGL world is progressive enhancement for an investigation scene, never the only route to a location or method.
 - The DOM location switcher and method buttons remain the canonical controls; portals call the same selection path and never own game state.
 - An authored poster preserves every portal when WebGL is unavailable, still loading, or bypassed by either reduced-motion preference.
+- Portal frames, threshold lights, floor routes, and alarm washes repeat the DOM state vocabulary: amber for intent, cyan for filed record, and coral for risk; architectural light is never decorative state noise.
+- Portal mirrors rest as concise A–D wayfinding markers. Reveal the full location name on hover, keyboard focus, or selection while the accessible DOM button keeps the canonical name and action available at all times.
+- Render initial, state-change, and camera-travel frames on demand, then return the world to idle; do not add perpetual loops for shimmer, particles, pulse, or flicker. Reduced motion remains the authored poster, not a flattened animated world.
 - Render only while the world is visible and active; pause or dispose it when a close read covers it or the phase unmounts.
 - World geometry, camera pose, and renderer state stay presentation-only and never enter persistence or mutate the engine.
 

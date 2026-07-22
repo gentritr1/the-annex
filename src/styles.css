@@ -1265,7 +1265,7 @@ p {
    poster. Three owns the canvas; these layers keep the live and fallback views
    in the same civic-material language without putting gameplay state in WebGL. */
 .world-view--spatial {
-  background: #090c0f;
+  background: var(--night);
 }
 
 .world-view > .annex-world-stage {
@@ -1284,12 +1284,19 @@ p {
   pointer-events: none;
 }
 
+/* Imperative fallback cleanup may run after React has committed a settled
+   close-up. Keep the hidden portal mirrors inert regardless of that ordering. */
+.world-view--closeup .annex-world-portal {
+  pointer-events: none !important;
+}
+
 .annex-world-stage::after {
   content: '';
   position: absolute;
   z-index: 2;
   inset: 0;
   background:
+    linear-gradient(180deg, var(--world-risk-wash, transparent), transparent 28%),
     radial-gradient(circle at 50% 74%, transparent 0 24%, oklch(0.08 0.012 235 / 0.16) 68%),
     linear-gradient(180deg, oklch(0.06 0.01 230 / 0.24), transparent 24% 74%, oklch(0.05 0 0 / 0.3));
   box-shadow:
@@ -1298,25 +1305,87 @@ p {
   pointer-events: none;
 }
 
-.annex-world-portal > span:first-child,
-.annex-world-portal > span:last-child {
+.annex-world-stage[data-alarm='1'] {
+  --world-risk-wash: oklch(0.66 0.17 30 / 0.035);
+}
+
+.annex-world-stage[data-alarm='2'] {
+  --world-risk-wash: oklch(0.66 0.17 30 / 0.075);
+}
+
+.annex-world-stage[data-alarm='3'] {
+  --world-risk-wash: oklch(0.66 0.17 30 / 0.12);
+}
+
+.annex-world-portal-ring,
+.annex-world-portal-label {
   transition:
     opacity 160ms var(--ease-out),
     transform 160ms var(--ease-out),
-    border-color 160ms var(--ease-out);
+    border-color 160ms var(--ease-out),
+    background-color 160ms var(--ease-out);
 }
 
-.annex-world-portal > span:last-child {
-  opacity: 0.82;
+.annex-world-portal-ring {
+  transform: scale(1);
 }
 
-.annex-world-portal:hover > span:first-child {
-  transform: scale(1.1);
+.annex-world-portal-code {
+  opacity: 0.92;
+  transition:
+    color 160ms var(--ease-out),
+    opacity 160ms var(--ease-out);
 }
 
-.annex-world-portal:hover > span:last-child {
+.annex-world-portal-label {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-50%) translateY(-4px);
+  transition:
+    opacity 140ms var(--ease-out),
+    transform 160ms var(--ease-out),
+    border-color 160ms var(--ease-out),
+    background-color 160ms var(--ease-out),
+    visibility 0s linear 160ms;
+}
+
+.annex-world-portal:hover .annex-world-portal-ring,
+.annex-world-portal:focus-visible .annex-world-portal-ring,
+.annex-world-portal[data-selected='true'] .annex-world-portal-ring {
+  transform: scale(1.08);
+  background: oklch(0.09 0 0 / 0.58);
+}
+
+.annex-world-portal:active .annex-world-portal-ring {
+  transform: scale(0.94);
+}
+
+.annex-world-portal:hover .annex-world-portal-code,
+.annex-world-portal:focus-visible .annex-world-portal-code,
+.annex-world-portal[data-selected='true'] .annex-world-portal-code,
+.annex-world-portal[data-filed='true'] .annex-world-portal-code {
   opacity: 1;
-  transform: translateX(-50%) translateY(2px);
+}
+
+.annex-world-portal:hover .annex-world-portal-label,
+.annex-world-portal:focus-visible .annex-world-portal-label,
+.annex-world-portal[data-selected='true'] .annex-world-portal-label {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  transition-delay: 0s;
+}
+
+.annex-world-portal[data-filed='true'] .annex-world-portal-ring {
+  background: oklch(0.11 0.024 190 / 0.72);
+}
+
+@media (hover: none), (pointer: coarse) {
+  .annex-world-portal:not([data-selected='true']):not(:focus-visible) .annex-world-portal-label {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-50%) translateY(-4px);
+  }
 }
 
 .world-return {
@@ -1330,7 +1399,7 @@ p {
   background: oklch(0.09 0.01 235 / 0.88);
   border: 1px solid var(--line-strong);
   border-radius: 5px;
-  box-shadow: 0 8px 24px oklch(0.03 0 0 / 0.34);
+  box-shadow: 0 6px 8px rgb(0 0 0 / 0.22);
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
   font-size: 0.68rem;
   font-weight: 750;
@@ -1347,7 +1416,7 @@ p {
 .world-return:hover {
   color: var(--amber-soft);
   background: oklch(0.12 0.015 70 / 0.94);
-  border-color: var(--amber-dim);
+  border-color: var(--amber);
   transform: translateX(-2px);
 }
 
@@ -1933,6 +2002,18 @@ p {
 .high-contrast .annex-world-stage::after {
   background: none;
   box-shadow: inset 0 0 0 1px var(--record);
+}
+
+.high-contrast .annex-world-portal-ring {
+  background: var(--night);
+  border-width: 2px !important;
+  box-shadow: none !important;
+}
+
+.high-contrast .annex-world-portal-label {
+  color: var(--record-bright) !important;
+  background: var(--night) !important;
+  border: 1px solid var(--record);
 }
 
 .high-contrast .world-return {
