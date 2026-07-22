@@ -1,0 +1,73 @@
+{
+  "url": "http://127.0.0.1:4174",
+  "when": "2026-07-22T20:52:58.408Z",
+  "complete": false,
+  "incompleteReason": "CDP timeout: Runtime.evaluate",
+  "pass": false,
+  "steps": [
+    {
+      "step": "room reachable; routine phase; fourth card + shelf zero absent",
+      "pass": true,
+      "detail": {
+        "room": true,
+        "phase": "routine",
+        "activeCard": "The ledger card",
+        "committable": 0,
+        "pocketLeak": false,
+        "shelfZero": false
+      }
+    },
+    {
+      "step": "file routine card 1 → focus stays in room",
+      "pass": true,
+      "detail": {
+        "active": "room-category",
+        "phase": "routine",
+        "shelfZero": false,
+        "slips": 0,
+        "methods": 0,
+        "armed": false,
+        "resolved": null
+      }
+    },
+    {
+      "step": "file routine card 2 → focus stays in room",
+      "pass": true,
+      "detail": {
+        "active": "room-category",
+        "phase": "routine",
+        "shelfZero": false,
+        "slips": 0,
+        "methods": 0,
+        "armed": false,
+        "resolved": null
+      }
+    },
+    {
+      "step": "file LAST routine card → pocket phase, focus not <body>",
+      "pass": true,
+      "detail": {
+        "active": "room-category",
+        "phase": "pocket",
+        "shelfZero": false,
+        "slips": 0,
+        "methods": 0,
+        "armed": false,
+        "resolved": null
+      }
+    },
+    {
+      "step": "refusal 1 → next untried category focused",
+      "pass": true,
+      "detail": {
+        "active": "room-category",
+        "phase": "pocket",
+        "shelfZero": false,
+        "slips": 0,
+        "methods": 0,
+        "armed": false,
+        "resolved": null
+      }
+    }
+  ]
+}

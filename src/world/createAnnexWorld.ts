@@ -23,8 +23,13 @@ export interface AnnexWorldHandle {
   setAlarm(level: number): void
   // Apply the resolved concourse alteration per site (content-driven; may be
   // empty). The opened outcome warms the portal frame/signal into an amber seam;
-  // the sealed one cools the frame and reveals a horizontal bar across the plate.
+  // the sealed one cools the frame and lowers a barred shutter across the plate.
   setResolvedOutcomes(outcomes: ReadonlyMap<SiteId, SiteWorldOutcome>): void
+  // Hold one portal's outcome treatment under return emphasis (a brighter opened
+  // spill / a heavier sealed shutter) for a beat after an actual return, then clear
+  // it with `undefined`. Boosts the treatment and schedules one frame — no new
+  // continuous loop; the bounded invalidation lifecycle carries it.
+  setReturnEmphasis(siteId: SiteId | undefined): void
   invalidate(): void
   destroy(): void
 }
@@ -44,8 +49,12 @@ interface PortalRenderRecord {
   anchor: Vector3
   frameMaterial: MeshStandardMaterial
   signalMaterial: MeshStandardMaterial
-  // A thin horizontal bar across the plate, shown only for the sealed outcome.
-  barMesh: import('three').Mesh
+  // The barred shutter (four stacked bars) shown only for the sealed outcome.
+  barMeshes: import('three').Mesh[]
+  barMaterial: MeshStandardMaterial
+  // A bright amber under-seam shown only for the opened outcome.
+  seamMesh: import('three').Mesh
+  seamMaterial: MeshStandardMaterial
 }
 
 type ThreeModule = typeof import('three')
@@ -265,6 +274,7 @@ export async function createAnnexWorld(
   const portalRecords: PortalRenderRecord[] = []
   const completed = new Set<SiteId>()
   let resolvedOutcomes: ReadonlyMap<SiteId, SiteWorldOutcome> = new Map()
+  let returnEmphasisSiteId: SiteId | undefined
 
   function reportLoop(running: boolean) {
     if (loopReported === running) return
@@ -391,50 +401,60 @@ export async function createAnnexWorld(
 
   function updatePortalMaterials() {
     const traveling = selectedSiteId !== undefined
-    portalRecords.forEach(({ portal, frameMaterial, signalMaterial, barMesh }) => {
-      const selected = portal.siteId === selectedSiteId
-      const previewed = portal.siteId === previewSiteId
-      const active = selected || previewed
-      const filed = completed.has(portal.siteId)
-      const outcome = resolvedOutcomes.get(portal.siteId)
+    portalRecords.forEach(
+      ({ portal, frameMaterial, signalMaterial, barMeshes, barMaterial, seamMesh, seamMaterial }) => {
+        const selected = portal.siteId === selectedSiteId
+        const previewed = portal.siteId === previewSiteId
+        const active = selected || previewed
+        const filed = completed.has(portal.siteId)
+        const outcome = resolvedOutcomes.get(portal.siteId)
+        const emphasised = returnEmphasisSiteId === portal.siteId
 
-      // An authored outcome overrides the generic filed treatment. The opened seam
-      // runs warm amber and bright; the sealed frame cools/darkens and drops a bar
-      // across the plate (geometry, no texture) so the two read differently even in
-      // the poster fallback's high-contrast neighbour.
-      if (outcome && !active) {
-        if (outcome.variant === 'opened') {
-          frameMaterial.color.setHex(0xc89445)
-          frameMaterial.emissive.setHex(0x5a370e)
-          frameMaterial.emissiveIntensity = 0.72
-          signalMaterial.color.setHex(0xe0b06a)
-          signalMaterial.emissive.setHex(0x7a4a10)
-          signalMaterial.emissiveIntensity = 1.3
-        } else {
-          frameMaterial.color.setHex(0x232a2f)
-          frameMaterial.emissive.setHex(0x090d10)
-          frameMaterial.emissiveIntensity = 0.06
-          signalMaterial.color.setHex(0x39434a)
-          signalMaterial.emissive.setHex(0x0c1114)
-          signalMaterial.emissiveIntensity = 0.05
+        // An authored outcome overrides the generic filed treatment. The opened seam
+        // runs warm amber and bright; the sealed frame cools/darkens and lowers a
+        // barred shutter across the plate (geometry, no texture) so the two read
+        // differently even with labels hidden. Return emphasis boosts whichever
+        // treatment is resolved for one held beat.
+        if (outcome && !active) {
+          if (outcome.variant === 'opened') {
+            frameMaterial.color.setHex(emphasised ? 0xe4ad57 : 0xc89445)
+            frameMaterial.emissive.setHex(emphasised ? 0x7a4d12 : 0x5a370e)
+            frameMaterial.emissiveIntensity = emphasised ? 1.1 : 0.72
+            signalMaterial.color.setHex(0xe0b06a)
+            signalMaterial.emissive.setHex(emphasised ? 0x9c6414 : 0x7a4a10)
+            signalMaterial.emissiveIntensity = emphasised ? 1.9 : 1.3
+            seamMaterial.emissive.setHex(emphasised ? 0xd79a3f : 0x9c6417)
+            seamMaterial.emissiveIntensity = emphasised ? 2.4 : 1.35
+          } else {
+            frameMaterial.color.setHex(emphasised ? 0x1c2226 : 0x232a2f)
+            frameMaterial.emissive.setHex(0x090d10)
+            frameMaterial.emissiveIntensity = 0.06
+            signalMaterial.color.setHex(0x39434a)
+            signalMaterial.emissive.setHex(0x0c1114)
+            signalMaterial.emissiveIntensity = 0.05
+            barMaterial.color.setHex(emphasised ? 0xaeb7bc : 0x8f9aa0)
+            barMaterial.emissiveIntensity = emphasised ? 0.5 : 0.3
+          }
+          seamMesh.visible = outcome.variant === 'opened'
+          barMeshes.forEach((bar) => (bar.visible = outcome.variant === 'sealed'))
+          return
         }
-        barMesh.visible = outcome.variant === 'sealed'
-        return
-      }
 
-      barMesh.visible = false
-      const color = active ? 0xc89445 : filed ? 0x6db6b7 : traveling ? 0x242c31 : 0x303b43
-      const emissive = active ? 0x4b2f0c : filed ? 0x173f42 : 0x0b1417
-      frameMaterial.color.setHex(color)
-      frameMaterial.emissive.setHex(emissive)
-      frameMaterial.emissiveIntensity = active ? 0.58 : filed ? 0.44 : traveling ? 0.1 : 0.2
+        seamMesh.visible = false
+        barMeshes.forEach((bar) => (bar.visible = false))
+        const color = active ? 0xc89445 : filed ? 0x6db6b7 : traveling ? 0x242c31 : 0x303b43
+        const emissive = active ? 0x4b2f0c : filed ? 0x173f42 : 0x0b1417
+        frameMaterial.color.setHex(color)
+        frameMaterial.emissive.setHex(emissive)
+        frameMaterial.emissiveIntensity = active ? 0.58 : filed ? 0.44 : traveling ? 0.1 : 0.2
 
-      signalMaterial.color.setHex(
-        active ? 0xd0a05a : filed ? 0x7abfc0 : traveling ? 0x293236 : 0x455358,
-      )
-      signalMaterial.emissive.setHex(active ? 0x6a3f0d : filed ? 0x185054 : 0x11191c)
-      signalMaterial.emissiveIntensity = active ? 1.2 : filed ? 0.9 : traveling ? 0.08 : 0.22
-    })
+        signalMaterial.color.setHex(
+          active ? 0xd0a05a : filed ? 0x7abfc0 : traveling ? 0x293236 : 0x455358,
+        )
+        signalMaterial.emissive.setHex(active ? 0x6a3f0d : filed ? 0x185054 : 0x11191c)
+        signalMaterial.emissiveIntensity = active ? 1.2 : filed ? 0.9 : traveling ? 0.08 : 0.22
+      },
+    )
   }
 
   function resize() {
@@ -807,9 +827,10 @@ export async function createAnnexWorld(
       signalMaterial,
     )
 
-    // A horizontal bar spanning the plate, shown only when this portal resolves to
-    // the sealed outcome. Primitive geometry, no texture; hidden by default.
-    const barGeometry = new THREE.BoxGeometry(portal.size.width * 0.92, 0.08, 0.06)
+    // A barred shutter — four stacked bars spanning the plate — shown only when
+    // this portal resolves to the sealed outcome. Primitive geometry, no texture;
+    // hidden by default. A full silhouette, not one thin line.
+    const barGeometry = new THREE.BoxGeometry(portal.size.width * 0.92, 0.09, 0.06)
     geometries.add(barGeometry)
     const barMaterial = new THREE.MeshStandardMaterial({
       color: 0x8f9aa0,
@@ -819,14 +840,48 @@ export async function createAnnexWorld(
       metalness: 0.3,
     })
     materials.add(barMaterial)
-    const barMesh = new THREE.Mesh(barGeometry, barMaterial)
-    barMesh.position.set(...portal.position).addScaledVector(normal, 0.12)
-    barMesh.rotation.y = portal.rotationY
-    barMesh.visible = false
-    scene.add(barMesh)
+    const barMeshes: import('three').Mesh[] = []
+    const barOffsets = [-0.66, -0.22, 0.22, 0.66].map((f) => f * (portal.size.height / 2))
+    barOffsets.forEach((dy) => {
+      const barMesh = new THREE.Mesh(barGeometry, barMaterial)
+      barMesh.position.set(...portal.position).addScaledVector(normal, 0.12)
+      barMesh.position.y += dy
+      barMesh.rotation.y = portal.rotationY
+      barMesh.visible = false
+      scene.add(barMesh)
+      barMeshes.push(barMesh)
+    })
+
+    // A bright amber under-seam at the base of the threshold, shown only when this
+    // portal resolves to the opened outcome — the light-spill response's core.
+    const seamGeometry = new THREE.BoxGeometry(portal.size.width * 0.86, 0.06, 0.05)
+    geometries.add(seamGeometry)
+    const seamMaterial = new THREE.MeshStandardMaterial({
+      color: 0xe6bd78,
+      emissive: 0x9c6417,
+      emissiveIntensity: 1.35,
+      roughness: 0.5,
+      metalness: 0.2,
+    })
+    materials.add(seamMaterial)
+    const seamMesh = new THREE.Mesh(seamGeometry, seamMaterial)
+    seamMesh.position.set(...portal.position).addScaledVector(normal, 0.12)
+    seamMesh.position.y -= portal.size.height / 2 - 0.09
+    seamMesh.rotation.y = portal.rotationY
+    seamMesh.visible = false
+    scene.add(seamMesh)
 
     const anchor = new THREE.Vector3(...portal.position).addScaledVector(normal, 0.18)
-    portalRecords.push({ portal, anchor, frameMaterial, signalMaterial, barMesh })
+    portalRecords.push({
+      portal,
+      anchor,
+      frameMaterial,
+      signalMaterial,
+      barMeshes,
+      barMaterial,
+      seamMesh,
+      seamMaterial,
+    })
   })
 
   const ambient = new THREE.AmbientLight(0x8fa0a5, 0.72)
@@ -878,6 +933,13 @@ export async function createAnnexWorld(
 
   function setResolvedOutcomes(outcomes: ReadonlyMap<SiteId, SiteWorldOutcome>) {
     resolvedOutcomes = outcomes
+    updatePortalMaterials()
+    scheduleFrame()
+  }
+
+  function setReturnEmphasis(siteId: SiteId | undefined) {
+    if (returnEmphasisSiteId === siteId) return
+    returnEmphasisSiteId = siteId
     updatePortalMaterials()
     scheduleFrame()
   }
@@ -939,6 +1001,7 @@ export async function createAnnexWorld(
     setCompleted,
     setAlarm,
     setResolvedOutcomes,
+    setReturnEmphasis,
     invalidate: scheduleFrame,
     destroy,
   }

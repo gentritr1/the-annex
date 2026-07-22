@@ -1,6 +1,7 @@
 import type {
   ClassificationRoomDefinition,
   FieldActionId,
+  RoomPhaseId,
   RoomStageId,
   SiteDefinition,
   SiteId,
@@ -15,20 +16,26 @@ import type {
 // Case 81 deposition tray. The reducer resolves every announcement string from the
 // authored definition it is handed, so the aria-live copy stays in the content
 // layer and out of the component.
+//
+// The room is one physical workstation, not a scrolling list. There is no card
+// selection: the ACTIVE card is derived — the first unfiled routine (classifiable)
+// card in authored order, then the single unclassifiable "pocket" card once all
+// three routine cards are filed. One category press files the active card. The
+// pocket card refuses each category (escalating copy) and, only after the third
+// refusal, the unlabeled shelf-zero target appears in a slot the tableau reserved
+// from the start.
 
 // A sentinel category recorded for the card filed on shelf zero — the label-less
 // target that is not one of the statute's three classes.
 export const SHELF_ZERO_TARGET = 'shelf-zero'
 
 export interface RoomState {
-  // The card the player has picked up, or null when the drawer is at rest.
-  selectedCardId: string | null
   // cardId -> the category id it accepted (or SHELF_ZERO_TARGET for the card held
-  // on shelf zero). A filed card leaves the drawer.
+  // on shelf zero). A filed card leaves the active slot; the next card derives in.
   filedCards: Readonly<Record<string, string>>
-  // True once the unclassifiable card has been refused at least once — shelf zero
-  // only appears after that first refusal (discovery #1's precondition).
-  refusedOnce: boolean
+  // Which categories the pocket card has been pressed against (view-local, in
+  // press order). Each records one refusal; a category may be tried only once.
+  triedCategories: readonly string[]
   // Discovery #1: the unclassifiable card has been placed on shelf zero.
   cardOnShelfZero: boolean
   // Discovery #2 progress: which restriction-log slips have been turned.
@@ -39,16 +46,14 @@ export interface RoomState {
 }
 
 export type RoomEvent =
-  | { type: 'SELECT_CARD'; cardId: string }
   | { type: 'FILE_UNDER_CATEGORY'; categoryId: string }
   | { type: 'FILE_ON_SHELF_ZERO' }
   | { type: 'TURN_SLIP'; slipId: string }
 
 export function initialRoomState(): RoomState {
   return {
-    selectedCardId: null,
     filedCards: {},
-    refusedOnce: false,
+    triedCategories: [],
     cardOnShelfZero: false,
     turnedSlips: [],
     lastAnnouncement: '',
@@ -60,6 +65,35 @@ function interpolateCategory(template: string, categoryLabel: string): string {
   return template.replace(/\{category\}/g, categoryLabel)
 }
 
+// The routine (classifiable) cards, in authored order.
+export function routineCards(room: ClassificationRoomDefinition) {
+  return room.cards.filter((card) => card.classifiable)
+}
+
+// The single unclassifiable "pocket" card, or undefined if a room authors none.
+export function pocketCard(room: ClassificationRoomDefinition) {
+  return room.cards.find((card) => !card.classifiable)
+}
+
+// How many routine cards are filed so far (the plate's flatten counter).
+export function filedRoutineCount(
+  state: RoomState,
+  room: ClassificationRoomDefinition,
+): number {
+  return routineCards(room).filter((card) => state.filedCards[card.id]).length
+}
+
+// The card the workstation is currently presenting: the first unfiled routine card
+// in authored order, then the pocket card once every routine card is filed. Null
+// once the pocket card leaves the slot (placed on shelf zero) — nothing derives in.
+export function activeCard(state: RoomState, room: ClassificationRoomDefinition) {
+  const routine = routineCards(room).find((card) => !state.filedCards[card.id])
+  if (routine) return routine
+  const pocket = pocketCard(room)
+  if (pocket && !state.filedCards[pocket.id]) return pocket
+  return undefined
+}
+
 // Discovery #1 (card on shelf zero) AND discovery #2 (≥1 slip turned) — the exact
 // gate the two canonical methods unlock behind. Pure read of state.
 export function roomUnlocked(state: RoomState): boolean {
@@ -67,19 +101,42 @@ export function roomUnlocked(state: RoomState): boolean {
 }
 
 // Whether shelf zero — the label-less fourth target — is available yet. It appears
-// only after the unclassifiable card's first refusal.
-export function shelfZeroVisible(state: RoomState): boolean {
-  return state.refusedOnce
+// only after the pocket card has been refused under EVERY statute category (the
+// third refusal, since there are exactly three classes).
+export function shelfZeroVisible(
+  state: RoomState,
+  room: ClassificationRoomDefinition,
+): boolean {
+  return state.triedCategories.length >= room.categories.length
 }
 
-// The decorative plate stage the room currently emphasises, derived (never
-// stored). The component hands this up as `roomFocus`; the plate maps it to an
-// authored zone coordinate.
-export function roomFocusFor(state: RoomState): RoomStageId {
-  if (roomUnlocked(state)) return 'methods'
-  if (state.cardOnShelfZero) return 'restriction-log'
-  if (state.refusedOnce) return 'shelf-zero'
-  return 'drawer'
+// The derived lifecycle phase (never stored). The component swaps the bounded
+// tableau's content by this, and maps it to an authored plate zone for the drift.
+export function roomPhase(
+  state: RoomState,
+  room: ClassificationRoomDefinition,
+): RoomPhaseId {
+  if (roomUnlocked(state)) return 'unlocked'
+  if (state.cardOnShelfZero) return 'log'
+  if (filedRoutineCount(state, room) < routineCards(room).length) return 'routine'
+  // Every routine card is filed: the pocket card is in the slot.
+  if (shelfZeroVisible(state, room)) return 'shelf-zero'
+  return 'pocket'
+}
+
+// The plate stage a phase emphasises. A fixed mapping onto the authored zone
+// vocabulary (RoomStageId) so the close-read plate can drift toward the drawer,
+// the reserved aperture, the restriction shutter, or the consequential centre.
+const PHASE_STAGE: Readonly<Record<RoomPhaseId, RoomStageId>> = {
+  routine: 'drawer',
+  pocket: 'drawer',
+  'shelf-zero': 'shelf-zero',
+  log: 'restriction-log',
+  unlocked: 'methods',
+}
+
+export function roomStageFor(phase: RoomPhaseId): RoomStageId {
+  return PHASE_STAGE[phase]
 }
 
 export function roomReducer(
@@ -88,65 +145,53 @@ export function roomReducer(
   room: ClassificationRoomDefinition,
 ): RoomState {
   switch (event.type) {
-    case 'SELECT_CARD': {
-      const card = room.cards.find((candidate) => candidate.id === event.cardId)
-      // A filed card is no longer in the drawer; selecting an unknown/filed card
-      // is a no-op.
-      if (!card || state.filedCards[event.cardId]) return state
-      if (state.selectedCardId === event.cardId) return state
-      return { ...state, selectedCardId: event.cardId, lastAnnouncement: '' }
-    }
-
     case 'FILE_UNDER_CATEGORY': {
-      const cardId = state.selectedCardId
-      if (!cardId) return state
-      const card = room.cards.find((candidate) => candidate.id === cardId)
+      const card = activeCard(state, room)
       const category = room.categories.find((candidate) => candidate.id === event.categoryId)
-      if (!card || !category || state.filedCards[cardId]) return state
+      if (!card || !category) return state
 
       if (!card.classifiable) {
-        // The unclassifiable card refuses EVERY category and returns to the drawer
-        // (it stays selected so shelf zero, once visible, can take it). The first
-        // refusal is what reveals shelf zero.
-        const refusal = `${card.refusalLine ?? ''} ${room.refusalObjection}`.trim()
-        return { ...state, refusedOnce: true, lastAnnouncement: refusal }
+        // The pocket card refuses EVERY category and stays in the slot. Each
+        // category may be tried only once; the third refusal reveals shelf zero.
+        if (state.triedCategories.includes(category.id)) return state
+        const nextTried = [...state.triedCategories, category.id]
+        const lines = card.refusalLines ?? []
+        const line = lines[Math.min(nextTried.length - 1, lines.length - 1)] ?? ''
+        const refusal = `${line} ${room.refusalObjection}`.trim()
+        return { ...state, triedCategories: nextTried, lastAnnouncement: refusal }
       }
 
       // A classifiable card accepts any class: it files, the statute flattens it,
-      // and the drawer loses it.
+      // and the next card derives into the slot.
       const accepted = `${card.filedLine ?? ''} ${interpolateCategory(
         room.flattenLine,
         category.label,
       )}`.trim()
       return {
         ...state,
-        selectedCardId: null,
-        filedCards: { ...state.filedCards, [cardId]: category.id },
+        filedCards: { ...state.filedCards, [card.id]: category.id },
         lastAnnouncement: accepted,
       }
     }
 
     case 'FILE_ON_SHELF_ZERO': {
-      const cardId = state.selectedCardId
-      // Shelf zero only accepts the selected unclassifiable card, and only once it
-      // is visible (after the first refusal).
-      if (!cardId || !shelfZeroVisible(state)) return state
-      const card = room.cards.find((candidate) => candidate.id === cardId)
-      if (!card || card.classifiable || state.filedCards[cardId]) return state
+      // Shelf zero accepts the active unclassifiable card, and only once it is
+      // visible (after the third refusal).
+      const card = activeCard(state, room)
+      if (!card || card.classifiable || !shelfZeroVisible(state, room)) return state
 
       const held = `${room.shelfZero.objection} ${room.shelfZero.holdingLine}`.trim()
       return {
         ...state,
-        selectedCardId: null,
         cardOnShelfZero: true,
-        filedCards: { ...state.filedCards, [cardId]: SHELF_ZERO_TARGET },
+        filedCards: { ...state.filedCards, [card.id]: SHELF_ZERO_TARGET },
         lastAnnouncement: held,
       }
     }
 
     case 'TURN_SLIP': {
-      // Slips only exist once the card is on shelf zero (phase 2). Turning an
-      // already-turned or unknown slip is a no-op.
+      // Slips only exist once the card is on shelf zero. Turning an already-turned
+      // or unknown slip is a no-op.
       if (!state.cardOnShelfZero) return state
       const slip = room.slips.find((candidate) => candidate.id === event.slipId)
       if (!slip || state.turnedSlips.includes(event.slipId)) return state

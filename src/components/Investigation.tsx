@@ -10,7 +10,7 @@ import type {
   DepositionChoiceId,
   FieldActionId,
   GameState,
-  RoomStageId,
+  RoomPlateState,
   SceneAcousticTreatment,
   SiteId,
 } from '../game/types'
@@ -122,8 +122,13 @@ export function Investigation({
       : { kind: 'map' },
   )
   const [previewActionId, setPreviewActionId] = useState<FieldActionId | null>(null)
-  // The room's decorative plate stage (view-local; reset when the site changes).
-  const [roomFocus, setRoomFocus] = useState<RoomStageId | null>(null)
+  // The room's decorative plate presentation (view-local; reset when the site
+  // changes). Drives the close-read plate's drawer/refusal/aperture/log stagecraft.
+  const [roomPresentation, setRoomPresentation] = useState<RoomPlateState | null>(null)
+  // One-shot return-to-concourse emphasis: the site just left, held for a beat so
+  // its altered portal is unmissable, then cleared to restore ordinary navigation.
+  const [returnEmphasisSiteId, setReturnEmphasisSiteId] = useState<SiteId | null>(null)
+  const returnEmphasisTimerRef = useRef<number | null>(null)
 
   // Resolved concourse alteration per room site, derived from the committed field
   // actions and each site's authored worldOutcome map. Content-driven: no site or
@@ -232,6 +237,16 @@ export function Investigation({
   useEffect(
     () => () => {
       if (holdTimerRef.current !== null) window.clearTimeout(holdTimerRef.current)
+    },
+    [],
+  )
+
+  // Release the return-emphasis hold timer if Investigation unmounts mid-beat.
+  useEffect(
+    () => () => {
+      if (returnEmphasisTimerRef.current !== null) {
+        window.clearTimeout(returnEmphasisTimerRef.current)
+      }
     },
     [],
   )
@@ -474,7 +489,8 @@ export function Investigation({
 
   function selectSite(siteId: SiteId, moveFocus = false, sourceElement?: HTMLElement) {
     setPreviewActionId(null)
-    setRoomFocus(null)
+    setRoomPresentation(null)
+    clearReturnEmphasis()
     setWorldLine('')
     const alreadyPresentingSite =
       worldPresentation.kind !== 'map' &&
@@ -511,11 +527,23 @@ export function Investigation({
     window.requestAnimationFrame(() => focusSiteCard(siteId, instant))
   }
 
+  // How long portal emphasis holds on an actual return from a resolved room before
+  // ordinary navigation resumes (~950ms). Reduced motion skips the hold entirely.
+  const RETURN_EMPHASIS_MS = 950
+
+  function clearReturnEmphasis() {
+    if (returnEmphasisTimerRef.current !== null) {
+      window.clearTimeout(returnEmphasisTimerRef.current)
+      returnEmphasisTimerRef.current = null
+    }
+    setReturnEmphasisSiteId(null)
+  }
+
   function returnToConcourse() {
     if (!scene.world) return
     transitionEpochRef.current += 1
     setPreviewActionId(null)
-    setRoomFocus(null)
+    setRoomPresentation(null)
     setWorldPresentation({ kind: 'concourse' })
     // When the site the player is leaving carries a resolved room outcome, speak
     // its authored line once so the concourse alteration is perceivable non-visually.
@@ -525,6 +553,18 @@ export function Investigation({
         outcome ? ` ${outcome.portalLabel}.` : ''
       }`,
     )
+    // Hold the altered portal's emphasis for a beat on an actual return from a
+    // resolved room. Reduced motion lands immediately on the strong persistent
+    // outcome — no timed hold.
+    clearReturnEmphasis()
+    if (outcome && !sceneMotionReduced) {
+      const emphasisSite = selectedSiteId
+      setReturnEmphasisSiteId(emphasisSite)
+      returnEmphasisTimerRef.current = window.setTimeout(() => {
+        returnEmphasisTimerRef.current = null
+        setReturnEmphasisSiteId((current) => (current === emphasisSite ? null : current))
+      }, RETURN_EMPHASIS_MS)
+    }
     window.requestAnimationFrame(() => {
       document.getElementById(`site-switch-${selectedSiteId}`)?.focus({ preventScroll: true })
     })
@@ -578,6 +618,7 @@ export function Investigation({
                 reducedMotion={sceneMotionReduced}
                 alarmLevel={state.alarm}
                 resolvedOutcomes={resolvedOutcomes}
+                returnEmphasisSiteId={returnEmphasisSiteId ?? undefined}
                 onPortalActivate={(siteId, sourceElement) =>
                   selectSite(siteId, true, sourceElement)
                 }
@@ -607,9 +648,8 @@ export function Investigation({
                 actions={selectedActions}
                 activeActionId={previewActionId}
                 resolvedActionId={selectedCompletedAction?.id}
-                roomFocus={
-                  roomFocus && selectedSite.room ? selectedSite.room.zones[roomFocus] : undefined
-                }
+                roomStage={selectedSite.room ? (roomPresentation ?? undefined) : undefined}
+                roomZones={selectedSite.room?.zones}
               />
             )}
             {shownCloseup && scene.world && (
@@ -759,7 +799,7 @@ export function Investigation({
               actions={selectedActions}
               onCommitAction={handleCommitAction}
               onPreviewChange={setPreviewActionId}
-              onRoomFocusChange={setRoomFocus}
+              onRoomPresentationChange={setRoomPresentation}
             />
           ) : (
             // Keyed by site: switching location remounts the method list, so any

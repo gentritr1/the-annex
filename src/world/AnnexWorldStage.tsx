@@ -21,6 +21,10 @@ interface AnnexWorldStageProps {
   // with an entry gains an outcome-specific portal treatment in this DOM layer and
   // in the WebGL layer, and its label/aria-label carry the authored outcome line.
   resolvedOutcomes: ReadonlyMap<SiteId, SiteWorldOutcome>
+  // The site whose altered portal is held under return emphasis for one beat after
+  // an actual return from its resolved room. Undefined at rest. Reduced motion never
+  // sets it (the persistent outcome treatment is already strong on its own).
+  returnEmphasisSiteId?: SiteId
   onPortalActivate: (siteId: SiteId, sourceElement: HTMLButtonElement) => void
 }
 
@@ -122,6 +126,7 @@ export function AnnexWorldStage({
   reducedMotion,
   alarmLevel,
   resolvedOutcomes,
+  returnEmphasisSiteId,
   onPortalActivate,
 }: AnnexWorldStageProps) {
   const rootRef = useRef<HTMLDivElement>(null)
@@ -216,6 +221,10 @@ export function AnnexWorldStage({
     handleRef.current?.setResolvedOutcomes(resolvedOutcomes)
   }, [resolvedOutcomes])
 
+  useEffect(() => {
+    handleRef.current?.setReturnEmphasis(returnEmphasisSiteId)
+  }, [returnEmphasisSiteId])
+
   useLayoutEffect(() => {
     if (rendererState === 'webgl') {
       // The WebGL renderer owns live portal projection. React has just committed
@@ -302,6 +311,7 @@ export function AnnexWorldStage({
               data-site={portal.siteId}
               data-outcome={outcome?.outcomeId}
               data-outcome-variant={outcome?.variant}
+              data-return-emphasis={returnEmphasisSiteId === portal.siteId ? 'true' : undefined}
               aria-label={ariaLabel}
               key={portal.siteId}
               ref={(element) => {
@@ -341,22 +351,32 @@ export function AnnexWorldStage({
                 <span className="annex-world-portal-code" style={portalCodeStyle}>
                   {portalIndex(sites, portal.siteId)}
                 </span>
-                {/* The sealed outcome draws a literal bar across the threshold — a
-                    non-colour cue so the two outcomes stay distinct in high contrast. */}
+                {/* The sealed outcome bars the threshold with a full shutter — four
+                    stacked bars plus a darkened frame, a non-colour silhouette so the
+                    two outcomes stay unmistakable with labels hidden / in high contrast. */}
                 {outcome?.variant === 'sealed' ? (
-                  <span
-                    className="annex-world-portal-bar"
-                    aria-hidden="true"
-                    style={{
-                      position: 'absolute',
-                      left: 3,
-                      right: 3,
-                      top: '50%',
-                      height: 2,
-                      transform: 'translateY(-50%)',
-                      background: color,
-                    }}
-                  />
+                  <span className="annex-world-portal-shutter" aria-hidden="true">
+                    <span style={{ background: color }} />
+                    <span style={{ background: color }} />
+                    <span style={{ background: color }} />
+                    <span style={{ background: color }} />
+                  </span>
+                ) : null}
+                {/* The opened outcome runs an amber seam under the threshold and a
+                    restrained light spill around it. */}
+                {outcome?.variant === 'opened' ? (
+                  <>
+                    <span
+                      className="annex-world-portal-spill"
+                      aria-hidden="true"
+                      style={{ color }}
+                    />
+                    <span
+                      className="annex-world-portal-seam"
+                      aria-hidden="true"
+                      style={{ background: color }}
+                    />
+                  </>
                 ) : null}
               </span>
               <span

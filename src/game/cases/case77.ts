@@ -429,11 +429,15 @@ const smallArchiveRoom: ClassificationRoomDefinition = {
     },
     {
       id: 'card-between',
-      title: 'The card with no drawer',
+      title: 'The pocket card',
       question: '“If Mara ended, who did 77-A become while everyone argued about Mara?”',
       source: 'The card the Archivist kept in her pocket',
       classifiable: false,
-      refusalLine: 'The card will not lie flat. It lifts at the corner and slides back into your hand.',
+      refusalLines: [
+        'The card will not lie flat. It lifts at the corner and slides back into your hand.',
+        'You press harder this time. The card buckles, then springs straight, refusing the fold.',
+        'The third class will not even take the corner. There was never a drawer cut for this one.',
+      ],
     },
   ],
   flattenLine: 'The statute reads it as {category} and keeps nothing else.',
@@ -463,11 +467,15 @@ const smallArchiveRoom: ClassificationRoomDefinition = {
   lockedLine: 'The Archivist is still waiting. She will not take your answer until you have read the drawer.',
   unlockLine:
     'The Archivist slides the drawer aside and looks up. “Now — hand me your answer, or close the drawer on the slips.”',
+  // Plate stagecraft anchors, placed on the painted props of small-archive.webp:
+  // the open card drawer (lower-left), the empty aperture in the dark wall just
+  // beneath the drawer, the shuttered restriction index (upper right), and the
+  // consequential centre of the threshold.
   zones: {
-    drawer: { x: 0.37, y: 0.7 },
-    'shelf-zero': { x: 0.3, y: 0.82 },
-    'restriction-log': { x: 0.66, y: 0.47 },
-    methods: { x: 0.51, y: 0.51 },
+    drawer: { x: 0.35, y: 0.72 },
+    'shelf-zero': { x: 0.28, y: 0.88 },
+    'restriction-log': { x: 0.66, y: 0.42 },
+    methods: { x: 0.52, y: 0.5 },
   },
   worldOutcome: {
     'answer-archivist': {

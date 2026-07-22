@@ -1,0 +1,152 @@
+{
+  "when": "2026-07-22T20:09:15.172Z",
+  "url": "http://127.0.0.1:4174/",
+  "outcomes": [
+    {
+      "tag": "opened",
+      "expectedOutcome": "shelf-zero-opened",
+      "portal": {
+        "outcome": "shelf-zero-opened",
+        "variant": "opened",
+        "renderer": "webgl",
+        "seededSaveUsed": true
+      }
+    },
+    {
+      "tag": "sealed",
+      "expectedOutcome": "index-sealed",
+      "portal": {
+        "outcome": "index-sealed",
+        "variant": "sealed",
+        "renderer": "webgl",
+        "seededSaveUsed": true
+      }
+    }
+  ],
+  "variants": [
+    {
+      "tag": "mobile-375",
+      "shelf": {
+        "phase": "shelf-zero",
+        "inspectorScrollHeight": 513,
+        "inspectorClientHeight": 513,
+        "inspectorOverflow": 0,
+        "roomRectHeight": 395.84,
+        "liveRegions": 1,
+        "pocketCardInDom": true,
+        "shelfZeroInDom": true,
+        "activeCardTitle": "The pocket card",
+        "docScrollWidth": 375,
+        "docClientWidth": 375,
+        "minInteractive": 56
+      },
+      "unlocked": {
+        "phase": "unlocked",
+        "inspectorScrollHeight": 499,
+        "inspectorClientHeight": 499,
+        "inspectorOverflow": 0,
+        "roomRectHeight": 382.06,
+        "liveRegions": 1,
+        "pocketCardInDom": false,
+        "shelfZeroInDom": false,
+        "activeCardTitle": null,
+        "docScrollWidth": 375,
+        "docClientWidth": 375,
+        "minInteractive": 114
+      }
+    },
+    {
+      "tag": "reduced-motion",
+      "shelf": {
+        "phase": "shelf-zero",
+        "inspectorScrollHeight": 498,
+        "inspectorClientHeight": 498,
+        "inspectorOverflow": 0,
+        "roomRectHeight": 384,
+        "liveRegions": 1,
+        "pocketCardInDom": true,
+        "shelfZeroInDom": true,
+        "activeCardTitle": "The pocket card",
+        "docScrollWidth": 1280,
+        "docClientWidth": 1280,
+        "minInteractive": 56
+      },
+      "unlocked": {
+        "phase": "unlocked",
+        "inspectorScrollHeight": 498,
+        "inspectorClientHeight": 498,
+        "inspectorOverflow": 0,
+        "roomRectHeight": 384,
+        "liveRegions": 1,
+        "pocketCardInDom": false,
+        "shelfZeroInDom": false,
+        "activeCardTitle": null,
+        "docScrollWidth": 1280,
+        "docClientWidth": 1280,
+        "minInteractive": 129
+      }
+    },
+    {
+      "tag": "high-contrast",
+      "shelf": {
+        "phase": "shelf-zero",
+        "inspectorScrollHeight": 498,
+        "inspectorClientHeight": 498,
+        "inspectorOverflow": 0,
+        "roomRectHeight": 384,
+        "liveRegions": 1,
+        "pocketCardInDom": true,
+        "shelfZeroInDom": true,
+        "activeCardTitle": "The pocket card",
+        "docScrollWidth": 1280,
+        "docClientWidth": 1280,
+        "minInteractive": 56
+      },
+      "unlocked": {
+        "phase": "unlocked",
+        "inspectorScrollHeight": 498,
+        "inspectorClientHeight": 498,
+        "inspectorOverflow": 0,
+        "roomRectHeight": 384,
+        "liveRegions": 1,
+        "pocketCardInDom": false,
+        "shelfZeroInDom": false,
+        "activeCardTitle": null,
+        "docScrollWidth": 1280,
+        "docClientWidth": 1280,
+        "minInteractive": 129
+      }
+    },
+    {
+      "tag": "large-text",
+      "shelf": {
+        "phase": "shelf-zero",
+        "inspectorScrollHeight": 498,
+        "inspectorClientHeight": 498,
+        "inspectorOverflow": 0,
+        "roomRectHeight": 384,
+        "liveRegions": 1,
+        "pocketCardInDom": true,
+        "shelfZeroInDom": true,
+        "activeCardTitle": "The pocket card",
+        "docScrollWidth": 1280,
+        "docClientWidth": 1280,
+        "minInteractive": 56
+      },
+      "unlocked": {
+        "phase": "unlocked",
+        "inspectorScrollHeight": 498,
+        "inspectorClientHeight": 498,
+        "inspectorOverflow": 0,
+        "roomRectHeight": 384,
+        "liveRegions": 1,
+        "pocketCardInDom": false,
+        "shelfZeroInDom": false,
+        "activeCardTitle": null,
+        "docScrollWidth": 1280,
+        "docClientWidth": 1280,
+        "minInteractive": 129
+      }
+    }
+  ]
+}

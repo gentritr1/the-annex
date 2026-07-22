@@ -12,6 +12,10 @@ interface ChoiceButtonProps {
   tension?: ReactNode
   requiresConfirmation?: boolean
   onAttentionChange?: (active: boolean) => void
+  // Suppress this button's own sr-only arm-announcement live region. Used inside
+  // the classification room, which owns a single persistent live region of its
+  // own; the two-step arm state stays conveyed by aria-pressed on the button.
+  suppressLiveRegion?: boolean
 }
 
 export function ChoiceButton({
@@ -25,6 +29,7 @@ export function ChoiceButton({
   tension,
   requiresConfirmation = false,
   onAttentionChange,
+  suppressLiveRegion = false,
 }: ChoiceButtonProps) {
   const [armed, setArmed] = useState(false)
   const rootRef = useRef<HTMLButtonElement>(null)
@@ -63,10 +68,14 @@ export function ChoiceButton({
       {/* View-layer arm announcement (the engine channel is untouched). One
           live region per choice, empty at rest: arming is always a '' → line
           change because every disarm path clears it, so a re-arm of the same
-          choice still announces. Disarming never writes to it — silent. */}
-      <span className="sr-only" role="status" aria-live="polite">
-        {armed ? `${title} — select again to file.` : ''}
-      </span>
+          choice still announces. Disarming never writes to it — silent.
+          Suppressed inside the classification room, which owns the single live
+          region; the arm state stays on the button's aria-pressed. */}
+      {suppressLiveRegion ? null : (
+        <span className="sr-only" role="status" aria-live="polite">
+          {armed ? `${title} — select again to file.` : ''}
+        </span>
+      )}
       <button
         ref={rootRef}
         className={`choice-row choice-row-${tone} ${aside ? 'choice-row-has-aside' : ''} ${armed ? 'choice-row-armed' : ''}`}

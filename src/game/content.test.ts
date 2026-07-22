@@ -233,7 +233,12 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
         if (card.classifiable) {
           expect((card.filedLine ?? '').trim().length).toBeGreaterThan(0)
         } else {
-          expect((card.refusalLine ?? '').trim().length).toBeGreaterThan(0)
+          // The pocket card authors exactly three escalating refusal lines, each
+          // non-empty. The recursive placeholder walk covers their copy.
+          expect(card.refusalLines).toHaveLength(3)
+          ;(card.refusalLines ?? []).forEach((line) =>
+            expect(line.trim().length).toBeGreaterThan(0),
+          )
         }
       })
 

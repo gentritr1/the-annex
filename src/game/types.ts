@@ -255,6 +255,26 @@ export const ROOM_STAGES = ['drawer', 'shelf-zero', 'restriction-log', 'methods'
 
 export type RoomStageId = (typeof ROOM_STAGES)[number]
 
+// The derived lifecycle phase of a classification room, in authored order. The
+// reducer never stores it (see roomPhase in room.ts); the view reads it to swap
+// the bounded tableau's content in place. 'routine' files the three ordinary
+// cards; 'pocket' presents the unclassifiable card for its refusals; 'shelf-zero'
+// is the window after the third refusal where the unlabeled aperture is offered;
+// 'log' reads the restriction slips; 'unlocked' shows the two canonical methods.
+export const ROOM_PHASES = ['routine', 'pocket', 'shelf-zero', 'log', 'unlocked'] as const
+
+export type RoomPhaseId = (typeof ROOM_PHASES)[number]
+
+// The room's decorative presentation state handed up to the close-read plate. It
+// is view-derived (never persisted): the phase plus the three progress counters
+// the plate overlays key off (drawer flatten, refusal traces, ghost slips).
+export interface RoomPlateState {
+  phase: RoomPhaseId
+  filedCount: number
+  refusalCount: number
+  turnedCount: number
+}
+
 // One statute category a card may be filed under (three per room). `label` is the
 // button copy; `id` is the stable handle the reducer records.
 export interface ClassificationCategoryDefinition {
@@ -264,9 +284,9 @@ export interface ClassificationCategoryDefinition {
 
 // One pulled question-card. Classifiable cards accept ANY category (there is no
 // wrong answer — the point is the statute flattening nuance) and author a
-// `filedLine`. The single unclassifiable card refuses every category and authors a
-// `refusalLine` instead; it is the missing-category question the statute cannot
-// hold.
+// `filedLine`. The single unclassifiable card refuses every category and authors
+// an escalating `refusalLines` triple instead (one per category tried, the third
+// landing hardest); it is the missing-category question the statute cannot hold.
 export interface ClassificationCardDefinition {
   id: string
   title: string
@@ -276,9 +296,10 @@ export interface ClassificationCardDefinition {
   classifiable: boolean
   // Authored on a classifiable card: the line shown when the card accepts a class.
   filedLine?: string
-  // Authored on the unclassifiable card: the category-agnostic line shown when any
-  // class refuses it.
-  refusalLine?: string
+  // Authored on the unclassifiable card: exactly three category-agnostic refusal
+  // lines, in escalating order. The reducer picks the line for the current refusal
+  // (first, second, third) and suffixes the room's refusalObjection.
+  refusalLines?: readonly string[]
 }
 
 // The label-less fourth filing target that appears only after the unclassifiable
@@ -320,7 +341,7 @@ export interface ClassificationRoomDefinition {
   // statute flattening the question. `{category}` is interpolated with the chosen
   // category's label.
   flattenLine: string
-  // The system's objection appended to a refused card's authored refusalLine.
+  // The system's objection appended to each of the refused card's refusalLines.
   refusalObjection: string
   shelfZero: ClassificationShelfZeroDefinition
   // Exactly three removal slips.

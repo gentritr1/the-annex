@@ -1,11 +1,16 @@
 import { describe, expect, it } from 'vitest'
 import { getCaseContent } from './content'
 import {
+  activeCard,
+  filedRoutineCount,
   initialRoomState,
+  pocketCard,
   resolveSiteOutcomes,
-  roomFocusFor,
+  roomPhase,
   roomReducer,
+  roomStageFor,
   roomUnlocked,
+  routineCards,
   shelfZeroVisible,
   SHELF_ZERO_TARGET,
   type RoomEvent,
@@ -22,12 +27,25 @@ const room: ClassificationRoomDefinition = (() => {
   return site.room
 })()
 
-const classifiable = room.cards.filter((card) => card.classifiable)
-const unclassifiable = room.cards.find((card) => !card.classifiable)!
+const classifiable = routineCards(room)
+const unclassifiable = pocketCard(room)!
 const categories = room.categories
 
 function play(events: readonly RoomEvent[], start: RoomState = initialRoomState()): RoomState {
   return events.reduce((state, event) => roomReducer(state, event, room), start)
+}
+
+// File all three routine cards under the first category, reaching the pocket card.
+function fileAllRoutine(): RoomState {
+  return play(classifiable.map(() => ({ type: 'FILE_UNDER_CATEGORY', categoryId: categories[0]!.id })))
+}
+
+// Refuse the pocket card under every category (the third refusal reveals shelf zero).
+function refuseAll(start: RoomState): RoomState {
+  return play(
+    categories.map((category) => ({ type: 'FILE_UNDER_CATEGORY', categoryId: category.id })),
+    start,
+  )
 }
 
 describe('classification room reducer', () => {
@@ -37,76 +55,114 @@ describe('classification room reducer', () => {
     expect(categories).toHaveLength(3)
   })
 
+  it('derives the active card in authored order, then the pocket card, then none', () => {
+    // Fresh room presents the first routine card, no selection needed.
+    expect(activeCard(initialRoomState(), room)?.id).toBe(classifiable[0]!.id)
+
+    // Filing routine cards advances the slot through authored order.
+    let state = roomReducer(
+      initialRoomState(),
+      { type: 'FILE_UNDER_CATEGORY', categoryId: categories[0]!.id },
+      room,
+    )
+    expect(activeCard(state, room)?.id).toBe(classifiable[1]!.id)
+    state = roomReducer(state, { type: 'FILE_UNDER_CATEGORY', categoryId: categories[0]!.id }, room)
+    expect(activeCard(state, room)?.id).toBe(classifiable[2]!.id)
+    state = roomReducer(state, { type: 'FILE_UNDER_CATEGORY', categoryId: categories[0]!.id }, room)
+
+    // All routine cards filed: the pocket card is now the active card.
+    expect(filedRoutineCount(state, room)).toBe(3)
+    expect(activeCard(state, room)?.id).toBe(unclassifiable.id)
+  })
+
   it('accepts a classifiable card under EVERY category and flattens it', () => {
-    const card = classifiable[0]!
     categories.forEach((category) => {
-      const state = play([
-        { type: 'SELECT_CARD', cardId: card.id },
+      const state = roomReducer(
+        initialRoomState(),
         { type: 'FILE_UNDER_CATEGORY', categoryId: category.id },
-      ])
+        room,
+      )
+      const card = classifiable[0]!
       expect(state.filedCards[card.id]).toBe(category.id)
-      expect(state.selectedCardId).toBeNull()
       // The accepted line carries the card's own copy plus the interpolated class.
       expect(state.lastAnnouncement).toContain(category.label)
       expect(state.lastAnnouncement).not.toContain('{category}')
       // Accepting a card never reveals shelf zero.
-      expect(shelfZeroVisible(state)).toBe(false)
+      expect(shelfZeroVisible(state, room)).toBe(false)
     })
   })
 
-  it('refuses the unclassifiable card under EVERY category', () => {
-    categories.forEach((category) => {
-      const state = play([
-        { type: 'SELECT_CARD', cardId: unclassifiable.id },
-        { type: 'FILE_UNDER_CATEGORY', categoryId: category.id },
-      ])
-      // Refusal never files the card; it returns to the drawer and stays selected.
+  it('refuses the pocket card under EVERY category with escalating copy', () => {
+    const atPocket = fileAllRoutine()
+    categories.forEach((category, index) => {
+      const state = roomReducer(atPocket, { type: 'FILE_UNDER_CATEGORY', categoryId: category.id }, room)
+      // Refusal never files the pocket card; it stays the active card.
       expect(state.filedCards[unclassifiable.id]).toBeUndefined()
-      expect(state.selectedCardId).toBe(unclassifiable.id)
-      expect(state.refusedOnce).toBe(true)
+      expect(activeCard(state, room)?.id).toBe(unclassifiable.id)
+      expect(state.triedCategories).toEqual([category.id])
+      // The authored escalating line for this refusal, plus the system objection.
+      expect(state.lastAnnouncement).toContain(unclassifiable.refusalLines![0])
       expect(state.lastAnnouncement).toContain(room.refusalObjection)
       // Category-agnostic: the refusal never names the class it refused.
       expect(state.lastAnnouncement).not.toContain(category.label)
+      void index
     })
   })
 
-  it('hides shelf zero before the first refusal and shows it after', () => {
-    const fresh = initialRoomState()
-    expect(shelfZeroVisible(fresh)).toBe(false)
-
-    // A classifiable filing does not reveal it.
-    const afterAccept = play([
-      { type: 'SELECT_CARD', cardId: classifiable[0]!.id },
-      { type: 'FILE_UNDER_CATEGORY', categoryId: categories[0]!.id },
-    ])
-    expect(shelfZeroVisible(afterAccept)).toBe(false)
-
-    const afterRefusal = play([
-      { type: 'SELECT_CARD', cardId: unclassifiable.id },
-      { type: 'FILE_UNDER_CATEGORY', categoryId: categories[0]!.id },
-    ])
-    expect(shelfZeroVisible(afterRefusal)).toBe(true)
+  it('records each tried category once and walks the escalating refusal lines', () => {
+    const atPocket = fileAllRoutine()
+    let state = atPocket
+    unclassifiable.refusalLines!.forEach((line, index) => {
+      state = roomReducer(
+        state,
+        { type: 'FILE_UNDER_CATEGORY', categoryId: categories[index]!.id },
+        room,
+      )
+      expect(state.triedCategories).toHaveLength(index + 1)
+      expect(state.lastAnnouncement).toContain(line)
+    })
+    // Re-pressing an already-tried category is a no-op.
+    const again = roomReducer(state, { type: 'FILE_UNDER_CATEGORY', categoryId: categories[0]!.id }, room)
+    expect(again).toBe(state)
   })
 
-  it('refuses shelf-zero filing before the card has ever been refused', () => {
-    const state = play([
-      { type: 'SELECT_CARD', cardId: unclassifiable.id },
-      { type: 'FILE_ON_SHELF_ZERO' },
-    ])
-    // Shelf zero is not visible yet, so the placement is a no-op.
+  it('hides shelf zero until the THIRD refusal, and never on an acceptance', () => {
+    expect(shelfZeroVisible(initialRoomState(), room)).toBe(false)
+
+    const atPocket = fileAllRoutine()
+    expect(shelfZeroVisible(atPocket, room)).toBe(false)
+
+    // First and second refusals do not reveal it.
+    const oneRefusal = roomReducer(atPocket, { type: 'FILE_UNDER_CATEGORY', categoryId: categories[0]!.id }, room)
+    expect(shelfZeroVisible(oneRefusal, room)).toBe(false)
+    const twoRefusals = roomReducer(oneRefusal, { type: 'FILE_UNDER_CATEGORY', categoryId: categories[1]!.id }, room)
+    expect(shelfZeroVisible(twoRefusals, room)).toBe(false)
+
+    // The third refusal reveals it.
+    const threeRefusals = roomReducer(twoRefusals, { type: 'FILE_UNDER_CATEGORY', categoryId: categories[2]!.id }, room)
+    expect(shelfZeroVisible(threeRefusals, room)).toBe(true)
+  })
+
+  it('refuses shelf-zero filing before the third refusal', () => {
+    const atPocket = fileAllRoutine()
+    // No refusals yet: shelf zero is not visible, so the placement is a no-op.
+    const state = roomReducer(atPocket, { type: 'FILE_ON_SHELF_ZERO' }, room)
     expect(state.cardOnShelfZero).toBe(false)
     expect(state.filedCards[unclassifiable.id]).toBeUndefined()
+
+    // One refusal is still not enough.
+    const oneRefusal = roomReducer(atPocket, { type: 'FILE_UNDER_CATEGORY', categoryId: categories[0]!.id }, room)
+    const early = roomReducer(oneRefusal, { type: 'FILE_ON_SHELF_ZERO' }, room)
+    expect(early.cardOnShelfZero).toBe(false)
   })
 
-  it('places the card on shelf zero only after a refusal', () => {
-    const state = play([
-      { type: 'SELECT_CARD', cardId: unclassifiable.id },
-      { type: 'FILE_UNDER_CATEGORY', categoryId: categories[1]!.id },
-      { type: 'FILE_ON_SHELF_ZERO' },
-    ])
+  it('places the card on shelf zero only after the third refusal', () => {
+    const state = roomReducer(refuseAll(fileAllRoutine()), { type: 'FILE_ON_SHELF_ZERO' }, room)
     expect(state.cardOnShelfZero).toBe(true)
     expect(state.filedCards[unclassifiable.id]).toBe(SHELF_ZERO_TARGET)
     expect(state.lastAnnouncement).toContain(room.shelfZero.holdingLine)
+    // The pocket card has left the slot; nothing derives in.
+    expect(activeCard(state, room)).toBeUndefined()
   })
 
   it('turns a restriction-log slip only once the card is on shelf zero', () => {
@@ -115,11 +171,7 @@ describe('classification room reducer', () => {
     const early = play([{ type: 'TURN_SLIP', slipId: slip.id }])
     expect(early.turnedSlips).toHaveLength(0)
 
-    const placed = play([
-      { type: 'SELECT_CARD', cardId: unclassifiable.id },
-      { type: 'FILE_UNDER_CATEGORY', categoryId: categories[0]!.id },
-      { type: 'FILE_ON_SHELF_ZERO' },
-    ])
+    const placed = roomReducer(refuseAll(fileAllRoutine()), { type: 'FILE_ON_SHELF_ZERO' }, room)
     const turned = roomReducer(placed, { type: 'TURN_SLIP', slipId: slip.id }, room)
     expect(turned.turnedSlips).toEqual([slip.id])
     expect(turned.lastAnnouncement).toBe(slip.fragment)
@@ -134,11 +186,7 @@ describe('classification room reducer', () => {
     expect(roomUnlocked(initialRoomState())).toBe(false)
 
     // Discovery #1 only.
-    const shelfOnly = play([
-      { type: 'SELECT_CARD', cardId: unclassifiable.id },
-      { type: 'FILE_UNDER_CATEGORY', categoryId: categories[0]!.id },
-      { type: 'FILE_ON_SHELF_ZERO' },
-    ])
+    const shelfOnly = roomReducer(refuseAll(fileAllRoutine()), { type: 'FILE_ON_SHELF_ZERO' }, room)
     expect(roomUnlocked(shelfOnly)).toBe(false)
 
     // Discovery #2 added.
@@ -156,42 +204,53 @@ describe('classification room reducer', () => {
     expect(roomUnlocked(state)).toBe(false)
   })
 
-  it('maps the derived plate focus through the room stages', () => {
-    expect(roomFocusFor(initialRoomState())).toBe('drawer')
+  it('maps the derived phase and plate stage through the room lifecycle', () => {
+    expect(roomPhase(initialRoomState(), room)).toBe('routine')
+    expect(roomStageFor('routine')).toBe('drawer')
 
-    const refused = play([
-      { type: 'SELECT_CARD', cardId: unclassifiable.id },
-      { type: 'FILE_UNDER_CATEGORY', categoryId: categories[0]!.id },
-    ])
-    expect(roomFocusFor(refused)).toBe('shelf-zero')
+    const atPocket = fileAllRoutine()
+    expect(roomPhase(atPocket, room)).toBe('pocket')
+    expect(roomStageFor('pocket')).toBe('drawer')
+
+    const refused = refuseAll(atPocket)
+    expect(roomPhase(refused, room)).toBe('shelf-zero')
+    expect(roomStageFor('shelf-zero')).toBe('shelf-zero')
 
     const placed = roomReducer(refused, { type: 'FILE_ON_SHELF_ZERO' }, room)
-    expect(roomFocusFor(placed)).toBe('restriction-log')
+    expect(roomPhase(placed, room)).toBe('log')
+    expect(roomStageFor('log')).toBe('restriction-log')
 
     const unlockedState = roomReducer(placed, { type: 'TURN_SLIP', slipId: room.slips[0]!.id }, room)
-    expect(roomFocusFor(unlockedState)).toBe('methods')
+    expect(roomPhase(unlockedState, room)).toBe('unlocked')
+    expect(roomStageFor('unlocked')).toBe('methods')
   })
 
   it('is deterministic: the same event sequence yields the same state', () => {
     const sequence: RoomEvent[] = [
-      { type: 'SELECT_CARD', cardId: classifiable[0]!.id },
       { type: 'FILE_UNDER_CATEGORY', categoryId: categories[2]!.id },
-      { type: 'SELECT_CARD', cardId: unclassifiable.id },
       { type: 'FILE_UNDER_CATEGORY', categoryId: categories[0]!.id },
       { type: 'FILE_UNDER_CATEGORY', categoryId: categories[1]!.id },
+      { type: 'FILE_UNDER_CATEGORY', categoryId: categories[0]!.id },
+      { type: 'FILE_UNDER_CATEGORY', categoryId: categories[1]!.id },
+      { type: 'FILE_UNDER_CATEGORY', categoryId: categories[2]!.id },
       { type: 'FILE_ON_SHELF_ZERO' },
       { type: 'TURN_SLIP', slipId: room.slips[1]!.id },
     ]
     expect(play(sequence)).toEqual(play(sequence))
   })
 
-  it('ignores unknown cards, categories, and slips', () => {
+  it('ignores unknown categories and slips, and no-ops with no active card', () => {
     const base = initialRoomState()
-    expect(roomReducer(base, { type: 'SELECT_CARD', cardId: 'no-card' }, room)).toBe(base)
-    const selected = roomReducer(base, { type: 'SELECT_CARD', cardId: unclassifiable.id }, room)
-    expect(
-      roomReducer(selected, { type: 'FILE_UNDER_CATEGORY', categoryId: 'no-class' }, room),
-    ).toBe(selected)
+    // Unknown category is a no-op.
+    expect(roomReducer(base, { type: 'FILE_UNDER_CATEGORY', categoryId: 'no-class' }, room)).toBe(base)
+    // Unknown slip before placement is a no-op.
+    expect(roomReducer(base, { type: 'TURN_SLIP', slipId: 'no-slip' }, room)).toBe(base)
+
+    // Once the pocket card is placed, no active card remains: filing is a no-op.
+    const placed = roomReducer(refuseAll(fileAllRoutine()), { type: 'FILE_ON_SHELF_ZERO' }, room)
+    expect(roomReducer(placed, { type: 'FILE_UNDER_CATEGORY', categoryId: categories[0]!.id }, room)).toBe(
+      placed,
+    )
   })
 })
 

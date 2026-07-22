@@ -1728,6 +1728,167 @@ p {
   animation: site-closeup-category-column 1.1s var(--ease-out) 300ms both;
 }
 
+/* ── The Small Archive classification-room stagecraft (plate overlays) ────────
+   Authored, pointer-inert overlays that live in the plate's source space (from the
+   room's zone anchors) and reflect the room's phase and progress counters. Every
+   one-shot is a transition/animation gated off under reduced motion, where each
+   phase still lands on its distinct static composition. Essential meaning stays in
+   the DOM room text; these are flourish. */
+.site-closeup-room {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  pointer-events: none;
+}
+.site-closeup-room > * {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+/* Drawer: a soft contained glow + register line, and a one-shot flatten per filing. */
+.scr-drawer {
+  width: 17%;
+  height: 15%;
+}
+.scr-drawer-glow {
+  position: absolute;
+  inset: -34% -24%;
+  background: radial-gradient(ellipse at center, oklch(0.82 0.09 74 / 0.22), transparent 70%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 320ms var(--ease-out);
+}
+.scr-drawer-register {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 52%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, oklch(0.82 0.012 210 / 0.62) 18% 82%, transparent);
+  box-shadow: 0 0 8px oklch(0.82 0.012 210 / 0.2);
+  opacity: 0;
+  transition: opacity 320ms var(--ease-out);
+}
+.site-closeup-room[data-room-phase='routine'] .scr-drawer-glow,
+.site-closeup-room[data-room-phase='pocket'] .scr-drawer-glow,
+.site-closeup-room[data-room-phase='shelf-zero'] .scr-drawer-glow,
+.site-closeup-room[data-room-phase='routine'] .scr-drawer-register,
+.site-closeup-room[data-room-phase='pocket'] .scr-drawer-register,
+.site-closeup-room[data-room-phase='shelf-zero'] .scr-drawer-register {
+  opacity: 1;
+}
+.scr-drawer-flatten {
+  position: absolute;
+  inset: 6% 4%;
+  border: 1px solid oklch(0.86 0.09 74 / 0.5);
+  border-radius: 4px;
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: scr-flatten 620ms var(--ease-out) both;
+}
+@keyframes scr-flatten {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  28% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+}
+
+/* Refusals: three category traces near the index, extinguishing one by one. */
+.scr-refusals {
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 300ms var(--ease-out);
+}
+.site-closeup-room[data-room-phase='pocket'] .scr-refusals,
+.site-closeup-room[data-room-phase='shelf-zero'] .scr-refusals {
+  opacity: 1;
+}
+.scr-trace {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: oklch(0.82 0.1 80 / 0.72);
+  box-shadow: 0 0 7px oklch(0.82 0.1 80 / 0.5);
+  transition:
+    opacity 300ms var(--ease-out),
+    background-color 300ms var(--ease-out),
+    box-shadow 300ms var(--ease-out);
+}
+.scr-trace[data-extinguished='true'] {
+  background: oklch(0.34 0 0 / 0.55);
+  box-shadow: none;
+  opacity: 0.4;
+}
+
+/* Shelf zero: an unlabeled dark aperture beneath the drawer register, faint edge. */
+.scr-aperture {
+  width: 10%;
+  height: 6.5%;
+  border-radius: 3px;
+  background: oklch(0.03 0 0 / 0.85);
+  box-shadow:
+    inset 0 0 0 1px oklch(0.72 0.06 80 / 0.32),
+    0 0 12px oklch(0.02 0 0 / 0.8);
+  opacity: 0;
+  transform: translate(-50%, -50%) scaleY(0.4);
+  transition:
+    opacity 360ms var(--ease-out),
+    transform 360ms var(--ease-out);
+}
+.site-closeup-room[data-room-phase='shelf-zero'] .scr-aperture,
+.site-closeup-room[data-room-phase='log'] .scr-aperture,
+.site-closeup-room[data-room-phase='unlocked'] .scr-aperture {
+  opacity: 1;
+  transform: translate(-50%, -50%) scaleY(1);
+}
+
+/* Restriction log: three ghost-slip impressions on the shutter, turning with DOM. */
+.scr-slips {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 300ms var(--ease-out);
+}
+.site-closeup-room[data-room-phase='log'] .scr-slips,
+.site-closeup-room[data-room-phase='unlocked'] .scr-slips {
+  opacity: 1;
+}
+.scr-slip {
+  width: 36px;
+  height: 7px;
+  border-radius: 2px;
+  background: oklch(0.5 0.02 210 / 0.38);
+  box-shadow: inset 0 0 0 1px oklch(0.62 0.02 210 / 0.4);
+  transition:
+    background-color 300ms var(--ease-out),
+    box-shadow 300ms var(--ease-out);
+}
+.scr-slip[data-turned='true'] {
+  background: oklch(0.7 0.08 200 / 0.5);
+  box-shadow: inset 0 0 0 1px var(--cyan-deep);
+}
+
+/* Methods: the room settles toward its consequential centre. */
+.scr-settle {
+  inset: 0;
+  transform: none;
+  background: radial-gradient(62% 62% at 52% 50%, transparent 42%, oklch(0.03 0 0 / 0.52));
+  opacity: 0;
+  transition: opacity 420ms var(--ease-out);
+}
+.site-closeup-room[data-room-phase='unlocked'] .scr-settle {
+  opacity: 1;
+}
+
 .site-closeup-zones {
   z-index: 4;
   inset: 0;
@@ -2039,7 +2200,9 @@ p {
 .reduce-motion .site-closeup-argument-register::after,
 .reduce-motion .site-closeup-category-register::before,
 .reduce-motion .site-closeup-category-register::after,
-.reduce-motion .site-closeup-zone {
+.reduce-motion .site-closeup-zone,
+.reduce-motion .site-closeup-room,
+.reduce-motion .site-closeup-room * {
   animation: none !important;
   transition: none !important;
 }
@@ -2049,7 +2212,8 @@ p {
 .reduce-motion .site-closeup-checksum-echo,
 .reduce-motion .site-closeup-authority-diagnostic,
 .reduce-motion .site-closeup-argument-register,
-.reduce-motion .site-closeup-category-register {
+.reduce-motion .site-closeup-category-register,
+.reduce-motion .scr-drawer-flatten {
   display: none;
 }
 
@@ -2076,7 +2240,9 @@ p {
   .site-closeup-argument-register::after,
   .site-closeup-category-register::before,
   .site-closeup-category-register::after,
-  .site-closeup-zone {
+  .site-closeup-zone,
+  .site-closeup-room,
+  .site-closeup-room * {
     animation: none !important;
     transition: none !important;
   }
@@ -2086,7 +2252,8 @@ p {
   .site-closeup-checksum-echo,
   .site-closeup-authority-diagnostic,
   .site-closeup-argument-register,
-  .site-closeup-category-register {
+  .site-closeup-category-register,
+  .scr-drawer-flatten {
     display: none;
   }
 
@@ -6893,141 +7060,188 @@ p {
    colour alone (acceptance / refusal / turned slips always carry text). The only
    motion is a short colour transition, gated off under reduced motion below. */
 .classification-room {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 12px 4px;
+  gap: 10px;
+  padding: 10px 4px 4px;
   border-top: 1px solid var(--line);
+  /* One fixed-height workstation: the tableau transforms in place, so the room's
+     bounding height stays constant across every phase — the inspector never scrolls
+     and the room's bounding height never varies. Sized so the tallest phase (the
+     two unlocked methods + the unlock line) fits without an inner scroll, within
+     the inspector budget freed by hiding the site description while a room is up. */
+  height: 384px;
 }
 
-/* Visible AND announced: the one live region for every room transition. */
+/* The ONE live region: a fixed height so a long announcement never changes the
+   tableau's height. The full text remains in the DOM (read by aria-live); the
+   visible line is clamped. */
 .room-announce {
   margin: 0;
-  min-height: 1.3em;
-  font-size: 0.82rem;
-  line-height: 1.5;
+  height: 3.3em;
+  overflow: hidden;
+  font-size: 0.8rem;
+  line-height: 1.42;
   color: var(--amber-soft);
 }
-.room-announce:empty {
+
+/* The bounded surface whose content swaps in place (worktop → log → methods). It
+   fills the room's fixed height; a phase taller than the surface scrolls WITHIN it
+   (a safety net) so the inspector itself never grows. */
+.room-stage {
+  position: relative;
+  flex: 1 1 auto;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
-.room-prompt,
-.room-filing-lead,
-.room-log-lead {
-  margin: 0;
-  color: var(--fog-dim);
-  font-size: 0.72rem;
-  font-weight: 650;
-  line-height: 1.4;
-}
-.room-filing-lead strong {
-  color: var(--record-bright);
-}
-
-.room-card-list,
-.room-slip-list,
-.room-locked-list {
-  list-style: none;
-  margin: 8px 0 0;
-  padding: 0;
+.room-worktop {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.room-card {
-  width: 100%;
-  min-height: 44px;
+.room-prompt,
+.room-log-lead {
+  margin: 0;
+  color: var(--fog-dim);
+  font-size: 0.7rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+/* The active card sits in one fixed slot; its min-height absorbs the longest
+   question, so advancing cards never resize the tableau. */
+.room-active-card {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  align-items: flex-start;
-  text-align: left;
-  padding: 12px 14px;
-  color: var(--record);
+  gap: 6px;
+  min-height: 132px;
+  padding: 14px 16px;
   background: var(--concrete);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  transition:
-    background-color 160ms var(--ease-out),
-    border-color 160ms var(--ease-out);
-}
-.room-card:hover {
-  background: var(--raised);
-}
-.room-card--selected {
-  background: oklch(0.24 0.05 70);
-  border-color: var(--amber);
-  box-shadow: inset 3px 0 0 var(--amber);
+  border: 1px solid var(--line-strong);
+  border-left: 3px solid var(--amber);
+  border-radius: 7px;
 }
 .room-card-title {
   font-weight: 700;
   font-size: 0.86rem;
+  color: var(--record-bright);
 }
 .room-card-question {
-  font-size: 0.82rem;
-  line-height: 1.4;
+  font-size: 0.83rem;
+  line-height: 1.42;
   color: var(--record-bright);
 }
 .room-card-source {
+  margin-top: auto;
   font-size: 0.66rem;
   color: var(--fog-dim);
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
   letter-spacing: 0.03em;
 }
 
-.room-filing {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 12px 14px;
-  background: var(--concrete);
-  border: 1px solid var(--line-strong);
-  border-radius: 6px;
-}
+/* Three category targets in fixed grid cells (they never move) plus a fourth cell
+   the aperture is reserved in from the first render. */
 .room-targets {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
 .room-category {
-  min-height: 44px;
-  min-width: 44px;
-  padding: 10px 16px;
+  min-height: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px 12px;
   color: var(--record);
   background: var(--raised);
   border: 1px solid var(--line-strong);
   border-radius: 6px;
-  font-weight: 650;
-  font-size: 0.8rem;
-  transition: background-color 160ms var(--ease-out);
+  text-align: left;
+  transition:
+    background-color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out),
+    opacity 160ms var(--ease-out);
 }
-.room-category:hover {
+.room-category:hover:not(:disabled) {
   background: var(--raised-hover);
 }
-.room-shelf-zero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  color: var(--amber-soft);
-  border-style: dashed;
+.room-category-label {
+  font-weight: 650;
+  font-size: 0.8rem;
 }
-.room-shelf-zero small {
+.room-category-state {
   font-size: 0.6rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
+  color: var(--fog-dim);
+}
+/* A refused target is extinguished — never colour alone: it dims, strikes its
+   label, and reads "Refused". */
+.room-category[data-refused='true'] {
+  opacity: 0.5;
+  border-style: dashed;
+  cursor: not-allowed;
+}
+.room-category[data-refused='true'] .room-category-label {
+  text-decoration: line-through;
+  color: var(--fog-dim);
+}
+.room-category[data-refused='true'] .room-category-state {
+  color: var(--amber);
 }
 
+/* The reserved aperture cell — empty until the third refusal, so no height jump. */
+.room-shelf-slot {
+  min-height: 56px;
+  display: flex;
+}
+.room-shelf-zero {
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  color: var(--amber-soft);
+  border-style: dashed;
+  border-color: var(--amber);
+  background: oklch(0.16 0.03 78 / 0.35);
+}
+.room-shelf-zero .room-category-label {
+  letter-spacing: 0.24em;
+  color: var(--amber);
+}
+.room-shelf-zero .room-category-state {
+  color: var(--amber-soft);
+}
+
+/* Restriction log: the removal slips fan in the same bounded surface. */
+.room-log {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.room-slip-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 .room-slip {
   width: 100%;
-  min-height: 44px;
+  min-height: 48px;
   display: flex;
   flex-direction: column;
   gap: 4px;
   text-align: left;
-  padding: 12px 14px;
+  padding: 11px 14px;
   color: var(--record);
   background: var(--concrete);
   border: 1px solid var(--line);
@@ -7048,71 +7262,84 @@ p {
   color: var(--cyan);
 }
 .room-slip-fragment {
-  font-size: 0.78rem;
-  line-height: 1.45;
+  font-size: 0.76rem;
+  line-height: 1.4;
 }
 
+/* Methods replace the tableau in place; nothing accumulates below. */
 .room-methods {
   display: flex;
   flex-direction: column;
-  border-top: 1px solid var(--line);
-  padding-top: 8px;
+  gap: 2px;
 }
 .room-unlock {
-  margin: 0 0 6px;
-  padding: 0 4px;
-  font-size: 0.8rem;
-  line-height: 1.5;
-  color: var(--amber-soft);
-}
-.room-locked-reason {
-  margin: 0 0 8px;
+  margin: 0 0 4px;
   padding: 0 4px;
   font-size: 0.74rem;
-  line-height: 1.45;
-  color: var(--fog-dim);
-}
-.room-locked {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 14px;
-  background: var(--concrete);
-  border: 1px dashed var(--line);
-  border-radius: 6px;
-  opacity: 0.72;
-}
-.room-locked-method {
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--fog-dim);
-}
-.room-locked-title {
-  font-size: 0.86rem;
-  font-weight: 700;
-  color: var(--fog);
-}
-.room-locked-lock {
-  font-size: 0.66rem;
-  font-weight: 650;
-  color: var(--amber);
+  line-height: 1.38;
+  color: var(--amber-soft);
 }
 
 /* The unlocked methods reuse ChoiceButton. Outside .site-actions they would take
-   the tall 116px base grid, so mirror the compact inspector treatment here. */
+   the tall base grid, so stack the method label over a full-width body (like the
+   narrow-viewport treatment): the description then wraps to fewer lines and both
+   methods + the unlock line fit the fixed-height tableau. */
 .classification-room .choice-row {
   min-height: 0;
-  grid-template-columns: max-content minmax(0, 1fr) 22px;
-  gap: 12px;
-  padding: 16px 4px;
+  grid-template-columns: minmax(0, 1fr) 20px;
+  gap: 3px 10px;
+  padding: 5px 4px;
 }
 .classification-room .choice-row.choice-row-armed {
-  grid-template-columns: max-content minmax(0, 1fr) 56px;
+  grid-template-columns: minmax(0, 1fr) 54px;
+}
+.classification-room .choice-method {
+  grid-column: 1 / -1;
+  padding: 0;
+  font-size: 0.62rem;
+}
+.classification-room .choice-body {
+  grid-column: 1;
+}
+.classification-room .choice-aside {
+  grid-column: 2;
+}
+.classification-room .choice-body strong {
+  font-size: 0.82rem;
+}
+.classification-room .choice-body > span {
+  font-size: 0.72rem;
+  line-height: 1.32;
+}
+.classification-room .choice-body small {
+  font-size: 0.66rem;
+  line-height: 1.28;
+}
+
+/* When the workstation is present, the site description yields its vertical space
+   to the tableau — the room's own prompt already frames the interaction. */
+.site-record:has(.classification-room) .site-description {
+  display: none;
 }
 .room-methods:has(.choice-row-armed) .choice-row:not(.choice-row-armed) {
   opacity: 0.42;
+}
+
+/* Mobile: the inspector scrolls with the page (overflow visible), so the room may
+   grow rather than clip. The targets fall to two columns so each stays a comfortable
+   ≥44px tap target and nothing overflows horizontally. */
+@media (max-width: 640px) {
+  .classification-room {
+    height: auto;
+    min-height: 300px;
+  }
+  .room-stage {
+    overflow: visible;
+  }
+  .room-announce {
+    height: auto;
+    min-height: 3.3em;
+  }
 }
 
 /* The filed room portal keeps its authored outcome label visible (the base label
@@ -7123,25 +7350,106 @@ p {
   transform: translateX(-50%) translateY(0);
 }
 
-/* High contrast: the selected card and turned slip get a shape cue, never colour
-   alone (they already carry aria-pressed + text). */
-.high-contrast .room-card--selected {
-  outline: 2px solid var(--amber);
-  outline-offset: -2px;
+/* ── Concourse return payoff: opened vs sealed portal cues (DOM layer) ─────────
+   Non-colour silhouettes so the two outcomes stay unmistakable with labels hidden
+   and in high contrast: an amber seam + light spill for opened, a barred shutter
+   for sealed. A held return-emphasis beat brightens/heavies whichever is resolved. */
+.annex-world-portal-spill {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 66px;
+  height: 66px;
+  transform: translate(-50%, -50%) scale(1);
+  border-radius: 50%;
+  background: radial-gradient(circle, currentColor 0%, transparent 66%);
+  opacity: 0.28;
+  pointer-events: none;
+  transition:
+    opacity 200ms var(--ease-out),
+    transform 200ms var(--ease-out);
 }
+.annex-world-portal-seam {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 5px;
+  height: 2.5px;
+  border-radius: 2px;
+  box-shadow: 0 0 8px 1px currentColor;
+  pointer-events: none;
+  transition:
+    box-shadow 200ms var(--ease-out),
+    height 200ms var(--ease-out);
+}
+.annex-world-portal-shutter {
+  position: absolute;
+  inset: 7px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-radius: 4px;
+  background: oklch(0.09 0 0 / 0.72);
+  pointer-events: none;
+}
+.annex-world-portal-shutter > span {
+  display: block;
+  height: 2px;
+  border-radius: 1px;
+  opacity: 0.9;
+}
+.annex-world-portal[data-return-emphasis='true'] .annex-world-portal-spill {
+  opacity: 0.6;
+  transform: translate(-50%, -50%) scale(1.28);
+}
+.annex-world-portal[data-return-emphasis='true'] .annex-world-portal-seam {
+  height: 3.5px;
+  box-shadow: 0 0 14px 2px currentColor;
+}
+.annex-world-portal[data-return-emphasis='true'] .annex-world-portal-shutter {
+  background: oklch(0.07 0 0 / 0.85);
+}
+.annex-world-portal[data-return-emphasis='true'] .annex-world-portal-shutter > span {
+  opacity: 1;
+  height: 2.5px;
+}
+
+/* High contrast: the turned slip and refused target get a shape cue, never colour
+   alone (they already carry aria-pressed / text). */
 .high-contrast .room-slip--turned {
   outline: 2px solid var(--cyan);
   outline-offset: -2px;
 }
+.high-contrast .room-category[data-refused='true'] {
+  outline: 2px dashed var(--fog);
+  outline-offset: -2px;
+}
+.high-contrast .annex-world-portal-shutter {
+  background: var(--night);
+  box-shadow: inset 0 0 0 1px var(--record);
+}
+.high-contrast .annex-world-portal-seam {
+  box-shadow: none;
+  height: 3px;
+}
 
-/* Reduced motion: the room swaps instantly — no colour transitions. */
+/* Reduced motion: the room and the portal cues swap instantly — no transitions. */
 .reduce-motion .classification-room *,
-.reduce-motion .annex-world-portal-label[data-outcome='true'] {
+.reduce-motion .annex-world-portal-label[data-outcome='true'],
+.reduce-motion .annex-world-portal-spill,
+.reduce-motion .annex-world-portal-seam,
+.reduce-motion .annex-world-portal-shutter,
+.reduce-motion .annex-world-portal-shutter > span {
   transition: none !important;
   animation: none !important;
 }
 @media (prefers-reduced-motion: reduce) {
-  .classification-room * {
+  .classification-room *,
+  .annex-world-portal-spill,
+  .annex-world-portal-seam,
+  .annex-world-portal-shutter,
+  .annex-world-portal-shutter > span {
     transition: none !important;
     animation: none !important;
   }
