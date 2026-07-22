@@ -1,4 +1,56 @@
-# Evidence pack — Case 81 ambience (sweep, amber flicker, alarm atmosphere)
+# Evidence packs
+
+## True 3D scene depth
+
+The authoritative suffix is **`true-3d-final`**. A depth capture is canonical
+only when all of the following are true:
+
+- its JSON is `depth-measurements-true-3d-final.json`;
+- `metadata.authoritative` and `acceptance.passed` are both `true`;
+- the capture was made after the application source was declared stable; and
+- the JSON records the capture timestamp, app URL, viewport matrix, Chrome
+  version, Git HEAD/dirty state, and the unchanged `motion.ts` rAF token count.
+
+If that suffixed JSON is absent, the final depth acceptance is still pending.
+Files carrying `before`, `after`, `pristine-*`, or any other suffix are useful
+diagnostics, not release evidence.
+
+Generate the authoritative pack against a running local app with:
+
+```sh
+node scripts/evidence-depth.mjs http://localhost:5199/ true-3d-final
+```
+
+The raw-CDP harness has no added runtime dependency. It exercises both cases at
+1280×800 and 390×844 under three independent modes: normal motion, OS-level
+`prefers-reduced-motion`, and the in-app Access → Reduce motion setting. The
+selected evidence sites (`registry` and `counsel-office`) remain in the shared
+diorama rather than swapping to generated close-read art.
+
+The command exits non-zero if any acceptance invariant fails. The JSON retains
+the complete measurements and failure list even on failure:
+
+- fixed pointer swing is strictly `near > mid > far > background`, with pixel
+  deltas for both cases and both viewports;
+- in normal motion, all four art planes and all four hotspot-plane instances
+  remain mutually compensated within 2 px even when the investigation's
+  initially selected site has applied its authored focus scale; under both
+  reduced-motion gates, all four art planes rest within 2 px of the frame;
+- `.scene-pgroup` and `.scene-hgroup` use the same inline and computed transform,
+  under active authored perspective and a `preserve-3d` chain;
+- four hotspots per case (eight total per viewport) remain at least 44×44 px and
+  within 2 px of a point projected through their authored art plane while focused;
+- an authored figure is inside `.scene-pgroup` and remains within 2 px of its
+  authored plane at rest and in focus; and
+- both reduced-motion gates keep both projected groups at `transform: none`
+  before and after selection while preserving the same rest geometry.
+
+Normal-motion settled, focused, OS-reduced rest, and app-reduced rest screenshots
+are emitted for each case and viewport. Pixel comparison to an approved visual
+baseline remains a review step; the harness's 2 px geometry checks prove the
+compensating depth scale, not perceptual image identity.
+
+## Case 81 ambience (sweep, amber flicker, alarm atmosphere)
 
 Captured 2026-07-20 against the dev server (`npm run dev -- --port 5199`) in headless
 Chrome driven over raw CDP (`cdp.mjs`, no added dependencies). All alarm state was

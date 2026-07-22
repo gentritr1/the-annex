@@ -12,7 +12,7 @@ import type { CSSProperties } from 'react'
 import { Atmosphere } from '../ambience/Atmosphere'
 import type { SceneArtProps } from '../game/types'
 
-export function CivicArchiveArt({ backgroundSrc }: SceneArtProps) {
+export function CivicArchiveArt({ backgroundSrc, figure }: SceneArtProps) {
   const bgStyle = { '--scene-bg': `url("${backgroundSrc}")` } as CSSProperties
 
   return (
@@ -275,6 +275,8 @@ export function CivicArchiveArt({ backgroundSrc }: SceneArtProps) {
             </g>
           </svg>
         </div>
+
+        {figure}
 
         {/* NEAR — foreground silhouette: the parapet railing the player stands
             at, plus the right-edge doorframe pier (static blur via CSS). */}

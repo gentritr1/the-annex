@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { getCaseContent, resolveFieldAction } from '../game/content'
 import { canEnterTribunal } from '../game/engine'
 import { SceneStage } from '../scene/SceneStage'
+import { SiteCloseupStage } from '../scene/SiteCloseupStage'
 import { resolveCommitConsent, sceneStateFor, witnessesRefusalOnCommit } from '../scene/sceneState'
 import type { DepositionChoiceId, FieldActionId, GameState, SiteId } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
@@ -78,6 +79,7 @@ export function Investigation({
   const [selectedSiteId, setSelectedSiteId] = useState<SiteId>(
     () => sites.find((site) => !state.completedSites.includes(site.id))?.id ?? sites[0]!.id,
   )
+  const [previewActionId, setPreviewActionId] = useState<FieldActionId | null>(null)
 
   // The live stage wrapper, so both the open-transcript reveal and the witnessed-
   // refusal beat can bring the reacting room into view behind / after the modal.
@@ -102,6 +104,19 @@ export function Investigation({
   useEffect(() => {
     siteInspectorRef.current?.scrollTo({ top: 0, behavior: 'auto' })
   }, [selectedSiteId])
+
+  // Decode the small authored plates before the player switches locations. This
+  // keeps the map-to-room cut crisp without mounting hidden video or animation.
+  useEffect(() => {
+    if (typeof Image === 'undefined') return
+    sites.forEach((site) => {
+      if (!site.closeup) return
+      const image = new Image()
+      image.decoding = 'async'
+      image.src = site.closeup.src
+      if (typeof image.decode === 'function') void image.decode().catch(() => undefined)
+    })
+  }, [sites])
 
   // Finding 1a — when a transcript opens, the stage flips to press/corroborate.
   // The tray docks to the bottom of the column, so keep the stage in view above
@@ -164,9 +179,20 @@ export function Investigation({
   }
 
   function handleCommitAction(actionId: FieldActionId) {
+    setPreviewActionId(null)
     onCommitAction(actionId)
     // The confirmed choice unmounts when the filed result replaces it. Keep the
     // keyboard route in context and reveal the consequence from its first line.
+    window.requestAnimationFrame(() => {
+      siteInspectorRef.current?.scrollTo({ top: 0, behavior: 'auto' })
+      siteInspectorRef.current?.focus({ preventScroll: true })
+    })
+  }
+
+  function handleAbandonDeposition() {
+    onDepositionEntryChange(null)
+    // The portalled dialog unmounts immediately. Return keyboard users to the
+    // location workspace instead of letting focus fall through to <body>.
     window.requestAnimationFrame(() => {
       siteInspectorRef.current?.scrollTo({ top: 0, behavior: 'auto' })
       siteInspectorRef.current?.focus({ preventScroll: true })
@@ -200,6 +226,9 @@ export function Investigation({
   const selectedCompletedAction = selectedCompletedBase
     ? resolveFieldAction(content, selectedCompletedBase.id, state.precedents)
     : undefined
+  const selectedActions = selectedSite.actionIds
+    .map((actionId) => resolveFieldAction(content, actionId, state.precedents))
+    .filter((action): action is NonNullable<typeof action> => Boolean(action))
   const selectedEvidence = selectedCompletedAction
     ? evidenceDefinitions.find((evidence) => evidence.id === selectedCompletedAction.evidenceId)
     : undefined
@@ -211,7 +240,26 @@ export function Investigation({
     : undefined
   const openSites = sites.filter((site) => !state.completedSites.includes(site.id))
 
+  const nextFieldAction = tribunalReady
+    ? { label: 'Enter tribunal', run: onEnterTribunal }
+    : state.completedSites.length === 0
+      ? {
+          label: 'Choose a method here',
+          run: () => selectSite(selectedSite.id, true),
+        }
+      : !reconstruction
+        ? { label: 'Open memory lattice', run: onOpenReconstruction }
+        : {
+            label: 'Complete one more site',
+            run: () => {
+              const nextSite =
+                openSites.find((site) => site.id === selectedSite.id) ?? openSites[0]
+              if (nextSite) selectSite(nextSite.id, true)
+            },
+          }
+
   function selectSite(siteId: SiteId, moveFocus = false) {
+    setPreviewActionId(null)
     setSelectedSiteId(siteId)
     if (!moveFocus) return
 
@@ -247,7 +295,10 @@ export function Investigation({
 
       <div className="field-workspace">
         <section className="world-pane" aria-label="District navigation">
-          <div className="world-view" ref={worldViewRef}>
+          <div
+            className={`world-view ${selectedSite.closeup ? 'world-view--closeup' : ''}`}
+            ref={worldViewRef}
+          >
             {/* The world is now the primary location picker. A hotspot swaps the
                 adjacent workspace in place instead of sending the player down a
                 long document. Canonical game state remains engine-owned. */}
@@ -258,18 +309,34 @@ export function Investigation({
               alarmLevel={state.alarm}
               interactive
               parallax={diorama}
+              active={!selectedSite.closeup}
               sites={sites}
               completedSiteIds={state.completedSites}
               selectedSiteId={selectedSite.id}
               onHotspotActivate={(siteId) => selectSite(siteId, true)}
             />
+            {selectedSite.closeup && (
+              <SiteCloseupStage
+                key={selectedSite.id}
+                closeup={selectedSite.closeup}
+                actions={selectedActions}
+                activeActionId={previewActionId}
+                resolvedActionId={selectedCompletedAction?.id}
+              />
+            )}
             <div className="world-caption">
-              <span>{chrome.worldCaption[0]}</span>
-              {captionMask !== null && (
+              <span>
+                {selectedSite.closeup
+                  ? `${selectedSite.index} · ${selectedSite.name}`
+                  : chrome.worldCaption[0]}
+              </span>
+              {selectedSite.closeup ? (
+                <span>{selectedSite.closeup.caption}</span>
+              ) : captionMask !== null ? (
                 <span>
                   {chrome.worldCaption[1]}: {Math.round(captionMask * 100)}%
                 </span>
-              )}
+              ) : null}
             </div>
           </div>
 
@@ -370,12 +437,7 @@ export function Investigation({
             // armed commit resets silently with it (one of the three disarms).
             <div className="site-actions" key={selectedSite.id}>
               <p className="site-action-prompt">Choose one method. This location then closes.</p>
-              {selectedSite.actionIds.map((actionId) => {
-                // Resolve through the precedent seam so the pre-commit hint and
-                // risk tone match the engine's eventual committed result.
-                const action = resolveFieldAction(content, actionId, state.precedents)
-                if (!action) return null
-
+              {selectedActions.map((action) => {
                 // A deposition entry opens its authored transcript interaction;
                 // its own final confirmation is the canonical commit.
                 const isDepositionEntry = Boolean(deposition?.entryActionIds.includes(action.id))
@@ -390,6 +452,11 @@ export function Investigation({
                     tone={action.alarmDelta > 0 ? 'risk' : 'default'}
                     aside={isDepositionEntry ? 'Open transcript' : undefined}
                     requiresConfirmation={!isDepositionEntry}
+                    onAttentionChange={(active) => {
+                      setPreviewActionId((current) =>
+                        active ? action.id : current === action.id ? null : current,
+                      )
+                    }}
                     onClick={
                       isDepositionEntry
                         ? () => onDepositionEntryChange(action.id)
@@ -432,24 +499,8 @@ export function Investigation({
         </div>
 
         <div className="field-dock-actions">
-          {!reconstruction && (
-            <button
-              className="button button-secondary"
-              type="button"
-              onClick={onOpenReconstruction}
-              disabled={state.completedSites.length === 0}
-            >
-              Open memory lattice <span aria-hidden="true">→</span>
-            </button>
-          )}
-          <button
-            className="button button-primary"
-            type="button"
-            onClick={onEnterTribunal}
-            disabled={!tribunalReady}
-          >
-            {tribunalReady ? 'Enter tribunal' : 'Tribunal locked'}{' '}
-            <span aria-hidden="true">→</span>
+          <button className="button button-primary" type="button" onClick={nextFieldAction.run}>
+            {nextFieldAction.label} <span aria-hidden="true">→</span>
           </button>
         </div>
       </footer>
@@ -459,7 +510,7 @@ export function Investigation({
           state={state}
           entryActionId={depositionEntry}
           onCommit={handleCommitDeposition}
-          onAbandon={() => onDepositionEntryChange(null)}
+          onAbandon={handleAbandonDeposition}
         />
       )}
     </article>

@@ -405,6 +405,16 @@ const sites: readonly SiteDefinition[] = [
     name: 'Care ward 12',
     description: '77-A is awake, articulate, and aware that your report can erase her status.',
     actionIds: ['listen-mara', 'stress-test'],
+    closeup: {
+      src: '/images/site-scenes/care-ward-12.webp',
+      caption: 'Impossible rain · listening / pressure',
+      focalPoint: { x: 0.5, y: 0.5 },
+      zones: [
+        { actionId: 'listen-mara', x: 0.23, y: 0.56 },
+        { actionId: 'stress-test', x: 0.78, y: 0.54 },
+      ],
+      atmosphere: 'rain-reflection',
+    },
     unvisitedNote:
       'You never entered Care ward 12. 77-A stayed a file that never had to answer you.',
   },
@@ -414,6 +424,15 @@ const sites: readonly SiteDefinition[] = [
     name: 'Maintenance spine',
     description: 'A rain-slicked sensor ecology built around permissions the public record never mentions.',
     actionIds: ['walk-acoustic-shadow', 'forge-authority'],
+    closeup: {
+      src: '/images/site-scenes/maintenance-spine.webp',
+      caption: 'Sensor route · blind interval · dormant credential',
+      focalPoint: { x: 0.76, y: 0.5 },
+      zones: [
+        { actionId: 'walk-acoustic-shadow', x: 0.47, y: 0.56 },
+        { actionId: 'forge-authority', x: 0.85, y: 0.56 },
+      ],
+    },
     unvisitedNote:
       'You never walked the maintenance spine. The cameras kept their omissions, and no one asked what the rain was covering.',
   },

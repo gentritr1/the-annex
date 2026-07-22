@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { getCaseContent } from '../game/content'
+import { MemoryLatticeStage } from '../scene/MemoryLatticeStage'
 import type { FragmentId, GameState } from '../game/types'
 
 interface ReconstructionProps {
@@ -18,6 +19,15 @@ export function Reconstruction({
   const { fragments, fragmentEvidenceLinks, evidenceDefinitions } = getCaseContent(state.caseId)
   const [commitArmed, setCommitArmed] = useState(false)
   const commitRef = useRef<HTMLButtonElement>(null)
+  const corroboratedFragmentIds = fragments
+    .filter((fragment) =>
+      evidenceDefinitions.some(
+        (evidence) =>
+          state.evidence.includes(evidence.id) &&
+          fragmentEvidenceLinks[fragment.id].includes(evidence.id),
+      ),
+    )
+    .map((fragment) => fragment.id)
 
   // Same step-back gestures as the field/tribunal commit rows: pointer down
   // outside the commit button, Escape, or focus loss (onBlur) disarm silently.
@@ -53,57 +63,59 @@ export function Reconstruction({
           <span aria-hidden="true">←</span> Return to field
         </button>
         <p className="case-code">Cognitive reconstruction · bounded model</p>
-        <h1>Choose two anchors that may coexist</h1>
-        <p>
-          You are not finding the correct memory. You are deciding which kinds of evidence can support
-          one account of a self.
-        </p>
+        <h1>Build one account from two anchors</h1>
+        <p>Pair two fragments. The filing preserves the contradiction between them.</p>
       </header>
 
       <div className="lattice-rule" role="note">
         <span>Rule</span>
-        <p>
-          Select exactly two fragments. Every pairing produces a valid filing with a different
-          contradiction.
-        </p>
+        <p>Two anchors. Every pairing produces a different valid model.</p>
         <strong>{state.selectedFragments.length} / 2</strong>
       </div>
 
-      <div className="fragment-list" aria-label="Memory fragments">
-        {fragments.map((fragment) => {
-          const selected = state.selectedFragments.includes(fragment.id)
-          const corroboratingEvidence = evidenceDefinitions.find(
-            (evidence) =>
-              state.evidence.includes(evidence.id) &&
-              fragmentEvidenceLinks[fragment.id].includes(evidence.id),
-          )
-          return (
-            <button
-              className={`fragment-row ${selected ? 'fragment-row-selected' : ''}`}
-              type="button"
-              aria-pressed={selected}
-              key={fragment.id}
-              onClick={() => onToggleFragment(fragment.id)}
-            >
-              <span className="fragment-selector" aria-hidden="true">
-                {selected ? '✓' : ''}
-              </span>
-              <span className="fragment-code">{fragment.timecode}</span>
-              <span className="fragment-body">
-                <strong>{fragment.title}</strong>
-                <span>{fragment.content}</span>
-                <small>{fragment.source}</small>
-                <span
-                  className={`fragment-evidence-state ${corroboratingEvidence ? 'fragment-corroborated' : ''}`}
-                >
-                  {corroboratingEvidence
-                    ? `Corroborated by field: ${corroboratingEvidence.title}`
-                    : 'Not corroborated by your field route'}
+      <div className="lattice-workspace">
+        <MemoryLatticeStage
+          fragments={fragments}
+          selectedFragments={state.selectedFragments}
+          corroboratedFragmentIds={corroboratedFragmentIds}
+        />
+
+        <div className="fragment-list lattice-fragment-list" aria-label="Memory fragments">
+          {fragments.map((fragment) => {
+            const selected = state.selectedFragments.includes(fragment.id)
+            const corroboratingEvidence = evidenceDefinitions.find(
+              (evidence) =>
+                state.evidence.includes(evidence.id) &&
+                fragmentEvidenceLinks[fragment.id].includes(evidence.id),
+            )
+            return (
+              <button
+                className={`fragment-row ${selected ? 'fragment-row-selected' : ''}`}
+                type="button"
+                aria-pressed={selected}
+                key={fragment.id}
+                onClick={() => onToggleFragment(fragment.id)}
+              >
+                <span className="fragment-selector" aria-hidden="true">
+                  {selected ? '✓' : ''}
                 </span>
-              </span>
-            </button>
-          )
-        })}
+                <span className="fragment-code">{fragment.timecode}</span>
+                <span className="fragment-body">
+                  <strong>{fragment.title}</strong>
+                  <span>{fragment.content}</span>
+                  <small>{fragment.source}</small>
+                  <span
+                    className={`fragment-evidence-state ${corroboratingEvidence ? 'fragment-corroborated' : ''}`}
+                  >
+                    {corroboratingEvidence
+                      ? `Corroborated by field: ${corroboratingEvidence.title}`
+                      : 'Not corroborated by your field route'}
+                  </span>
+                </span>
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       <footer className="phase-footer lattice-footer">

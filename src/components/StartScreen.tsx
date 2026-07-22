@@ -113,23 +113,25 @@ export function StartScreen({
 
         <div className="start-actions">
           {savedState && savedState.phase !== 'landing' && (
-            <button className="button button-primary" type="button" onClick={onContinue}>
-              <span>Continue local case</span>
-              <span className="button-meta">
-                Run {savedState.runNumber} · {phaseLabel(savedState.phase)}
-              </span>
-            </button>
-          )}
-          {continueRecordLine && (
-            <p className="record-line" role="note">
-              {continueRecordLine}
-            </p>
+            <div className="start-action-stack">
+              <button className="button button-primary" type="button" onClick={onContinue}>
+                <span>Continue local case</span>
+                <span className="button-meta">
+                  Run {savedState.runNumber} · {phaseLabel(savedState.phase)}
+                </span>
+              </button>
+              {continueRecordLine && (
+                <p className="record-line" role="note">
+                  {continueRecordLine}
+                </p>
+              )}
+            </div>
           )}
           {savedState &&
             switchTargets.map((target) => {
               const targetRecordLine = getRecordEndsLine(target.caseId, savedState.precedents)
               return (
-                <div className="switch-target" key={target.caseId}>
+                <div className="start-action-stack switch-target" key={target.caseId}>
                   <button
                     className="button button-secondary"
                     type="button"

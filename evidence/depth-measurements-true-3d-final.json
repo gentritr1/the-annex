@@ -1,0 +1,2641 @@
+{
+  "metadata": {
+    "capturedAt": "2026-07-22T06:22:40.775Z",
+    "appUrl": "http://127.0.0.1:7100/",
+    "captureSuffix": "true-3d-final",
+    "authoritativeSuffix": "true-3d-final",
+    "authoritative": true,
+    "viewportMatrix": {
+      "desktop": {
+        "width": 1280,
+        "height": 800
+      },
+      "mobile": {
+        "width": 390,
+        "height": 844
+      }
+    },
+    "reductionModes": [
+      "motion",
+      "os-reduced",
+      "app-reduced"
+    ],
+    "chrome": "Google Chrome 150.0.7871.129",
+    "node": "v23.7.0",
+    "git": {
+      "head": "736082adde1f8415c0ecdad2a0e0560e8d62ff64",
+      "dirty": true,
+      "changedPathCount": 63
+    },
+    "thresholds": {
+      "restFrameDeltaPx": 2,
+      "hotspotMinPx": 44,
+      "coincidencePx": 2,
+      "hotspotsPerCase": 4
+    },
+    "motionRafTokenCount": 3
+  },
+  "acceptance": {
+    "passed": true,
+    "checkCount": 359,
+    "failures": []
+  },
+  "results": [
+    {
+      "caseId": "case-77",
+      "viewport": {
+        "name": "desktop",
+        "width": 1280,
+        "height": 800
+      },
+      "reductionMode": "motion",
+      "reduced": false,
+      "focusSite": "registry",
+      "gates": {
+        "osReduced": false,
+        "appReduced": false,
+        "appToggleChecked": false
+      },
+      "rest": {
+        "frame": {
+          "x": 20,
+          "y": 150,
+          "w": 515.984375,
+          "h": 458
+        },
+        "planes": [
+          {
+            "name": "background",
+            "transform": "matrix3d(1.6545, 0, 0, 0, 0, 1.6545, 0, 0, 0, 0, 1, 0, 0, 0, -720, 1)",
+            "netScaleX": 1.045,
+            "netScaleY": 1.045,
+            "frameDeltaW": 23.2,
+            "frameDeltaH": 20.6
+          },
+          {
+            "name": "far",
+            "transform": "matrix3d(1.4182, 0, 0, 0, 0, 1.4182, 0, 0, 0, 0, 1, 0, 0, 0, -460, 1)",
+            "netScaleX": 1.045,
+            "netScaleY": 1.045,
+            "frameDeltaW": 23.23,
+            "frameDeltaH": 20.62
+          },
+          {
+            "name": "mid",
+            "transform": "matrix3d(1.2182, 0, 0, 0, 0, 1.2182, 0, 0, 0, 0, 1, 0, 0, 0, -240, 1)",
+            "netScaleX": 1.045,
+            "netScaleY": 1.045,
+            "frameDeltaW": 23.23,
+            "frameDeltaH": 20.62
+          },
+          {
+            "name": "near",
+            "transform": "matrix3d(1.0727, 0, 0, 0, 0, 1.0727, 0, 0, 0, 0, 1, 0, 0, 0, -80, 1)",
+            "netScaleX": 1.045,
+            "netScaleY": 1.045,
+            "frameDeltaW": 23.21,
+            "frameDeltaH": 20.6
+          }
+        ],
+        "hplanes": [
+          {
+            "site": "registry",
+            "plane": "far",
+            "netScaleX": 1.045,
+            "netScaleY": 1.045,
+            "frameDeltaW": 23.23,
+            "frameDeltaH": 20.62
+          },
+          {
+            "site": "care-ward",
+            "plane": "mid",
+            "netScaleX": 1.045,
+            "netScaleY": 1.045,
+            "frameDeltaW": 23.23,
+            "frameDeltaH": 20.62
+          },
+          {
+            "site": "maintenance",
+            "plane": "mid",
+            "netScaleX": 1.045,
+            "netScaleY": 1.045,
+            "frameDeltaW": 23.23,
+            "frameDeltaH": 20.62
+          },
+          {
+            "site": "small-archive",
+            "plane": "mid",
+            "netScaleX": 1.045,
+            "netScaleY": 1.045,
+            "frameDeltaW": 23.23,
+            "frameDeltaH": 20.62
+          }
+        ],
+        "scene3d": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "257.984px 229px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "257.984px 229px",
+          "pgroup": {
+            "inlineTransform": "translate(-12.9px, -11.45px) scale(1.045) rotateX(0deg) rotateY(0deg)",
+            "computedTransform": "matrix(1.045, 0, 0, 1.045, -12.9, -11.45)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "translate(-12.9px, -11.45px) scale(1.045) rotateX(0deg) rotateY(0deg)",
+            "computedTransform": "matrix(1.045, 0, 0, 1.045, -12.9, -11.45)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          }
+        },
+        "figureCoincidence": {
+          "present": false,
+          "applicable": false,
+          "ok": true
+        }
+      },
+      "swing": {
+        "pointer": {
+          "from": [
+            0,
+            400
+          ],
+          "to": [
+            1279,
+            400
+          ]
+        },
+        "scene3dAtLeft": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "257.984px 229px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "257.984px 229px",
+          "pgroup": {
+            "inlineTransform": "translate(-12.9px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.13deg)",
+            "computedTransform": "matrix3d(1.045, 0, 0.00226893, 0, 0, 1.045, 0, 0, -0.00237103, 0, 0.999997, 0, -12.9, -11.45, 0, 1)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "translate(-12.9px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.13deg)",
+            "computedTransform": "matrix3d(1.045, 0, 0.00226893, 0, 0, 1.045, 0, 0, -0.00237103, 0, 0.999997, 0, -12.9, -11.45, 0, 1)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          }
+        },
+        "scene3dAtRight": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "257.984px 229px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "257.984px 229px",
+          "pgroup": {
+            "inlineTransform": "translate(-12.9px, -11.45px) scale(1.045) rotateX(0deg) rotateY(0.13deg)",
+            "computedTransform": "matrix3d(1.045, 0, -0.00226893, 0, 0, 1.045, 0, 0, 0.00237103, 0, 0.999997, 0, -12.9, -11.45, 0, 1)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "translate(-12.9px, -11.45px) scale(1.045) rotateX(0deg) rotateY(0.13deg)",
+            "computedTransform": "matrix3d(1.045, 0, -0.00226893, 0, 0, 1.045, 0, 0, 0.00237103, 0, 0.999997, 0, -12.9, -11.45, 0, 1)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          }
+        },
+        "probes": [
+          {
+            "id": "background-a",
+            "dx": -0.15,
+            "dy": -0.01,
+            "mag": 0.15
+          },
+          {
+            "id": "background-b",
+            "dx": -0.13,
+            "dy": 0.01,
+            "mag": 0.14
+          },
+          {
+            "id": "far-a",
+            "dx": 0.72,
+            "dy": -0.01,
+            "mag": 0.72
+          },
+          {
+            "id": "far-b",
+            "dx": 0.74,
+            "dy": 0.01,
+            "mag": 0.74
+          },
+          {
+            "id": "mid-a",
+            "dx": 1.72,
+            "dy": -0.01,
+            "mag": 1.72
+          },
+          {
+            "id": "mid-b",
+            "dx": 1.74,
+            "dy": 0.01,
+            "mag": 1.74
+          },
+          {
+            "id": "near-a",
+            "dx": 2.68,
+            "dy": -0.01,
+            "mag": 2.68
+          },
+          {
+            "id": "near-b",
+            "dx": 2.7,
+            "dy": 0.01,
+            "mag": 2.7
+          }
+        ],
+        "markers": [
+          {
+            "id": "registry",
+            "dx": 0.68,
+            "dy": -0.03,
+            "mag": 0.68
+          },
+          {
+            "id": "care-ward",
+            "dx": 1.86,
+            "dy": 0.01,
+            "mag": 1.86
+          },
+          {
+            "id": "maintenance",
+            "dx": 1.85,
+            "dy": -0.03,
+            "mag": 1.85
+          },
+          {
+            "id": "small-archive",
+            "dx": 1.66,
+            "dy": 0.06,
+            "mag": 1.66
+          }
+        ],
+        "planeShift": {
+          "background": 0.14,
+          "far": 0.73,
+          "mid": 1.73,
+          "near": 2.69
+        },
+        "strictOrder": true
+      },
+      "focusScene3d": {
+        "framePerspective": "1100px",
+        "framePerspectiveOrigin": "257.984px 229px",
+        "stackTransformStyle": "preserve-3d",
+        "hotspotPerspective": "1100px",
+        "hotspotPerspectiveOrigin": "257.984px 229px",
+        "pgroup": {
+          "inlineTransform": "translate(-12.9px, -11.45px) scale(1.045) rotateX(0deg) rotateY(0deg)",
+          "computedTransform": "matrix(1.045, 0, 0, 1.045, -12.9, -11.45)",
+          "transformStyle": "preserve-3d",
+          "transformOrigin": "257.992px 229px -720px"
+        },
+        "hgroup": {
+          "inlineTransform": "translate(-12.9px, -11.45px) scale(1.045) rotateX(0deg) rotateY(0deg)",
+          "computedTransform": "matrix(1.045, 0, 0, 1.045, -12.9, -11.45)",
+          "transformStyle": "preserve-3d",
+          "transformOrigin": "257.992px 229px -720px"
+        }
+      },
+      "hitAreas": [
+        {
+          "site": "registry",
+          "plane": "far",
+          "w": 45.98,
+          "h": 45.98
+        },
+        {
+          "site": "care-ward",
+          "plane": "mid",
+          "w": 45.98,
+          "h": 45.98
+        },
+        {
+          "site": "maintenance",
+          "plane": "mid",
+          "w": 45.98,
+          "h": 45.98
+        },
+        {
+          "site": "small-archive",
+          "plane": "mid",
+          "w": 45.98,
+          "h": 45.98
+        }
+      ],
+      "hitAreasOk": true,
+      "coincidence": [
+        {
+          "site": "registry",
+          "plane": "far",
+          "dx": 0,
+          "dy": 0
+        },
+        {
+          "site": "care-ward",
+          "plane": "mid",
+          "dx": 0,
+          "dy": 0
+        },
+        {
+          "site": "maintenance",
+          "plane": "mid",
+          "dx": 0,
+          "dy": 0
+        },
+        {
+          "site": "small-archive",
+          "plane": "mid",
+          "dx": 0,
+          "dy": 0
+        }
+      ],
+      "coincidenceOk": true,
+      "figureCoincidence": {
+        "present": false,
+        "applicable": false,
+        "ok": true
+      }
+    },
+    {
+      "caseId": "case-77",
+      "viewport": {
+        "name": "desktop",
+        "width": 1280,
+        "height": 800
+      },
+      "reductionMode": "os-reduced",
+      "reduced": true,
+      "focusSite": "registry",
+      "gates": {
+        "osReduced": true,
+        "appReduced": false,
+        "appToggleChecked": false
+      },
+      "reducedMotion": {
+        "scene3dBefore": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "257.984px 229px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "257.984px 229px",
+          "pgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          }
+        },
+        "scene3dAfter": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "257.984px 229px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "257.984px 229px",
+          "pgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          }
+        },
+        "planes": [
+          {
+            "name": "background",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 20.01,
+            "y": 150.01,
+            "w": 515.97,
+            "h": 457.99
+          },
+          {
+            "name": "far",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 20,
+            "y": 150,
+            "w": 515.99,
+            "h": 458.01
+          },
+          {
+            "name": "mid",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 20,
+            "y": 150,
+            "w": 515.99,
+            "h": 458.01
+          },
+          {
+            "name": "near",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 20.01,
+            "y": 150.01,
+            "w": 515.97,
+            "h": 457.99
+          }
+        ],
+        "frame": {
+          "x": 20,
+          "y": 150,
+          "w": 515.984375,
+          "h": 458
+        },
+        "markers": [
+          {
+            "id": "registry",
+            "x": 489.6902160644531,
+            "y": 424.79747009277344,
+            "w": 44.00054931640625,
+            "h": 44.000579833984375
+          },
+          {
+            "id": "care-ward",
+            "x": 237.26502227783203,
+            "y": 424.7975616455078,
+            "w": 44.00065612792969,
+            "h": 44.000640869140625
+          },
+          {
+            "id": "maintenance",
+            "x": 343.1259765625,
+            "y": 479.7514953613281,
+            "w": 44.00067138671875,
+            "h": 44.00067138671875
+          },
+          {
+            "id": "small-archive",
+            "x": 66.27809715270996,
+            "y": 452.2667236328125,
+            "w": 44.00065994262695,
+            "h": 44.00067138671875
+          }
+        ],
+        "figureBefore": {
+          "present": false,
+          "applicable": false,
+          "ok": true
+        },
+        "figureAfter": {
+          "present": false,
+          "applicable": false,
+          "ok": true
+        },
+        "flat": true
+      }
+    },
+    {
+      "caseId": "case-77",
+      "viewport": {
+        "name": "desktop",
+        "width": 1280,
+        "height": 800
+      },
+      "reductionMode": "app-reduced",
+      "reduced": true,
+      "focusSite": "registry",
+      "gates": {
+        "osReduced": false,
+        "appReduced": true,
+        "appToggleChecked": true
+      },
+      "reducedMotion": {
+        "scene3dBefore": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "257.984px 229px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "257.984px 229px",
+          "pgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          }
+        },
+        "scene3dAfter": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "257.984px 229px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "257.984px 229px",
+          "pgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          }
+        },
+        "planes": [
+          {
+            "name": "background",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 20.01,
+            "y": 150.01,
+            "w": 515.97,
+            "h": 457.99
+          },
+          {
+            "name": "far",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 20,
+            "y": 150,
+            "w": 515.99,
+            "h": 458.01
+          },
+          {
+            "name": "mid",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 20,
+            "y": 150,
+            "w": 515.99,
+            "h": 458.01
+          },
+          {
+            "name": "near",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 20.01,
+            "y": 150.01,
+            "w": 515.97,
+            "h": 457.99
+          }
+        ],
+        "frame": {
+          "x": 20,
+          "y": 150,
+          "w": 515.984375,
+          "h": 458
+        },
+        "markers": [
+          {
+            "id": "registry",
+            "x": 489.6902160644531,
+            "y": 424.79747009277344,
+            "w": 44.00054931640625,
+            "h": 44.000579833984375
+          },
+          {
+            "id": "care-ward",
+            "x": 237.26502227783203,
+            "y": 424.7975616455078,
+            "w": 44.00065612792969,
+            "h": 44.000640869140625
+          },
+          {
+            "id": "maintenance",
+            "x": 343.1259765625,
+            "y": 479.7514953613281,
+            "w": 44.00067138671875,
+            "h": 44.00067138671875
+          },
+          {
+            "id": "small-archive",
+            "x": 66.27809715270996,
+            "y": 452.2667236328125,
+            "w": 44.00065994262695,
+            "h": 44.00067138671875
+          }
+        ],
+        "figureBefore": {
+          "present": false,
+          "applicable": false,
+          "ok": true
+        },
+        "figureAfter": {
+          "present": false,
+          "applicable": false,
+          "ok": true
+        },
+        "flat": true
+      }
+    },
+    {
+      "caseId": "case-77",
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "reductionMode": "motion",
+      "reduced": false,
+      "focusSite": "registry",
+      "gates": {
+        "osReduced": false,
+        "appReduced": false,
+        "appToggleChecked": false
+      },
+      "rest": {
+        "frame": {
+          "x": 14,
+          "y": 262.390625,
+          "w": 362,
+          "h": 320
+        },
+        "planes": [
+          {
+            "name": "background",
+            "transform": "matrix3d(1.6545, 0, 0, 0, 0, 1.6545, 0, 0, 0, 0, 1, 0, 0, 0, -720, 1)",
+            "netScaleX": 1.045,
+            "netScaleY": 1.045,
+            "frameDeltaW": 16.28,
+            "frameDeltaH": 14.39
+          },
+          {
+            "name": "far",
+            "transform": "matrix3d(1.4182, 0, 0, 0, 0, 1.4182, 0, 0, 0, 0, 1, 0, 0, 0, -460, 1)",
+            "netScaleX": 1.045,
+            "netScaleY": 1.045,
+            "frameDeltaW": 16.29,
+            "frameDeltaH": 14.4
+          },
+          {
+            "name": "mid",
+            "transform": "matrix3d(1.2182, 0, 0, 0, 0, 1.2182, 0, 0, 0, 0, 1, 0, 0, 0, -240, 1)",
+            "netScaleX": 1.045,
+            "netScaleY": 1.045,
+            "frameDeltaW": 16.3,
+            "frameDeltaH": 14.4
+          },
+          {
+            "name": "near",
+            "transform": "matrix3d(1.0727, 0, 0, 0, 0, 1.0727, 0, 0, 0, 0, 1, 0, 0, 0, -80, 1)",
+            "netScaleX": 1.045,
+            "netScaleY": 1.045,
+            "frameDeltaW": 16.28,
+            "frameDeltaH": 14.39
+          }
+        ],
+        "hplanes": [
+          {
+            "site": "registry",
+            "plane": "far",
+            "netScaleX": 1.045,
+            "netScaleY": 1.045,
+            "frameDeltaW": 16.29,
+            "frameDeltaH": 14.4
+          },
+          {
+            "site": "care-ward",
+            "plane": "mid",
+            "netScaleX": 1.045,
+            "netScaleY": 1.045,
+            "frameDeltaW": 16.3,
+            "frameDeltaH": 14.4
+          },
+          {
+            "site": "maintenance",
+            "plane": "mid",
+            "netScaleX": 1.045,
+            "netScaleY": 1.045,
+            "frameDeltaW": 16.3,
+            "frameDeltaH": 14.4
+          },
+          {
+            "site": "small-archive",
+            "plane": "mid",
+            "netScaleX": 1.045,
+            "netScaleY": 1.045,
+            "frameDeltaW": 16.3,
+            "frameDeltaH": 14.4
+          }
+        ],
+        "scene3d": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "181px 160px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "181px 160px",
+          "pgroup": {
+            "inlineTransform": "translate(-9.05px, -8px) scale(1.045) rotateX(0deg) rotateY(0deg)",
+            "computedTransform": "matrix(1.045, 0, 0, 1.045, -9.05, -8)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "translate(-9.05px, -8px) scale(1.045) rotateX(0deg) rotateY(0deg)",
+            "computedTransform": "matrix(1.045, 0, 0, 1.045, -9.05, -8)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          }
+        },
+        "figureCoincidence": {
+          "present": false,
+          "applicable": false,
+          "ok": true
+        }
+      },
+      "swing": {
+        "pointer": {
+          "from": [
+            0,
+            422
+          ],
+          "to": [
+            389,
+            422
+          ]
+        },
+        "scene3dAtLeft": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "181px 160px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "181px 160px",
+          "pgroup": {
+            "inlineTransform": "translate(-9.05px, -8px) scale(1.045) rotateX(0deg) rotateY(-0.13deg)",
+            "computedTransform": "matrix3d(1.045, 0, 0.00226893, 0, 0, 1.045, 0, 0, -0.00237103, 0, 0.999997, 0, -9.05, -8, 0, 1)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "translate(-9.05px, -8px) scale(1.045) rotateX(0deg) rotateY(-0.13deg)",
+            "computedTransform": "matrix3d(1.045, 0, 0.00226893, 0, 0, 1.045, 0, 0, -0.00237103, 0, 0.999997, 0, -9.05, -8, 0, 1)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          }
+        },
+        "scene3dAtRight": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "181px 160px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "181px 160px",
+          "pgroup": {
+            "inlineTransform": "translate(-9.05px, -8px) scale(1.045) rotateX(0deg) rotateY(0.129deg)",
+            "computedTransform": "matrix3d(1.045, 0, -0.00225147, 0, 0, 1.045, 0, 0, 0.00235279, 0, 0.999997, 0, -9.05, -8, 0, 1)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "translate(-9.05px, -8px) scale(1.045) rotateX(0deg) rotateY(0.129deg)",
+            "computedTransform": "matrix3d(1.045, 0, -0.00225147, 0, 0, 1.045, 0, 0, 0.00235279, 0, 0.999997, 0, -9.05, -8, 0, 1)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          }
+        },
+        "probes": [
+          {
+            "id": "background-a",
+            "dx": -0.07,
+            "dy": 0,
+            "mag": 0.07
+          },
+          {
+            "id": "background-b",
+            "dx": -0.07,
+            "dy": 0,
+            "mag": 0.07
+          },
+          {
+            "id": "far-a",
+            "dx": 0.79,
+            "dy": 0,
+            "mag": 0.79
+          },
+          {
+            "id": "far-b",
+            "dx": 0.8,
+            "dy": 0,
+            "mag": 0.8
+          },
+          {
+            "id": "mid-a",
+            "dx": 1.79,
+            "dy": 0,
+            "mag": 1.79
+          },
+          {
+            "id": "mid-b",
+            "dx": 1.8,
+            "dy": 0,
+            "mag": 1.8
+          },
+          {
+            "id": "near-a",
+            "dx": 2.74,
+            "dy": 0,
+            "mag": 2.74
+          },
+          {
+            "id": "near-b",
+            "dx": 2.75,
+            "dy": 0,
+            "mag": 2.75
+          }
+        ],
+        "markers": [
+          {
+            "id": "registry",
+            "dx": 0.77,
+            "dy": -0.02,
+            "mag": 0.77
+          },
+          {
+            "id": "care-ward",
+            "dx": 1.85,
+            "dy": 0,
+            "mag": 1.85
+          },
+          {
+            "id": "maintenance",
+            "dx": 1.85,
+            "dy": -0.01,
+            "mag": 1.85
+          },
+          {
+            "id": "small-archive",
+            "dx": 1.76,
+            "dy": 0.03,
+            "mag": 1.76
+          }
+        ],
+        "planeShift": {
+          "background": 0.07,
+          "far": 0.8,
+          "mid": 1.79,
+          "near": 2.75
+        },
+        "strictOrder": true
+      },
+      "focusScene3d": {
+        "framePerspective": "1100px",
+        "framePerspectiveOrigin": "181px 160px",
+        "stackTransformStyle": "preserve-3d",
+        "hotspotPerspective": "1100px",
+        "hotspotPerspectiveOrigin": "181px 160px",
+        "pgroup": {
+          "inlineTransform": "translate(-9.05px, -8px) scale(1.045) rotateX(0deg) rotateY(0deg)",
+          "computedTransform": "matrix(1.045, 0, 0, 1.045, -9.05, -8)",
+          "transformStyle": "preserve-3d",
+          "transformOrigin": "181px 160px -720px"
+        },
+        "hgroup": {
+          "inlineTransform": "translate(-9.05px, -8px) scale(1.045) rotateX(0deg) rotateY(0deg)",
+          "computedTransform": "matrix(1.045, 0, 0, 1.045, -9.05, -8)",
+          "transformStyle": "preserve-3d",
+          "transformOrigin": "181px 160px -720px"
+        }
+      },
+      "hitAreas": [
+        {
+          "site": "registry",
+          "plane": "far",
+          "w": 45.98,
+          "h": 45.98
+        },
+        {
+          "site": "care-ward",
+          "plane": "mid",
+          "w": 45.98,
+          "h": 45.98
+        },
+        {
+          "site": "maintenance",
+          "plane": "mid",
+          "w": 45.98,
+          "h": 45.98
+        },
+        {
+          "site": "small-archive",
+          "plane": "mid",
+          "w": 45.98,
+          "h": 45.98
+        }
+      ],
+      "hitAreasOk": true,
+      "coincidence": [
+        {
+          "site": "registry",
+          "plane": "far",
+          "dx": 0,
+          "dy": 0
+        },
+        {
+          "site": "care-ward",
+          "plane": "mid",
+          "dx": 0,
+          "dy": 0
+        },
+        {
+          "site": "maintenance",
+          "plane": "mid",
+          "dx": 0,
+          "dy": 0
+        },
+        {
+          "site": "small-archive",
+          "plane": "mid",
+          "dx": 0,
+          "dy": 0
+        }
+      ],
+      "coincidenceOk": true,
+      "figureCoincidence": {
+        "present": false,
+        "applicable": false,
+        "ok": true
+      }
+    },
+    {
+      "caseId": "case-77",
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "reductionMode": "os-reduced",
+      "reduced": true,
+      "focusSite": "registry",
+      "gates": {
+        "osReduced": true,
+        "appReduced": false,
+        "appToggleChecked": false
+      },
+      "reducedMotion": {
+        "scene3dBefore": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "181px 160px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "181px 160px",
+          "pgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          }
+        },
+        "scene3dAfter": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "181px 160px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "181px 160px",
+          "pgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          }
+        },
+        "planes": [
+          {
+            "name": "background",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 14,
+            "y": 262.4,
+            "w": 361.99,
+            "h": 319.99
+          },
+          {
+            "name": "far",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0,
+            "frameDeltaH": 0,
+            "x": 14,
+            "y": 262.39,
+            "w": 362,
+            "h": 320
+          },
+          {
+            "name": "mid",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0,
+            "x": 14,
+            "y": 262.39,
+            "w": 362.01,
+            "h": 320
+          },
+          {
+            "name": "near",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 14,
+            "y": 262.39,
+            "w": 361.99,
+            "h": 319.99
+          }
+        ],
+        "frame": {
+          "x": 14,
+          "y": 262.390625,
+          "w": 362,
+          "h": 320
+        },
+        "markers": [
+          {
+            "id": "registry",
+            "x": 342.90814208984375,
+            "y": 454.3910217285156,
+            "w": 44.00054931640625,
+            "h": 44.00054931640625
+          },
+          {
+            "id": "care-ward",
+            "x": 166.54645538330078,
+            "y": 454.39109802246094,
+            "w": 44.00065612792969,
+            "h": 44.000640869140625
+          },
+          {
+            "id": "maintenance",
+            "x": 240.50067901611328,
+            "y": 492.78228759765625,
+            "w": 44.00065612792969,
+            "h": 44.0006103515625
+          },
+          {
+            "id": "small-archive",
+            "x": 47.07592010498047,
+            "y": 473.5788879394531,
+            "w": 44.00065612792969,
+            "h": 44.00067138671875
+          }
+        ],
+        "figureBefore": {
+          "present": false,
+          "applicable": false,
+          "ok": true
+        },
+        "figureAfter": {
+          "present": false,
+          "applicable": false,
+          "ok": true
+        },
+        "flat": true
+      }
+    },
+    {
+      "caseId": "case-77",
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "reductionMode": "app-reduced",
+      "reduced": true,
+      "focusSite": "registry",
+      "gates": {
+        "osReduced": false,
+        "appReduced": true,
+        "appToggleChecked": true
+      },
+      "reducedMotion": {
+        "scene3dBefore": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "181px 160px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "181px 160px",
+          "pgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          }
+        },
+        "scene3dAfter": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "181px 160px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "181px 160px",
+          "pgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          }
+        },
+        "planes": [
+          {
+            "name": "background",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 14,
+            "y": 262.4,
+            "w": 361.99,
+            "h": 319.99
+          },
+          {
+            "name": "far",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0,
+            "frameDeltaH": 0,
+            "x": 14,
+            "y": 262.39,
+            "w": 362,
+            "h": 320
+          },
+          {
+            "name": "mid",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0,
+            "x": 14,
+            "y": 262.39,
+            "w": 362.01,
+            "h": 320
+          },
+          {
+            "name": "near",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 14,
+            "y": 262.39,
+            "w": 361.99,
+            "h": 319.99
+          }
+        ],
+        "frame": {
+          "x": 14,
+          "y": 262.390625,
+          "w": 362,
+          "h": 320
+        },
+        "markers": [
+          {
+            "id": "registry",
+            "x": 342.90814208984375,
+            "y": 454.3910217285156,
+            "w": 44.00054931640625,
+            "h": 44.00054931640625
+          },
+          {
+            "id": "care-ward",
+            "x": 166.54645538330078,
+            "y": 454.39109802246094,
+            "w": 44.00065612792969,
+            "h": 44.000640869140625
+          },
+          {
+            "id": "maintenance",
+            "x": 240.50067901611328,
+            "y": 492.78228759765625,
+            "w": 44.00065612792969,
+            "h": 44.0006103515625
+          },
+          {
+            "id": "small-archive",
+            "x": 47.07592010498047,
+            "y": 473.5788879394531,
+            "w": 44.00065612792969,
+            "h": 44.00067138671875
+          }
+        ],
+        "figureBefore": {
+          "present": false,
+          "applicable": false,
+          "ok": true
+        },
+        "figureAfter": {
+          "present": false,
+          "applicable": false,
+          "ok": true
+        },
+        "flat": true
+      }
+    },
+    {
+      "caseId": "case-81",
+      "viewport": {
+        "name": "desktop",
+        "width": 1280,
+        "height": 800
+      },
+      "reductionMode": "motion",
+      "reduced": false,
+      "focusSite": "counsel-office",
+      "gates": {
+        "osReduced": false,
+        "appReduced": false,
+        "appToggleChecked": false
+      },
+      "rest": {
+        "frame": {
+          "x": 20,
+          "y": 150,
+          "w": 515.984375,
+          "h": 458
+        },
+        "planes": [
+          {
+            "name": "background",
+            "transform": "matrix3d(1.6545, 0, 0, 0, 0, 1.6545, 0, 0, 0, 0, 1, 0, 0, 0, -720, 1)",
+            "netScaleX": 1.05,
+            "netScaleY": 1.05,
+            "frameDeltaW": 25.78,
+            "frameDeltaH": 22.89
+          },
+          {
+            "name": "far",
+            "transform": "matrix3d(1.4182, 0, 0, 0, 0, 1.4182, 0, 0, 0, 0, 1, 0, 0, 0, -460, 1)",
+            "netScaleX": 1.05,
+            "netScaleY": 1.05,
+            "frameDeltaW": 25.81,
+            "frameDeltaH": 22.91
+          },
+          {
+            "name": "mid",
+            "transform": "matrix3d(1.2182, 0, 0, 0, 0, 1.2182, 0, 0, 0, 0, 1, 0, 0, 0, -240, 1)",
+            "netScaleX": 1.05,
+            "netScaleY": 1.05,
+            "frameDeltaW": 25.81,
+            "frameDeltaH": 22.91
+          },
+          {
+            "name": "near",
+            "transform": "matrix3d(1.0727, 0, 0, 0, 0, 1.0727, 0, 0, 0, 0, 1, 0, 0, 0, -80, 1)",
+            "netScaleX": 1.05,
+            "netScaleY": 1.05,
+            "frameDeltaW": 25.79,
+            "frameDeltaH": 22.89
+          }
+        ],
+        "hplanes": [
+          {
+            "site": "deposition-suite",
+            "plane": "mid",
+            "netScaleX": 1.05,
+            "netScaleY": 1.05,
+            "frameDeltaW": 25.81,
+            "frameDeltaH": 22.91
+          },
+          {
+            "site": "restoration-lab",
+            "plane": "mid",
+            "netScaleX": 1.05,
+            "netScaleY": 1.05,
+            "frameDeltaW": 25.81,
+            "frameDeltaH": 22.91
+          },
+          {
+            "site": "records-annex",
+            "plane": "far",
+            "netScaleX": 1.05,
+            "netScaleY": 1.05,
+            "frameDeltaW": 25.81,
+            "frameDeltaH": 22.91
+          },
+          {
+            "site": "counsel-office",
+            "plane": "far",
+            "netScaleX": 1.05,
+            "netScaleY": 1.05,
+            "frameDeltaW": 25.81,
+            "frameDeltaH": 22.91
+          }
+        ],
+        "scene3d": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "257.984px 229px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "257.984px 229px",
+          "pgroup": {
+            "inlineTransform": "translate(4.89px, -11.45px) scale(1.05) rotateX(0deg) rotateY(0deg)",
+            "computedTransform": "matrix(1.05, 0, 0, 1.05, 4.89, -11.45)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "translate(4.89px, -11.45px) scale(1.05) rotateX(0deg) rotateY(0deg)",
+            "computedTransform": "matrix(1.05, 0, 0, 1.05, 4.89, -11.45)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          }
+        },
+        "figureCoincidence": {
+          "present": true,
+          "applicable": true,
+          "plane": "mid",
+          "planeFound": true,
+          "insidePgroup": true,
+          "transform": "matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -111.562, -128.234, 1, 1)",
+          "transformStyle": "preserve-3d",
+          "dx": -0.04,
+          "dy": 0.01,
+          "distance": 0.04,
+          "ok": true
+        }
+      },
+      "swing": {
+        "pointer": {
+          "from": [
+            0,
+            400
+          ],
+          "to": [
+            1279,
+            400
+          ]
+        },
+        "scene3dAtLeft": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "257.984px 229px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "257.984px 229px",
+          "pgroup": {
+            "inlineTransform": "translate(4.89px, -11.45px) scale(1.05) rotateX(0deg) rotateY(-0.14deg)",
+            "computedTransform": "matrix3d(1.05, 0, 0.00244346, 0, 0, 1.05, 0, 0, -0.00256563, 0, 0.999997, 0, 4.89, -11.45, 0, 1)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "translate(4.89px, -11.45px) scale(1.05) rotateX(0deg) rotateY(-0.14deg)",
+            "computedTransform": "matrix3d(1.05, 0, 0.00244346, 0, 0, 1.05, 0, 0, -0.00256563, 0, 0.999997, 0, 4.89, -11.45, 0, 1)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          }
+        },
+        "scene3dAtRight": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "257.984px 229px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "257.984px 229px",
+          "pgroup": {
+            "inlineTransform": "translate(4.89px, -11.45px) scale(1.05) rotateX(0deg) rotateY(0.139deg)",
+            "computedTransform": "matrix3d(1.05, 0, -0.00242601, 0, 0, 1.05, 0, 0, 0.00254731, 0, 0.999997, 0, 4.89, -11.45, 0, 1)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "translate(4.89px, -11.45px) scale(1.05) rotateX(0deg) rotateY(0.139deg)",
+            "computedTransform": "matrix3d(1.05, 0, -0.00242601, 0, 0, 1.05, 0, 0, 0.00254731, 0, 0.999997, 0, 4.89, -11.45, 0, 1)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          }
+        },
+        "probes": [
+          {
+            "id": "background-a",
+            "dx": -0.15,
+            "dy": -0.01,
+            "mag": 0.15
+          },
+          {
+            "id": "background-b",
+            "dx": -0.15,
+            "dy": 0.01,
+            "mag": 0.15
+          },
+          {
+            "id": "far-a",
+            "dx": 0.79,
+            "dy": -0.01,
+            "mag": 0.79
+          },
+          {
+            "id": "far-b",
+            "dx": 0.78,
+            "dy": 0.01,
+            "mag": 0.78
+          },
+          {
+            "id": "mid-a",
+            "dx": 1.87,
+            "dy": -0.01,
+            "mag": 1.87
+          },
+          {
+            "id": "mid-b",
+            "dx": 1.86,
+            "dy": 0.01,
+            "mag": 1.86
+          },
+          {
+            "id": "near-a",
+            "dx": 2.9,
+            "dy": -0.01,
+            "mag": 2.9
+          },
+          {
+            "id": "near-b",
+            "dx": 2.9,
+            "dy": 0.01,
+            "mag": 2.9
+          }
+        ],
+        "markers": [
+          {
+            "id": "deposition-suite",
+            "dx": 2.01,
+            "dy": 0,
+            "mag": 2.01
+          },
+          {
+            "id": "restoration-lab",
+            "dx": 1.99,
+            "dy": 0,
+            "mag": 1.99
+          },
+          {
+            "id": "records-annex",
+            "dx": 0.93,
+            "dy": 0,
+            "mag": 0.93
+          },
+          {
+            "id": "counsel-office",
+            "dx": 0.93,
+            "dy": 0,
+            "mag": 0.93
+          }
+        ],
+        "planeShift": {
+          "background": 0.15,
+          "far": 0.79,
+          "mid": 1.87,
+          "near": 2.9
+        },
+        "strictOrder": true
+      },
+      "focusScene3d": {
+        "framePerspective": "1100px",
+        "framePerspectiveOrigin": "257.984px 229px",
+        "stackTransformStyle": "preserve-3d",
+        "hotspotPerspective": "1100px",
+        "hotspotPerspectiveOrigin": "257.984px 229px",
+        "pgroup": {
+          "inlineTransform": "translate(-12.9px, -4.58px) scale(1.05) rotateX(0deg) rotateY(0deg)",
+          "computedTransform": "matrix(1.05, 0, 0, 1.05, -12.9, -4.58)",
+          "transformStyle": "preserve-3d",
+          "transformOrigin": "257.992px 229px -720px"
+        },
+        "hgroup": {
+          "inlineTransform": "translate(-12.9px, -4.58px) scale(1.05) rotateX(0deg) rotateY(0deg)",
+          "computedTransform": "matrix(1.05, 0, 0, 1.05, -12.9, -4.58)",
+          "transformStyle": "preserve-3d",
+          "transformOrigin": "257.992px 229px -720px"
+        }
+      },
+      "hitAreas": [
+        {
+          "site": "deposition-suite",
+          "plane": "mid",
+          "w": 46.2,
+          "h": 46.2
+        },
+        {
+          "site": "restoration-lab",
+          "plane": "mid",
+          "w": 46.2,
+          "h": 46.2
+        },
+        {
+          "site": "records-annex",
+          "plane": "far",
+          "w": 46.2,
+          "h": 46.2
+        },
+        {
+          "site": "counsel-office",
+          "plane": "far",
+          "w": 46.2,
+          "h": 46.2
+        }
+      ],
+      "hitAreasOk": true,
+      "coincidence": [
+        {
+          "site": "deposition-suite",
+          "plane": "mid",
+          "dx": 0,
+          "dy": 0
+        },
+        {
+          "site": "restoration-lab",
+          "plane": "mid",
+          "dx": 0,
+          "dy": 0
+        },
+        {
+          "site": "records-annex",
+          "plane": "far",
+          "dx": 0,
+          "dy": 0
+        },
+        {
+          "site": "counsel-office",
+          "plane": "far",
+          "dx": 0,
+          "dy": 0
+        }
+      ],
+      "coincidenceOk": true,
+      "figureCoincidence": {
+        "present": true,
+        "applicable": true,
+        "plane": "mid",
+        "planeFound": true,
+        "insidePgroup": true,
+        "transform": "matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -111.562, -128.234, 1, 1)",
+        "transformStyle": "preserve-3d",
+        "dx": -0.05,
+        "dy": 0.02,
+        "distance": 0.05,
+        "ok": true
+      }
+    },
+    {
+      "caseId": "case-81",
+      "viewport": {
+        "name": "desktop",
+        "width": 1280,
+        "height": 800
+      },
+      "reductionMode": "os-reduced",
+      "reduced": true,
+      "focusSite": "counsel-office",
+      "gates": {
+        "osReduced": true,
+        "appReduced": false,
+        "appToggleChecked": false
+      },
+      "reducedMotion": {
+        "scene3dBefore": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "257.984px 229px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "257.984px 229px",
+          "pgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          }
+        },
+        "scene3dAfter": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "257.984px 229px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "257.984px 229px",
+          "pgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          }
+        },
+        "planes": [
+          {
+            "name": "background",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 20.01,
+            "y": 150.01,
+            "w": 515.97,
+            "h": 457.99
+          },
+          {
+            "name": "far",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 20,
+            "y": 150,
+            "w": 515.99,
+            "h": 458.01
+          },
+          {
+            "name": "mid",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 20,
+            "y": 150,
+            "w": 515.99,
+            "h": 458.01
+          },
+          {
+            "name": "near",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 20.01,
+            "y": 150.01,
+            "w": 515.97,
+            "h": 457.99
+          }
+        ],
+        "frame": {
+          "x": 20,
+          "y": 150,
+          "w": 515.984375,
+          "h": 458
+        },
+        "markers": [
+          {
+            "id": "deposition-suite",
+            "x": 273.0936737060547,
+            "y": 452.2667236328125,
+            "w": 44.000640869140625,
+            "h": 44.00067138671875
+          },
+          {
+            "id": "restoration-lab",
+            "x": 352.0792236328125,
+            "y": 373.9530487060547,
+            "w": 44.00067138671875,
+            "h": 44.000640869140625
+          },
+          {
+            "id": "records-annex",
+            "x": 270.6561508178711,
+            "y": 374.8749542236328,
+            "w": 44.00056457519531,
+            "h": 44.000579833984375
+          },
+          {
+            "id": "counsel-office",
+            "x": 319.5161590576172,
+            "y": 383.5781707763672,
+            "w": 44.000579833984375,
+            "h": 44.000579833984375
+          }
+        ],
+        "figureBefore": {
+          "present": true,
+          "applicable": true,
+          "plane": "mid",
+          "planeFound": true,
+          "insidePgroup": true,
+          "transform": "matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -111.562, -128.234, 1, 1)",
+          "transformStyle": "preserve-3d",
+          "dx": -0.04,
+          "dy": 0.02,
+          "distance": 0.04,
+          "ok": true
+        },
+        "figureAfter": {
+          "present": true,
+          "applicable": true,
+          "plane": "mid",
+          "planeFound": true,
+          "insidePgroup": true,
+          "transform": "matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -111.562, -128.234, 1, 1)",
+          "transformStyle": "preserve-3d",
+          "dx": -0.04,
+          "dy": 0.02,
+          "distance": 0.04,
+          "ok": true
+        },
+        "flat": true
+      }
+    },
+    {
+      "caseId": "case-81",
+      "viewport": {
+        "name": "desktop",
+        "width": 1280,
+        "height": 800
+      },
+      "reductionMode": "app-reduced",
+      "reduced": true,
+      "focusSite": "counsel-office",
+      "gates": {
+        "osReduced": false,
+        "appReduced": true,
+        "appToggleChecked": true
+      },
+      "reducedMotion": {
+        "scene3dBefore": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "257.984px 229px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "257.984px 229px",
+          "pgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          }
+        },
+        "scene3dAfter": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "257.984px 229px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "257.984px 229px",
+          "pgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "257.992px 229px -720px"
+          }
+        },
+        "planes": [
+          {
+            "name": "background",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 20.01,
+            "y": 150.01,
+            "w": 515.97,
+            "h": 457.99
+          },
+          {
+            "name": "far",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 20,
+            "y": 150,
+            "w": 515.99,
+            "h": 458.01
+          },
+          {
+            "name": "mid",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 20,
+            "y": 150,
+            "w": 515.99,
+            "h": 458.01
+          },
+          {
+            "name": "near",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 20.01,
+            "y": 150.01,
+            "w": 515.97,
+            "h": 457.99
+          }
+        ],
+        "frame": {
+          "x": 20,
+          "y": 150,
+          "w": 515.984375,
+          "h": 458
+        },
+        "markers": [
+          {
+            "id": "deposition-suite",
+            "x": 273.0936737060547,
+            "y": 452.2667236328125,
+            "w": 44.000640869140625,
+            "h": 44.00067138671875
+          },
+          {
+            "id": "restoration-lab",
+            "x": 352.0792236328125,
+            "y": 373.9530487060547,
+            "w": 44.00067138671875,
+            "h": 44.000640869140625
+          },
+          {
+            "id": "records-annex",
+            "x": 270.6561508178711,
+            "y": 374.8749542236328,
+            "w": 44.00056457519531,
+            "h": 44.000579833984375
+          },
+          {
+            "id": "counsel-office",
+            "x": 319.5161590576172,
+            "y": 383.5781707763672,
+            "w": 44.000579833984375,
+            "h": 44.000579833984375
+          }
+        ],
+        "figureBefore": {
+          "present": true,
+          "applicable": true,
+          "plane": "mid",
+          "planeFound": true,
+          "insidePgroup": true,
+          "transform": "matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -111.562, -128.234, 1, 1)",
+          "transformStyle": "preserve-3d",
+          "dx": -0.04,
+          "dy": 0.02,
+          "distance": 0.04,
+          "ok": true
+        },
+        "figureAfter": {
+          "present": true,
+          "applicable": true,
+          "plane": "mid",
+          "planeFound": true,
+          "insidePgroup": true,
+          "transform": "matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -111.562, -128.234, 1, 1)",
+          "transformStyle": "preserve-3d",
+          "dx": -0.04,
+          "dy": 0.02,
+          "distance": 0.04,
+          "ok": true
+        },
+        "flat": true
+      }
+    },
+    {
+      "caseId": "case-81",
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "reductionMode": "motion",
+      "reduced": false,
+      "focusSite": "counsel-office",
+      "gates": {
+        "osReduced": false,
+        "appReduced": false,
+        "appToggleChecked": false
+      },
+      "rest": {
+        "frame": {
+          "x": 14,
+          "y": 262.390625,
+          "w": 362,
+          "h": 320
+        },
+        "planes": [
+          {
+            "name": "background",
+            "transform": "matrix3d(1.6545, 0, 0, 0, 0, 1.6545, 0, 0, 0, 0, 1, 0, 0, 0, -720, 1)",
+            "netScaleX": 1.05,
+            "netScaleY": 1.05,
+            "frameDeltaW": 18.09,
+            "frameDeltaH": 15.99
+          },
+          {
+            "name": "far",
+            "transform": "matrix3d(1.4182, 0, 0, 0, 0, 1.4182, 0, 0, 0, 0, 1, 0, 0, 0, -460, 1)",
+            "netScaleX": 1.05,
+            "netScaleY": 1.05,
+            "frameDeltaW": 18.1,
+            "frameDeltaH": 16
+          },
+          {
+            "name": "mid",
+            "transform": "matrix3d(1.2182, 0, 0, 0, 0, 1.2182, 0, 0, 0, 0, 1, 0, 0, 0, -240, 1)",
+            "netScaleX": 1.05,
+            "netScaleY": 1.05,
+            "frameDeltaW": 18.11,
+            "frameDeltaH": 16
+          },
+          {
+            "name": "near",
+            "transform": "matrix3d(1.0727, 0, 0, 0, 0, 1.0727, 0, 0, 0, 0, 1, 0, 0, 0, -80, 1)",
+            "netScaleX": 1.05,
+            "netScaleY": 1.05,
+            "frameDeltaW": 18.09,
+            "frameDeltaH": 15.99
+          }
+        ],
+        "hplanes": [
+          {
+            "site": "deposition-suite",
+            "plane": "mid",
+            "netScaleX": 1.05,
+            "netScaleY": 1.05,
+            "frameDeltaW": 18.11,
+            "frameDeltaH": 16
+          },
+          {
+            "site": "restoration-lab",
+            "plane": "mid",
+            "netScaleX": 1.05,
+            "netScaleY": 1.05,
+            "frameDeltaW": 18.11,
+            "frameDeltaH": 16
+          },
+          {
+            "site": "records-annex",
+            "plane": "far",
+            "netScaleX": 1.05,
+            "netScaleY": 1.05,
+            "frameDeltaW": 18.1,
+            "frameDeltaH": 16
+          },
+          {
+            "site": "counsel-office",
+            "plane": "far",
+            "netScaleX": 1.05,
+            "netScaleY": 1.05,
+            "frameDeltaW": 18.1,
+            "frameDeltaH": 16
+          }
+        ],
+        "scene3d": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "181px 160px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "181px 160px",
+          "pgroup": {
+            "inlineTransform": "translate(3.41px, -8px) scale(1.05) rotateX(0deg) rotateY(0deg)",
+            "computedTransform": "matrix(1.05, 0, 0, 1.05, 3.41, -8)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "translate(3.41px, -8px) scale(1.05) rotateX(0deg) rotateY(0deg)",
+            "computedTransform": "matrix(1.05, 0, 0, 1.05, 3.41, -8)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          }
+        },
+        "figureCoincidence": {
+          "present": true,
+          "applicable": true,
+          "plane": "mid",
+          "planeFound": true,
+          "insidePgroup": true,
+          "transform": "matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -77.9453, -89.5938, 1, 1)",
+          "transformStyle": "preserve-3d",
+          "dx": -0.03,
+          "dy": 0.01,
+          "distance": 0.03,
+          "ok": true
+        }
+      },
+      "swing": {
+        "pointer": {
+          "from": [
+            0,
+            422
+          ],
+          "to": [
+            389,
+            422
+          ]
+        },
+        "scene3dAtLeft": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "181px 160px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "181px 160px",
+          "pgroup": {
+            "inlineTransform": "translate(3.41px, -8px) scale(1.05) rotateX(0deg) rotateY(-0.14deg)",
+            "computedTransform": "matrix3d(1.05, 0, 0.00244346, 0, 0, 1.05, 0, 0, -0.00256563, 0, 0.999997, 0, 3.41, -8, 0, 1)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "translate(3.41px, -8px) scale(1.05) rotateX(0deg) rotateY(-0.14deg)",
+            "computedTransform": "matrix3d(1.05, 0, 0.00244346, 0, 0, 1.05, 0, 0, -0.00256563, 0, 0.999997, 0, 3.41, -8, 0, 1)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          }
+        },
+        "scene3dAtRight": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "181px 160px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "181px 160px",
+          "pgroup": {
+            "inlineTransform": "translate(3.41px, -8px) scale(1.05) rotateX(0deg) rotateY(0.139deg)",
+            "computedTransform": "matrix3d(1.05, 0, -0.00242601, 0, 0, 1.05, 0, 0, 0.00254731, 0, 0.999997, 0, 3.41, -8, 0, 1)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "translate(3.41px, -8px) scale(1.05) rotateX(0deg) rotateY(0.139deg)",
+            "computedTransform": "matrix3d(1.05, 0, -0.00242601, 0, 0, 1.05, 0, 0, 0.00254731, 0, 0.999997, 0, 3.41, -8, 0, 1)",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          }
+        },
+        "probes": [
+          {
+            "id": "background-a",
+            "dx": -0.07,
+            "dy": 0,
+            "mag": 0.07
+          },
+          {
+            "id": "background-b",
+            "dx": -0.08,
+            "dy": 0,
+            "mag": 0.08
+          },
+          {
+            "id": "far-a",
+            "dx": 0.86,
+            "dy": 0,
+            "mag": 0.86
+          },
+          {
+            "id": "far-b",
+            "dx": 0.86,
+            "dy": 0,
+            "mag": 0.86
+          },
+          {
+            "id": "mid-a",
+            "dx": 1.94,
+            "dy": 0,
+            "mag": 1.94
+          },
+          {
+            "id": "mid-b",
+            "dx": 1.94,
+            "dy": 0,
+            "mag": 1.94
+          },
+          {
+            "id": "near-a",
+            "dx": 2.98,
+            "dy": 0,
+            "mag": 2.98
+          },
+          {
+            "id": "near-b",
+            "dx": 2.97,
+            "dy": 0,
+            "mag": 2.97
+          }
+        ],
+        "markers": [
+          {
+            "id": "deposition-suite",
+            "dx": 2.01,
+            "dy": 0,
+            "mag": 2.01
+          },
+          {
+            "id": "restoration-lab",
+            "dx": 2,
+            "dy": 0,
+            "mag": 2
+          },
+          {
+            "id": "records-annex",
+            "dx": 0.94,
+            "dy": 0,
+            "mag": 0.94
+          },
+          {
+            "id": "counsel-office",
+            "dx": 0.93,
+            "dy": 0,
+            "mag": 0.93
+          }
+        ],
+        "planeShift": {
+          "background": 0.08,
+          "far": 0.86,
+          "mid": 1.94,
+          "near": 2.98
+        },
+        "strictOrder": true
+      },
+      "focusScene3d": {
+        "framePerspective": "1100px",
+        "framePerspectiveOrigin": "181px 160px",
+        "stackTransformStyle": "preserve-3d",
+        "hotspotPerspective": "1100px",
+        "hotspotPerspectiveOrigin": "181px 160px",
+        "pgroup": {
+          "inlineTransform": "translate(-9.05px, -3.2px) scale(1.05) rotateX(0deg) rotateY(0deg)",
+          "computedTransform": "matrix(1.05, 0, 0, 1.05, -9.05, -3.2)",
+          "transformStyle": "preserve-3d",
+          "transformOrigin": "181px 160px -720px"
+        },
+        "hgroup": {
+          "inlineTransform": "translate(-9.05px, -3.2px) scale(1.05) rotateX(0deg) rotateY(0deg)",
+          "computedTransform": "matrix(1.05, 0, 0, 1.05, -9.05, -3.2)",
+          "transformStyle": "preserve-3d",
+          "transformOrigin": "181px 160px -720px"
+        }
+      },
+      "hitAreas": [
+        {
+          "site": "deposition-suite",
+          "plane": "mid",
+          "w": 46.2,
+          "h": 46.2
+        },
+        {
+          "site": "restoration-lab",
+          "plane": "mid",
+          "w": 46.2,
+          "h": 46.2
+        },
+        {
+          "site": "records-annex",
+          "plane": "far",
+          "w": 46.2,
+          "h": 46.2
+        },
+        {
+          "site": "counsel-office",
+          "plane": "far",
+          "w": 46.2,
+          "h": 46.2
+        }
+      ],
+      "hitAreasOk": true,
+      "coincidence": [
+        {
+          "site": "deposition-suite",
+          "plane": "mid",
+          "dx": 0,
+          "dy": 0
+        },
+        {
+          "site": "restoration-lab",
+          "plane": "mid",
+          "dx": 0,
+          "dy": 0
+        },
+        {
+          "site": "records-annex",
+          "plane": "far",
+          "dx": 0,
+          "dy": 0
+        },
+        {
+          "site": "counsel-office",
+          "plane": "far",
+          "dx": 0,
+          "dy": 0
+        }
+      ],
+      "coincidenceOk": true,
+      "figureCoincidence": {
+        "present": true,
+        "applicable": true,
+        "plane": "mid",
+        "planeFound": true,
+        "insidePgroup": true,
+        "transform": "matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -77.9453, -89.5938, 1, 1)",
+        "transformStyle": "preserve-3d",
+        "dx": -0.03,
+        "dy": 0.01,
+        "distance": 0.03,
+        "ok": true
+      }
+    },
+    {
+      "caseId": "case-81",
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "reductionMode": "os-reduced",
+      "reduced": true,
+      "focusSite": "counsel-office",
+      "gates": {
+        "osReduced": true,
+        "appReduced": false,
+        "appToggleChecked": false
+      },
+      "reducedMotion": {
+        "scene3dBefore": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "181px 160px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "181px 160px",
+          "pgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          }
+        },
+        "scene3dAfter": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "181px 160px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "181px 160px",
+          "pgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          }
+        },
+        "planes": [
+          {
+            "name": "background",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 14,
+            "y": 262.4,
+            "w": 361.99,
+            "h": 319.99
+          },
+          {
+            "name": "far",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0,
+            "frameDeltaH": 0,
+            "x": 14,
+            "y": 262.39,
+            "w": 362,
+            "h": 320
+          },
+          {
+            "name": "mid",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0,
+            "x": 14,
+            "y": 262.39,
+            "w": 362.01,
+            "h": 320
+          },
+          {
+            "name": "near",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 14,
+            "y": 262.39,
+            "w": 361.99,
+            "h": 319.99
+          }
+        ],
+        "frame": {
+          "x": 14,
+          "y": 262.390625,
+          "w": 362,
+          "h": 320
+        },
+        "markers": [
+          {
+            "id": "deposition-suite",
+            "x": 191.57807159423828,
+            "y": 473.5788879394531,
+            "w": 44.00065612792969,
+            "h": 44.00067138671875
+          },
+          {
+            "id": "restoration-lab",
+            "x": 246.76639556884766,
+            "y": 418.8593292236328,
+            "w": 44.00065612792969,
+            "h": 44.000640869140625
+          },
+          {
+            "id": "records-annex",
+            "x": 189.87493133544922,
+            "y": 419.4999694824219,
+            "w": 44.00056457519531,
+            "h": 44.00054931640625
+          },
+          {
+            "id": "counsel-office",
+            "x": 224.00037384033203,
+            "y": 425.5781555175781,
+            "w": 44.00056457519531,
+            "h": 44.00054931640625
+          }
+        ],
+        "figureBefore": {
+          "present": true,
+          "applicable": true,
+          "plane": "mid",
+          "planeFound": true,
+          "insidePgroup": true,
+          "transform": "matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -77.9453, -89.5938, 1, 1)",
+          "transformStyle": "preserve-3d",
+          "dx": -0.03,
+          "dy": 0.01,
+          "distance": 0.03,
+          "ok": true
+        },
+        "figureAfter": {
+          "present": true,
+          "applicable": true,
+          "plane": "mid",
+          "planeFound": true,
+          "insidePgroup": true,
+          "transform": "matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -77.9453, -89.5938, 1, 1)",
+          "transformStyle": "preserve-3d",
+          "dx": -0.03,
+          "dy": 0.01,
+          "distance": 0.03,
+          "ok": true
+        },
+        "flat": true
+      }
+    },
+    {
+      "caseId": "case-81",
+      "viewport": {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      "reductionMode": "app-reduced",
+      "reduced": true,
+      "focusSite": "counsel-office",
+      "gates": {
+        "osReduced": false,
+        "appReduced": true,
+        "appToggleChecked": true
+      },
+      "reducedMotion": {
+        "scene3dBefore": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "181px 160px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "181px 160px",
+          "pgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          }
+        },
+        "scene3dAfter": {
+          "framePerspective": "1100px",
+          "framePerspectiveOrigin": "181px 160px",
+          "stackTransformStyle": "preserve-3d",
+          "hotspotPerspective": "1100px",
+          "hotspotPerspectiveOrigin": "181px 160px",
+          "pgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          },
+          "hgroup": {
+            "inlineTransform": "none",
+            "computedTransform": "none",
+            "transformStyle": "preserve-3d",
+            "transformOrigin": "181px 160px -720px"
+          }
+        },
+        "planes": [
+          {
+            "name": "background",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 14,
+            "y": 262.4,
+            "w": 361.99,
+            "h": 319.99
+          },
+          {
+            "name": "far",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0,
+            "frameDeltaH": 0,
+            "x": 14,
+            "y": 262.39,
+            "w": 362,
+            "h": 320
+          },
+          {
+            "name": "mid",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0,
+            "x": 14,
+            "y": 262.39,
+            "w": 362.01,
+            "h": 320
+          },
+          {
+            "name": "near",
+            "netScaleX": 1,
+            "netScaleY": 1,
+            "frameDeltaW": 0.01,
+            "frameDeltaH": 0.01,
+            "x": 14,
+            "y": 262.39,
+            "w": 361.99,
+            "h": 319.99
+          }
+        ],
+        "frame": {
+          "x": 14,
+          "y": 262.390625,
+          "w": 362,
+          "h": 320
+        },
+        "markers": [
+          {
+            "id": "deposition-suite",
+            "x": 191.57807159423828,
+            "y": 473.5788879394531,
+            "w": 44.00065612792969,
+            "h": 44.00067138671875
+          },
+          {
+            "id": "restoration-lab",
+            "x": 246.76639556884766,
+            "y": 418.8593292236328,
+            "w": 44.00065612792969,
+            "h": 44.000640869140625
+          },
+          {
+            "id": "records-annex",
+            "x": 189.87493133544922,
+            "y": 419.4999694824219,
+            "w": 44.00056457519531,
+            "h": 44.00054931640625
+          },
+          {
+            "id": "counsel-office",
+            "x": 224.00037384033203,
+            "y": 425.5781555175781,
+            "w": 44.00056457519531,
+            "h": 44.00054931640625
+          }
+        ],
+        "figureBefore": {
+          "present": true,
+          "applicable": true,
+          "plane": "mid",
+          "planeFound": true,
+          "insidePgroup": true,
+          "transform": "matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -77.9453, -89.5938, 1, 1)",
+          "transformStyle": "preserve-3d",
+          "dx": -0.03,
+          "dy": 0.01,
+          "distance": 0.03,
+          "ok": true
+        },
+        "figureAfter": {
+          "present": true,
+          "applicable": true,
+          "plane": "mid",
+          "planeFound": true,
+          "insidePgroup": true,
+          "transform": "matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -77.9453, -89.5938, 1, 1)",
+          "transformStyle": "preserve-3d",
+          "dx": -0.03,
+          "dy": 0.01,
+          "distance": 0.03,
+          "ok": true
+        },
+        "flat": true
+      }
+    }
+  ]
+}

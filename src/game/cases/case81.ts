@@ -428,6 +428,15 @@ const sites: readonly SiteDefinition[] = [
     name: 'Restoration lab',
     description: 'The bench where 81-C was assembled, and the ledger of the minute the city closed it.',
     actionIds: ['audit-restoration-log', 'replicate-memory-seed'],
+    closeup: {
+      src: '/images/site-scenes/restoration-lab.webp',
+      caption: 'Assembly ledger · closed minute · memory seed',
+      focalPoint: { x: 0.5, y: 0.5 },
+      zones: [
+        { actionId: 'audit-restoration-log', x: 0.35, y: 0.57 },
+        { actionId: 'replicate-memory-seed', x: 0.69, y: 0.57 },
+      ],
+    },
     unvisitedNote:
       'You never entered the restoration lab. The assembly log kept its late minute and whatever the city timed into it.',
   },

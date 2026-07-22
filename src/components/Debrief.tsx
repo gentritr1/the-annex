@@ -7,8 +7,7 @@ import {
   personas,
 } from '../game/content'
 import { getTrustLabel } from '../game/engine'
-import { SceneStage } from '../scene/SceneStage'
-import { sceneStateFor } from '../scene/sceneState'
+import { DebriefTableau } from '../scene/DebriefTableau'
 import type {
   CaseDefinition,
   CaseSwitchOption,
@@ -70,21 +69,24 @@ export function Debrief({
   const priorDecision = rewroteRecord
     ? decisions.find((item) => item.id === priorVerdict)
     : undefined
+  const tableauBackground = content.scene.layers.find((layer) => layer.raster)?.raster?.src ?? ''
 
   return (
     <article className="phase-page debrief-page">
-      {/* The narrow world window: the scene at its aftermath treatment — the
-          diorama stilled and dimmed, weather stopped (per the suppression map). */}
-      <SceneStage
-        scene={content.scene}
-        sceneState={sceneStateFor(state, { surface: 'debrief' })}
-        reducedMotion={state.settings.reducedMotion}
-        strip
-      />
-      <header className="debrief-hero">
-        <p className="case-code">Run {state.runNumber} closed · consequence record</p>
-        <h1>{decision?.shortLabel}</h1>
-        <p>{decision?.cost}</p>
+      <DebriefTableau
+        backgroundSrc={tableauBackground}
+        subjectImageSrc={content.caseFile.dossierImage?.src}
+        caseCode={content.caseFile.code}
+        runNumber={state.runNumber}
+        decisionId={decision?.id ?? 'unfiled'}
+        decisionTitle={decision?.shortLabel ?? 'Run closed'}
+        decisionCost={decision?.cost ?? 'The record closed without a finding.'}
+        evidenceCount={discoveredEvidence.length}
+        completedSiteCount={state.completedSites.length}
+        totalSiteCount={content.sites.length}
+        alarmLevel={state.alarm}
+        firstMethod={approach?.method ?? 'Unrecorded'}
+      >
         {recordEndsLine ? (
           <p className="record-note" role="note">
             {recordEndsLine}
@@ -97,26 +99,7 @@ export function Debrief({
             ) : null}
           </p>
         ) : null}
-      </header>
-
-      <div className="debrief-metrics" aria-label="Run summary">
-        <div>
-          <span>First instinct</span>
-          <strong>{approach?.method}</strong>
-        </div>
-        <div>
-          <span>Evidence admitted</span>
-          <strong>{discoveredEvidence.length}</strong>
-        </div>
-        <div>
-          <span>Sites touched</span>
-          <strong>{state.completedSites.length} / 4</strong>
-        </div>
-        <div>
-          <span>Civic alarm</span>
-          <strong>{state.alarm === 0 ? 'quiet' : 'traced'}</strong>
-        </div>
-      </div>
+      </DebriefTableau>
 
       <section className="debrief-section" aria-labelledby="consequence-heading">
         <div className="debrief-section-heading">
@@ -148,45 +131,6 @@ export function Debrief({
         </section>
       ) : null}
 
-      <section className="debrief-section" aria-labelledby="refusals-heading">
-        <div className="debrief-section-heading">
-          <span>The record of refusals</span>
-          <h2 id="refusals-heading">Every route is also the one you did not take.</h2>
-        </div>
-        <ol className="consequence-list refusal-list">
-          {sites.map((site) => (
-            <li key={site.id}>
-              <span>{site.index}</span>
-              <p>{refusalNoteForSite(site, state.completedActions, content)}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section className="debrief-section" aria-labelledby="memory-heading">
-        <div className="debrief-section-heading">
-          <span>Persistent social memory</span>
-          <h2 id="memory-heading">They remember how you arrived.</h2>
-        </div>
-        <div className="reflection-list">
-          {personas.map((persona) => (
-            <blockquote key={persona.id}>
-              <div>
-                <span className="reflection-sigil" aria-hidden="true">
-                  <PersonaSigil personaId={persona.id} />
-                </span>
-                <strong>{persona.name}</strong>
-                <span>
-                  {getTrustLabel(state.trust[persona.id])}
-                  {state.settings.showTrustNumbers ? ` · ${state.trust[persona.id] >= 0 ? '+' : ''}${state.trust[persona.id]}` : ''}
-                </span>
-              </div>
-              <p>{content.getPersonaReflection(persona.id, state)}</p>
-            </blockquote>
-          ))}
-        </div>
-      </section>
-
       <section className="mirror-invitation">
         <div className="mirror-orbit" aria-hidden="true">
           <MirrorSigil width={32} height={32} />
@@ -215,6 +159,55 @@ export function Debrief({
           ))}
         </div>
       </section>
+
+      <details className="debrief-archive">
+        <summary>
+          <div className="debrief-section-heading">
+            <span>The record of refusals · {sites.length} routes preserved</span>
+            <h2>Every route is also the one you did not take.</h2>
+          </div>
+          <span className="debrief-archive-toggle" aria-hidden="true">
+            +
+          </span>
+        </summary>
+        <ol className="consequence-list refusal-list">
+          {sites.map((site) => (
+            <li key={site.id}>
+              <span>{site.index}</span>
+              <p>{refusalNoteForSite(site, state.completedActions, content)}</p>
+            </li>
+          ))}
+        </ol>
+      </details>
+
+      <details className="debrief-archive">
+        <summary>
+          <div className="debrief-section-heading">
+            <span>Persistent social memory · {personas.length} witnesses</span>
+            <h2>They remember how you arrived.</h2>
+          </div>
+          <span className="debrief-archive-toggle" aria-hidden="true">
+            +
+          </span>
+        </summary>
+        <div className="reflection-list">
+          {personas.map((persona) => (
+            <blockquote key={persona.id}>
+              <div>
+                <span className="reflection-sigil" aria-hidden="true">
+                  <PersonaSigil personaId={persona.id} />
+                </span>
+                <strong>{persona.name}</strong>
+                <span>
+                  {getTrustLabel(state.trust[persona.id])}
+                  {state.settings.showTrustNumbers ? ` · ${state.trust[persona.id] >= 0 ? '+' : ''}${state.trust[persona.id]}` : ''}
+                </span>
+              </div>
+              <p>{content.getPersonaReflection(persona.id, state)}</p>
+            </blockquote>
+          ))}
+        </div>
+      </details>
 
       <footer className="debrief-footer">
         <button className="text-button" type="button" onClick={onReturnToTitle}>

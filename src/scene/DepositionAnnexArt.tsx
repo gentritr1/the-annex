@@ -7,7 +7,7 @@
 import type { CSSProperties } from 'react'
 import type { SceneArtProps } from '../game/types'
 
-export function DepositionAnnexArt({ backgroundSrc }: SceneArtProps) {
+export function DepositionAnnexArt({ backgroundSrc, figure }: SceneArtProps) {
   const bgStyle = { '--scene-bg': `url("${backgroundSrc}")` } as CSSProperties
 
   return (
@@ -262,6 +262,11 @@ export function DepositionAnnexArt({ backgroundSrc }: SceneArtProps) {
             </g>
           </svg>
         </div>
+
+        {/* The shared stage owns the optional figure plate. Keeping its authored
+            insertion point inside the moving group makes its declared plane
+            truthful through drift and selection travel. */}
+        {figure}
 
         {/* NEAR — foreground doorframe + stanchion (static blur via CSS). */}
         <div className="scene-layer scene-layer-near">

@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { getCaseContent, resolveFieldAction } from '../game/content'
-import type { DepositionChoiceId, FieldActionId, GameState } from '../game/types'
+import type {
+  DepositionChoiceId,
+  DepositionConsent,
+  FieldActionId,
+  GameState,
+} from '../game/types'
+import { DepositionBeatStage } from '../scene/DepositionBeatStage'
 import { ChoiceButton } from './ChoiceButton'
 
 interface DepositionProps {
@@ -174,6 +180,17 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
   const isConsentBeat = stepIndex === consentStep
   const isClosingBeat = stepIndex === closingStep
 
+  const backgroundSrc = content.scene.layers.find((layer) => layer.raster)?.raster?.src ?? ''
+  const figureSrc = content.scene.figure?.src
+  const visualPhase = isStatementBeat ? 'statement' : isConsentBeat ? 'consent' : 'closing'
+  const visualRoute = entryAction.methodTags.includes('coercion') ? 'press' : 'sworn'
+  let visualConsent: DepositionConsent | 'pending' = 'pending'
+  if (isConsentBeat && consentRevealed) {
+    visualConsent = consentAnswer?.consent ?? 'pending'
+  } else if (isClosingBeat) {
+    visualConsent = askedConsent ? (consentAnswer?.consent ?? 'unasked') : 'unasked'
+  }
+
   const trayClass = [
     'deposition-tray',
     instant ? 'deposition-tray--instant' : '',
@@ -182,20 +199,45 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
     .filter(Boolean)
     .join(' ')
 
+  // The transcript is portalled outside .annex-app. Repeat the view preference
+  // classes at that boundary so high contrast and reduced motion reach both the
+  // dialog and its supplemental close-read stage.
+  const portalClass = [
+    'deposition-portal',
+    state.settings.highContrast ? 'high-contrast' : '',
+    state.settings.reducedMotion ? 'reduce-motion' : '',
+    state.settings.textSize === 'large' ? 'large-text' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
   // Portalled to <body> so it sits OUTSIDE the shell App marks `inert` while a
   // transcript is open: the room, header, and rail behind go inert to pointer and
-  // keyboard, the tray stays live, and the stage keeps performing uncovered.
+  // keyboard, the tray stays live, and the close-read stage performs above it.
   return createPortal(
-    <div
-      className={trayClass}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="deposition-heading"
-      tabIndex={-1}
-      ref={dialogRef}
-      onKeyDown={handleKeyDown}
-    >
-      <div className="deposition-tray-inner">
+    <div className={portalClass}>
+      {backgroundSrc ? (
+        <DepositionBeatStage
+          backgroundSrc={backgroundSrc}
+          figureSrc={figureSrc}
+          beatNumber={beatNumber}
+          totalBeats={totalBeats}
+          phase={visualPhase}
+          route={visualRoute}
+          lastChoice={beats.at(-1) ?? null}
+          consent={visualConsent}
+        />
+      ) : null}
+      <div
+        className={trayClass}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="deposition-heading"
+        tabIndex={-1}
+        ref={dialogRef}
+        onKeyDown={handleKeyDown}
+      >
+        <div className="deposition-tray-inner">
         <header className="deposition-header">
           <div className="deposition-header-row">
             <p className="case-code">Deposition suite · {entryAction.title}</p>
@@ -297,14 +339,17 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
           </div>
         )}
 
-        <footer className="deposition-footer">
-          <button className="back-button" type="button" onClick={stepBack}>
-            <span aria-hidden="true">←</span> {stepIndex === 0 ? 'Leave deposition' : 'Back'}
-          </button>
-          <button className="text-button" type="button" onClick={requestAbandon}>
-            Leave — commit nothing
-          </button>
-        </footer>
+          <footer className="deposition-footer">
+            <button className="back-button" type="button" onClick={stepBack}>
+              <span aria-hidden="true">←</span> {stepIndex === 0 ? 'Leave deposition' : 'Back'}
+            </button>
+            {stepIndex > 0 ? (
+              <button className="text-button" type="button" onClick={requestAbandon}>
+                Leave — commit nothing
+              </button>
+            ) : null}
+          </footer>
+        </div>
       </div>
     </div>,
     document.body,

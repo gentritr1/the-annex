@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react'
+import type { ComponentType, ReactNode } from 'react'
 
 export type GamePhase =
   | 'landing'
@@ -244,6 +244,24 @@ export interface SiteDefinition {
   name: string
   description: string
   actionIds: readonly FieldActionId[]
+  // Optional presentation-only close read for a location. It can make a site
+  // spatially distinct, but never carries canonical evidence or mutates state.
+  closeup?: {
+    src: string
+    caption: string
+    focalPoint?: {
+      x: number
+      y: number
+    }
+    // Presentation-only anchors that connect each existing method to a physical
+    // zone in the plate. They never replace the DOM button or carry game rules.
+    zones?: readonly {
+      actionId: FieldActionId
+      x: number
+      y: number
+    }[]
+    atmosphere?: 'rain-reflection'
+  }
   // Read at debrief when the site was never visited in this run.
   unvisitedNote: string
 }
@@ -506,11 +524,13 @@ export interface SceneWeather {
   maxParticles?: number
 }
 
-// Props the (optional) case-specific diorama art component receives. The only
-// input is the background raster URL, injected from data so no image path (which
-// embeds the case id) ever lives in shared scene runtime.
+// Props the (optional) case-specific diorama art component receives. The raster
+// URL stays data-owned, while `figure` lets the shared stage place an optional
+// composited presence inside the same moving plane group. The art component owns
+// only the insertion point; SceneStage still owns the figure data and markup.
 export interface SceneArtProps {
   backgroundSrc: string
+  figure?: ReactNode
 }
 
 // An authored figure composited into the diorama — a seated presence in the room

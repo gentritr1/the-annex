@@ -11,6 +11,7 @@ interface ChoiceButtonProps {
   aside?: ReactNode
   tension?: ReactNode
   requiresConfirmation?: boolean
+  onAttentionChange?: (active: boolean) => void
 }
 
 export function ChoiceButton({
@@ -23,6 +24,7 @@ export function ChoiceButton({
   aside,
   tension,
   requiresConfirmation = false,
+  onAttentionChange,
 }: ChoiceButtonProps) {
   const [armed, setArmed] = useState(false)
   const rootRef = useRef<HTMLButtonElement>(null)
@@ -71,7 +73,15 @@ export function ChoiceButton({
         type="button"
         aria-pressed={requiresConfirmation ? armed : undefined}
         onClick={handleClick}
-        onBlur={() => setArmed(false)}
+        onPointerEnter={() => onAttentionChange?.(true)}
+        onPointerLeave={() => {
+          if (document.activeElement !== rootRef.current) onAttentionChange?.(false)
+        }}
+        onFocus={() => onAttentionChange?.(true)}
+        onBlur={() => {
+          setArmed(false)
+          onAttentionChange?.(false)
+        }}
       >
         <span className="choice-method">{label}</span>
         <span className="choice-body">

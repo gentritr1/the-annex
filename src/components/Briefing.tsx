@@ -39,67 +39,72 @@ export function Briefing({ state, onSelectApproach }: BriefingProps) {
         </div>
       </div>
 
-      <div className="narrative-measure briefing-record">
-        {priorRun && (
-          <aside className="memory-echo" aria-label="Cross-run memory echo">
-            <span className="echo-mark" aria-hidden="true">
-              <MirrorSigil />
-            </span>
+      <div className="briefing-body-grid">
+        <section className="phase-section briefing-approaches" aria-labelledby="approach-heading">
+          <div className="section-heading">
             <div>
-              <strong>Residual signal</strong>
-              <p>{mirrorAside}</p>
-              <div className="echo-tags" aria-label="Methods remembered from the prior run">
-                {priorRun.methodTags
-                  .filter((method) => method !== 'nonlethal')
-                  .slice(0, 4)
-                  .map((method) => (
-                    <span key={method}>{methodLabels[method]}</span>
-                  ))}
-              </div>
+              <h2 id="approach-heading">Choose where the record begins</h2>
+              <p>This sets your first relationship, not a permanent class. Every site remains available.</p>
             </div>
-          </aside>
-        )}
+            <span className="selection-count">1 choice</span>
+          </div>
 
-        <div className="record-grid">
-          <div>
-            <span>Subject</span>
-            <strong>{caseFile.subject}</strong>
-            {caseFile.dossierImage && (
-              <DossierPhoto image={caseFile.dossierImage} variant="briefing" />
-            )}
+          <div className="choice-list briefing-choice-list">
+            {approaches.map((approach) => (
+              <ChoiceButton
+                key={approach.id}
+                title={approach.title}
+                label={approach.method}
+                description={approach.description}
+                consequence={approach.consequence}
+                onClick={() => onSelectApproach(approach.id)}
+              />
+            ))}
           </div>
-          <div>
-            <span>Review window</span>
-            <strong>{caseFile.deadline}</strong>
+        </section>
+
+        <div className="narrative-measure briefing-record">
+          {priorRun && (
+            <aside className="memory-echo" aria-label="Cross-run memory echo">
+              <span className="echo-mark" aria-hidden="true">
+                <MirrorSigil />
+              </span>
+              <div>
+                <strong>Residual signal</strong>
+                <p>{mirrorAside}</p>
+                <div className="echo-tags" aria-label="Methods remembered from the prior run">
+                  {priorRun.methodTags
+                    .filter((method) => method !== 'nonlethal')
+                    .slice(0, 4)
+                    .map((method) => (
+                      <span key={method}>{methodLabels[method]}</span>
+                    ))}
+                </div>
+              </div>
+            </aside>
+          )}
+
+          <div className="record-grid">
+            <div>
+              <span>Subject</span>
+              <strong>{caseFile.subject}</strong>
+              {caseFile.dossierImage && (
+                <DossierPhoto image={caseFile.dossierImage} variant="briefing" />
+              )}
+            </div>
+            <div>
+              <span>Review window</span>
+              <strong>{caseFile.deadline}</strong>
+            </div>
           </div>
+
+          <p className="briefing-mandate">{caseFile.mandate}</p>
+          <details className="briefing-public-record">
+            <summary>Review the public record</summary>
+            <p>{caseFile.publicRecord}</p>
+          </details>
         </div>
-
-        <p>{caseFile.publicRecord}</p>
-        <p>{caseFile.mandate}</p>
       </div>
-
-      <section className="phase-section" aria-labelledby="approach-heading">
-        <div className="section-heading">
-          <div>
-            <h2 id="approach-heading">Choose where the record begins</h2>
-            <p>This sets your first relationship, not a permanent class. Every site remains available.</p>
-          </div>
-          <span className="selection-count">1 choice</span>
-        </div>
-
-        <div className="choice-list">
-          {approaches.map((approach) => (
-            <ChoiceButton
-              key={approach.id}
-              title={approach.title}
-              label={approach.method}
-              description={approach.description}
-              consequence={approach.consequence}
-              onClick={() => onSelectApproach(approach.id)}
-            />
-          ))}
-        </div>
-      </section>
     </article>
   )
 }

@@ -163,6 +163,33 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
     })
   })
 
+  it('keeps optional site close reads display-only and complete', () => {
+    sites.forEach((site) => {
+      if (!site.closeup) return
+      expect(site.closeup.src).toMatch(/^\/images\/.+\.webp$/)
+      expect(site.closeup.caption.trim().length).toBeGreaterThan(0)
+      if (site.closeup.focalPoint) {
+        expect(site.closeup.focalPoint.x).toBeGreaterThanOrEqual(0)
+        expect(site.closeup.focalPoint.x).toBeLessThanOrEqual(1)
+        expect(site.closeup.focalPoint.y).toBeGreaterThanOrEqual(0)
+        expect(site.closeup.focalPoint.y).toBeLessThanOrEqual(1)
+      }
+      const zoneIds = new Set<string>()
+      site.closeup.zones?.forEach((zone) => {
+        expect(site.actionIds).toContain(zone.actionId)
+        expect(zoneIds.has(zone.actionId)).toBe(false)
+        zoneIds.add(zone.actionId)
+        expect(zone.x).toBeGreaterThanOrEqual(0)
+        expect(zone.x).toBeLessThanOrEqual(1)
+        expect(zone.y).toBeGreaterThanOrEqual(0)
+        expect(zone.y).toBeLessThanOrEqual(1)
+      })
+      if (site.closeup.zones) {
+        expect(zoneIds).toEqual(new Set(site.actionIds))
+      }
+    })
+  })
+
   it('maps a nonempty tension line for every reconstruction × decision pair', () => {
     let pairs = 0
     reconstructionDefinitions.forEach((model) => {
@@ -227,6 +254,31 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
       expect(hotspot.y).toBeLessThanOrEqual(1)
       expect(hotspot.r).toBeGreaterThan(0)
       expect(planeNames.has(hotspot.plane)).toBe(true)
+    })
+  })
+
+  it('authors plane depth as a compensated z-ladder (rest framing pinned to net 1)', () => {
+    // The stage projects each projected plane at scene.perspectivePx; the
+    // authored scale must exactly cancel the foreshortening at its translateZ
+    // (scale = (P - z) / P for z ≤ 0), so the resting framing is identical to
+    // the flat projection and depth only reveals under drift/travel. SceneStage
+    // cascades these as --plane-z/-s CSS vars, so names must stay var-safe.
+    const P = scene.perspectivePx
+    expect(P).toBeGreaterThan(0)
+    scene.layers.forEach((layer) => {
+      expect(layer.name).toMatch(/^[a-z][a-z0-9-]*$/)
+      expect(layer.z).toBeLessThanOrEqual(0)
+      if (layer.kind === 'raster' || layer.kind === 'svg') {
+        expect(layer.scale).toBeCloseTo((P - layer.z) / P, 3)
+      }
+    })
+
+    const projectedPlanes = scene.layers.filter(
+      (layer) => layer.kind === 'raster' || layer.kind === 'svg',
+    )
+    expect(new Set(projectedPlanes.map((layer) => layer.z)).size).toBe(projectedPlanes.length)
+    projectedPlanes.slice(1).forEach((layer, index) => {
+      expect(layer.z).toBeGreaterThan(projectedPlanes[index]!.z)
     })
   })
 
@@ -662,5 +714,30 @@ describe('case switcher availability', () => {
     const fromCase81 = getSwitchableCaseIds('case-81', { 'case-77': 'charter-new-person' })
     expect(fromCase81).not.toContain('case-81')
     expect(fromCase81).toContain('case-77')
+  })
+})
+
+describe('site close-read pilots', () => {
+  it('ships the Case 77 Care Ward environment as an action-registered plate', () => {
+    const ward = getCaseContent('case-77').sites.find((site) => site.id === 'care-ward')
+    expect(ward?.closeup?.src).toBe('/images/site-scenes/care-ward-12.webp')
+    expect(ward?.closeup?.zones?.map((zone) => zone.actionId)).toEqual([
+      'listen-mara',
+      'stress-test',
+    ])
+  })
+
+  it('ships the Case 77 Maintenance Spine environment as an optimized plate', () => {
+    const maintenance = getCaseContent('case-77').sites.find((site) => site.id === 'maintenance')
+    expect(maintenance?.closeup?.src).toBe('/images/site-scenes/maintenance-spine.webp')
+    expect(maintenance?.closeup?.focalPoint).toEqual({ x: 0.76, y: 0.5 })
+  })
+
+  it('ships the Case 81 Restoration Lab environment as an optimized plate', () => {
+    const restoration = getCaseContent('case-81').sites.find(
+      (site) => site.id === 'restoration-lab',
+    )
+    expect(restoration?.closeup?.src).toBe('/images/site-scenes/restoration-lab.webp')
+    expect(restoration?.closeup?.focalPoint).toEqual({ x: 0.5, y: 0.5 })
   })
 })

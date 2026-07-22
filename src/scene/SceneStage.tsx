@@ -31,6 +31,10 @@ interface SceneStageProps {
   parallax?: boolean
   // World-window strip mode (tribunal/debrief): capped height, no hotspots.
   strip?: boolean
+  // False pauses the scene loop while a presentation-only close read covers the
+  // stage. The DOM remains mounted for a clean visual swap, but hidden media does
+  // not keep spending animation frames.
+  active?: boolean
   sites?: readonly SiteDefinition[]
   completedSiteIds?: readonly SiteId[]
   // View-only selection for the investigation workspace. This never enters the
@@ -51,6 +55,7 @@ export function SceneStage({
   interactive = false,
   parallax = false,
   strip = false,
+  active = true,
   sites,
   completedSiteIds,
   selectedSiteId,
@@ -72,7 +77,7 @@ export function SceneStage({
   // alarm-tier change (the loop reads the live data-scene-state for weather
   // suppression and the alarm tier through a ref).
   useEffect(() => {
-    if (!diorama) return
+    if (!diorama || !active) return
     const el = frameRef.current
     if (!el) return
     const handle = createSceneMotion(el, {
@@ -93,7 +98,7 @@ export function SceneStage({
       handle.destroy()
       handleRef.current = null
     }
-  }, [diorama, parallax, scene])
+  }, [active, diorama, parallax, scene])
 
   // React to a live change of the reduced-motion preference without recreating.
   useEffect(() => {
@@ -119,6 +124,30 @@ export function SceneStage({
   const LayerArt = scene.LayerArt
   const figure = scene.figure
 
+  // The figure is authored against one of the scene's named planes. LayerArt
+  // supplies the insertion point inside .scene-pgroup; this wrapper receives the
+  // same static Z/scale as that plane, and the inner plate sits 1px in front to
+  // avoid z-fighting. It therefore follows the one group transform writer with
+  // the room instead of floating at screen-space Z=0.
+  const figurePlate = figure ? (
+    <div className={`scene-figure-plane scene-figure-plane-${figure.plane}`} data-plane={figure.plane}>
+      <div
+        className="scene-figure"
+        data-plane={figure.plane}
+        data-x={figure.x}
+        data-y={figure.y}
+        data-h={figure.height}
+      >
+        <img
+          className="scene-figure-plate"
+          src={figure.src}
+          alt=""
+          style={{ mixBlendMode: figure.blend as CSSProperties['mixBlendMode'] }}
+        />
+      </div>
+    </div>
+  ) : null
+
   // The stage root carries the room's state treatment; when a figure is authored
   // its own per-state vars are merged over the same set, so both the room and the
   // figure plate read their live custom properties from one cascade root. A scene
@@ -130,6 +159,23 @@ export function SceneStage({
   const rootVars = scene.alarm
     ? { ...baseVars, '--alarm-haze-o': scene.alarm[alarmTier].hazeVeil }
     : baseVars
+
+  // Authored diorama depth, cascaded as CSS custom properties (consumed by the
+  // plane stack + hotspot mirror in styles.css): the stage's perspective
+  // distance, the drift pivot pinned to the deepest authored plane (so the
+  // group rotate/scale reads as looking around the room — near planes sweep
+  // most), and every plane's translateZ + compensating scale. Static per
+  // scene: the rAF loop never writes these, so there is still exactly one
+  // transform writer. The 2D fallback path simply never reads them.
+  const depthVars: Record<string, string> = {
+    '--scene-perspective': `${scene.perspectivePx}px`,
+    '--scene-axis-z': `${Math.min(0, ...scene.layers.map((layer) => layer.z))}px`,
+  }
+  scene.layers.forEach((layer) => {
+    depthVars[`--plane-z-${layer.name}`] = `${layer.z}px`
+    depthVars[`--plane-s-${layer.name}`] = `${layer.scale}`
+  })
+  const stageVars = { ...rootVars, ...depthVars }
 
   // Flat weather: rain mask + suppression per state.
   const isRain = scene.weather.kind === 'rain'
@@ -197,33 +243,12 @@ export function SceneStage({
   ) : null
 
   return (
-    <div className={stageClass} data-scene-state={sceneState} style={toVarStyle(rootVars)}>
+    <div className={stageClass} data-scene-state={sceneState} style={toVarStyle(stageVars)}>
       <div className="scene-frame" ref={frameRef}>
         {diorama ? (
           <div className="scene-stack" aria-hidden="true">
-            {LayerArt ? <LayerArt backgroundSrc={rasterSrc} /> : null}
+            {LayerArt ? <LayerArt backgroundSrc={rasterSrc} figure={figurePlate} /> : null}
             <canvas className="scene-weather" />
-            {figure ? (
-              // A composited seated presence. motion.ts projects data-x/-y/-h
-              // through the live crop window onto its plane; the plate blends into
-              // the scene (screen) and reads its opacity/brightness/contrast from
-              // the cascaded --fig-* state vars. The breath animation lives on the
-              // inner plate and dies under reduced motion via the global rules.
-              <div
-                className="scene-figure"
-                data-x={figure.x}
-                data-y={figure.y}
-                data-h={figure.height}
-                data-plane={figure.plane}
-              >
-                <img
-                  className="scene-figure-plate"
-                  src={figure.src}
-                  alt=""
-                  style={{ mixBlendMode: figure.blend as CSSProperties['mixBlendMode'] }}
-                />
-              </div>
-            ) : null}
           </div>
         ) : (
           <div className="scene-stack" aria-hidden="true">

@@ -1,6 +1,5 @@
 import { getCaseContent, getPrecedentLine, getTensionLine } from '../game/content'
-import { SceneStage } from '../scene/SceneStage'
-import { sceneStateFor } from '../scene/sceneState'
+import { TribunalChamber } from '../scene/TribunalChamber'
 import type { DecisionId, GameState } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
 
@@ -11,8 +10,9 @@ interface TribunalProps {
 }
 
 export function Tribunal({ state, onDecide, onBack }: TribunalProps) {
-  const { decisions, reconstructionDefinitions, evidenceDefinitions, chrome, scene } =
-    getCaseContent(state.caseId)
+  const { decisions, reconstructionDefinitions, evidenceDefinitions, chrome } = getCaseContent(
+    state.caseId,
+  )
   const reconstruction = reconstructionDefinitions.find((item) => item.id === state.reconstruction)
   const discoveredEvidence = evidenceDefinitions.filter((item) => state.evidence.includes(item.id))
   const filedModel = state.reconstruction
@@ -28,30 +28,18 @@ export function Tribunal({ state, onDecide, onBack }: TribunalProps) {
 
   return (
     <article className="phase-page tribunal-page">
-      {/* The narrow world window: the same scene, held at its tribunal treatment
-          (formal center, weather per the suppression map), no hotspots, no drift. */}
-      <SceneStage
-        scene={scene}
-        sceneState={sceneStateFor(state, { surface: 'tribunal' })}
-        reducedMotion={state.settings.reducedMotion}
-        strip
+      <TribunalChamber
+        channel={chrome.tribunalChannel}
+        headline={chrome.tribunalHeadline}
+        intro={chrome.tribunalIntro}
+        seal={chrome.tribunalSeal}
+        precedentLine={precedentLine}
+        evidenceCount={discoveredEvidence.length}
+        reconstructionTitle={reconstruction?.title ?? 'No model filed'}
+        alarmLevel={state.alarm}
+        overrideAvailable={state.tribunalOverride}
+        onBack={onBack}
       />
-      <header className="tribunal-header">
-        <button className="back-button" type="button" onClick={onBack}>
-          <span aria-hidden="true">←</span> Return to field
-        </button>
-        <div className="tribunal-seal" aria-hidden="true">
-          {chrome.tribunalSeal}
-        </div>
-        <p className="case-code">{chrome.tribunalChannel}</p>
-        <h1>{chrome.tribunalHeadline}</h1>
-        <p>{chrome.tribunalIntro}</p>
-        {precedentLine ? (
-          <p className="tribunal-precedent" role="note">
-            {precedentLine}
-          </p>
-        ) : null}
-      </header>
 
       <section className="tribunal-summary" aria-labelledby="summary-heading">
         <h2 id="summary-heading">Admitted record</h2>
@@ -75,29 +63,12 @@ export function Tribunal({ state, onDecide, onBack }: TribunalProps) {
         </dl>
       </section>
 
-      <section className="tribunal-contradictions" aria-labelledby="contradiction-heading">
-        <div className="contradiction-heading">
-          <span className="section-context">What the admitted record cannot settle</span>
-          <h2 id="contradiction-heading">Unresolved contradictions</h2>
-        </div>
-        {discoveredEvidence.length > 0 ? (
-          <ul className="contradiction-list">
-            {discoveredEvidence.map((item) => (
-              <li key={item.id}>
-                <strong>{item.title}</strong>
-                <p>{item.contradiction}</p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="contradiction-empty">No evidence was admitted. The record is silent, not complete.</p>
-        )}
-      </section>
-
       <section className="phase-section" aria-labelledby="decision-heading">
         <div className="section-heading">
           <div>
-            <h2 id="decision-heading">Issue a finding</h2>
+            <h2 id="decision-heading" tabIndex={-1}>
+              Issue a finding
+            </h2>
             <p>No result is scored as good or evil. The debrief records who bears its cost.</p>
           </div>
           <span className="selection-count">Final action</span>
@@ -138,6 +109,32 @@ export function Tribunal({ state, onDecide, onBack }: TribunalProps) {
           })}
         </div>
       </section>
+
+      <details className="tribunal-contradictions tribunal-archive">
+        <summary>
+          <span>
+            <strong>Review unresolved contradictions</strong>
+            <small>
+              {discoveredEvidence.length > 0
+                ? `${discoveredEvidence.length} admitted item${discoveredEvidence.length === 1 ? '' : 's'} remain contested.`
+                : 'The record is silent, not complete.'}
+            </small>
+          </span>
+          <span aria-hidden="true">+</span>
+        </summary>
+        {discoveredEvidence.length > 0 ? (
+          <ul className="contradiction-list">
+            {discoveredEvidence.map((item) => (
+              <li key={item.id}>
+                <strong>{item.title}</strong>
+                <p>{item.contradiction}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="contradiction-empty">No evidence was admitted. The record is silent, not complete.</p>
+        )}
+      </details>
     </article>
   )
 }
