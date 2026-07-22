@@ -750,4 +750,16 @@ describe('site close-read pilots', () => {
     expect(restoration?.closeup?.src).toBe('/images/site-scenes/restoration-lab.webp')
     expect(restoration?.closeup?.focalPoint).toEqual({ x: 0.5, y: 0.5 })
   })
+
+  it('ships Records Annex as an action-registered chronology and dormant authority plate', () => {
+    const records = getCaseContent('case-81').sites.find((site) => site.id === 'records-annex')
+    expect(records?.closeup?.src).toBe('/images/site-scenes/records-annex.webp')
+    expect(records?.closeup?.caption).toBe('Service record · dormant authority')
+    expect(records?.closeup?.focalPoint).toEqual({ x: 0.52, y: 0.52 })
+    expect(records?.closeup?.zones).toEqual([
+      { actionId: 'pull-service-record', x: 0.41, y: 0.38 },
+      { actionId: 'forge-certification-seal', x: 0.63, y: 0.67 },
+    ])
+    expect(records?.closeup?.atmosphere).toBe('authority-diagnostic')
+  })
 })

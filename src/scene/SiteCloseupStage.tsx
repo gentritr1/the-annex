@@ -56,6 +56,9 @@ export function SiteCloseupStage({
           {closeup.atmosphere === 'checksum-echo' ? (
             <div className="site-closeup-checksum-echo" />
           ) : null}
+          {closeup.atmosphere === 'authority-diagnostic' ? (
+            <div className="site-closeup-authority-diagnostic" />
+          ) : null}
           {closeup.zones ? (
             <div className="site-closeup-zones">
               {closeup.zones.map((zone) => {

@@ -446,6 +446,16 @@ const sites: readonly SiteDefinition[] = [
     name: 'Records annex',
     description: 'Service files, custody seals, and a dormant certification authority the public record never mentions.',
     actionIds: ['pull-service-record', 'forge-certification-seal'],
+    closeup: {
+      src: '/images/site-scenes/records-annex.webp',
+      caption: 'Service record · dormant authority',
+      focalPoint: { x: 0.52, y: 0.52 },
+      zones: [
+        { actionId: 'pull-service-record', x: 0.41, y: 0.38 },
+        { actionId: 'forge-certification-seal', x: 0.63, y: 0.67 },
+      ],
+      atmosphere: 'authority-diagnostic',
+    },
     unvisitedNote:
       'You never reached the records annex. The service record stayed unread and the seal stayed asleep.',
   },
