@@ -19,6 +19,8 @@ export function SiteCloseupStage({
   const focalX = closeup.focalPoint?.x ?? 0.5
   const focalY = closeup.focalPoint?.y ?? 0.5
   const actionById = new Map(actions.map((action) => [action.id, action]))
+  const usesAuthoredRegister =
+    closeup.atmosphere === 'argument-register' || closeup.atmosphere === 'category-register'
   const emphasizedActionId = resolvedActionId ?? activeActionId
   const emphasizedZone = closeup.zones?.find((zone) => zone.actionId === emphasizedActionId)
   const stageStyle = {
@@ -49,7 +51,7 @@ export function SiteCloseupStage({
             decoding="async"
           />
           <div className="site-closeup-depth" />
-          {closeup.atmosphere === 'argument-register' ? null : (
+          {usesAuthoredRegister ? null : (
             <div className="site-closeup-sweep" />
           )}
           {closeup.atmosphere === 'rain-reflection' ? (
@@ -63,6 +65,9 @@ export function SiteCloseupStage({
           ) : null}
           {closeup.atmosphere === 'argument-register' ? (
             <div className="site-closeup-argument-register" />
+          ) : null}
+          {closeup.atmosphere === 'category-register' ? (
+            <div className="site-closeup-category-register" />
           ) : null}
           {closeup.zones ? (
             <div className="site-closeup-zones">

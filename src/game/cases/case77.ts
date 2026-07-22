@@ -452,6 +452,16 @@ const sites: readonly SiteDefinition[] = [
     name: 'The Small Archive',
     description: 'Questions, omitted categories, and a custodian who remembers what adults avoid.',
     actionIds: ['answer-archivist', 'seal-index'],
+    closeup: {
+      src: '/images/site-scenes/small-archive.webp',
+      caption: 'Shelf zero · restricted index',
+      focalPoint: { x: 0.51, y: 0.51 },
+      zones: [
+        { actionId: 'answer-archivist', x: 0.37, y: 0.7 },
+        { actionId: 'seal-index', x: 0.65, y: 0.45 },
+      ],
+      atmosphere: 'category-register',
+    },
     unvisitedNote:
       'You never reached the Small Archive. The question with no category stayed unasked, filed under nothing.',
   },

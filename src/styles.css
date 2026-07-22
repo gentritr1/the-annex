@@ -1320,6 +1320,7 @@ p {
 .site-closeup-checksum-echo,
 .site-closeup-authority-diagnostic,
 .site-closeup-argument-register,
+.site-closeup-category-register,
 .site-closeup-zones {
   position: absolute;
   pointer-events: none;
@@ -1498,6 +1499,56 @@ p {
   background: linear-gradient(270deg, transparent, oklch(0.82 0.012 210 / 0.54) 18% 100%);
   transform: scaleX(0);
   transform-origin: 100% 50%;
+}
+
+/* The Small Archive registers its one private drawer and its institutional
+   shutter at equal neutral intensity. The traces arrive together, communicate
+   only that two record systems are present, then disappear. */
+.site-closeup-category-register {
+  z-index: 2;
+  inset: 0;
+  mix-blend-mode: screen;
+}
+
+.site-closeup-category-register::before,
+.site-closeup-category-register::after {
+  content: '';
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    oklch(0.82 0.012 210 / 0.54) 16% 84%,
+    transparent
+  );
+  box-shadow: 0 0 10px oklch(0.82 0.012 210 / 0.16);
+}
+
+.site-closeup-category-register::before {
+  top: 70%;
+  left: 26%;
+  width: 23%;
+  height: 1px;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  animation: site-closeup-category-row 1.1s var(--ease-out) 300ms both;
+}
+
+.site-closeup-category-register::after {
+  top: 13%;
+  left: 65%;
+  width: 1px;
+  height: 52%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    oklch(0.82 0.012 210 / 0.54) 16% 84%,
+    transparent
+  );
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  animation: site-closeup-category-column 1.1s var(--ease-out) 300ms both;
 }
 
 .site-closeup-zones {
@@ -1711,6 +1762,42 @@ p {
   }
 }
 
+@keyframes site-closeup-category-row {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  20% {
+    opacity: 0.58;
+  }
+  76% {
+    opacity: 0.42;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes site-closeup-category-column {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  20% {
+    opacity: 0.58;
+  }
+  76% {
+    opacity: 0.42;
+    transform: scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(1);
+  }
+}
+
 .high-contrast .site-closeup-stage img {
   filter: grayscale(0.35) brightness(0.72) contrast(1.24);
 }
@@ -1732,6 +1819,8 @@ p {
 .reduce-motion .site-closeup-authority-diagnostic::after,
 .reduce-motion .site-closeup-argument-register::before,
 .reduce-motion .site-closeup-argument-register::after,
+.reduce-motion .site-closeup-category-register::before,
+.reduce-motion .site-closeup-category-register::after,
 .reduce-motion .site-closeup-zone {
   animation: none !important;
   transition: none !important;
@@ -1741,7 +1830,8 @@ p {
 .reduce-motion .site-closeup-rain-memory,
 .reduce-motion .site-closeup-checksum-echo,
 .reduce-motion .site-closeup-authority-diagnostic,
-.reduce-motion .site-closeup-argument-register {
+.reduce-motion .site-closeup-argument-register,
+.reduce-motion .site-closeup-category-register {
   display: none;
 }
 
@@ -1757,6 +1847,8 @@ p {
   .site-closeup-authority-diagnostic::after,
   .site-closeup-argument-register::before,
   .site-closeup-argument-register::after,
+  .site-closeup-category-register::before,
+  .site-closeup-category-register::after,
   .site-closeup-zone {
     animation: none !important;
     transition: none !important;
@@ -1766,7 +1858,8 @@ p {
   .site-closeup-rain-memory,
   .site-closeup-checksum-echo,
   .site-closeup-authority-diagnostic,
-  .site-closeup-argument-register {
+  .site-closeup-argument-register,
+  .site-closeup-category-register {
     display: none;
   }
 }

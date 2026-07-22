@@ -265,6 +265,7 @@ export interface SiteDefinition {
       | 'checksum-echo'
       | 'authority-diagnostic'
       | 'argument-register'
+      | 'category-register'
   }
   // Read at debrief when the site was never visited in this run.
   unvisitedNote: string

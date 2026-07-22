@@ -743,6 +743,18 @@ describe('site close-read pilots', () => {
     expect(maintenance?.closeup?.focalPoint).toEqual({ x: 0.76, y: 0.5 })
   })
 
+  it('ships the Small Archive as two equally registered category systems', () => {
+    const archive = getCaseContent('case-77').sites.find((site) => site.id === 'small-archive')
+    expect(archive?.closeup?.src).toBe('/images/site-scenes/small-archive.webp')
+    expect(archive?.closeup?.caption).toBe('Shelf zero · restricted index')
+    expect(archive?.closeup?.focalPoint).toEqual({ x: 0.51, y: 0.51 })
+    expect(archive?.closeup?.zones).toEqual([
+      { actionId: 'answer-archivist', x: 0.37, y: 0.7 },
+      { actionId: 'seal-index', x: 0.65, y: 0.45 },
+    ])
+    expect(archive?.closeup?.atmosphere).toBe('category-register')
+  })
+
   it('ships the Case 81 Restoration Lab environment as an optimized plate', () => {
     const restoration = getCaseContent('case-81').sites.find(
       (site) => site.id === 'restoration-lab',
