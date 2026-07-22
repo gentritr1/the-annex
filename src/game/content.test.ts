@@ -17,6 +17,11 @@ function expectUnique(ids: readonly string[]) {
   expect(new Set(ids).size).toBe(ids.length)
 }
 
+function expectFiniteVector3(vector: readonly [number, number, number]) {
+  expect(vector).toHaveLength(3)
+  vector.forEach((value) => expect(Number.isFinite(value)).toBe(true))
+}
+
 // Every registered case is held to the same structural contract. Case 81's stub
 // must satisfy all of it exactly as Case 77 does.
 const registeredCases: [string, CaseDefinition][] = registeredCaseIds.map((id) => [
@@ -245,6 +250,40 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
     expect(new Set(hotspotSiteIds)).toEqual(new Set(sites.map((site) => site.id)))
   })
 
+  it('keeps an authored bounded world finite, positive, and registered to the scene sites', () => {
+    const world = scene.world
+    if (!world) return
+
+    Object.values(world.room).forEach((dimension) => {
+      expect(Number.isFinite(dimension)).toBe(true)
+      expect(dimension).toBeGreaterThan(0)
+    })
+    expect(Number.isFinite(world.travelMs)).toBe(true)
+    expect(world.travelMs).toBeGreaterThan(0)
+    expectFiniteVector3(world.homeCamera.position)
+    expectFiniteVector3(world.homeCamera.target)
+
+    const portalSiteIds = world.portals.map((portal) => portal.siteId)
+    expectUnique(portalSiteIds)
+    expect(new Set(portalSiteIds)).toEqual(new Set(sites.map((site) => site.id)))
+
+    world.portals.forEach((portal) => {
+      expectFiniteVector3(portal.position)
+      expectFiniteVector3(portal.camera.position)
+      expectFiniteVector3(portal.camera.target)
+      expect(Number.isFinite(portal.rotationY)).toBe(true)
+      Object.values(portal.size).forEach((dimension) => {
+        expect(Number.isFinite(dimension)).toBe(true)
+        expect(dimension).toBeGreaterThan(0)
+      })
+      Object.values(portal.posterAnchor).forEach((coordinate) => {
+        expect(Number.isFinite(coordinate)).toBe(true)
+        expect(coordinate).toBeGreaterThanOrEqual(0)
+        expect(coordinate).toBeLessThanOrEqual(1)
+      })
+    })
+  })
+
   it('places every hotspot in master-normalized bounds on a declared plane', () => {
     const planeNames = new Set([...scene.layers.map((layer) => layer.name), 'flat'])
     scene.hotspots.forEach((hotspot) => {
@@ -398,6 +437,13 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
       expect(reaction.line.trim().length).toBeGreaterThan(0)
       expect([...reaction.line].length).toBeLessThanOrEqual(160)
     })
+  })
+})
+
+describe('bounded spatial world coverage', () => {
+  it('progressively enhances Case 77 and leaves Case 81 on its authored non-WebGL scene', () => {
+    expect(getCaseContent('case-77').scene.world).toBeDefined()
+    expect(getCaseContent('case-81').scene.world).toBeUndefined()
   })
 })
 

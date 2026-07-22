@@ -595,6 +595,42 @@ export interface SceneTravel {
   settleOutMs: number
 }
 
+export type SceneVector3 = readonly [number, number, number]
+
+export interface SceneWorldCamera {
+  position: SceneVector3
+  target: SceneVector3
+}
+
+// One pointer-facing threshold inside an optional spatial world. The site id is
+// the only bridge back to authored gameplay content: activating a portal calls
+// the same location-selection path as the canonical DOM switcher.
+export interface SceneWorldPortal {
+  siteId: SiteId
+  position: SceneVector3
+  rotationY: number
+  size: { width: number; height: number }
+  // Normalized coordinates on the approved static poster. They keep the full
+  // pointer route available before WebGL loads and whenever it is unavailable.
+  posterAnchor: { x: number; y: number }
+  camera: SceneWorldCamera
+}
+
+// Presentation-only authored data for a bounded WebGL place. It is deliberately
+// small: simple geometry, explicit camera poses, and raster paths. No world field
+// is persisted and no renderer is allowed to dispatch game actions directly.
+export interface SceneWorldDefinition {
+  kind: 'concourse'
+  posterSrc: string
+  concreteSrc: string
+  terrazzoSrc: string
+  room: { width: number; depth: number; height: number }
+  homeCamera: SceneWorldCamera
+  travelMs: number
+  caption: { title: string; detail: string }
+  portals: readonly SceneWorldPortal[]
+}
+
 // One civic-alarm tier of atmosphere, in ABSOLUTE authored values (no
 // multipliers on the base scene). `hazeVeil` layers over the state treatment's
 // --haze-o; the dust fields replace the weather defaults for that tier.
@@ -627,6 +663,10 @@ export interface SceneDefinition {
   // Optional selection camera travel (both cases). Presentation only: it never
   // gates the location panel, focus management, or any engine dispatch.
   travel?: SceneTravel
+  // Optional bounded spatial place for investigation. The DOM switcher remains
+  // canonical; this is a progressively enhanced pointer view with a static
+  // poster fallback and no authority over engine state.
+  world?: SceneWorldDefinition
   // Optional alarm-driven atmosphere, exactly four tiers indexed by the
   // engine's clamped 0–3 alarm. Tier 0 must reproduce the base look exactly.
   alarm?: readonly [SceneAlarmTier, SceneAlarmTier, SceneAlarmTier, SceneAlarmTier]

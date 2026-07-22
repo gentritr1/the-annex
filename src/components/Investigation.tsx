@@ -4,6 +4,7 @@ import { canEnterTribunal } from '../game/engine'
 import { SceneStage } from '../scene/SceneStage'
 import { SITE_CLOSEUP_ENTRY_MS, SiteCloseupStage } from '../scene/SiteCloseupStage'
 import { resolveCommitConsent, sceneStateFor, witnessesRefusalOnCommit } from '../scene/sceneState'
+import { AnnexWorldStage } from '../world/AnnexWorldStage'
 import type { DepositionChoiceId, FieldActionId, GameState, SiteId } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
 import { Deposition } from './Deposition'
@@ -62,6 +63,7 @@ interface CloseupEntryOrigin {
 
 type WorldPresentation =
   | { kind: 'map' }
+  | { kind: 'concourse' }
   | { kind: 'travel'; siteId: SiteId; epoch: number; origin: CloseupEntryOrigin }
   | { kind: 'arriving'; siteId: SiteId; epoch: number; origin: CloseupEntryOrigin }
   | { kind: 'closeup'; siteId: SiteId; origin: CloseupEntryOrigin }
@@ -100,7 +102,9 @@ export function Investigation({
   const [selectedSiteId, setSelectedSiteId] = useState<SiteId>(() => initialSite.id)
   const [osReducedMotion, setOsReducedMotion] = useState(prefersReducedMotion)
   const [worldPresentation, setWorldPresentation] = useState<WorldPresentation>(() =>
-    initialSite.closeup
+    scene.world
+      ? { kind: 'concourse' }
+      : initialSite.closeup
       ? { kind: 'closeup', siteId: initialSite.id, origin: { x: 0.5, y: 0.5 } }
       : { kind: 'map' },
   )
@@ -116,6 +120,7 @@ export function Investigation({
   // The one-shot witnessed-refusal announcement (aria-live). Set only from a commit
   // callback; empty at rest, so a reload of a persisted refusal never re-announces.
   const [refusalLine, setRefusalLine] = useState('')
+  const [worldLine, setWorldLine] = useState('')
 
   const sceneMotionReduced = reducedMotion || osReducedMotion
 
@@ -159,14 +164,14 @@ export function Investigation({
           )
         })
       })
-    }, scene.travel?.travelInMs ?? 0)
+    }, scene.world?.travelMs ?? scene.travel?.travelInMs ?? 0)
 
     return () => {
       window.clearTimeout(timer)
       if (firstFrame) window.cancelAnimationFrame(firstFrame)
       if (secondFrame) window.cancelAnimationFrame(secondFrame)
     }
-  }, [scene.travel?.travelInMs, sceneMotionReduced, worldPresentation])
+  }, [scene.travel?.travelInMs, scene.world?.travelMs, sceneMotionReduced, worldPresentation])
 
   // Hold the live scene at its travelled framing behind the growing aperture.
   // Once the opaque plate covers it, promote to the settled closeup and let
@@ -342,6 +347,7 @@ export function Investigation({
       : worldPresentation
   const presentationMatchesSelection =
     presentationForRender.kind !== 'map' &&
+    presentationForRender.kind !== 'concourse' &&
     presentationForRender.siteId === selectedSite.id
   const shownCloseup =
     presentationMatchesSelection &&
@@ -349,7 +355,7 @@ export function Investigation({
       ? selectedSite.closeup
       : undefined
   const closeupEntryOrigin =
-    presentationForRender.kind === 'map'
+    presentationForRender.kind === 'map' || presentationForRender.kind === 'concourse'
       ? { x: 0.5, y: 0.5 }
       : presentationForRender.origin
   const cameraSiteId =
@@ -359,6 +365,8 @@ export function Investigation({
   const sceneActive = presentationForRender.kind !== 'closeup'
   const worldViewClass = [
     'world-view',
+    scene.world ? 'world-view--spatial' : '',
+    presentationForRender.kind === 'concourse' ? 'world-view--concourse' : '',
     shownCloseup ? 'world-view--closeup' : '',
     presentationForRender.kind === 'travel' ? 'world-view--traveling' : '',
     presentationForRender.kind === 'arriving' ? 'world-view--arriving' : '',
@@ -415,17 +423,21 @@ export function Investigation({
         y: Math.max(0.06, Math.min(0.94, y)),
       }
     }
+    const portal = scene.world?.portals.find((item) => item.siteId === siteId)
     const hotspot = scene.hotspots.find((item) => item.siteId === siteId)
     return {
-      x: Math.max(0.04, Math.min(0.96, hotspot?.x ?? 0.5)),
-      y: Math.max(0.06, Math.min(0.94, hotspot?.y ?? 0.5)),
+      x: Math.max(0.04, Math.min(0.96, portal?.posterAnchor.x ?? hotspot?.x ?? 0.5)),
+      y: Math.max(0.06, Math.min(0.94, portal?.posterAnchor.y ?? hotspot?.y ?? 0.5)),
     }
   }
 
   function selectSite(siteId: SiteId, moveFocus = false, sourceElement?: HTMLElement) {
     setPreviewActionId(null)
+    setWorldLine('')
     const alreadyPresentingSite =
-      worldPresentation.kind !== 'map' && worldPresentation.siteId === siteId
+      worldPresentation.kind !== 'map' &&
+      worldPresentation.kind !== 'concourse' &&
+      worldPresentation.siteId === siteId
     if (selectedSiteId === siteId && alreadyPresentingSite) {
       if (moveFocus) {
         window.requestAnimationFrame(() =>
@@ -445,7 +457,7 @@ export function Investigation({
     const instant = reducedMotion || prefersReducedMotion()
     if (!targetSite.closeup) {
       setWorldPresentation({ kind: 'map' })
-    } else if (instant || !diorama || !scene.travel) {
+    } else if (instant || (!scene.world && (!diorama || !scene.travel))) {
       setWorldPresentation({ kind: 'closeup', siteId, origin })
     } else {
       setWorldPresentation({ kind: 'travel', siteId, epoch, origin })
@@ -457,10 +469,26 @@ export function Investigation({
     window.requestAnimationFrame(() => focusSiteCard(siteId, instant))
   }
 
+  function returnToConcourse() {
+    if (!scene.world) return
+    transitionEpochRef.current += 1
+    setPreviewActionId(null)
+    setWorldPresentation({ kind: 'concourse' })
+    setWorldLine(
+      `${scene.world.caption.title} restored. ${scene.world.portals.length} locations available.`,
+    )
+    window.requestAnimationFrame(() => {
+      document.getElementById(`site-switch-${selectedSiteId}`)?.focus({ preventScroll: true })
+    })
+  }
+
   return (
     <article className="phase-page investigation-page">
       <p className="sr-only" role="status" aria-live="polite">
         {refusalLine}
+      </p>
+      <p className="sr-only" role="status" aria-live="polite">
+        {worldLine}
       </p>
       <header className="field-commandbar">
         <div>
@@ -492,21 +520,36 @@ export function Investigation({
             {/* The world is now the primary location picker. A hotspot swaps the
                 adjacent workspace in place instead of sending the player down a
                 long document. Canonical game state remains engine-owned. */}
-            <SceneStage
-              scene={scene}
-              sceneState={sceneState}
-              reducedMotion={state.settings.reducedMotion}
-              alarmLevel={state.alarm}
-              interactive
-              parallax={diorama}
-              active={sceneActive}
-              sites={sites}
-              completedSiteIds={state.completedSites}
-              selectedSiteId={cameraSiteId}
-              onHotspotActivate={(siteId, sourceElement) =>
-                selectSite(siteId, true, sourceElement)
-              }
-            />
+            {scene.world ? (
+              <AnnexWorldStage
+                world={scene.world}
+                sites={sites}
+                completedSiteIds={state.completedSites}
+                selectedSiteId={cameraSiteId}
+                active={sceneActive}
+                reducedMotion={sceneMotionReduced}
+                alarmLevel={state.alarm}
+                onPortalActivate={(siteId, sourceElement) =>
+                  selectSite(siteId, true, sourceElement)
+                }
+              />
+            ) : (
+              <SceneStage
+                scene={scene}
+                sceneState={sceneState}
+                reducedMotion={state.settings.reducedMotion}
+                alarmLevel={state.alarm}
+                interactive
+                parallax={diorama}
+                active={sceneActive}
+                sites={sites}
+                completedSiteIds={state.completedSites}
+                selectedSiteId={cameraSiteId}
+                onHotspotActivate={(siteId, sourceElement) =>
+                  selectSite(siteId, true, sourceElement)
+                }
+              />
+            )}
             {shownCloseup && (
               <SiteCloseupStage
                 key={selectedSite.id}
@@ -517,14 +560,26 @@ export function Investigation({
                 resolvedActionId={selectedCompletedAction?.id}
               />
             )}
+            {shownCloseup && scene.world && (
+              <button className="world-return" type="button" onClick={returnToConcourse}>
+                <span aria-hidden="true">←</span> Return to concourse
+              </button>
+            )}
             <div className="world-caption">
               <span>
                 {shownCloseup
                   ? `${selectedSite.index} · ${selectedSite.name}`
+                  : scene.world
+                    ? scene.world.caption.title
                   : chrome.worldCaption[0]}
               </span>
               {shownCloseup ? (
                 <span>{shownCloseup.caption}</span>
+              ) : scene.world ? (
+                <>
+                  <span className="world-caption-spatial-static">Select a threshold</span>
+                  <span className="world-caption-spatial-live">{scene.world.caption.detail}</span>
+                </>
               ) : captionMask !== null ? (
                 <span>
                   {chrome.worldCaption[1]}: {Math.round(captionMask * 100)}%
@@ -542,14 +597,24 @@ export function Investigation({
                   className="site-switch"
                   type="button"
                   key={site.id}
+                  id={`site-switch-${site.id}`}
                   aria-pressed={selected}
+                  data-site={site.id}
                   data-filed={filed ? 'true' : undefined}
                   onClick={(event) => selectSite(site.id, false, event.currentTarget)}
                 >
                   <span className="site-switch-index">{site.index}</span>
                   <span>
                     <strong>{site.name}</strong>
-                    <small>{filed ? 'Filed' : selected ? 'In view' : 'Available'}</small>
+                    <small>
+                      {filed
+                        ? 'Filed'
+                        : selected && presentationForRender.kind === 'concourse'
+                          ? 'Selected'
+                          : selected
+                            ? 'In view'
+                            : 'Available'}
+                    </small>
                   </span>
                 </button>
               )

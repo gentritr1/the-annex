@@ -1,0 +1,1071 @@
+{
+  "generatedAt": "2026-07-22T12:16:57.316Z",
+  "appUrl": "http://127.0.0.1:7100/",
+  "expectedSites": [
+    "registry",
+    "care-ward",
+    "maintenance",
+    "small-archive"
+  ],
+  "runs": [
+    {
+      "tag": "desktop-webgl",
+      "mode": "normal",
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "mobile": false
+      },
+      "snapshot": {
+        "viewport": {
+          "width": 1280,
+          "height": 800,
+          "devicePixelRatio": 1
+        },
+        "renderer": "webgl",
+        "loop": "idle",
+        "active": "true",
+        "stage": {
+          "x": 20,
+          "y": 150,
+          "width": 515.98,
+          "height": 458,
+          "right": 535.98,
+          "bottom": 608
+        },
+        "poster": {
+          "count": 1,
+          "opacity": 0,
+          "visible": false,
+          "rect": {
+            "x": 20,
+            "y": 150,
+            "width": 515.98,
+            "height": 458,
+            "right": 535.98,
+            "bottom": 608
+          }
+        },
+        "canvasCount": 1,
+        "canvases": [
+          {
+            "rect": {
+              "x": 20,
+              "y": 150,
+              "width": 515.98,
+              "height": 458,
+              "right": 535.98,
+              "bottom": 608
+            },
+            "drawingBuffer": {
+              "width": 515,
+              "height": 458
+            }
+          }
+        ],
+        "portals": [
+          {
+            "site": "registry",
+            "rect": {
+              "x": 22.03,
+              "y": 339.3,
+              "width": 48,
+              "height": 48,
+              "right": 70.03,
+              "bottom": 387.3
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "Registry intake",
+              "rect": {
+                "x": 23.05,
+                "y": 311.3,
+                "width": 117.97,
+                "height": 21.05,
+                "right": 141.02,
+                "bottom": 332.34
+              },
+              "fullyInsideStage": true
+            }
+          },
+          {
+            "site": "care-ward",
+            "rect": {
+              "x": 205.14,
+              "y": 334.25,
+              "width": 48,
+              "height": 48,
+              "right": 253.14,
+              "bottom": 382.25
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "Care ward 12",
+              "rect": {
+                "x": 180.55,
+                "y": 384.25,
+                "width": 97.19,
+                "height": 21.05,
+                "right": 277.73,
+                "bottom": 405.3
+              },
+              "fullyInsideStage": true
+            }
+          },
+          {
+            "site": "maintenance",
+            "rect": {
+              "x": 302.77,
+              "y": 340,
+              "width": 48,
+              "height": 48,
+              "right": 350.77,
+              "bottom": 388
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "Maintenance spine",
+              "rect": {
+                "x": 260.84,
+                "y": 312,
+                "width": 131.84,
+                "height": 21.05,
+                "right": 392.69,
+                "bottom": 333.05
+              },
+              "fullyInsideStage": true
+            }
+          },
+          {
+            "site": "small-archive",
+            "rect": {
+              "x": 485.94,
+              "y": 339.3,
+              "width": 48,
+              "height": 48,
+              "right": 533.94,
+              "bottom": 387.3
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "The Small Archive",
+              "rect": {
+                "x": 396.02,
+                "y": 417.3,
+                "width": 131.84,
+                "height": 21.05,
+                "right": 527.86,
+                "bottom": 438.34
+              },
+              "fullyInsideStage": true
+            }
+          }
+        ],
+        "labelOverlaps": [],
+        "portalCountFour": true,
+        "portalsContained": true,
+        "portalsMinimum48": true,
+        "portalsVisible": true,
+        "labelsNonOverlapping": true
+      },
+      "checks": {
+        "rendererWebgl": true,
+        "oneCanvas": true,
+        "canvasCoversStage": true,
+        "loopIdle": true,
+        "fourPortals": true,
+        "portalsContained": true,
+        "portalsMinimum48": true,
+        "portalsVisible": true,
+        "labelsNonOverlapping": true
+      },
+      "pageExceptions": []
+    },
+    {
+      "tag": "mobile-webgl",
+      "mode": "normal",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "mobile": true
+      },
+      "snapshot": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "devicePixelRatio": 1
+        },
+        "renderer": "webgl",
+        "loop": "idle",
+        "active": "true",
+        "stage": {
+          "x": 14,
+          "y": 262.39,
+          "width": 362,
+          "height": 320,
+          "right": 376,
+          "bottom": 582.39
+        },
+        "poster": {
+          "count": 1,
+          "opacity": 0,
+          "visible": false,
+          "rect": {
+            "x": 14,
+            "y": 262.39,
+            "width": 362,
+            "height": 320,
+            "right": 376,
+            "bottom": 582.39
+          }
+        },
+        "canvasCount": 1,
+        "canvases": [
+          {
+            "rect": {
+              "x": 14,
+              "y": 262.39,
+              "width": 362,
+              "height": 320,
+              "right": 376,
+              "bottom": 582.39
+            },
+            "drawingBuffer": {
+              "width": 362,
+              "height": 320
+            }
+          }
+        ],
+        "portals": [
+          {
+            "site": "registry",
+            "rect": {
+              "x": 14,
+              "y": 387.42,
+              "width": 48,
+              "height": 48,
+              "right": 62,
+              "bottom": 435.42
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "Registry intake",
+              "rect": {
+                "x": 15.02,
+                "y": 359.42,
+                "width": 117.97,
+                "height": 21.05,
+                "right": 132.98,
+                "bottom": 380.47
+              },
+              "fullyInsideStage": true
+            }
+          },
+          {
+            "site": "care-ward",
+            "rect": {
+              "x": 136.86,
+              "y": 383.89,
+              "width": 48,
+              "height": 48,
+              "right": 184.86,
+              "bottom": 431.89
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "Care ward 12",
+              "rect": {
+                "x": 112.27,
+                "y": 433.89,
+                "width": 97.19,
+                "height": 21.05,
+                "right": 209.45,
+                "bottom": 454.94
+              },
+              "fullyInsideStage": true
+            }
+          },
+          {
+            "site": "maintenance",
+            "rect": {
+              "x": 205.08,
+              "y": 387.91,
+              "width": 48,
+              "height": 48,
+              "right": 253.08,
+              "bottom": 435.91
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "Maintenance spine",
+              "rect": {
+                "x": 163.16,
+                "y": 359.91,
+                "width": 131.84,
+                "height": 21.05,
+                "right": 295,
+                "bottom": 380.95
+              },
+              "fullyInsideStage": true
+            }
+          },
+          {
+            "site": "small-archive",
+            "rect": {
+              "x": 328,
+              "y": 387.42,
+              "width": 48,
+              "height": 48,
+              "right": 376,
+              "bottom": 435.42
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "The Small Archive",
+              "rect": {
+                "x": 238.08,
+                "y": 465.42,
+                "width": 131.84,
+                "height": 21.05,
+                "right": 369.92,
+                "bottom": 486.47
+              },
+              "fullyInsideStage": true
+            }
+          }
+        ],
+        "labelOverlaps": [],
+        "portalCountFour": true,
+        "portalsContained": true,
+        "portalsMinimum48": true,
+        "portalsVisible": true,
+        "labelsNonOverlapping": true
+      },
+      "checks": {
+        "rendererWebgl": true,
+        "oneCanvas": true,
+        "canvasCoversStage": true,
+        "loopIdle": true,
+        "fourPortals": true,
+        "portalsContained": true,
+        "portalsMinimum48": true,
+        "portalsVisible": true,
+        "labelsNonOverlapping": true
+      },
+      "pageExceptions": []
+    },
+    {
+      "tag": "desktop-os-reduced",
+      "mode": "os-reduced",
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "mobile": false
+      },
+      "mediaReduced": true,
+      "snapshot": {
+        "viewport": {
+          "width": 1280,
+          "height": 800,
+          "devicePixelRatio": 1
+        },
+        "renderer": "poster",
+        "loop": "idle",
+        "active": "true",
+        "stage": {
+          "x": 20,
+          "y": 150,
+          "width": 515.98,
+          "height": 458,
+          "right": 535.98,
+          "bottom": 608
+        },
+        "poster": {
+          "count": 1,
+          "opacity": 1,
+          "visible": true,
+          "rect": {
+            "x": 20,
+            "y": 150,
+            "width": 515.98,
+            "height": 458,
+            "right": 535.98,
+            "bottom": 608
+          }
+        },
+        "canvasCount": 0,
+        "canvases": [],
+        "portals": [
+          {
+            "site": "registry",
+            "rect": {
+              "x": 70.81,
+              "y": 334.67,
+              "width": 48,
+              "height": 48,
+              "right": 118.81,
+              "bottom": 382.67
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "Registry intake",
+              "rect": {
+                "x": 71.83,
+                "y": 306.67,
+                "width": 117.97,
+                "height": 21.05,
+                "right": 189.8,
+                "bottom": 327.72
+              },
+              "fullyInsideStage": true
+            }
+          },
+          {
+            "site": "care-ward",
+            "rect": {
+              "x": 251.41,
+              "y": 327.42,
+              "width": 48,
+              "height": 48,
+              "right": 299.41,
+              "bottom": 375.42
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "Care ward 12",
+              "rect": {
+                "x": 226.81,
+                "y": 377.42,
+                "width": 97.19,
+                "height": 21.05,
+                "right": 324,
+                "bottom": 398.47
+              },
+              "fullyInsideStage": true
+            }
+          },
+          {
+            "site": "maintenance",
+            "rect": {
+              "x": 346.86,
+              "y": 340.48,
+              "width": 48,
+              "height": 48,
+              "right": 394.86,
+              "bottom": 388.48
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "Maintenance spine",
+              "rect": {
+                "x": 304.94,
+                "y": 312.48,
+                "width": 131.84,
+                "height": 21.05,
+                "right": 436.78,
+                "bottom": 333.53
+              },
+              "fullyInsideStage": true
+            }
+          },
+          {
+            "site": "small-archive",
+            "rect": {
+              "x": 457.8,
+              "y": 327.42,
+              "width": 48,
+              "height": 48,
+              "right": 505.8,
+              "bottom": 375.42
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "The Small Archive",
+              "rect": {
+                "x": 367.88,
+                "y": 405.42,
+                "width": 131.84,
+                "height": 21.05,
+                "right": 499.72,
+                "bottom": 426.47
+              },
+              "fullyInsideStage": true
+            }
+          }
+        ],
+        "labelOverlaps": [],
+        "portalCountFour": true,
+        "portalsContained": true,
+        "portalsMinimum48": true,
+        "portalsVisible": true,
+        "labelsNonOverlapping": true
+      },
+      "checks": {
+        "rendererState": true,
+        "posterVisible": true,
+        "canvasZero": true,
+        "loopIdle": true,
+        "fourPortals": true,
+        "portalsContained": true,
+        "portalsMinimum48": true,
+        "portalsVisible": true,
+        "labelsNonOverlapping": true
+      },
+      "pageExceptions": []
+    },
+    {
+      "tag": "mobile-os-reduced",
+      "mode": "os-reduced",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "mobile": true
+      },
+      "mediaReduced": true,
+      "snapshot": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "devicePixelRatio": 1
+        },
+        "renderer": "poster",
+        "loop": "idle",
+        "active": "true",
+        "stage": {
+          "x": 14,
+          "y": 262.39,
+          "width": 362,
+          "height": 320,
+          "right": 376,
+          "bottom": 582.39
+        },
+        "poster": {
+          "count": 1,
+          "opacity": 1,
+          "visible": true,
+          "rect": {
+            "x": 14,
+            "y": 262.39,
+            "width": 362,
+            "height": 320,
+            "right": 376,
+            "bottom": 582.39
+          }
+        },
+        "canvasCount": 0,
+        "canvases": [],
+        "portals": [
+          {
+            "site": "registry",
+            "rect": {
+              "x": 42.48,
+              "y": 384.13,
+              "width": 48,
+              "height": 48,
+              "right": 90.48,
+              "bottom": 432.13
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "Registry intake",
+              "rect": {
+                "x": 43.5,
+                "y": 356.13,
+                "width": 117.97,
+                "height": 21.05,
+                "right": 161.47,
+                "bottom": 377.17
+              },
+              "fullyInsideStage": true
+            }
+          },
+          {
+            "site": "care-ward",
+            "rect": {
+              "x": 169.19,
+              "y": 379.03,
+              "width": 48,
+              "height": 48,
+              "right": 217.19,
+              "bottom": 427.03
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "Care ward 12",
+              "rect": {
+                "x": 144.59,
+                "y": 429.03,
+                "width": 97.19,
+                "height": 21.05,
+                "right": 241.78,
+                "bottom": 450.08
+              },
+              "fullyInsideStage": true
+            }
+          },
+          {
+            "site": "maintenance",
+            "rect": {
+              "x": 236.16,
+              "y": 388.2,
+              "width": 48,
+              "height": 48,
+              "right": 284.16,
+              "bottom": 436.2
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "Maintenance spine",
+              "rect": {
+                "x": 194.23,
+                "y": 360.2,
+                "width": 131.84,
+                "height": 21.05,
+                "right": 326.08,
+                "bottom": 381.25
+              },
+              "fullyInsideStage": true
+            }
+          },
+          {
+            "site": "small-archive",
+            "rect": {
+              "x": 313.98,
+              "y": 379.03,
+              "width": 48,
+              "height": 48,
+              "right": 361.98,
+              "bottom": 427.03
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "The Small Archive",
+              "rect": {
+                "x": 224.06,
+                "y": 457.03,
+                "width": 131.84,
+                "height": 21.05,
+                "right": 355.91,
+                "bottom": 478.08
+              },
+              "fullyInsideStage": true
+            }
+          }
+        ],
+        "labelOverlaps": [],
+        "portalCountFour": true,
+        "portalsContained": true,
+        "portalsMinimum48": true,
+        "portalsVisible": true,
+        "labelsNonOverlapping": true
+      },
+      "checks": {
+        "rendererState": true,
+        "posterVisible": true,
+        "canvasZero": true,
+        "loopIdle": true,
+        "fourPortals": true,
+        "portalsContained": true,
+        "portalsMinimum48": true,
+        "portalsVisible": true,
+        "labelsNonOverlapping": true
+      },
+      "pageExceptions": []
+    },
+    {
+      "tag": "desktop-context-loss",
+      "mode": "context-loss",
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "mobile": false
+      },
+      "forced": {
+        "forced": true,
+        "mode": "WEBGL_lose_context"
+      },
+      "before": {
+        "viewport": {
+          "width": 1280,
+          "height": 800,
+          "devicePixelRatio": 1
+        },
+        "renderer": "webgl",
+        "loop": "idle",
+        "active": "true",
+        "stage": {
+          "x": 20,
+          "y": 150,
+          "width": 515.98,
+          "height": 458,
+          "right": 535.98,
+          "bottom": 608
+        },
+        "poster": {
+          "count": 1,
+          "opacity": 0,
+          "visible": false,
+          "rect": {
+            "x": 20,
+            "y": 150,
+            "width": 515.98,
+            "height": 458,
+            "right": 535.98,
+            "bottom": 608
+          }
+        },
+        "canvasCount": 1,
+        "canvases": [
+          {
+            "rect": {
+              "x": 20,
+              "y": 150,
+              "width": 515.98,
+              "height": 458,
+              "right": 535.98,
+              "bottom": 608
+            },
+            "drawingBuffer": {
+              "width": 515,
+              "height": 458
+            }
+          }
+        ],
+        "portals": [
+          {
+            "site": "registry",
+            "rect": {
+              "x": 22.03,
+              "y": 339.3,
+              "width": 48,
+              "height": 48,
+              "right": 70.03,
+              "bottom": 387.3
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "Registry intake",
+              "rect": {
+                "x": 23.05,
+                "y": 311.3,
+                "width": 117.97,
+                "height": 21.05,
+                "right": 141.02,
+                "bottom": 332.34
+              },
+              "fullyInsideStage": true
+            }
+          },
+          {
+            "site": "care-ward",
+            "rect": {
+              "x": 205.14,
+              "y": 334.25,
+              "width": 48,
+              "height": 48,
+              "right": 253.14,
+              "bottom": 382.25
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "Care ward 12",
+              "rect": {
+                "x": 180.55,
+                "y": 384.25,
+                "width": 97.19,
+                "height": 21.05,
+                "right": 277.73,
+                "bottom": 405.3
+              },
+              "fullyInsideStage": true
+            }
+          },
+          {
+            "site": "maintenance",
+            "rect": {
+              "x": 302.77,
+              "y": 340,
+              "width": 48,
+              "height": 48,
+              "right": 350.77,
+              "bottom": 388
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "Maintenance spine",
+              "rect": {
+                "x": 260.84,
+                "y": 312,
+                "width": 131.84,
+                "height": 21.05,
+                "right": 392.69,
+                "bottom": 333.05
+              },
+              "fullyInsideStage": true
+            }
+          },
+          {
+            "site": "small-archive",
+            "rect": {
+              "x": 485.94,
+              "y": 339.3,
+              "width": 48,
+              "height": 48,
+              "right": 533.94,
+              "bottom": 387.3
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "The Small Archive",
+              "rect": {
+                "x": 396.02,
+                "y": 417.3,
+                "width": 131.84,
+                "height": 21.05,
+                "right": 527.86,
+                "bottom": 438.34
+              },
+              "fullyInsideStage": true
+            }
+          }
+        ],
+        "labelOverlaps": [],
+        "portalCountFour": true,
+        "portalsContained": true,
+        "portalsMinimum48": true,
+        "portalsVisible": true,
+        "labelsNonOverlapping": true
+      },
+      "snapshot": {
+        "viewport": {
+          "width": 1280,
+          "height": 800,
+          "devicePixelRatio": 1
+        },
+        "renderer": "fallback",
+        "loop": "idle",
+        "active": "true",
+        "stage": {
+          "x": 20,
+          "y": 150,
+          "width": 515.98,
+          "height": 458,
+          "right": 535.98,
+          "bottom": 608
+        },
+        "poster": {
+          "count": 1,
+          "opacity": 1,
+          "visible": true,
+          "rect": {
+            "x": 20,
+            "y": 150,
+            "width": 515.98,
+            "height": 458,
+            "right": 535.98,
+            "bottom": 608
+          }
+        },
+        "canvasCount": 0,
+        "canvases": [],
+        "portals": [
+          {
+            "site": "registry",
+            "rect": {
+              "x": 70.81,
+              "y": 334.67,
+              "width": 48,
+              "height": 48,
+              "right": 118.81,
+              "bottom": 382.67
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "Registry intake",
+              "rect": {
+                "x": 71.83,
+                "y": 306.67,
+                "width": 117.97,
+                "height": 21.05,
+                "right": 189.8,
+                "bottom": 327.72
+              },
+              "fullyInsideStage": true
+            }
+          },
+          {
+            "site": "care-ward",
+            "rect": {
+              "x": 251.41,
+              "y": 327.42,
+              "width": 48,
+              "height": 48,
+              "right": 299.41,
+              "bottom": 375.42
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "Care ward 12",
+              "rect": {
+                "x": 226.81,
+                "y": 377.42,
+                "width": 97.19,
+                "height": 21.05,
+                "right": 324,
+                "bottom": 398.47
+              },
+              "fullyInsideStage": true
+            }
+          },
+          {
+            "site": "maintenance",
+            "rect": {
+              "x": 346.86,
+              "y": 340.48,
+              "width": 48,
+              "height": 48,
+              "right": 394.86,
+              "bottom": 388.48
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "Maintenance spine",
+              "rect": {
+                "x": 304.94,
+                "y": 312.48,
+                "width": 131.84,
+                "height": 21.05,
+                "right": 436.78,
+                "bottom": 333.53
+              },
+              "fullyInsideStage": true
+            }
+          },
+          {
+            "site": "small-archive",
+            "rect": {
+              "x": 457.8,
+              "y": 327.42,
+              "width": 48,
+              "height": 48,
+              "right": 505.8,
+              "bottom": 375.42
+            },
+            "fullyInsideStage": true,
+            "minimum48": true,
+            "visible": true,
+            "pointerEvents": "auto",
+            "label": {
+              "text": "The Small Archive",
+              "rect": {
+                "x": 367.88,
+                "y": 405.42,
+                "width": 131.84,
+                "height": 21.05,
+                "right": 499.72,
+                "bottom": 426.47
+              },
+              "fullyInsideStage": true
+            }
+          }
+        ],
+        "labelOverlaps": [],
+        "portalCountFour": true,
+        "portalsContained": true,
+        "portalsMinimum48": true,
+        "portalsVisible": true,
+        "labelsNonOverlapping": true
+      },
+      "checks": {
+        "normalBeforeLoss": true,
+        "contextLossForced": true,
+        "rendererState": true,
+        "posterVisible": true,
+        "canvasZero": true,
+        "loopIdle": true,
+        "fourPortals": true,
+        "portalsContained": true,
+        "portalsMinimum48": true,
+        "portalsVisible": true,
+        "labelsNonOverlapping": true
+      },
+      "pageExceptions": []
+    }
+  ],
+  "summary": {
+    "passed": true,
+    "scenariosCompleted": 5,
+    "scenariosExpected": 5,
+    "failedChecks": [],
+    "fatal": null
+  }
+}

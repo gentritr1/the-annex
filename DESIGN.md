@@ -185,6 +185,14 @@ The interface is flat by default. Depth comes from tonal layering, the world ima
 - The activating hotspot or switch supplies the aperture origin. Rapid selection is latest-wins, a settled close read stops the covered scene loop, and same-site activation never replays the transition.
 - Both the application preference and `prefers-reduced-motion` replace the full journey with an immediate static destination.
 
+### Bounded Spatial Worlds
+
+- A bounded WebGL world is progressive enhancement for an investigation scene, never the only route to a location or method.
+- The DOM location switcher and method buttons remain the canonical controls; portals call the same selection path and never own game state.
+- An authored poster preserves every portal when WebGL is unavailable, still loading, or bypassed by either reduced-motion preference.
+- Render only while the world is visible and active; pause or dispose it when a close read covers it or the phase unmounts.
+- World geometry, camera pose, and renderer state stay presentation-only and never enter persistence or mutate the engine.
+
 ## 6. Do's and Don'ts
 
 ### Do:

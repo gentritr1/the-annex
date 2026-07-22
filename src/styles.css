@@ -1261,6 +1261,108 @@ p {
   display: none;
 }
 
+/* Case 77's bounded concourse is a progressive enhancement over its approved
+   poster. Three owns the canvas; these layers keep the live and fallback views
+   in the same civic-material language without putting gameplay state in WebGL. */
+.world-view--spatial {
+  background: #090c0f;
+}
+
+.world-view > .annex-world-stage {
+  container-type: size;
+  transition:
+    opacity 220ms var(--ease-out),
+    filter 220ms var(--ease-out);
+}
+
+.world-view--arriving > .annex-world-stage {
+  opacity: 0.12;
+  filter: saturate(0.72);
+}
+
+.world-view--closeup > .annex-world-stage {
+  pointer-events: none;
+}
+
+.annex-world-stage::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 74%, transparent 0 24%, oklch(0.08 0.012 235 / 0.16) 68%),
+    linear-gradient(180deg, oklch(0.06 0.01 230 / 0.24), transparent 24% 74%, oklch(0.05 0 0 / 0.3));
+  box-shadow:
+    inset 0 0 54px oklch(0.03 0 0 / 0.5),
+    inset 0 -1px var(--line-strong);
+  pointer-events: none;
+}
+
+.annex-world-portal > span:first-child,
+.annex-world-portal > span:last-child {
+  transition:
+    opacity 160ms var(--ease-out),
+    transform 160ms var(--ease-out),
+    border-color 160ms var(--ease-out);
+}
+
+.annex-world-portal > span:last-child {
+  opacity: 0.82;
+}
+
+.annex-world-portal:hover > span:first-child {
+  transform: scale(1.1);
+}
+
+.annex-world-portal:hover > span:last-child {
+  opacity: 1;
+  transform: translateX(-50%) translateY(2px);
+}
+
+.world-return {
+  position: absolute;
+  z-index: 9;
+  top: 16px;
+  left: 18px;
+  min-height: 44px;
+  padding: 8px 12px;
+  color: var(--record-bright);
+  background: oklch(0.09 0.01 235 / 0.88);
+  border: 1px solid var(--line-strong);
+  border-radius: 5px;
+  box-shadow: 0 8px 24px oklch(0.03 0 0 / 0.34);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  transition:
+    color 160ms var(--ease-out),
+    background-color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out),
+    transform 160ms var(--ease-out);
+}
+
+.world-return:hover {
+  color: var(--amber-soft);
+  background: oklch(0.12 0.015 70 / 0.94);
+  border-color: var(--amber-dim);
+  transform: translateX(-2px);
+}
+
+.world-caption-spatial-live {
+  display: none;
+}
+
+.world-view:has(.annex-world-stage[data-renderer='webgl']) .world-caption-spatial-static {
+  display: none;
+}
+
+.world-view:has(.annex-world-stage[data-renderer='webgl']) .world-caption-spatial-live {
+  display: inline;
+}
+
 .site-closeup-stage {
   position: absolute;
   z-index: 6;
@@ -1828,7 +1930,22 @@ p {
   border: 1px solid var(--record);
 }
 
+.high-contrast .annex-world-stage::after {
+  background: none;
+  box-shadow: inset 0 0 0 1px var(--record);
+}
+
+.high-contrast .world-return {
+  color: var(--record-bright);
+  background: var(--night);
+  border-color: var(--record);
+  backdrop-filter: none;
+}
+
 .reduce-motion .site-closeup-stage,
+.reduce-motion .annex-world-stage,
+.reduce-motion .annex-world-stage *,
+.reduce-motion .world-return,
 .reduce-motion .site-closeup-projection,
 .reduce-motion .site-closeup-projection img,
 .reduce-motion .site-closeup-sweep,
@@ -1863,6 +1980,9 @@ p {
 
 @media (prefers-reduced-motion: reduce) {
   .site-closeup-stage,
+  .annex-world-stage,
+  .annex-world-stage *,
+  .world-return,
   .site-closeup-projection,
   .site-closeup-projection img,
   .site-closeup-sweep,
@@ -4792,6 +4912,13 @@ p {
 
   .world-view {
     min-height: 280px;
+  }
+
+  .world-return {
+    top: 10px;
+    left: 10px;
+    padding-inline: 10px;
+    font-size: 0.62rem;
   }
 
   .world-label {

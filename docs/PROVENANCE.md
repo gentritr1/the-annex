@@ -37,6 +37,13 @@
 | `public/images/site-scenes/counsel-office.webp` | Center-cropped by less than one source pixel of aspect difference, resized, and locally encoded from the selected Counsel Office PNG master at 1600×900, WebP quality 82 | Lightweight browser plate for `SiteCloseupStage`; HTML/CSS supplies source-registered argument markers, active/filed semantics, and the simultaneous neutral argument-register trace | Derived optimization; 73 KB; PNG master retained in `docs/assets/site-scenes/` |
 | `docs/assets/site-scenes/small-archive-original.png` | Generated with OpenAI built-in image generation on 2026-07-22, using the Civic Archive exterior and Counsel Office masters as world/material and neutral-procedural references; selected after two rejected card-catalog candidates; exact selected prompt recorded below | Selected master environment plate for the Case 77 Small Archive close read | Look-development master; kept out of the shipped bundle. Reviewed: one private precedent drawer and one maintained taxonomy shutter, asymmetrical threshold depth, central crop safety, no dormant semantic color bias, person, readable text, UI, logo, symbol, weapon, or watermark |
 | `public/images/site-scenes/small-archive.webp` | Resized by less than one source pixel of aspect difference and locally encoded from the selected Small Archive PNG master at 1600×900, WebP quality 82 | Lightweight browser plate for `SiteCloseupStage`; HTML/CSS supplies source-registered method markers, active/filed semantics, and the simultaneous neutral category-register trace | Derived optimization; 86 KB; PNG master retained in `docs/assets/site-scenes/` |
+| `docs/assets/world/case77-concourse/concourse-hub-original.png` | Byte-for-byte copy of the approved Direction A hub mock from the OpenAI built-in image-generation output `/Users/gentlegen/.codex/generated_images/019f8667-3da5-7ea1-90ce-ffb5bac76d72/exec-39bb68e3-a496-42c6-a1a2-5feefff8e124.png` | Source-of-truth composition and fallback poster for the Case 77 Civic Archive Concourse world | Look-development master; 1672×941; kept out of the shipped bundle. Reviewed: empty central civic hub, four distinct thresholds, restrained amber/cyan hierarchy, no readable text, UI, people, logos, or watermark |
+| `docs/assets/world/case77-concourse/concourse-palette-original.png` | Byte-for-byte copy of the approved Direction A palette board from the OpenAI built-in image-generation output `/Users/gentlegen/.codex/generated_images/019f8667-3da5-7ea1-90ce-ffb5bac76d72/exec-6454f6bc-e0c3-4434-a36d-072009852b86.png` | Material, lighting, and semantic-color reference for the Case 77 concourse | Documentation-only style board; 1672×941; kept out of the shipped bundle |
+| `docs/assets/world/case77-concourse/poured-concrete-original.png` | Generated with OpenAI built-in image generation on 2026-07-22 using the approved concourse palette board as the sole material-language reference; exact prompt and source path recorded below | Square production master for the concourse's dry blue-charcoal poured-concrete base color | Look-development master; 1254×1254; inspected full-frame and in a 2×2 repeat stress check; no iteration required |
+| `docs/assets/world/case77-concourse/wet-terrazzo-original.png` | Generated with OpenAI built-in image generation on 2026-07-22 using the approved concourse palette board as the sole material-language reference; exact prompt and source path recorded below | Square production master for the concourse's water-darkened civic terrazzo base color | Look-development master; 1254×1254; inspected full-frame and in a 2×2 repeat stress check; no iteration required |
+| `public/images/world/case77/concourse-poster.webp` | Pillow WebP quality 82, method 6, from the approved hub master with no resize or crop | Lightweight loading, fallback, reduced-motion, and WebGL-unavailable poster for the Case 77 concourse | Derived optimization; 1672×941; 123,056 bytes; source PNG retained in `docs/assets/world/case77-concourse/` |
+| `public/images/world/case77/poured-concrete.webp` | Pillow Lanczos resize from 1254×1254 to 1024×1024, then WebP quality 82, method 6 | Runtime base-color texture for dry concourse concrete | Derived optimization; 200,710 bytes; source PNG retained in `docs/assets/world/case77-concourse/` |
+| `public/images/world/case77/wet-terrazzo.webp` | Pillow Lanczos resize from 1254×1254 to 1024×1024, then WebP quality 82, method 6 | Runtime base-color texture for the dark concourse floor | Derived optimization; 268,122 bytes; source PNG retained in `docs/assets/world/case77-concourse/` |
 
 The concept-art prompt avoided franchise names, copyrighted characters, logos, readable text, and living-artist style references. Keep future prompts and source references in this ledger. Raw generated assets are drafts, not a substitute for a human-led style bible and production finish.
 
@@ -131,3 +138,62 @@ Selected-master prompt:
 > Materials: monolithic soot-dark concrete, graphite steel, oxidized dark bronze only in tiny structural fittings, one worn bone-grey porcelain/pale-metal drawer liner. Controlled photographic realism, cinematic but austere, fine dust and physical wear, no wet floor or spectacle.
 >
 > Absolute exclusions: no person, child, silhouette, portrait, body, library aisles, books, bookshelves, card-catalog wall, filing-cabinet bank, multiple drawers, table, desk, bench, chairs, paired stations, centered symmetry, conveyor, circular press, hanging leaves, octagonal well, pit, ring, radial apparatus, long corridor, glass cylinder, rain, prison bars, chains, punitive spikes, giant padlock, vault-door menace, glowing secret alcove, warm-versus-cold route split, documents with writing, readable text, letters, numbers, labels, logos, symbols, UI, HUD, screen, hologram, neon, purple, magenta, glossy spaceship panels, lens flare, bloom, weapons, watermark, franchise reference, or baked interaction marker. Output one dormant master only.
+
+### Case 77 Civic Archive Concourse world pack
+
+The approved Direction A hub mock and palette board were copied byte-for-byte from their existing OpenAI built-in image-generation outputs; this asset pass did not regenerate or edit them. Their raw source paths are:
+
+- Hub mock: `/Users/gentlegen/.codex/generated_images/019f8667-3da5-7ea1-90ce-ffb5bac76d72/exec-39bb68e3-a496-42c6-a1a2-5feefff8e124.png`
+- Palette board and sole material reference: `/Users/gentlegen/.codex/generated_images/019f8667-3da5-7ea1-90ce-ffb5bac76d72/exec-6454f6bc-e0c3-4434-a36d-072009852b86.png`
+
+The two material masters were generated as separate `stylized-concept` calls through the OpenAI built-in image-generation tool. The palette board was supplied as Image 1 for material language and color only. The selected built-in outputs were copied into the repository without modifying the originals:
+
+- Poured concrete built-in output: `/Users/gentlegen/.codex/generated_images/019f898f-c4cd-7511-b241-ab8b55ee207e/exec-564027c1-4fe9-4e63-8239-0df4640e65d5.png`
+- Wet terrazzo built-in output: `/Users/gentlegen/.codex/generated_images/019f898f-c4cd-7511-b241-ab8b55ee207e/exec-431ff887-5b82-411b-99b4-f7a05360f68e.png`
+
+Poured-concrete generation prompt (exact):
+
+```text
+Use case: stylized-concept
+Asset type: square production material master for a real-time WebGL civic-archive environment
+Input image: Image 1 is the approved palette and material-language reference; use its “POURED CONCRETE” swatch for tone and character only. Do not reproduce the board, typography, labels, layout, borders, or lighting.
+Primary request: Create one clean, edge-to-edge, seamless/tileable-looking poured-concrete material texture.
+Scene/backdrop: a single uninterrupted material surface filling the entire square canvas.
+Subject: dry blue-charcoal poured concrete with fine restrained civic aggregate, small casting pores, subtle mineral mottling, and quiet archival wear.
+Style/medium: production-ready stylized realism, tactile but not photographic noise, appropriate for a severe municipal subterranean concourse.
+Composition/framing: strict orthographic flat front view, uniform material scale across the image, square crop, edges designed to repeat plausibly.
+Lighting/mood: flat, diffuse, neutral, and perfectly even; bake in as little illumination as possible.
+Color palette: match the reference’s night near-black and blue-charcoal concrete; extremely restrained cool variation only.
+Materials/textures: matte and dry, fine aggregate, low contrast, no major cracks or stains.
+Constraints: no perspective, no horizon, no floor plane, no directional highlights, no cast shadows, no ambient-occlusion corners, no vignette, no gradient, no obvious central focal point, no panels or seams, no objects, no text, no symbols, no borders, no frame, no watermark.
+Avoid: glossy or wet concrete, large pebbles, dramatic damage, bricks, tiles, wall joints, architectural details, lamps, reflections, repeating stamp patterns.
+```
+
+Wet-terrazzo generation prompt (exact):
+
+```text
+Use case: stylized-concept
+Asset type: square production material master for a real-time WebGL civic-archive environment
+Input image: Image 1 is the approved palette and material-language reference; use its “WET TERRAZZO” swatch for tone, aggregate scale, and character only. Do not reproduce the board, typography, labels, layout, borders, or lighting.
+Primary request: Create one clean, edge-to-edge, seamless/tileable-looking dark wet-terrazzo material texture.
+Scene/backdrop: a single uninterrupted civic floor material filling the entire square canvas.
+Subject: blue-charcoal terrazzo with fine black mineral aggregate, sparse dark slate chips, minute muted archive-cyan and service-amber flecks, and a subtly water-darkened binder.
+Style/medium: production-ready stylized realism, tactile and severe, suitable for a subterranean municipal concourse.
+Composition/framing: strict orthographic top-down flat view, uniform material scale across the image, square crop, edges designed to repeat plausibly.
+Lighting/mood: flat, diffuse, neutral, and perfectly even; convey wetness mainly through richer dark saturation and slight micro-sheen, with as little baked lighting as possible.
+Color palette: match the reference’s night near-black and blue-charcoal; accent flecks must be rare, tiny, and very muted.
+Materials/textures: fine terrazzo aggregate, low-to-medium texture contrast, damp polished surface, no puddles.
+Constraints: no perspective, no horizon, no floor plane depth, no directional highlights, no light-strip reflections, no cast shadows, no ambient-occlusion corners, no vignette, no gradient, no obvious central focal point, no grout, no tiles or seams, no objects, no text, no symbols, no borders, no frame, no watermark.
+Avoid: large pebbles, colorful decorative terrazzo, marble slabs, dramatic glare, mirror reflections, puddles, footprints, stains, architectural details, repeating stamp patterns.
+```
+
+Runtime transforms and optimization:
+
+- `concourse-poster.webp`: retained the approved hub's 1672×941 framing exactly; encoded from RGB with Pillow WebP quality 82, method 6; 123,056 bytes.
+- `poured-concrete.webp`: Lanczos-resized from 1254×1254 to 1024×1024, then encoded from RGB with Pillow WebP quality 82, method 6; 200,710 bytes.
+- `wet-terrazzo.webp`: Lanczos-resized from 1254×1254 to 1024×1024, then encoded from RGB with Pillow WebP quality 82, method 6; 268,122 bytes.
+- Combined optimized runtime size: 591,888 bytes (approximately 578 KiB), below the 2 MB target.
+
+QA result: all four PNG masters and all three WebP derivatives were inspected at full frame. The two materials remained clear after resize and compression, have no objects, text, borders, directional light strips, perspective, or dominant baked illumination, and required no retry. A temporary 2×2 repeat stress sheet was inspected for both runtime textures: neither shows a hard border discontinuity; natural feature repetition is visible only at the deliberately aggressive stress scale. The poster preserves the approved framing and dark-value hierarchy without compression breakup.
+
+The four existing Case 77 close-read plates remain the canonical portal views and were deliberately not regenerated or duplicated: `public/images/site-scenes/maintenance-spine.webp`, `public/images/site-scenes/care-ward-12.webp`, `public/images/site-scenes/registry-intake.webp`, and `public/images/site-scenes/small-archive.webp`.

@@ -878,6 +878,71 @@ const scene: SceneDefinition = {
     },
     suppressed: ['aftermath'],
   },
+  // A bounded interior hub: five authored camera poses, four thresholds, no
+  // free-roam physics. Portal activation stays presentation-only and resolves
+  // through the same site ids as the location switcher and exterior hotspots.
+  world: {
+    kind: 'concourse',
+    posterSrc: '/images/world/case77/concourse-poster.webp',
+    concreteSrc: '/images/world/case77/poured-concrete.webp',
+    terrazzoSrc: '/images/world/case77/wet-terrazzo.webp',
+    room: { width: 12, depth: 11, height: 3.4 },
+    homeCamera: {
+      position: [0, 1.62, 5.9],
+      target: [0, 1.3, -1.8],
+    },
+    travelMs: 640,
+    caption: {
+      title: 'Civic Archive concourse',
+      detail: 'Drag to look · select a threshold',
+    },
+    portals: [
+      {
+        siteId: 'registry',
+        position: [-5.75, 1.35, -1.2],
+        rotationY: 1.5708,
+        size: { width: 2.45, height: 2.7 },
+        posterAnchor: { x: 0.145, y: 0.43 },
+        camera: {
+          position: [-2.6, 1.6, 0],
+          target: [-5.65, 1.35, -1.2],
+        },
+      },
+      {
+        siteId: 'care-ward',
+        position: [-1.7, 1.35, -5.35],
+        rotationY: 0,
+        size: { width: 2.35, height: 2.7 },
+        posterAnchor: { x: 0.495, y: 0.405 },
+        camera: {
+          position: [-1.2, 1.6, 1.5],
+          target: [-1.7, 1.35, -5.2],
+        },
+      },
+      {
+        siteId: 'maintenance',
+        position: [1.7, 1.15, -5.35],
+        rotationY: 0,
+        size: { width: 2.4, height: 2.3 },
+        posterAnchor: { x: 0.68, y: 0.45 },
+        camera: {
+          position: [1.2, 1.5, 1.2],
+          target: [1.7, 1.15, -5.2],
+        },
+      },
+      {
+        siteId: 'small-archive',
+        position: [5.75, 1.35, -1.2],
+        rotationY: -1.5708,
+        size: { width: 1.9, height: 2.7 },
+        posterAnchor: { x: 0.895, y: 0.405 },
+        camera: {
+          position: [2.6, 1.6, 0],
+          target: [5.65, 1.35, -1.2],
+        },
+      },
+    ],
+  },
   // Selection camera travel (shared keys with Case 81; absolute authored
   // values). The records-hall approach is wide, so the push-in is a touch
   // gentler and slower: at most 2.5% of the container toward the marker, a 4.5%
