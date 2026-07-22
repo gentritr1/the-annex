@@ -718,6 +718,16 @@ describe('case switcher availability', () => {
 })
 
 describe('site close-read pilots', () => {
+  it('ships Registry Intake as an action-registered custody and mirror plate', () => {
+    const registry = getCaseContent('case-77').sites.find((site) => site.id === 'registry')
+    expect(registry?.closeup?.src).toBe('/images/site-scenes/registry-intake.webp')
+    expect(registry?.closeup?.zones?.map((zone) => zone.actionId)).toEqual([
+      'authenticate-chain',
+      'trace-checksum',
+    ])
+    expect(registry?.closeup?.atmosphere).toBe('checksum-echo')
+  })
+
   it('ships the Case 77 Care Ward environment as an action-registered plate', () => {
     const ward = getCaseContent('case-77').sites.find((site) => site.id === 'care-ward')
     expect(ward?.closeup?.src).toBe('/images/site-scenes/care-ward-12.webp')

@@ -16,12 +16,16 @@ export function SiteCloseupStage({
   activeActionId,
   resolvedActionId,
 }: SiteCloseupStageProps) {
-  const focalX = (closeup.focalPoint?.x ?? 0.5) * 100
-  const focalY = (closeup.focalPoint?.y ?? 0.5) * 100
+  const focalX = closeup.focalPoint?.x ?? 0.5
+  const focalY = closeup.focalPoint?.y ?? 0.5
   const actionById = new Map(actions.map((action) => [action.id, action]))
   const emphasizedActionId = resolvedActionId ?? activeActionId
   const emphasizedZone = closeup.zones?.find((zone) => zone.actionId === emphasizedActionId)
   const stageStyle = {
+    '--site-focal-position-x': `${focalX * 100}%`,
+    '--site-focal-position-y': `${focalY * 100}%`,
+    '--site-focal-offset-x': `${focalX * -100}%`,
+    '--site-focal-offset-y': `${focalY * -100}%`,
     '--site-focus-x': `${(emphasizedZone?.x ?? closeup.focalPoint?.x ?? 0.5) * 100}%`,
     '--site-focus-y': `${(emphasizedZone?.y ?? closeup.focalPoint?.y ?? 0.5) * 100}%`,
   } as CSSProperties
@@ -34,44 +38,53 @@ export function SiteCloseupStage({
       style={stageStyle}
       aria-hidden="true"
     >
-      <img
-        src={closeup.src}
-        alt=""
-        width={1600}
-        height={900}
-        loading="eager"
-        decoding="async"
-        style={{ objectPosition: `${focalX}% ${focalY}%` }}
-      />
-      <div className="site-closeup-depth" />
-      <div className="site-closeup-sweep" />
-      {closeup.atmosphere === 'rain-reflection' ? (
-        <div className="site-closeup-rain-memory" />
-      ) : null}
-      {closeup.zones ? (
-        <div className="site-closeup-zones">
-          {closeup.zones.map((zone) => {
-            const action = actionById.get(zone.actionId)
-            const state =
-              resolvedActionId === zone.actionId
-                ? 'resolved'
-                : activeActionId === zone.actionId
-                  ? 'active'
-                  : 'dormant'
-            return (
-              <div
-                className="site-closeup-zone"
-                data-state={state}
-                key={zone.actionId}
-                style={{ left: `${zone.x * 100}%`, top: `${zone.y * 100}%` }}
-              >
-                <span className="site-closeup-zone-mark" />
-                <span className="site-closeup-zone-label">{action?.methodLabel ?? 'Method'}</span>
-              </div>
-            )
-          })}
+      <div className="site-closeup-cover">
+        <div className="site-closeup-projection">
+          <img
+            src={closeup.src}
+            alt=""
+            width={1600}
+            height={900}
+            loading="eager"
+            decoding="async"
+          />
+          <div className="site-closeup-depth" />
+          <div className="site-closeup-sweep" />
+          {closeup.atmosphere === 'rain-reflection' ? (
+            <div className="site-closeup-rain-memory" />
+          ) : null}
+          {closeup.atmosphere === 'checksum-echo' ? (
+            <div className="site-closeup-checksum-echo" />
+          ) : null}
+          {closeup.zones ? (
+            <div className="site-closeup-zones">
+              {closeup.zones.map((zone) => {
+                const action = actionById.get(zone.actionId)
+                const state =
+                  resolvedActionId === zone.actionId
+                    ? 'resolved'
+                    : activeActionId === zone.actionId
+                      ? 'active'
+                      : 'dormant'
+                return (
+                  <div
+                    className="site-closeup-zone"
+                    data-edge={zone.x <= 0.32 ? 'start' : zone.x >= 0.68 ? 'end' : undefined}
+                    data-state={state}
+                    key={zone.actionId}
+                    style={{ left: `${zone.x * 100}%`, top: `${zone.y * 100}%` }}
+                  >
+                    <span className="site-closeup-zone-mark" />
+                    <span className="site-closeup-zone-label">
+                      {action?.methodLabel ?? 'Method'}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          ) : null}
         </div>
-      ) : null}
+      </div>
     </figure>
   )
 }

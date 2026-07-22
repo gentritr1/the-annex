@@ -1265,34 +1265,59 @@ p {
   isolation: isolate;
   pointer-events: none;
   background: var(--night);
+  container-type: size;
   animation: site-closeup-enter 420ms var(--ease-out) both;
 }
 
-.site-closeup-stage img {
+.site-closeup-cover {
+  position: absolute;
+  top: var(--site-focal-position-y, 50%);
+  left: var(--site-focal-position-x, 50%);
+  width: max(100cqw, calc(100cqh * 16 / 9));
+  height: max(100cqh, calc(100cqw * 9 / 16));
+  transform: translate(var(--site-focal-offset-x, -50%), var(--site-focal-offset-y, -50%));
+}
+
+/* Image and authored zones share one 16:9 cover projection. This recreates
+   object-fit: cover while keeping source-space markers attached to their props
+   through responsive cropping and the small action-focus camera scale. */
+.site-closeup-projection {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  isolation: isolate;
+  transform: scale(1);
+  transform-origin: var(--site-focus-x, 50%) var(--site-focus-y, 50%);
+  transition: transform 360ms var(--ease-out);
+}
+
+.site-closeup-projection img {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: cover;
   filter: brightness(0.84) contrast(1.07) saturate(0.92);
-  transform: scale(1);
-  transform-origin: var(--site-focus-x, 50%) var(--site-focus-y, 50%);
-  transition:
-    transform 360ms var(--ease-out),
-    filter 240ms var(--ease-out);
+  transition: filter 240ms var(--ease-out);
+}
+
+.site-closeup-stage[data-emphasis='true'] .site-closeup-projection {
+  transform: scale(1.026);
 }
 
 .site-closeup-stage[data-emphasis='true'] img {
-  transform: scale(1.026);
   filter: brightness(0.88) contrast(1.08) saturate(0.94);
 }
 
-.site-closeup-stage[data-resolved='true'] img {
+.site-closeup-stage[data-resolved='true'] .site-closeup-projection {
   transform: scale(1.018);
 }
 
 .site-closeup-depth,
 .site-closeup-sweep,
 .site-closeup-rain-memory,
+.site-closeup-checksum-echo,
 .site-closeup-zones {
   position: absolute;
   pointer-events: none;
@@ -1343,6 +1368,50 @@ p {
   animation: site-closeup-rain-memory 11s ease-in-out infinite alternate;
 }
 
+/* Registry reads once in two beats: the official rail reaches its closure
+   boundary, then a fainter isolated echo answers from the mirror spindle. */
+.site-closeup-checksum-echo {
+  z-index: 2;
+  inset: 0;
+  mix-blend-mode: screen;
+}
+
+.site-closeup-checksum-echo::before,
+.site-closeup-checksum-echo::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.site-closeup-checksum-echo::before {
+  top: 71%;
+  left: 26%;
+  width: 44%;
+  height: 2px;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, oklch(0.84 0.08 205 / 0.78), transparent);
+  transform: rotate(-21.5deg) scaleX(0);
+  transform-origin: 0 50%;
+  animation: site-closeup-ledger-read 980ms var(--ease-out) 300ms both;
+}
+
+.site-closeup-checksum-echo::after {
+  top: 34%;
+  left: 59%;
+  width: 14%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: 0;
+  background: radial-gradient(
+    circle,
+    oklch(0.82 0.1 195 / 0.22),
+    oklch(0.78 0.11 190 / 0.06) 38%,
+    transparent 68%
+  );
+  transform: scale(0.72);
+  animation: site-closeup-mirror-answer 720ms var(--ease-out) 1.22s both;
+}
+
 .site-closeup-zones {
   z-index: 4;
   inset: 0;
@@ -1350,23 +1419,20 @@ p {
 
 .site-closeup-zone {
   position: absolute;
-  display: flex;
-  align-items: center;
-  gap: 7px;
+  width: 17px;
+  height: 17px;
   color: var(--fog);
-  transform: translate(-10px, -50%);
+  transform: translate(-50%, -50%);
   opacity: 0.58;
   transition:
     color 180ms var(--ease-out),
-    opacity 180ms var(--ease-out),
-    transform 260ms var(--ease-out);
+    opacity 180ms var(--ease-out);
 }
 
 .site-closeup-zone-mark {
-  position: relative;
-  width: 17px;
-  height: 17px;
-  flex: 0 0 auto;
+  position: absolute;
+  inset: 0;
+  display: block;
   border: 1px solid currentColor;
   border-radius: 50%;
   box-shadow: 0 0 0 4px oklch(0.04 0 0 / 0.42);
@@ -1383,6 +1449,9 @@ p {
 }
 
 .site-closeup-zone-label {
+  position: absolute;
+  top: 50%;
+  left: 24px;
   padding: 3px 5px;
   color: currentColor;
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -1391,15 +1460,24 @@ p {
   letter-spacing: 0.05em;
   line-height: 1.2;
   text-transform: uppercase;
+  white-space: nowrap;
   text-shadow: 0 1px 6px var(--night), 0 0 2px var(--night);
   background: oklch(0.04 0 0 / 0.58);
   border-left: 1px solid currentColor;
+  transform: translateY(-50%);
+}
+
+.site-closeup-zone[data-edge='end'] .site-closeup-zone-label {
+  right: 24px;
+  left: auto;
+  border-right: 1px solid currentColor;
+  border-left: 0;
+  text-align: right;
 }
 
 .site-closeup-zone[data-state='active'] {
   color: var(--amber-soft);
   opacity: 1;
-  transform: translate(0, -50%);
 }
 
 .site-closeup-zone[data-state='active'] .site-closeup-zone-mark {
@@ -1412,7 +1490,6 @@ p {
 .site-closeup-zone[data-state='resolved'] {
   color: var(--cyan);
   opacity: 1;
-  transform: translate(0, -50%);
 }
 
 .site-closeup-zone[data-state='resolved'] .site-closeup-zone-mark::after {
@@ -1464,6 +1541,38 @@ p {
   }
 }
 
+@keyframes site-closeup-ledger-read {
+  0% {
+    opacity: 0;
+    transform: rotate(-21.5deg) scaleX(0);
+  }
+  18% {
+    opacity: 0.72;
+  }
+  78% {
+    opacity: 0.5;
+    transform: rotate(-21.5deg) scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(-21.5deg) scaleX(1);
+  }
+}
+
+@keyframes site-closeup-mirror-answer {
+  0% {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+  44% {
+    opacity: 0.52;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+}
+
 .high-contrast .site-closeup-stage img {
   filter: grayscale(0.35) brightness(0.72) contrast(1.24);
 }
@@ -1475,51 +1584,65 @@ p {
 }
 
 .reduce-motion .site-closeup-stage,
-.reduce-motion .site-closeup-stage img,
+.reduce-motion .site-closeup-projection,
+.reduce-motion .site-closeup-projection img,
 .reduce-motion .site-closeup-sweep,
 .reduce-motion .site-closeup-rain-memory,
+.reduce-motion .site-closeup-checksum-echo::before,
+.reduce-motion .site-closeup-checksum-echo::after,
 .reduce-motion .site-closeup-zone {
   animation: none !important;
   transition: none !important;
 }
 
 .reduce-motion .site-closeup-sweep,
-.reduce-motion .site-closeup-rain-memory {
+.reduce-motion .site-closeup-rain-memory,
+.reduce-motion .site-closeup-checksum-echo {
   display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .site-closeup-stage,
-  .site-closeup-stage img,
+  .site-closeup-projection,
+  .site-closeup-projection img,
   .site-closeup-sweep,
   .site-closeup-rain-memory,
+  .site-closeup-checksum-echo::before,
+  .site-closeup-checksum-echo::after,
   .site-closeup-zone {
     animation: none !important;
     transition: none !important;
   }
 
   .site-closeup-sweep,
-  .site-closeup-rain-memory {
+  .site-closeup-rain-memory,
+  .site-closeup-checksum-echo {
     display: none;
   }
 }
 
 @media (max-width: 460px) {
-  .site-closeup-zone {
-    flex-direction: column;
-    gap: 4px;
-    transform: translate(-50%, -50%);
-  }
-
-  .site-closeup-zone[data-state='active'],
-  .site-closeup-zone[data-state='resolved'] {
-    transform: translate(-50%, -54%);
-  }
-
   .site-closeup-zone-label {
+    top: 24px;
+    left: 50%;
     border-top: 1px solid currentColor;
+    border-right: 0;
     border-left: 0;
     text-align: center;
+    transform: translateX(-50%);
+  }
+
+  .site-closeup-zone[data-edge='start'] .site-closeup-zone-label {
+    left: 0;
+    transform: none;
+  }
+
+  .site-closeup-zone[data-edge='end'] .site-closeup-zone-label {
+    right: 0;
+    left: auto;
+    border-right: 0;
+    text-align: right;
+    transform: none;
   }
 }
 

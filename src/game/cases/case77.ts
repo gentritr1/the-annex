@@ -396,6 +396,16 @@ const sites: readonly SiteDefinition[] = [
     name: 'Registry intake',
     description: 'The official chain — and the fourth minute after the collapse, the minute the record was never meant to hold.',
     actionIds: ['authenticate-chain', 'trace-checksum'],
+    closeup: {
+      src: '/images/site-scenes/registry-intake.webp',
+      caption: 'Custody rail · post-closure mirror',
+      focalPoint: { x: 0.52, y: 0.51 },
+      zones: [
+        { actionId: 'authenticate-chain', x: 0.39, y: 0.62 },
+        { actionId: 'trace-checksum', x: 0.64, y: 0.43 },
+      ],
+      atmosphere: 'checksum-echo',
+    },
     unvisitedNote:
       'You never opened Registry intake. The chain stayed unread, and the fourth minute kept whatever it was handed.',
   },

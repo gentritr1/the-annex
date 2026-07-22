@@ -260,7 +260,7 @@ export interface SiteDefinition {
       x: number
       y: number
     }[]
-    atmosphere?: 'rain-reflection'
+    atmosphere?: 'rain-reflection' | 'checksum-echo'
   }
   // Read at debrief when the site was never visited in this run.
   unvisitedNote: string
