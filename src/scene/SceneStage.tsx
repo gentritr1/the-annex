@@ -40,7 +40,7 @@ interface SceneStageProps {
   // View-only selection for the investigation workspace. This never enters the
   // engine and only clarifies which hotspot owns the adjacent location panel.
   selectedSiteId?: SiteId
-  onHotspotActivate?: (siteId: SiteId) => void
+  onHotspotActivate?: (siteId: SiteId, sourceElement: HTMLButtonElement) => void
 }
 
 function toVarStyle(treatment: Readonly<Record<string, number | string>>): CSSProperties {
@@ -229,7 +229,9 @@ export function SceneStage({
                 }
                 aria-hidden="true"
                 tabIndex={-1}
-                onClick={() => onHotspotActivate?.(hotspot.siteId)}
+                onClick={(event) =>
+                  onHotspotActivate?.(hotspot.siteId, event.currentTarget)
+                }
               >
                 <span className="scene-hotspot-ring" aria-hidden="true" />
                 {leader && <span className="scene-hotspot-leader" aria-hidden="true" />}

@@ -1,8 +1,14 @@
 import type { CSSProperties } from 'react'
 import type { FieldActionDefinition, FieldActionId, SiteDefinition } from '../game/types'
 
+export const SITE_CLOSEUP_ENTRY_MS = 360
+
 interface SiteCloseupStageProps {
   closeup: NonNullable<SiteDefinition['closeup']>
+  entryOrigin?: {
+    x: number
+    y: number
+  }
   actions: readonly FieldActionDefinition[]
   activeActionId: FieldActionId | null
   resolvedActionId?: FieldActionId
@@ -12,6 +18,7 @@ interface SiteCloseupStageProps {
 // React and CSS supply its legible state. No evidence or game rule lives here.
 export function SiteCloseupStage({
   closeup,
+  entryOrigin,
   actions,
   activeActionId,
   resolvedActionId,
@@ -30,6 +37,9 @@ export function SiteCloseupStage({
     '--site-focal-offset-y': `${focalY * -100}%`,
     '--site-focus-x': `${(emphasizedZone?.x ?? closeup.focalPoint?.x ?? 0.5) * 100}%`,
     '--site-focus-y': `${(emphasizedZone?.y ?? closeup.focalPoint?.y ?? 0.5) * 100}%`,
+    '--site-entry-x': `${(entryOrigin?.x ?? 0.5) * 100}%`,
+    '--site-entry-y': `${(entryOrigin?.y ?? 0.5) * 100}%`,
+    '--site-closeup-entry-duration': `${SITE_CLOSEUP_ENTRY_MS}ms`,
   } as CSSProperties
 
   return (

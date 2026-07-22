@@ -178,6 +178,13 @@ The interface is flat by default. Depth comes from tonal layering, the world ima
 
 - Each choice contains a direct verb, likely method, cost or risk, and keyboard shortcut. Resolved choices become a readable event in the case log instead of disappearing.
 
+### Spatial Close Reads
+
+- Location controls update the inspector immediately; scene travel is presentation-only and never delays input, focus, evidence, or engine state.
+- A district camera journey may use its authored 480–520ms window, followed by a source-anchored aperture of at most 360ms. This exception is reserved for entering a physical place, not ordinary UI feedback.
+- The activating hotspot or switch supplies the aperture origin. Rapid selection is latest-wins, a settled close read stops the covered scene loop, and same-site activation never replays the transition.
+- Both the application preference and `prefers-reduced-motion` replace the full journey with an immediate static destination.
+
 ## 6. Do's and Don'ts
 
 ### Do:
@@ -186,7 +193,7 @@ The interface is flat by default. Depth comes from tonal layering, the world ima
 - **Do** keep controls at least 44px tall and fully operable by keyboard, pointer, and touch.
 - **Do** use Service Amber only for action, Archive Cyan only for verified state, and Civic Coral only for risk.
 - **Do** show the cause of every trust, access, evidence, and alarm change in the event log.
-- **Do** respect `prefers-reduced-motion` and keep normal transitions within 150–250ms.
+- **Do** respect `prefers-reduced-motion` and keep normal UI transitions within 150–250ms; only the non-blocking Spatial Close Read may use its longer authored camera window.
 
 ### Don't:
 

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { getCaseContent, resolveFieldAction } from '../game/content'
 import { canEnterTribunal } from '../game/engine'
 import { SceneStage } from '../scene/SceneStage'
-import { SiteCloseupStage } from '../scene/SiteCloseupStage'
+import { SITE_CLOSEUP_ENTRY_MS, SiteCloseupStage } from '../scene/SiteCloseupStage'
 import { resolveCommitConsent, sceneStateFor, witnessesRefusalOnCommit } from '../scene/sceneState'
 import type { DepositionChoiceId, FieldActionId, GameState, SiteId } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
@@ -55,6 +55,25 @@ const WITNESS_REFUSAL_LINE = 'The room dims. Ellis Marne’s “no” stays in i
 // skips the hold entirely (instant jump + immediate handoff).
 const WITNESS_HOLD_MS = 2500
 
+interface CloseupEntryOrigin {
+  x: number
+  y: number
+}
+
+type WorldPresentation =
+  | { kind: 'map' }
+  | { kind: 'travel'; siteId: SiteId; epoch: number; origin: CloseupEntryOrigin }
+  | { kind: 'arriving'; siteId: SiteId; epoch: number; origin: CloseupEntryOrigin }
+  | { kind: 'closeup'; siteId: SiteId; origin: CloseupEntryOrigin }
+
+function prefersReducedMotion() {
+  return (
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  )
+}
+
 export function Investigation({
   state,
   depositionEntry,
@@ -76,8 +95,14 @@ export function Investigation({
   } = content
   const reconstruction = reconstructionDefinitions.find((item) => item.id === state.reconstruction)
   const reducedMotion = state.settings.reducedMotion
-  const [selectedSiteId, setSelectedSiteId] = useState<SiteId>(
-    () => sites.find((site) => !state.completedSites.includes(site.id))?.id ?? sites[0]!.id,
+  const initialSite =
+    sites.find((site) => !state.completedSites.includes(site.id)) ?? sites[0]!
+  const [selectedSiteId, setSelectedSiteId] = useState<SiteId>(() => initialSite.id)
+  const [osReducedMotion, setOsReducedMotion] = useState(prefersReducedMotion)
+  const [worldPresentation, setWorldPresentation] = useState<WorldPresentation>(() =>
+    initialSite.closeup
+      ? { kind: 'closeup', siteId: initialSite.id, origin: { x: 0.5, y: 0.5 } }
+      : { kind: 'map' },
   )
   const [previewActionId, setPreviewActionId] = useState<FieldActionId | null>(null)
 
@@ -86,9 +111,96 @@ export function Investigation({
   const worldViewRef = useRef<HTMLDivElement>(null)
   const siteInspectorRef = useRef<HTMLElement>(null)
   const holdTimerRef = useRef<number | null>(null)
+  const transitionEpochRef = useRef(0)
+  const selectedSiteRef = useRef(selectedSiteId)
   // The one-shot witnessed-refusal announcement (aria-live). Set only from a commit
   // callback; empty at rest, so a reload of a persisted refusal never re-announces.
   const [refusalLine, setRefusalLine] = useState('')
+
+  const sceneMotionReduced = reducedMotion || osReducedMotion
+
+  // Keep the operating-system preference live. It participates in the view-only
+  // transition gate exactly like the in-game preference, including mid-travel.
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const onChange = (event: MediaQueryListEvent) => setOsReducedMotion(event.matches)
+    query.addEventListener('change', onChange)
+    return () => query.removeEventListener('change', onChange)
+  }, [])
+
+  useEffect(() => {
+    selectedSiteRef.current = selectedSiteId
+  }, [selectedSiteId])
+
+  // Begin the plate reveal only after the authored scene travel has had its full
+  // post-commit window. Two final frames let motion.ts land on its exact target
+  // before the close read starts covering it. Every handle is cancelled by the
+  // effect cleanup, so rapid A → B → A input cannot reveal a stale location.
+  useEffect(() => {
+    if (worldPresentation.kind !== 'travel' || sceneMotionReduced) return
+    const { siteId, epoch, origin } = worldPresentation
+    let firstFrame = 0
+    let secondFrame = 0
+    const timer = window.setTimeout(() => {
+      firstFrame = window.requestAnimationFrame(() => {
+        secondFrame = window.requestAnimationFrame(() => {
+          if (
+            transitionEpochRef.current !== epoch ||
+            selectedSiteRef.current !== siteId
+          ) {
+            return
+          }
+          setWorldPresentation((current) =>
+            current.kind === 'travel' &&
+            current.epoch === epoch &&
+            current.siteId === siteId
+              ? { kind: 'arriving', siteId, epoch, origin }
+              : current,
+          )
+        })
+      })
+    }, scene.travel?.travelInMs ?? 0)
+
+    return () => {
+      window.clearTimeout(timer)
+      if (firstFrame) window.cancelAnimationFrame(firstFrame)
+      if (secondFrame) window.cancelAnimationFrame(secondFrame)
+    }
+  }, [scene.travel?.travelInMs, sceneMotionReduced, worldPresentation])
+
+  // Hold the live scene at its travelled framing behind the growing aperture.
+  // Once the opaque plate covers it, promote to the settled closeup and let
+  // SceneStage destroy its single animation loop.
+  useEffect(() => {
+    if (worldPresentation.kind !== 'arriving' || sceneMotionReduced) return
+    const { siteId, epoch, origin } = worldPresentation
+    const timer = window.setTimeout(() => {
+      if (transitionEpochRef.current !== epoch || selectedSiteRef.current !== siteId) return
+      setWorldPresentation((current) =>
+        current.kind === 'arriving' &&
+        current.epoch === epoch &&
+        current.siteId === siteId
+          ? { kind: 'closeup', siteId, origin }
+          : current,
+      )
+    }, SITE_CLOSEUP_ENTRY_MS)
+    return () => window.clearTimeout(timer)
+  }, [sceneMotionReduced, worldPresentation])
+
+  // If either reduced-motion signal turns on during a transition, reveal the
+  // destination immediately. The render below also derives this state eagerly,
+  // so there is no intermediate animated frame while this effect settles it.
+  useEffect(() => {
+    if (!sceneMotionReduced) return
+    const frame = window.requestAnimationFrame(() => {
+      setWorldPresentation((current) =>
+        current.kind === 'travel' || current.kind === 'arriving'
+          ? { kind: 'closeup', siteId: current.siteId, origin: current.origin }
+          : current,
+      )
+    })
+    return () => window.cancelAnimationFrame(frame)
+  }, [sceneMotionReduced])
 
   // Clear any pending hold timer if the phase unmounts mid-beat.
   useEffect(
@@ -219,6 +331,40 @@ export function Investigation({
   ].filter((requirement): requirement is string => requirement !== null)
   const gateRequirement = gateRequirements.join(' ')
   const selectedSite = sites.find((site) => site.id === selectedSiteId) ?? sites[0]!
+  const presentationForRender: WorldPresentation =
+    sceneMotionReduced &&
+    (worldPresentation.kind === 'travel' || worldPresentation.kind === 'arriving')
+      ? {
+          kind: 'closeup',
+          siteId: worldPresentation.siteId,
+          origin: worldPresentation.origin,
+        }
+      : worldPresentation
+  const presentationMatchesSelection =
+    presentationForRender.kind !== 'map' &&
+    presentationForRender.siteId === selectedSite.id
+  const shownCloseup =
+    presentationMatchesSelection &&
+    (presentationForRender.kind === 'arriving' || presentationForRender.kind === 'closeup')
+      ? selectedSite.closeup
+      : undefined
+  const closeupEntryOrigin =
+    presentationForRender.kind === 'map'
+      ? { x: 0.5, y: 0.5 }
+      : presentationForRender.origin
+  const cameraSiteId =
+    presentationForRender.kind === 'travel' || presentationForRender.kind === 'arriving'
+      ? selectedSite.id
+      : undefined
+  const sceneActive = presentationForRender.kind !== 'closeup'
+  const worldViewClass = [
+    'world-view',
+    shownCloseup ? 'world-view--closeup' : '',
+    presentationForRender.kind === 'travel' ? 'world-view--traveling' : '',
+    presentationForRender.kind === 'arriving' ? 'world-view--arriving' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
   const selectedCompletedBase = fieldActions.find(
     (action) =>
       action.siteId === selectedSite.id && state.completedActions.includes(action.id),
@@ -258,14 +404,57 @@ export function Investigation({
             },
           }
 
-  function selectSite(siteId: SiteId, moveFocus = false) {
+  function entryOriginFor(siteId: SiteId, sourceElement?: HTMLElement): CloseupEntryOrigin {
+    const worldRect = worldViewRef.current?.getBoundingClientRect()
+    const sourceRect = sourceElement?.getBoundingClientRect()
+    if (worldRect && sourceRect && worldRect.width > 0 && worldRect.height > 0) {
+      const x = (sourceRect.left + sourceRect.width / 2 - worldRect.left) / worldRect.width
+      const y = (sourceRect.top + sourceRect.height / 2 - worldRect.top) / worldRect.height
+      return {
+        x: Math.max(0.04, Math.min(0.96, x)),
+        y: Math.max(0.06, Math.min(0.94, y)),
+      }
+    }
+    const hotspot = scene.hotspots.find((item) => item.siteId === siteId)
+    return {
+      x: Math.max(0.04, Math.min(0.96, hotspot?.x ?? 0.5)),
+      y: Math.max(0.06, Math.min(0.94, hotspot?.y ?? 0.5)),
+    }
+  }
+
+  function selectSite(siteId: SiteId, moveFocus = false, sourceElement?: HTMLElement) {
     setPreviewActionId(null)
+    const alreadyPresentingSite =
+      worldPresentation.kind !== 'map' && worldPresentation.siteId === siteId
+    if (selectedSiteId === siteId && alreadyPresentingSite) {
+      if (moveFocus) {
+        window.requestAnimationFrame(() =>
+          focusSiteCard(siteId, reducedMotion || prefersReducedMotion()),
+        )
+      }
+      return
+    }
+
+    const targetSite = sites.find((site) => site.id === siteId)
+    if (!targetSite) return
+    const origin = entryOriginFor(siteId, sourceElement)
+    const epoch = transitionEpochRef.current + 1
+    transitionEpochRef.current = epoch
+    selectedSiteRef.current = siteId
     setSelectedSiteId(siteId)
+    const instant = reducedMotion || prefersReducedMotion()
+    if (!targetSite.closeup) {
+      setWorldPresentation({ kind: 'map' })
+    } else if (instant || !diorama || !scene.travel) {
+      setWorldPresentation({ kind: 'closeup', siteId, origin })
+    } else {
+      setWorldPresentation({ kind: 'travel', siteId, epoch, origin })
+    }
     if (!moveFocus) return
 
-    // React commits the selected location before the next animation frame. If
-    // the same hotspot is re-opened, the existing workspace is focused instead.
-    window.requestAnimationFrame(() => focusSiteCard(siteId, reducedMotion))
+    // The workspace updates immediately while the stage travels. OS-only reduced
+    // motion uses the same instant scroll behavior as the in-game preference.
+    window.requestAnimationFrame(() => focusSiteCard(siteId, instant))
   }
 
   return (
@@ -296,7 +485,8 @@ export function Investigation({
       <div className="field-workspace">
         <section className="world-pane" aria-label="District navigation">
           <div
-            className={`world-view ${selectedSite.closeup ? 'world-view--closeup' : ''}`}
+            className={worldViewClass}
+            data-transition={presentationForRender.kind}
             ref={worldViewRef}
           >
             {/* The world is now the primary location picker. A hotspot swaps the
@@ -309,16 +499,19 @@ export function Investigation({
               alarmLevel={state.alarm}
               interactive
               parallax={diorama}
-              active={!selectedSite.closeup}
+              active={sceneActive}
               sites={sites}
               completedSiteIds={state.completedSites}
-              selectedSiteId={selectedSite.id}
-              onHotspotActivate={(siteId) => selectSite(siteId, true)}
+              selectedSiteId={cameraSiteId}
+              onHotspotActivate={(siteId, sourceElement) =>
+                selectSite(siteId, true, sourceElement)
+              }
             />
-            {selectedSite.closeup && (
+            {shownCloseup && (
               <SiteCloseupStage
                 key={selectedSite.id}
-                closeup={selectedSite.closeup}
+                closeup={shownCloseup}
+                entryOrigin={closeupEntryOrigin}
                 actions={selectedActions}
                 activeActionId={previewActionId}
                 resolvedActionId={selectedCompletedAction?.id}
@@ -326,12 +519,12 @@ export function Investigation({
             )}
             <div className="world-caption">
               <span>
-                {selectedSite.closeup
+                {shownCloseup
                   ? `${selectedSite.index} · ${selectedSite.name}`
                   : chrome.worldCaption[0]}
               </span>
-              {selectedSite.closeup ? (
-                <span>{selectedSite.closeup.caption}</span>
+              {shownCloseup ? (
+                <span>{shownCloseup.caption}</span>
               ) : captionMask !== null ? (
                 <span>
                   {chrome.worldCaption[1]}: {Math.round(captionMask * 100)}%
@@ -351,7 +544,7 @@ export function Investigation({
                   key={site.id}
                   aria-pressed={selected}
                   data-filed={filed ? 'true' : undefined}
-                  onClick={() => selectSite(site.id)}
+                  onClick={(event) => selectSite(site.id, false, event.currentTarget)}
                 >
                   <span className="site-switch-index">{site.index}</span>
                   <span>
@@ -424,7 +617,11 @@ export function Investigation({
                   <span>Continue elsewhere</span>
                   <div>
                     {openSites.map((site) => (
-                      <button type="button" key={site.id} onClick={() => selectSite(site.id, true)}>
+                      <button
+                        type="button"
+                        key={site.id}
+                        onClick={(event) => selectSite(site.id, true, event.currentTarget)}
+                      >
                         {site.index} · {site.name}
                       </button>
                     ))}

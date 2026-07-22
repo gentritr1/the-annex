@@ -1243,8 +1243,13 @@ p {
 }
 
 .world-view--closeup > .scene-stage {
-  opacity: 0;
   pointer-events: none;
+}
+
+.world-view--arriving > .scene-stage {
+  /* The paused district remains as a faint threshold outside the entering
+     aperture while the destination plate opens over it. */
+  opacity: 0.12;
 }
 
 .world-view--closeup .scene-hotspots,
@@ -1266,7 +1271,8 @@ p {
   pointer-events: none;
   background: var(--night);
   container-type: size;
-  animation: site-closeup-enter 420ms var(--ease-out) both;
+  transform-origin: var(--site-entry-x, 50%) var(--site-entry-y, 50%);
+  animation: site-closeup-enter var(--site-closeup-entry-duration, 360ms) var(--ease-out) both;
 }
 
 .site-closeup-cover {
@@ -1644,11 +1650,25 @@ p {
 }
 
 @keyframes site-closeup-enter {
-  from {
-    opacity: 0;
-    transform: scale(1.018);
+  0% {
+    clip-path: ellipse(2% 7% at var(--site-entry-x, 50%) var(--site-entry-y, 50%));
+    opacity: 0.25;
+    transform: scale(1.028);
   }
-  to {
+  32% {
+    clip-path: ellipse(12% 24% at var(--site-entry-x, 50%) var(--site-entry-y, 50%));
+    opacity: 1;
+  }
+  70% {
+    clip-path: ellipse(72% 98% at var(--site-entry-x, 50%) var(--site-entry-y, 50%));
+  }
+  99% {
+    clip-path: ellipse(160% 180% at var(--site-entry-x, 50%) var(--site-entry-y, 50%));
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    clip-path: none;
     opacity: 1;
     transform: scale(1);
   }
@@ -1835,6 +1855,12 @@ p {
   display: none;
 }
 
+.reduce-motion .site-closeup-stage {
+  clip-path: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .site-closeup-stage,
   .site-closeup-projection,
@@ -1861,6 +1887,12 @@ p {
   .site-closeup-argument-register,
   .site-closeup-category-register {
     display: none;
+  }
+
+  .site-closeup-stage {
+    clip-path: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 
