@@ -465,6 +465,16 @@ const sites: readonly SiteDefinition[] = [
     name: 'Counsel office',
     description: 'Where the city argues to seat the witness and the opposition argues to void it.',
     actionIds: ['brief-city-counsel', 'depose-opposing-counsel'],
+    closeup: {
+      src: '/images/site-scenes/counsel-office.webp',
+      caption: 'City brief · retained objection',
+      focalPoint: { x: 0.5, y: 0.53 },
+      zones: [
+        { actionId: 'brief-city-counsel', x: 0.32, y: 0.52 },
+        { actionId: 'depose-opposing-counsel', x: 0.68, y: 0.61 },
+      ],
+      atmosphere: 'argument-register',
+    },
     unvisitedNote:
       'You never reached the counsel office. Neither the city’s need nor the objection to it was ever heard.',
   },

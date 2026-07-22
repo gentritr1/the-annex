@@ -1319,6 +1319,7 @@ p {
 .site-closeup-rain-memory,
 .site-closeup-checksum-echo,
 .site-closeup-authority-diagnostic,
+.site-closeup-argument-register,
 .site-closeup-zones {
   position: absolute;
   pointer-events: none;
@@ -1462,6 +1463,41 @@ p {
   );
   transform: scale(0.82);
   animation: site-closeup-authority-breath 920ms ease-in-out 1.42s both;
+}
+
+/* Counsel registers both positions with the same neutral energy. The two
+   traces approach together but preserve the unresolved gap between them. */
+.site-closeup-argument-register {
+  z-index: 2;
+  inset: 0;
+  mix-blend-mode: screen;
+}
+
+.site-closeup-argument-register::before,
+.site-closeup-argument-register::after {
+  content: '';
+  position: absolute;
+  top: 73%;
+  width: 21%;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 0 10px oklch(0.82 0.012 210 / 0.16);
+  animation: site-closeup-argument-register 1.2s var(--ease-out) 320ms both;
+}
+
+.site-closeup-argument-register::before {
+  left: 28%;
+  background: linear-gradient(90deg, transparent, oklch(0.82 0.012 210 / 0.54) 18% 100%);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.site-closeup-argument-register::after {
+  right: 28%;
+  background: linear-gradient(270deg, transparent, oklch(0.82 0.012 210 / 0.54) 18% 100%);
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
 }
 
 .site-closeup-zones {
@@ -1657,6 +1693,24 @@ p {
   }
 }
 
+@keyframes site-closeup-argument-register {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  20% {
+    opacity: 0.58;
+  }
+  76% {
+    opacity: 0.42;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1);
+  }
+}
+
 .high-contrast .site-closeup-stage img {
   filter: grayscale(0.35) brightness(0.72) contrast(1.24);
 }
@@ -1676,6 +1730,8 @@ p {
 .reduce-motion .site-closeup-checksum-echo::after,
 .reduce-motion .site-closeup-authority-diagnostic::before,
 .reduce-motion .site-closeup-authority-diagnostic::after,
+.reduce-motion .site-closeup-argument-register::before,
+.reduce-motion .site-closeup-argument-register::after,
 .reduce-motion .site-closeup-zone {
   animation: none !important;
   transition: none !important;
@@ -1684,7 +1740,8 @@ p {
 .reduce-motion .site-closeup-sweep,
 .reduce-motion .site-closeup-rain-memory,
 .reduce-motion .site-closeup-checksum-echo,
-.reduce-motion .site-closeup-authority-diagnostic {
+.reduce-motion .site-closeup-authority-diagnostic,
+.reduce-motion .site-closeup-argument-register {
   display: none;
 }
 
@@ -1698,6 +1755,8 @@ p {
   .site-closeup-checksum-echo::after,
   .site-closeup-authority-diagnostic::before,
   .site-closeup-authority-diagnostic::after,
+  .site-closeup-argument-register::before,
+  .site-closeup-argument-register::after,
   .site-closeup-zone {
     animation: none !important;
     transition: none !important;
@@ -1706,7 +1765,8 @@ p {
   .site-closeup-sweep,
   .site-closeup-rain-memory,
   .site-closeup-checksum-echo,
-  .site-closeup-authority-diagnostic {
+  .site-closeup-authority-diagnostic,
+  .site-closeup-argument-register {
     display: none;
   }
 }

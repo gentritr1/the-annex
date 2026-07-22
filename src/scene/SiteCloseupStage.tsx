@@ -49,7 +49,9 @@ export function SiteCloseupStage({
             decoding="async"
           />
           <div className="site-closeup-depth" />
-          <div className="site-closeup-sweep" />
+          {closeup.atmosphere === 'argument-register' ? null : (
+            <div className="site-closeup-sweep" />
+          )}
           {closeup.atmosphere === 'rain-reflection' ? (
             <div className="site-closeup-rain-memory" />
           ) : null}
@@ -58,6 +60,9 @@ export function SiteCloseupStage({
           ) : null}
           {closeup.atmosphere === 'authority-diagnostic' ? (
             <div className="site-closeup-authority-diagnostic" />
+          ) : null}
+          {closeup.atmosphere === 'argument-register' ? (
+            <div className="site-closeup-argument-register" />
           ) : null}
           {closeup.zones ? (
             <div className="site-closeup-zones">

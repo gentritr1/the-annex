@@ -762,4 +762,16 @@ describe('site close-read pilots', () => {
     ])
     expect(records?.closeup?.atmosphere).toBe('authority-diagnostic')
   })
+
+  it('ships Counsel Office as two equally registered argument positions', () => {
+    const counsel = getCaseContent('case-81').sites.find((site) => site.id === 'counsel-office')
+    expect(counsel?.closeup?.src).toBe('/images/site-scenes/counsel-office.webp')
+    expect(counsel?.closeup?.caption).toBe('City brief · retained objection')
+    expect(counsel?.closeup?.focalPoint).toEqual({ x: 0.5, y: 0.53 })
+    expect(counsel?.closeup?.zones).toEqual([
+      { actionId: 'brief-city-counsel', x: 0.32, y: 0.52 },
+      { actionId: 'depose-opposing-counsel', x: 0.68, y: 0.61 },
+    ])
+    expect(counsel?.closeup?.atmosphere).toBe('argument-register')
+  })
 })
