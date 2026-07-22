@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { getCaseContent, resolveFieldAction } from '../game/content'
 import { canEnterTribunal } from '../game/engine'
+import { resolveSiteOutcomes } from '../game/room'
 import { SceneStage } from '../scene/SceneStage'
 import { SITE_CLOSEUP_ENTRY_MS, SiteCloseupStage } from '../scene/SiteCloseupStage'
 import { resolveCommitConsent, sceneStateFor, witnessesRefusalOnCommit } from '../scene/sceneState'
@@ -9,10 +10,12 @@ import type {
   DepositionChoiceId,
   FieldActionId,
   GameState,
+  RoomStageId,
   SceneAcousticTreatment,
   SiteId,
 } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
+import { ClassificationRoom } from './ClassificationRoom'
 import { Deposition } from './Deposition'
 import { ReactionQuotes } from './ReactionQuotes'
 
@@ -119,6 +122,14 @@ export function Investigation({
       : { kind: 'map' },
   )
   const [previewActionId, setPreviewActionId] = useState<FieldActionId | null>(null)
+  // The room's decorative plate stage (view-local; reset when the site changes).
+  const [roomFocus, setRoomFocus] = useState<RoomStageId | null>(null)
+
+  // Resolved concourse alteration per room site, derived from the committed field
+  // actions and each site's authored worldOutcome map. Content-driven: no site or
+  // action id is named here. Consumed by the world stage, the switcher chips, and
+  // the return announcement.
+  const resolvedOutcomes = resolveSiteOutcomes(sites, state.completedActions)
 
   // The live stage wrapper, so both the open-transcript reveal and the witnessed-
   // refusal beat can bring the reacting room into view behind / after the modal.
@@ -463,6 +474,7 @@ export function Investigation({
 
   function selectSite(siteId: SiteId, moveFocus = false, sourceElement?: HTMLElement) {
     setPreviewActionId(null)
+    setRoomFocus(null)
     setWorldLine('')
     const alreadyPresentingSite =
       worldPresentation.kind !== 'map' &&
@@ -503,9 +515,15 @@ export function Investigation({
     if (!scene.world) return
     transitionEpochRef.current += 1
     setPreviewActionId(null)
+    setRoomFocus(null)
     setWorldPresentation({ kind: 'concourse' })
+    // When the site the player is leaving carries a resolved room outcome, speak
+    // its authored line once so the concourse alteration is perceivable non-visually.
+    const outcome = resolvedOutcomes.get(selectedSiteId)
     setWorldLine(
-      `${scene.world.caption.title} restored. ${scene.world.portals.length} locations available.`,
+      `${scene.world.caption.title} restored. ${scene.world.portals.length} locations available.${
+        outcome ? ` ${outcome.portalLabel}.` : ''
+      }`,
     )
     window.requestAnimationFrame(() => {
       document.getElementById(`site-switch-${selectedSiteId}`)?.focus({ preventScroll: true })
@@ -559,6 +577,7 @@ export function Investigation({
                 active={sceneActive}
                 reducedMotion={sceneMotionReduced}
                 alarmLevel={state.alarm}
+                resolvedOutcomes={resolvedOutcomes}
                 onPortalActivate={(siteId, sourceElement) =>
                   selectSite(siteId, true, sourceElement)
                 }
@@ -588,6 +607,9 @@ export function Investigation({
                 actions={selectedActions}
                 activeActionId={previewActionId}
                 resolvedActionId={selectedCompletedAction?.id}
+                roomFocus={
+                  roomFocus && selectedSite.room ? selectedSite.room.zones[roomFocus] : undefined
+                }
               />
             )}
             {shownCloseup && scene.world && (
@@ -622,6 +644,9 @@ export function Investigation({
             {sites.map((site) => {
               const selected = site.id === selectedSite.id
               const filed = state.completedSites.includes(site.id)
+              // A filed room site shows its authored outcome label instead of the
+              // generic "Filed"; every other site is unchanged.
+              const outcome = resolvedOutcomes.get(site.id)
               return (
                 <button
                   className="site-switch"
@@ -638,7 +663,7 @@ export function Investigation({
                     <strong>{site.name}</strong>
                     <small>
                       {filed
-                        ? 'Filed'
+                        ? outcome?.switcherLabel ?? 'Filed'
                         : selected && presentationForRender.kind === 'concourse'
                           ? 'Selected'
                           : selected
@@ -724,6 +749,18 @@ export function Investigation({
                 </div>
               )}
             </>
+          ) : selectedSite.room ? (
+            // A site that authors a classification room presents it before the two
+            // canonical methods unlock. Keyed by site so switching location resets
+            // the view-local room. The methods still commit through the same path.
+            <ClassificationRoom
+              key={selectedSite.id}
+              room={selectedSite.room}
+              actions={selectedActions}
+              onCommitAction={handleCommitAction}
+              onPreviewChange={setPreviewActionId}
+              onRoomFocusChange={setRoomFocus}
+            />
           ) : (
             // Keyed by site: switching location remounts the method list, so any
             // armed commit resets silently with it (one of the three disarms).

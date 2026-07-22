@@ -4,6 +4,7 @@ import type {
   CaseDefinition,
   CaseChrome,
   CaseFile,
+  ClassificationRoomDefinition,
   DecisionDefinition,
   DecisionId,
   EvidenceDefinition,
@@ -389,6 +390,101 @@ const fieldActions: readonly FieldActionDefinition[] = [
   },
 ]
 
+// The Small Archive's filing verb, authored as a bounded classification room. The
+// player files pulled question-cards into the statute's three classes and learns,
+// through refusal, the category it cannot hold — then places that question on shelf
+// zero and reads what the restriction log erased. Only after both discoveries do
+// the two canonical methods (answer-archivist / seal-index) unlock in place. Every
+// string is in-voice with curly punctuation; nothing here is persisted.
+const smallArchiveRoom: ClassificationRoomDefinition = {
+  categories: [
+    { id: 'continuation', label: 'Continuation' },
+    { id: 'property', label: 'Property' },
+    { id: 'failed-recovery', label: 'Failed recovery' },
+  ],
+  cards: [
+    {
+      id: 'card-ledger',
+      title: 'The ledger card',
+      question: '“Do Mara’s debts wake when her hand does?”',
+      source: 'Pulled from the property drawer',
+      classifiable: true,
+      filedLine: '“There,” the Archivist says, flattening the corner. “A whole person, folded to fit the drawer.”',
+    },
+    {
+      id: 'card-room',
+      title: 'The room-twelve card',
+      question: '“Is the rain she remembers hers, or the room’s?”',
+      source: 'Pulled from the continuation drawer',
+      classifiable: true,
+      filedLine: 'The card goes quiet under the label, the way a face goes quiet behind glass.',
+    },
+    {
+      id: 'card-scar',
+      title: 'The scar card',
+      question: '“If the body never carried it, whose pain is the scar?”',
+      source: 'Pulled from the recovery drawer',
+      classifiable: true,
+      filedLine: 'It files. The question stops being a question and becomes a box the form has already checked.',
+    },
+    {
+      id: 'card-between',
+      title: 'The card with no drawer',
+      question: '“If Mara ended, who did 77-A become while everyone argued about Mara?”',
+      source: 'The card the Archivist kept in her pocket',
+      classifiable: false,
+      refusalLine: 'The card will not lie flat. It lifts at the corner and slides back into your hand.',
+    },
+  ],
+  flattenLine: 'The statute reads it as {category} and keeps nothing else.',
+  refusalObjection: '“Category error,” the form insists. “Refile under a permitted class.”',
+  shelfZero: {
+    objection: '“Unfiled,” the system says. “This record has no class.”',
+    holdingLine:
+      'The Archivist sets it on the empty shelf beneath the others. “Then it lives here, with nothing over it.”',
+  },
+  slips: [
+    {
+      id: 'slip-one',
+      fragment:
+        'A slip where a name used to be: “Composite — recovered, contested, withdrawn from taxonomy at office request.” The name itself is a clean rectangle of nothing.',
+    },
+    {
+      id: 'slip-two',
+      fragment:
+        '“Held eleven months. Recognised by two. Reclassified as property of the estate that paid for the recovery.” No one signed for the person.',
+    },
+    {
+      id: 'slip-three',
+      fragment:
+        'The last slip is only a date and a verdict: “Failed recovery. File closed.” Whoever they were, the closing is all the record kept.',
+    },
+  ],
+  lockedLine: 'The Archivist is still waiting. She will not take your answer until you have read the drawer.',
+  unlockLine:
+    'The Archivist slides the drawer aside and looks up. “Now — hand me your answer, or close the drawer on the slips.”',
+  zones: {
+    drawer: { x: 0.37, y: 0.7 },
+    'shelf-zero': { x: 0.3, y: 0.82 },
+    'restriction-log': { x: 0.66, y: 0.47 },
+    methods: { x: 0.51, y: 0.51 },
+  },
+  worldOutcome: {
+    'answer-archivist': {
+      outcomeId: 'shelf-zero-opened',
+      variant: 'opened',
+      portalLabel: 'Shelf zero holds a new category',
+      switcherLabel: 'Shelf zero opened',
+    },
+    'seal-index': {
+      outcomeId: 'index-sealed',
+      variant: 'sealed',
+      portalLabel: 'The index is sealed',
+      switcherLabel: 'Index sealed',
+    },
+  },
+}
+
 const sites: readonly SiteDefinition[] = [
   {
     id: 'registry',
@@ -452,6 +548,7 @@ const sites: readonly SiteDefinition[] = [
     name: 'The Small Archive',
     description: 'Questions, omitted categories, and a custodian who remembers what adults avoid.',
     actionIds: ['answer-archivist', 'seal-index'],
+    room: smallArchiveRoom,
     closeup: {
       src: '/images/site-scenes/small-archive.webp',
       caption: 'Shelf zero · restricted index',

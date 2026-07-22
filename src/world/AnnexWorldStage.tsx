@@ -4,6 +4,7 @@ import type {
   SceneWorldDefinition,
   SiteDefinition,
   SiteId,
+  SiteWorldOutcome,
 } from '../game/types'
 import type { AnnexWorldHandle } from './createAnnexWorld'
 import { containedPosterAnchor } from './posterProjection'
@@ -16,6 +17,10 @@ interface AnnexWorldStageProps {
   active: boolean
   reducedMotion: boolean
   alarmLevel: number
+  // Resolved concourse alteration per site (content-driven; may be empty). A site
+  // with an entry gains an outcome-specific portal treatment in this DOM layer and
+  // in the WebGL layer, and its label/aria-label carry the authored outcome line.
+  resolvedOutcomes: ReadonlyMap<SiteId, SiteWorldOutcome>
   onPortalActivate: (siteId: SiteId, sourceElement: HTMLButtonElement) => void
 }
 
@@ -116,6 +121,7 @@ export function AnnexWorldStage({
   active,
   reducedMotion,
   alarmLevel,
+  resolvedOutcomes,
   onPortalActivate,
 }: AnnexWorldStageProps) {
   const rootRef = useRef<HTMLDivElement>(null)
@@ -124,6 +130,7 @@ export function AnnexWorldStage({
   const selectedRef = useRef(selectedSiteId)
   const completedRef = useRef(completedSiteIds)
   const alarmRef = useRef(alarmLevel)
+  const outcomesRef = useRef(resolvedOutcomes)
   const [rendererState, setRendererState] = useState<RendererState>('poster')
   const [loopRunning, setLoopRunning] = useState(false)
 
@@ -170,6 +177,7 @@ export function AnnexWorldStage({
         handle.setSelection(selectedRef.current)
         handle.setCompleted(completedRef.current)
         handle.setAlarm(alarmRef.current)
+        handle.setResolvedOutcomes(outcomesRef.current)
         setRendererState('webgl')
       })
       .catch((error: unknown) => {
@@ -202,6 +210,11 @@ export function AnnexWorldStage({
     alarmRef.current = alarmLevel
     handleRef.current?.setAlarm(alarmLevel)
   }, [alarmLevel])
+
+  useEffect(() => {
+    outcomesRef.current = resolvedOutcomes
+    handleRef.current?.setResolvedOutcomes(resolvedOutcomes)
+  }, [resolvedOutcomes])
 
   useLayoutEffect(() => {
     if (rendererState === 'webgl') {
@@ -260,13 +273,26 @@ export function AnnexWorldStage({
         {world.portals.map((portal) => {
           const filed = completedSiteIds.includes(portal.siteId)
           const selected = selectedSiteId === portal.siteId
-          const color = filed ? 'var(--cyan)' : selected ? 'var(--amber-soft)' : 'var(--record)'
+          const outcome = resolvedOutcomes.get(portal.siteId)
+          // An outcome-specific accent overrides the generic filed colour: warm
+          // amber for the opened outcome, cooled fog for the barred/sealed one.
+          const outcomeColor = outcome
+            ? outcome.variant === 'opened'
+              ? 'var(--amber-soft)'
+              : 'var(--fog-dim)'
+            : undefined
+          const color =
+            outcomeColor ?? (filed ? 'var(--cyan)' : selected ? 'var(--amber-soft)' : 'var(--record)')
           const liftLabel = portal.posterAnchor.x > 0.55 && portal.posterAnchor.x < 0.8
           const raiseLabel = liftLabel || portal.posterAnchor.x < 0.25
           const lowerRightLabel = portal.posterAnchor.x > 0.8
           const labelShift =
             portal.posterAnchor.x < 0.25 ? 42 : portal.posterAnchor.x > 0.8 ? -50 : 0
           const name = portalName(sites, portal.siteId)
+          // The label carries the authored outcome line once filed; the aria-label
+          // appends it so the alteration is perceivable non-visually too.
+          const labelText = outcome ? outcome.portalLabel : name
+          const ariaLabel = outcome ? `Enter ${name}. ${outcome.portalLabel}` : `Enter ${name}`
           return (
             <button
               type="button"
@@ -274,7 +300,9 @@ export function AnnexWorldStage({
               data-filed={filed ? 'true' : undefined}
               data-selected={selected ? 'true' : undefined}
               data-site={portal.siteId}
-              aria-label={`Enter ${name}`}
+              data-outcome={outcome?.outcomeId}
+              data-outcome-variant={outcome?.variant}
+              aria-label={ariaLabel}
               key={portal.siteId}
               ref={(element) => {
                 if (element) portalButtonsRef.current.set(portal.siteId, element)
@@ -297,21 +325,53 @@ export function AnnexWorldStage({
             >
               <span
                 className="annex-world-portal-ring"
-                style={{ ...portalRingStyle, borderColor: color }}
+                style={{
+                  ...portalRingStyle,
+                  borderColor: color,
+                  // The sealed outcome dims and cools the ring fill; the opened one
+                  // warms it. Filed-but-outcomeless portals keep the base fill.
+                  background:
+                    outcome?.variant === 'sealed'
+                      ? 'oklch(0.09 0 0 / 0.6)'
+                      : outcome?.variant === 'opened'
+                        ? 'oklch(0.16 0.03 78 / 0.42)'
+                        : portalRingStyle.background,
+                }}
               >
                 <span className="annex-world-portal-code" style={portalCodeStyle}>
                   {portalIndex(sites, portal.siteId)}
                 </span>
+                {/* The sealed outcome draws a literal bar across the threshold — a
+                    non-colour cue so the two outcomes stay distinct in high contrast. */}
+                {outcome?.variant === 'sealed' ? (
+                  <span
+                    className="annex-world-portal-bar"
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      left: 3,
+                      right: 3,
+                      top: '50%',
+                      height: 2,
+                      transform: 'translateY(-50%)',
+                      background: color,
+                    }}
+                  />
+                ) : null}
               </span>
               <span
                 className="annex-world-portal-label"
+                data-outcome={outcome ? 'true' : undefined}
                 style={{
                   ...portalLabelStyle,
                   top: raiseLabel ? -28 : lowerRightLabel ? 78 : 50,
                   left: `calc(50% + ${labelShift}px)`,
+                  color,
+                  whiteSpace: outcome ? 'normal' : 'nowrap',
+                  maxWidth: outcome ? 130 : portalLabelStyle.maxWidth,
                 }}
               >
-                {name}
+                {labelText}
               </span>
             </button>
           )

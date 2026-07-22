@@ -10,7 +10,7 @@ import {
   resolveFieldAction,
 } from './content'
 import { createInitialGameState } from './engine'
-import { SCENE_STATES } from './types'
+import { ROOM_STAGES, SCENE_STATES } from './types'
 import type { CaseDefinition, GameState, MethodTag, SceneAcousticTreatment } from './types'
 
 function expectUnique(ids: readonly string[]) {
@@ -206,6 +206,73 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
       if (site.closeup.zones) {
         expect(zoneIds).toEqual(new Set(site.actionIds))
       }
+    })
+  })
+
+  it('authors a complete, generic classification room wherever a site declares one', () => {
+    const stageIds = new Set<string>(ROOM_STAGES)
+    sites.forEach((site) => {
+      const room = site.room
+      if (!room) return
+
+      // Exactly three statute categories, unique ids.
+      expect(room.categories).toHaveLength(3)
+      expectUnique(room.categories.map((category) => category.id))
+      room.categories.forEach((category) => {
+        expect(category.label.trim().length).toBeGreaterThan(0)
+      })
+
+      // Cards: unique ids, exactly one unclassifiable, each authors the line its
+      // flag requires.
+      expectUnique(room.cards.map((card) => card.id))
+      expect(room.cards.filter((card) => !card.classifiable)).toHaveLength(1)
+      room.cards.forEach((card) => {
+        expect(card.title.trim().length).toBeGreaterThan(0)
+        expect(card.question.trim().length).toBeGreaterThan(0)
+        expect(card.source.trim().length).toBeGreaterThan(0)
+        if (card.classifiable) {
+          expect((card.filedLine ?? '').trim().length).toBeGreaterThan(0)
+        } else {
+          expect((card.refusalLine ?? '').trim().length).toBeGreaterThan(0)
+        }
+      })
+
+      // The standard system lines exist; the flatten suffix carries the token the
+      // reducer interpolates.
+      expect(room.flattenLine).toContain('{category}')
+      expect(room.refusalObjection.trim().length).toBeGreaterThan(0)
+      expect(room.shelfZero.objection.trim().length).toBeGreaterThan(0)
+      expect(room.shelfZero.holdingLine.trim().length).toBeGreaterThan(0)
+      expect(room.lockedLine.trim().length).toBeGreaterThan(0)
+      expect(room.unlockLine.trim().length).toBeGreaterThan(0)
+
+      // Exactly three removal slips, unique ids, each with a fragment.
+      expect(room.slips).toHaveLength(3)
+      expectUnique(room.slips.map((slip) => slip.id))
+      room.slips.forEach((slip) => expect(slip.fragment.trim().length).toBeGreaterThan(0))
+
+      // Plate zone anchors reference stages that exist, in master-normalized bounds.
+      Object.entries(room.zones).forEach(([stage, anchor]) => {
+        expect(stageIds.has(stage)).toBe(true)
+        expect(anchor.x).toBeGreaterThanOrEqual(0)
+        expect(anchor.x).toBeLessThanOrEqual(1)
+        expect(anchor.y).toBeGreaterThanOrEqual(0)
+        expect(anchor.y).toBeLessThanOrEqual(1)
+      })
+
+      // A worldOutcome entry for EVERY action id of the room's site, each with a
+      // distinct outcome id and a legible variant/label pair.
+      const outcomes = site.actionIds.map((actionId) => {
+        const outcome = room.worldOutcome[actionId]
+        expect(outcome).toBeDefined()
+        expect(['opened', 'sealed']).toContain(outcome!.variant)
+        expect(outcome!.portalLabel.trim().length).toBeGreaterThan(0)
+        expect(outcome!.switcherLabel.trim().length).toBeGreaterThan(0)
+        return outcome!
+      })
+      // The two methods resolve to visibly distinct outcomes.
+      expectUnique(outcomes.map((outcome) => outcome.outcomeId))
+      expectUnique(outcomes.map((outcome) => outcome.variant))
     })
   })
 
@@ -494,6 +561,36 @@ describe('Case 81 authors Ellis (figure + registry photograph)', () => {
     expect(dossier).toBeDefined()
     expect(dossier?.src).toContain('.webp')
     expect(dossier?.alt.toLowerCase()).toContain('ellis marne')
+  })
+})
+
+// Non-vacuity guard for the classification-room checks: the generic per-case test
+// returns early when a site has no room, so this asserts the case that DOES author
+// one (Case 77's Small Archive) actually carries it, and that its authored strings
+// are reached by the recursive no-placeholder string walk — the walk is what covers
+// the room copy, so proving reachability keeps that coverage honest.
+describe('Case 77 authors the Small Archive classification room', () => {
+  const content = getCaseContent('case-77')
+  const roomSite = content.sites.find((site) => site.room)
+
+  it('attaches the room to the Small Archive with both outcome variants', () => {
+    expect(roomSite?.id).toBe('small-archive')
+    const room = roomSite?.room
+    expect(room).toBeDefined()
+    const variants = Object.values(room!.worldOutcome).map((outcome) => outcome.variant)
+    expect(new Set(variants)).toEqual(new Set(['opened', 'sealed']))
+  })
+
+  it('surfaces the room strings to the recursive content string-walk', () => {
+    const strings: string[] = []
+    collectStrings(content, strings)
+    const room = roomSite!.room!
+    // A card question, the shelf-zero holding line, and a slip fragment must all be
+    // reachable from the walked content tree (otherwise the placeholder test is
+    // vacuous over the room).
+    expect(strings).toContain(room.cards[0]!.question)
+    expect(strings).toContain(room.shelfZero.holdingLine)
+    expect(strings).toContain(room.slips[0]!.fragment)
   })
 })
 

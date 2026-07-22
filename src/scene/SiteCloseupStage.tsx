@@ -12,6 +12,13 @@ interface SiteCloseupStageProps {
   actions: readonly FieldActionDefinition[]
   activeActionId: FieldActionId | null
   resolvedActionId?: FieldActionId
+  // Decorative emphasis point for a classification room's current stage, resolved
+  // from the room's authored zone anchors. Presentation only — the plate stays
+  // aria-hidden and carries no interactive elements. Same pattern as activeActionId.
+  roomFocus?: {
+    x: number
+    y: number
+  }
 }
 
 // A view-only location close read. The authored raster creates spatial identity;
@@ -22,6 +29,7 @@ export function SiteCloseupStage({
   actions,
   activeActionId,
   resolvedActionId,
+  roomFocus,
 }: SiteCloseupStageProps) {
   const focalX = closeup.focalPoint?.x ?? 0.5
   const focalY = closeup.focalPoint?.y ?? 0.5
@@ -30,13 +38,20 @@ export function SiteCloseupStage({
     closeup.atmosphere === 'argument-register' || closeup.atmosphere === 'category-register'
   const emphasizedActionId = resolvedActionId ?? activeActionId
   const emphasizedZone = closeup.zones?.find((zone) => zone.actionId === emphasizedActionId)
+  // The room stage takes precedence for the focus point while a room is active and
+  // no method is being previewed/resolved, so the plate drifts toward the drawer,
+  // shelf zero, or restriction log as the player works.
+  const focusPoint =
+    roomFocus && !emphasizedZone
+      ? roomFocus
+      : { x: emphasizedZone?.x ?? closeup.focalPoint?.x ?? 0.5, y: emphasizedZone?.y ?? closeup.focalPoint?.y ?? 0.5 }
   const stageStyle = {
     '--site-focal-position-x': `${focalX * 100}%`,
     '--site-focal-position-y': `${focalY * 100}%`,
     '--site-focal-offset-x': `${focalX * -100}%`,
     '--site-focal-offset-y': `${focalY * -100}%`,
-    '--site-focus-x': `${(emphasizedZone?.x ?? closeup.focalPoint?.x ?? 0.5) * 100}%`,
-    '--site-focus-y': `${(emphasizedZone?.y ?? closeup.focalPoint?.y ?? 0.5) * 100}%`,
+    '--site-focus-x': `${focusPoint.x * 100}%`,
+    '--site-focus-y': `${focusPoint.y * 100}%`,
     '--site-entry-x': `${(entryOrigin?.x ?? 0.5) * 100}%`,
     '--site-entry-y': `${(entryOrigin?.y ?? 0.5) * 100}%`,
     '--site-closeup-entry-duration': `${SITE_CLOSEUP_ENTRY_MS}ms`,
@@ -45,7 +60,8 @@ export function SiteCloseupStage({
   return (
     <figure
       className="site-closeup-stage"
-      data-emphasis={emphasizedZone ? 'true' : undefined}
+      data-emphasis={emphasizedZone || roomFocus ? 'true' : undefined}
+      data-room-focus={roomFocus && !emphasizedZone ? 'true' : undefined}
       data-resolved={resolvedActionId ? 'true' : undefined}
       style={stageStyle}
       aria-hidden="true"

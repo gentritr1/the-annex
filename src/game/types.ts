@@ -238,12 +238,116 @@ export interface FieldActionDefinition {
   reactions?: readonly PersonaReaction[]
 }
 
+// ── Classification room (the Small Archive's "filing" verb) ──────────────────
+// A bounded, deterministic, view-local interaction a case may author at one field
+// site. The player classifies pulled question-cards into a statute's categories
+// and discovers, through refusal, the category the statute cannot hold. Nothing
+// here is persisted: the room's progress is React state only (same contract as
+// the deposition tray), and the reducer/engine never learn it exists. Every string
+// is authored content — walked by the no-placeholder content test. Fully generic:
+// no Case-77 vocabulary lives in these shapes.
+
+// The four decorative plate stages the room can emphasise. A fixed vocabulary
+// (like SceneStateId): the component reports one as `roomFocus`, and the room's
+// authored `zones` map each to a coordinate on the close-read plate. The content
+// test asserts every authored zone key is one of these.
+export const ROOM_STAGES = ['drawer', 'shelf-zero', 'restriction-log', 'methods'] as const
+
+export type RoomStageId = (typeof ROOM_STAGES)[number]
+
+// One statute category a card may be filed under (three per room). `label` is the
+// button copy; `id` is the stable handle the reducer records.
+export interface ClassificationCategoryDefinition {
+  id: string
+  label: string
+}
+
+// One pulled question-card. Classifiable cards accept ANY category (there is no
+// wrong answer — the point is the statute flattening nuance) and author a
+// `filedLine`. The single unclassifiable card refuses every category and authors a
+// `refusalLine` instead; it is the missing-category question the statute cannot
+// hold.
+export interface ClassificationCardDefinition {
+  id: string
+  title: string
+  // The question itself, in-voice with curly quotes.
+  question: string
+  source: string
+  classifiable: boolean
+  // Authored on a classifiable card: the line shown when the card accepts a class.
+  filedLine?: string
+  // Authored on the unclassifiable card: the category-agnostic line shown when any
+  // class refuses it.
+  refusalLine?: string
+}
+
+// The label-less fourth filing target that appears only after the unclassifiable
+// card's first refusal. Filing there succeeds: the system objects, the custodian
+// holds it anyway.
+export interface ClassificationShelfZeroDefinition {
+  objection: string
+  holdingLine: string
+}
+
+// One removal slip in the adjacent restriction log — a place a card used to sit.
+// Turning it shows an authored fragment about a removed composite (no names: the
+// names are gone, which is the point).
+export interface ClassificationSlipDefinition {
+  id: string
+  fragment: string
+}
+
+// The concourse alteration authored for one resolved room outcome — one entry per
+// action id of the room's site. Presentation-only: derived view-side from
+// `completedActions`, never persisted. `variant` selects the generic ring/frame
+// treatment (an opened seam vs. a barred, sealed frame) in both the DOM portal and
+// WebGL layers; `portalLabel` is the short line shown on the portal, appended to
+// its aria-label, and spoken once on return; `switcherLabel` replaces the generic
+// "Filed" microcopy on the site chip.
+export interface SiteWorldOutcome {
+  outcomeId: string
+  variant: 'opened' | 'sealed'
+  portalLabel: string
+  switcherLabel: string
+}
+
+export interface ClassificationRoomDefinition {
+  // Exactly three statute categories.
+  categories: readonly ClassificationCategoryDefinition[]
+  // The pulled cards (classifiable ones plus exactly one unclassifiable).
+  cards: readonly ClassificationCardDefinition[]
+  // The standard system suffix rendered under an accepted card, showing the
+  // statute flattening the question. `{category}` is interpolated with the chosen
+  // category's label.
+  flattenLine: string
+  // The system's objection appended to a refused card's authored refusalLine.
+  refusalObjection: string
+  shelfZero: ClassificationShelfZeroDefinition
+  // Exactly three removal slips.
+  slips: readonly ClassificationSlipDefinition[]
+  // The one-line reason shown on the locked method placeholders before unlock.
+  lockedLine: string
+  // Introduces the two canonical methods as physical acts once they unlock.
+  unlockLine: string
+  // Decorative plate anchors per stage (see RoomStageId). Every key must be a
+  // valid stage; coordinates are master-normalized [0,1].
+  zones: Readonly<Record<RoomStageId, { x: number; y: number }>>
+  // The concourse alteration per site action id (see SiteWorldOutcome). A room
+  // authors one entry for EVERY action id of its site (enforced by the content
+  // test), so filing either method resolves to a distinct outcome.
+  worldOutcome: Readonly<Record<FieldActionId, SiteWorldOutcome>>
+}
+
 export interface SiteDefinition {
   id: SiteId
   index: string
   name: string
   description: string
   actionIds: readonly FieldActionId[]
+  // Optional bounded classification room presented before the two canonical
+  // methods unlock (see ClassificationRoomDefinition). Absent on every site but
+  // the one that authors the filing verb.
+  room?: ClassificationRoomDefinition
   // Optional presentation-only close read for a location. It can make a site
   // spatially distinct, but never carries canonical evidence or mutates state.
   closeup?: {

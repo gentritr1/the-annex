@@ -12,6 +12,7 @@ import type {
   SceneWorldPortal,
   SiteDefinition,
   SiteId,
+  SiteWorldOutcome,
 } from '../game/types'
 import { containedPosterAnchor } from './posterProjection'
 
@@ -20,6 +21,10 @@ export interface AnnexWorldHandle {
   setPreview(siteId: SiteId | undefined): void
   setCompleted(siteIds: readonly SiteId[]): void
   setAlarm(level: number): void
+  // Apply the resolved concourse alteration per site (content-driven; may be
+  // empty). The opened outcome warms the portal frame/signal into an amber seam;
+  // the sealed one cools the frame and reveals a horizontal bar across the plate.
+  setResolvedOutcomes(outcomes: ReadonlyMap<SiteId, SiteWorldOutcome>): void
   invalidate(): void
   destroy(): void
 }
@@ -39,6 +44,8 @@ interface PortalRenderRecord {
   anchor: Vector3
   frameMaterial: MeshStandardMaterial
   signalMaterial: MeshStandardMaterial
+  // A thin horizontal bar across the plate, shown only for the sealed outcome.
+  barMesh: import('three').Mesh
 }
 
 type ThreeModule = typeof import('three')
@@ -257,6 +264,7 @@ export async function createAnnexWorld(
   const geometries = new Set<import('three').BufferGeometry>()
   const portalRecords: PortalRenderRecord[] = []
   const completed = new Set<SiteId>()
+  let resolvedOutcomes: ReadonlyMap<SiteId, SiteWorldOutcome> = new Map()
 
   function reportLoop(running: boolean) {
     if (loopReported === running) return
@@ -383,11 +391,38 @@ export async function createAnnexWorld(
 
   function updatePortalMaterials() {
     const traveling = selectedSiteId !== undefined
-    portalRecords.forEach(({ portal, frameMaterial, signalMaterial }) => {
+    portalRecords.forEach(({ portal, frameMaterial, signalMaterial, barMesh }) => {
       const selected = portal.siteId === selectedSiteId
       const previewed = portal.siteId === previewSiteId
       const active = selected || previewed
       const filed = completed.has(portal.siteId)
+      const outcome = resolvedOutcomes.get(portal.siteId)
+
+      // An authored outcome overrides the generic filed treatment. The opened seam
+      // runs warm amber and bright; the sealed frame cools/darkens and drops a bar
+      // across the plate (geometry, no texture) so the two read differently even in
+      // the poster fallback's high-contrast neighbour.
+      if (outcome && !active) {
+        if (outcome.variant === 'opened') {
+          frameMaterial.color.setHex(0xc89445)
+          frameMaterial.emissive.setHex(0x5a370e)
+          frameMaterial.emissiveIntensity = 0.72
+          signalMaterial.color.setHex(0xe0b06a)
+          signalMaterial.emissive.setHex(0x7a4a10)
+          signalMaterial.emissiveIntensity = 1.3
+        } else {
+          frameMaterial.color.setHex(0x232a2f)
+          frameMaterial.emissive.setHex(0x090d10)
+          frameMaterial.emissiveIntensity = 0.06
+          signalMaterial.color.setHex(0x39434a)
+          signalMaterial.emissive.setHex(0x0c1114)
+          signalMaterial.emissiveIntensity = 0.05
+        }
+        barMesh.visible = outcome.variant === 'sealed'
+        return
+      }
+
+      barMesh.visible = false
       const color = active ? 0xc89445 : filed ? 0x6db6b7 : traveling ? 0x242c31 : 0x303b43
       const emissive = active ? 0x4b2f0c : filed ? 0x173f42 : 0x0b1417
       frameMaterial.color.setHex(color)
@@ -772,8 +807,26 @@ export async function createAnnexWorld(
       signalMaterial,
     )
 
+    // A horizontal bar spanning the plate, shown only when this portal resolves to
+    // the sealed outcome. Primitive geometry, no texture; hidden by default.
+    const barGeometry = new THREE.BoxGeometry(portal.size.width * 0.92, 0.08, 0.06)
+    geometries.add(barGeometry)
+    const barMaterial = new THREE.MeshStandardMaterial({
+      color: 0x8f9aa0,
+      emissive: 0x1c2226,
+      emissiveIntensity: 0.3,
+      roughness: 0.6,
+      metalness: 0.3,
+    })
+    materials.add(barMaterial)
+    const barMesh = new THREE.Mesh(barGeometry, barMaterial)
+    barMesh.position.set(...portal.position).addScaledVector(normal, 0.12)
+    barMesh.rotation.y = portal.rotationY
+    barMesh.visible = false
+    scene.add(barMesh)
+
     const anchor = new THREE.Vector3(...portal.position).addScaledVector(normal, 0.18)
-    portalRecords.push({ portal, anchor, frameMaterial, signalMaterial })
+    portalRecords.push({ portal, anchor, frameMaterial, signalMaterial, barMesh })
   })
 
   const ambient = new THREE.AmbientLight(0x8fa0a5, 0.72)
@@ -819,6 +872,12 @@ export async function createAnnexWorld(
   function setCompleted(siteIds: readonly SiteId[]) {
     completed.clear()
     siteIds.forEach((siteId) => completed.add(siteId))
+    updatePortalMaterials()
+    scheduleFrame()
+  }
+
+  function setResolvedOutcomes(outcomes: ReadonlyMap<SiteId, SiteWorldOutcome>) {
+    resolvedOutcomes = outcomes
     updatePortalMaterials()
     scheduleFrame()
   }
@@ -879,6 +938,7 @@ export async function createAnnexWorld(
     setPreview,
     setCompleted,
     setAlarm,
+    setResolvedOutcomes,
     invalidate: scheduleFrame,
     destroy,
   }

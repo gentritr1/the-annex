@@ -6885,3 +6885,264 @@ p {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── The Small Archive classification room ──────────────────────────────────
+   A bounded, view-local filing interaction rendered inside the site inspector
+   before the two canonical methods unlock. Every interactive is a real <button>
+   with the global focus ring; touch targets are ≥44px; nothing is communicated by
+   colour alone (acceptance / refusal / turned slips always carry text). The only
+   motion is a short colour transition, gated off under reduced motion below. */
+.classification-room {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 12px 4px;
+  border-top: 1px solid var(--line);
+}
+
+/* Visible AND announced: the one live region for every room transition. */
+.room-announce {
+  margin: 0;
+  min-height: 1.3em;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--amber-soft);
+}
+.room-announce:empty {
+  min-height: 0;
+}
+
+.room-prompt,
+.room-filing-lead,
+.room-log-lead {
+  margin: 0;
+  color: var(--fog-dim);
+  font-size: 0.72rem;
+  font-weight: 650;
+  line-height: 1.4;
+}
+.room-filing-lead strong {
+  color: var(--record-bright);
+}
+
+.room-card-list,
+.room-slip-list,
+.room-locked-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.room-card {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  text-align: left;
+  padding: 12px 14px;
+  color: var(--record);
+  background: var(--concrete);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  transition:
+    background-color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out);
+}
+.room-card:hover {
+  background: var(--raised);
+}
+.room-card--selected {
+  background: oklch(0.24 0.05 70);
+  border-color: var(--amber);
+  box-shadow: inset 3px 0 0 var(--amber);
+}
+.room-card-title {
+  font-weight: 700;
+  font-size: 0.86rem;
+}
+.room-card-question {
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--record-bright);
+}
+.room-card-source {
+  font-size: 0.66rem;
+  color: var(--fog-dim);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 0.03em;
+}
+
+.room-filing {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  background: var(--concrete);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+}
+.room-targets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.room-category {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 10px 16px;
+  color: var(--record);
+  background: var(--raised);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  font-weight: 650;
+  font-size: 0.8rem;
+  transition: background-color 160ms var(--ease-out);
+}
+.room-category:hover {
+  background: var(--raised-hover);
+}
+.room-shelf-zero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--amber-soft);
+  border-style: dashed;
+}
+.room-shelf-zero small {
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.room-slip {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  padding: 12px 14px;
+  color: var(--record);
+  background: var(--concrete);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  transition: border-color 160ms var(--ease-out);
+}
+.room-slip-tab {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--fog-dim);
+}
+.room-slip--turned {
+  border-color: var(--cyan-deep);
+}
+.room-slip--turned .room-slip-tab {
+  color: var(--cyan);
+}
+.room-slip-fragment {
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.room-methods {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+.room-unlock {
+  margin: 0 0 6px;
+  padding: 0 4px;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--amber-soft);
+}
+.room-locked-reason {
+  margin: 0 0 8px;
+  padding: 0 4px;
+  font-size: 0.74rem;
+  line-height: 1.45;
+  color: var(--fog-dim);
+}
+.room-locked {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px;
+  background: var(--concrete);
+  border: 1px dashed var(--line);
+  border-radius: 6px;
+  opacity: 0.72;
+}
+.room-locked-method {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fog-dim);
+}
+.room-locked-title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--fog);
+}
+.room-locked-lock {
+  font-size: 0.66rem;
+  font-weight: 650;
+  color: var(--amber);
+}
+
+/* The unlocked methods reuse ChoiceButton. Outside .site-actions they would take
+   the tall 116px base grid, so mirror the compact inspector treatment here. */
+.classification-room .choice-row {
+  min-height: 0;
+  grid-template-columns: max-content minmax(0, 1fr) 22px;
+  gap: 12px;
+  padding: 16px 4px;
+}
+.classification-room .choice-row.choice-row-armed {
+  grid-template-columns: max-content minmax(0, 1fr) 56px;
+}
+.room-methods:has(.choice-row-armed) .choice-row:not(.choice-row-armed) {
+  opacity: 0.42;
+}
+
+/* The filed room portal keeps its authored outcome label visible (the base label
+   only shows on hover/focus/selected). */
+.annex-world-portal-label[data-outcome='true'] {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* High contrast: the selected card and turned slip get a shape cue, never colour
+   alone (they already carry aria-pressed + text). */
+.high-contrast .room-card--selected {
+  outline: 2px solid var(--amber);
+  outline-offset: -2px;
+}
+.high-contrast .room-slip--turned {
+  outline: 2px solid var(--cyan);
+  outline-offset: -2px;
+}
+
+/* Reduced motion: the room swaps instantly — no colour transitions. */
+.reduce-motion .classification-room *,
+.reduce-motion .annex-world-portal-label[data-outcome='true'] {
+  transition: none !important;
+  animation: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .classification-room * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
