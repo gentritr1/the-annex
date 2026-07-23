@@ -234,6 +234,17 @@ export function StartScreen({
             <label className="preference-toggle">
               <input
                 type="checkbox"
+                checked={settings.showTrustNumbers}
+                onChange={(event) => onUpdateSetting('showTrustNumbers', event.target.checked)}
+              />
+              <span>
+                <strong>Show trust values</strong>
+                <small>Print each persona’s standing as a number.</small>
+              </span>
+            </label>
+            <label className="preference-toggle">
+              <input
+                type="checkbox"
                 checked={settings.ambientSound}
                 onChange={(event) => onUpdateSetting('ambientSound', event.target.checked)}
               />

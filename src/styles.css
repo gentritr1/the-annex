@@ -670,6 +670,16 @@ p {
   font-size: 0.78rem;
 }
 
+/* F-11: once the case rail occupies the right column (the two-column desktop
+   layout begins at 1181px), the Access popover would drop straight over the rail's
+   Active dilemma. Anchor it clear of the rail — its right edge lands left of the
+   rail's 380px column, so it opens over the scene, never over the dilemma. */
+@media (min-width: 1181px) {
+  .preferences-popover {
+    right: calc(380px + 16px);
+  }
+}
+
 .case-layout {
   min-height: calc(100svh - var(--header-height));
   display: grid;
@@ -3271,6 +3281,17 @@ p {
   line-height: 1.45;
 }
 
+/* F-2: the tribunal threshold stated in-voice, spanning the full command bar as a
+   second row so it reads without opening anything and without disturbing the three
+   existing cells above it. */
+.field-threshold {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--fog-dim);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
 .field-objectives {
   display: flex;
   align-items: stretch;
@@ -4320,7 +4341,11 @@ p {
 
 .tribunal-chamber {
   position: relative;
-  min-height: clamp(480px, 52vw, 610px);
+  /* F-9: cap the banner against viewport HEIGHT so the first decision peeks above
+     the fold at 1280×800. object-fit:cover keeps the centred focal point (it crops
+     top/bottom edges, never distorts). The vw term keeps the cinematic scale on
+     tall/wide viewports; the vh cap folds it on short ones. */
+  min-height: min(clamp(420px, 48vw, 560px), 52vh);
   overflow: hidden;
   isolation: isolate;
   margin-bottom: 28px;
@@ -5496,10 +5521,38 @@ p {
 }
 
 .trust-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   color: var(--fog);
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
   font-size: 0.68rem;
   text-transform: uppercase;
+}
+
+/* F-4-lite: the persistent direction marker. Static (no animation), so it is the
+   reduced-motion path for a trust point that does not cross a band. Same cyan/coral
+   semantics as the pulse: cyan rises (a record opens), coral falls (a presence
+   guards). Kept legible without colour alone by the ▲/▼ glyph itself. */
+.trust-marker {
+  font-size: 0.6rem;
+  line-height: 1;
+}
+
+.trust-marker-rise {
+  color: var(--cyan);
+}
+
+.trust-marker-fall {
+  color: var(--coral);
+}
+
+/* F-3-lite: the one-line definition under "Methods recorded". */
+.rail-note {
+  margin: 0 0 8px;
+  color: var(--fog-dim);
+  font-size: 0.72rem;
+  line-height: 1.4;
 }
 
 .method-tags,

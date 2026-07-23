@@ -20,10 +20,13 @@ const statusLabels: Record<EvidenceStatus, string> = {
 }
 
 export function CaseRail({ state }: CaseRailProps) {
-  const { caseFile, evidenceDefinitions, sites } = getCaseContent(state.caseId)
+  const { caseFile, evidenceDefinitions } = getCaseContent(state.caseId)
   const [activeTab, setActiveTab] = useState<RailTab>('case')
   const [mobileOpen, setMobileOpen] = useState(false)
   const evidence = evidenceDefinitions.filter((item) => state.evidence.includes(item.id))
+  // Whether any persona's trust has moved off zero yet — gates the Social memory
+  // block's progressive reveal (F-6).
+  const anyTrust = personas.some((persona) => state.trust[persona.id] !== 0)
 
   // Presence pulse: a VIEW-only reaction to a trust change. We keep the previous
   // trust map in state and, when the incoming map differs, derive the pulse
@@ -32,18 +35,44 @@ export function CaseRail({ state }: CaseRailProps) {
   // presence guards). Suppressed under reduced motion.
   const [prevTrust, setPrevTrust] = useState(state.trust)
   const [pulses, setPulses] = useState<Partial<Record<PersonaId, 'rise' | 'fall'>>>({})
+  // Persistent direction markers (F-4-lite): the reduced-motion-safe static path.
+  // The 1100ms pulse above is easy to miss and never plays under reduced motion, so
+  // the FIRST trust point a player earns — which stays inside the wide "uncertain"
+  // band and so leaves the label word unchanged — otherwise reads as no change at
+  // all. A ▲/▼ marker holds beside that persona until the next field commit clears
+  // it. Set regardless of motion preference; anchored to the event count so a later
+  // commit (whether or not it moves trust) retires it.
+  const [markers, setMarkers] = useState<Partial<Record<PersonaId, 'rise' | 'fall'>>>({})
+  const [markerEventCount, setMarkerEventCount] = useState(state.events.length)
 
   if (prevTrust !== state.trust) {
     setPrevTrust(state.trust)
-    if (!state.settings.reducedMotion) {
-      const changed: Partial<Record<PersonaId, 'rise' | 'fall'>> = {}
-      for (const persona of personas) {
-        const delta = state.trust[persona.id] - prevTrust[persona.id]
-        if (delta > 0) changed[persona.id] = 'rise'
-        else if (delta < 0) changed[persona.id] = 'fall'
+    const changedPulses: Partial<Record<PersonaId, 'rise' | 'fall'>> = {}
+    const changedMarkers: Partial<Record<PersonaId, 'rise' | 'fall'>> = {}
+    for (const persona of personas) {
+      const delta = state.trust[persona.id] - prevTrust[persona.id]
+      if (delta === 0) continue
+      const direction = delta > 0 ? 'rise' : 'fall'
+      changedPulses[persona.id] = direction
+      // A marker only where the label word did NOT move — a band crossing already
+      // shows the change in the word itself, so a marker there would be redundant.
+      if (getTrustLabel(state.trust[persona.id]) === getTrustLabel(prevTrust[persona.id])) {
+        changedMarkers[persona.id] = direction
       }
-      if (Object.keys(changed).length > 0) setPulses(changed)
     }
+    if (!state.settings.reducedMotion && Object.keys(changedPulses).length > 0) {
+      setPulses(changedPulses)
+    }
+    // Replace (not accumulate): each commit that moves trust opens a fresh window,
+    // and its own event marks when the NEXT commit will retire these markers.
+    setMarkers(changedMarkers)
+    setMarkerEventCount(state.events.length)
+  } else if (Object.keys(markers).length > 0 && state.events.length > markerEventCount) {
+    // Retire the persistent markers on the next commit — a new event appended after
+    // the one that set them, even a field method that changed no trust at all.
+    // Done during render (the supported adjust-state-on-change pattern) rather than
+    // in an effect, so there is no cascading-render from a synchronous effect setState.
+    setMarkers({})
   }
 
   // Clear the pulse once it has played. setState lives in a timer callback here,
@@ -101,8 +130,12 @@ export function CaseRail({ state }: CaseRailProps) {
 
           <section className="rail-block rail-status-grid" aria-label="Case status">
             <div>
-              <span>Locations filed</span>
-              <strong>{state.completedSites.length} / {sites.length}</strong>
+              <span>Sites filed</span>
+              {/* Denominator is the tribunal threshold until it is met, then the
+                  district's true size — a third or fourth filing must register. */}
+              <strong>
+                {state.completedSites.length} / {state.completedSites.length >= 2 ? 4 : 2}
+              </strong>
             </div>
             <div>
               <span>Reconstruction</span>
@@ -120,47 +153,63 @@ export function CaseRail({ state }: CaseRailProps) {
             </div>
           </section>
 
-          <section className="rail-block">
-            <p className="rail-label">Social memory</p>
-            <ul className="persona-list">
-              {personas.map((persona) => {
-                const trust = state.trust[persona.id]
-                const pulse = pulses[persona.id]
-                return (
-                  <li
-                    key={persona.id}
-                    className={pulse === 'rise' ? 'pulse-rise' : pulse === 'fall' ? 'pulse-fall' : undefined}
-                  >
-                    <span className={`persona-signal trust-${getTrustLabel(trust)}`} aria-hidden="true" />
-                    <span className="persona-sigil" aria-hidden="true">
-                      <PersonaSigil personaId={persona.id} />
-                    </span>
-                    <span>
-                      <strong>{persona.name}</strong>
-                      <small>{persona.role}</small>
-                    </span>
-                    <span className="trust-label">
-                      {getTrustLabel(trust)}
-                      {state.settings.showTrustNumbers ? ` ${trust >= 0 ? '+' : ''}${trust}` : ''}
-                    </span>
-                  </li>
-                )
-              })}
-            </ul>
-          </section>
+          {/* Progressive disclosure (F-6): Social memory joins the flow the first
+              time any trust reads nonzero, rather than sitting as four "uncertain"
+              rows before the player has acted. */}
+          {anyTrust && (
+            <section className="rail-block">
+              <p className="rail-label">Social memory</p>
+              <ul className="persona-list">
+                {personas.map((persona) => {
+                  const trust = state.trust[persona.id]
+                  const pulse = pulses[persona.id]
+                  const marker = markers[persona.id]
+                  return (
+                    <li
+                      key={persona.id}
+                      className={pulse === 'rise' ? 'pulse-rise' : pulse === 'fall' ? 'pulse-fall' : undefined}
+                    >
+                      <span className={`persona-signal trust-${getTrustLabel(trust)}`} aria-hidden="true" />
+                      <span className="persona-sigil" aria-hidden="true">
+                        <PersonaSigil personaId={persona.id} />
+                      </span>
+                      <span>
+                        <strong>{persona.name}</strong>
+                        <small>{persona.role}</small>
+                      </span>
+                      <span className="trust-label">
+                        {getTrustLabel(trust)}
+                        {state.settings.showTrustNumbers ? ` ${trust >= 0 ? '+' : ''}${trust}` : ''}
+                        {marker && (
+                          <span className={`trust-marker trust-marker-${marker}`} aria-hidden="true">
+                            {marker === 'rise' ? '▲' : '▼'}
+                          </span>
+                        )}
+                      </span>
+                    </li>
+                  )
+                })}
+              </ul>
+            </section>
+          )}
 
-          <section className="rail-block">
-            <p className="rail-label">Methods recorded</p>
-            {state.methodTags.length > 0 ? (
+          {/* Progressive disclosure (F-6): Methods recorded joins the flow the
+              first time a tag exists. The defining line (F-3-lite) names what a
+              "method" is, so the block reads as legible record, not atmosphere. */}
+          {state.methodTags.length > 0 && (
+            <section className="rail-block">
+              <p className="rail-label">Methods recorded</p>
+              <p className="rail-note">
+                How you reached each finding. The people here — and the cases that
+                follow — keep the record of it.
+              </p>
               <div className="method-tags">
                 {state.methodTags.map((tag) => (
                   <span key={tag}>{methodLabels[tag]}</span>
                 ))}
               </div>
-            ) : (
-              <p className="rail-empty">Your first choice will appear here.</p>
-            )}
-          </section>
+            </section>
+          )}
         </div>
       )}
 

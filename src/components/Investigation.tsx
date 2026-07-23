@@ -1,6 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { getCaseContent, resolveFieldAction } from '../game/content'
 import { canEnterTribunal } from '../game/engine'
+import {
+  acousticStepLabel,
+  classificationStepLabel,
+  custodyStepLabel,
+  fieldCta,
+  type FieldCtaKind,
+} from '../game/fieldCta'
 import { resolveSiteOutcomes } from '../game/room'
 import { SceneStage } from '../scene/SceneStage'
 import { SITE_CLOSEUP_ENTRY_MS, SiteCloseupStage } from '../scene/SiteCloseupStage'
@@ -508,23 +515,70 @@ export function Investigation({
     : undefined
   const openSites = sites.filter((site) => !state.completedSites.includes(site.id))
 
-  const nextFieldAction = tribunalReady
-    ? { label: 'Enter tribunal', run: onEnterTribunal }
-    : state.completedSites.length === 0
-      ? {
-          label: 'Choose a method here',
-          run: () => selectSite(selectedSite.id, true),
-        }
-      : !reconstruction
-        ? { label: 'Open memory lattice', run: onOpenReconstruction }
-        : {
-            label: 'Complete one more site',
-            run: () => {
-              const nextSite =
-                openSites.find((site) => site.id === selectedSite.id) ?? openSites[0]
-              if (nextSite) selectSite(nextSite.id, true)
-            },
-          }
+  // The site inspector is always mounted, so the methods aren't gated behind a
+  // separate "enter the site" step — they're gated behind the close-read ritual, or
+  // shown at once on a plain method site. True once the room reaches its terminal
+  // (methods-revealed) phase, or immediately for a plain site; a filed site is past
+  // this entirely.
+  const roomMethodsRevealed = selectedSite.custodyRail
+    ? custodyPresentation?.phase === 'methods'
+    : selectedSite.room
+      ? roomPresentation?.phase === 'unlocked'
+      : selectedSite.acousticShadow
+        ? acousticPresentation?.phase === 'route-ready'
+        : true
+  const methodsVisible = !selectedCompletedAction && roomMethodsRevealed
+  // The in-voice name of the room's current step while mid-ritual, so the footer
+  // CTA can point at what the room is actually asking for (never "Choose a method"
+  // while the ritual defers it). Null on a plain or terminal-phase site.
+  const ritualStepLabel = selectedSite.custodyRail
+    ? custodyPresentation
+      ? custodyStepLabel(custodyPresentation.phase)
+      : null
+    : selectedSite.room
+      ? roomPresentation
+        ? classificationStepLabel(roomPresentation.phase)
+        : null
+      : selectedSite.acousticShadow
+        ? acousticPresentation
+          ? acousticStepLabel(acousticPresentation.phase)
+          : null
+        : null
+
+  const cta = fieldCta({
+    tribunalReady,
+    reconstructionFiled: Boolean(reconstruction),
+    completedSitesCount: state.completedSites.length,
+    methodsVisible,
+    ritualStepLabel,
+  })
+
+  function runCta(kind: FieldCtaKind) {
+    switch (kind) {
+      case 'tribunal':
+        onEnterTribunal()
+        return
+      case 'reconstruction':
+        onOpenReconstruction()
+        return
+      case 'next-site': {
+        const nextSite = openSites.find((site) => site.id === selectedSite.id) ?? openSites[0]
+        if (nextSite) selectSite(nextSite.id, true)
+        return
+      }
+      case 'ritual-step':
+        // Bring the live room control into view and hand it focus — the honest
+        // delivery of "do the step named," not a promise the click can't keep.
+        window.requestAnimationFrame(() => {
+          siteInspectorRef.current?.scrollIntoView({
+            behavior: reducedMotion ? 'auto' : 'smooth',
+            block: 'center',
+          })
+          siteInspectorRef.current?.focus({ preventScroll: true })
+        })
+        return
+    }
+  }
 
   function entryOriginFor(siteId: SiteId, sourceElement?: HTMLElement): CloseupEntryOrigin {
     const worldRect = worldViewRef.current?.getBoundingClientRect()
@@ -652,7 +706,9 @@ export function Investigation({
         </p>
         <div className="field-objectives" aria-label="Tribunal requirements">
           <span data-complete={state.completedSites.length >= 2 ? 'true' : undefined}>
-            <strong>{Math.min(state.completedSites.length, 2)} / 2</strong>
+            <strong>
+              {state.completedSites.length} / {state.completedSites.length >= 2 ? 4 : 2}
+            </strong>
             sites
           </span>
           <span data-complete={reconstruction ? 'true' : undefined}>
@@ -660,6 +716,10 @@ export function Investigation({
             model
           </span>
         </div>
+        <p className="field-threshold">
+          The tribunal will hear a record of two sites. The other two are yours to
+          leave read or unread.
+        </p>
       </header>
 
       <div className="field-workspace">
@@ -981,11 +1041,13 @@ export function Investigation({
           )}
         </div>
 
-        <div className="field-dock-actions">
-          <button className="button button-primary" type="button" onClick={nextFieldAction.run}>
-            {nextFieldAction.label} <span aria-hidden="true">→</span>
-          </button>
-        </div>
+        {cta && (
+          <div className="field-dock-actions">
+            <button className="button button-primary" type="button" onClick={() => runCta(cta.kind)}>
+              {cta.label} <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        )}
       </footer>
 
       {depositionEntry && (
