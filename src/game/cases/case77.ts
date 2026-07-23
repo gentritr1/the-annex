@@ -116,7 +116,7 @@ const evidenceDefinitions: readonly EvidenceDefinition[] = [
     title: 'The rain in room twelve',
     source: '77-A testimony',
     status: 'testimony',
-    claim: '77-A recalls rain against a window in a room that had no exterior wall.',
+    claim: '77-A recalls rain against a window in a room that had no exterior wall. “I know there was no glass,” she says. “I watched it anyway.”',
     contradiction: 'The Shepherd remembers Mara using the same image as a calming metaphor.',
   },
   {
@@ -253,7 +253,7 @@ const fieldActions: readonly FieldActionDefinition[] = [
     alarmDelta: 0,
     grantsTribunalOverride: false,
     eventTitle: '77-A was heard before she was measured',
-    eventDetail: 'Her impossible room matched a metaphor Mara once used when she was afraid.',
+    eventDetail: '“It rained on the window all night,” she told you. “There was no window. Write down that I know that.” Her impossible room matched a metaphor Mara once used when she was afraid.',
     counterfactualNote:
       'At Care ward 12 you measured her. You did not let her finish a single memory.',
     reactions: [
@@ -276,7 +276,7 @@ const fieldActions: readonly FieldActionDefinition[] = [
     alarmDelta: 0,
     grantsTribunalOverride: false,
     eventTitle: 'The scar persisted without tissue',
-    eventDetail: '77-A reported pain in a body location that has never been injured.',
+    eventDetail: '77-A reported pain in a body location that has never been injured. When it ended she said, “Mara would have told you to stop. I didn’t. Decide what that means.”',
     counterfactualNote:
       'At Care ward 12 you let her speak and left the contradiction standing. You did not press the scar until the memory came apart from the body.',
     reactions: [
@@ -309,7 +309,7 @@ const fieldActions: readonly FieldActionDefinition[] = [
     reactions: [
       {
         persona: 'defector',
-        line: '“You crossed clean, under the rain, and read the gap they left for insiders. No door shut behind you. That’s rare in here.”',
+        line: '“You made it across, and you saw the gap. They cut that on purpose — for people already inside. Nothing followed you out. In here, that’s a good day.”',
       },
     ],
   },
@@ -332,7 +332,7 @@ const fieldActions: readonly FieldActionDefinition[] = [
     reactions: [
       {
         persona: 'defector',
-        line: '“A dead credential, awake and answering to you. You hold a door the law bricked over. Ask what you’re willing to sign with it.”',
+        line: '“So the dead key still answers. I half hoped it wouldn’t. The law bricked that door up for a reason — whatever you sign through it, you own.”',
       },
       {
         persona: 'registrar',
@@ -949,7 +949,7 @@ const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
     reactions: [
       {
         persona: 'defector',
-        line: '“You filed the doubt instead of smoothing it. The anchors won’t collapse, and you didn’t force them. That door stays open.”',
+        line: '“You wrote down ‘I don’t know’ and filed it. Nobody in this building does that. I’d given up waiting to see it.”',
       },
     ],
   },
@@ -1080,21 +1080,25 @@ const decisionConsequences: Readonly<Record<DecisionId, readonly string[]>> = {
     '77-A leaves review as Mara Vale and inherits every relationship attached to that name.',
     'The restoration process becomes a precedent creditors and families may both invoke.',
     'Any emerging self inside 77-A is legally invisible unless Mara chooses to name it later.',
+    '“I have her name back,” 77-A says at release. “I keep waiting for it to feel like mine and not like hers.”',
   ],
   'charter-new-person': [
     '77-A leaves review with full civic protection under a name she may choose herself.',
     'Mara Vale remains legally dead; property and unfinished obligations pass without her.',
     'The city gains its first category for a person made from another person’s continuity claim.',
+    '“A name of my own,” she says. “Now I find out which of the memories will follow me into it.”',
   ],
   'quarantine-review': [
     '77-A cannot be erased for ninety days, but she cannot leave the Annex or hold property.',
     'An independent panel receives the contradictions you preserved and the methods you used.',
     'Delay prevents one irreversible harm while creating a slower institutional one.',
+    '“Ninety days,” she says. “Mara never had to prove she was real for even one of them.”',
   ],
   'overwrite-record': [
     'The registry now recognizes Mara Vale. The tribunal never voted.',
     'The dormant credential’s fraud is woven into the same chain that proves her continuity.',
     'A civic trace remains open. Someone will eventually ask who authored the fourth minute after the collapse.',
+    '“So I am Mara because a record says so,” she says. “You know what that signature is worth. Now we both live under it.”',
   ],
 }
 
@@ -1119,9 +1123,9 @@ function getPersonaReflection(personaId: PersonaId, state: GameState): string {
   }
 
   if (personaId === 'defector') {
-    if (state.methodTags.includes('stealth')) return '“You walked through the omission instead of around it. The next door will know that.”'
-    if (state.alarm > 0) return '“The system noticed you. More useful: you saw which exit it closed first.”'
-    return '“Clean route. No clean consequence.”'
+    if (state.methodTags.includes('stealth')) return '“You went through the hole in the record instead of around it. Doors talk to each other in here. The next one will know.”'
+    if (state.alarm > 0) return '“They noticed you. That happens. What matters is you saw which exit they shut first. File that somewhere they can’t.”'
+    return '“The route was clean. The consequences won’t be. They never are.”'
   }
 
   if (state.methodTags.includes('care')) return '“You let a person speak before a category did. I saved the order.”'

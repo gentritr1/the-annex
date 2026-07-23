@@ -352,7 +352,7 @@ const fieldActions: readonly FieldActionDefinition[] = [
     reactions: [
       {
         persona: 'defector',
-        line: '“A dead seal, awake and answering to you. The city built 81-C in secret; now you can seat them the same way. Fitting.”',
+        line: '“The city built 81-C in the dark. Now you can seat them the same way. I’d laugh, but I used to be the one holding seals like this.”',
       },
       {
         persona: 'registrar',
@@ -406,7 +406,7 @@ const fieldActions: readonly FieldActionDefinition[] = [
       },
       {
         persona: 'defector',
-        line: '“The opposition just handed you its cleanest exit: call the witness a thing, and the whole embarrassing collapse stays sealed.”',
+        line: '“Call the witness a thing, and the collapse stays sealed. That’s the exit they left open for you. I’ve watched better people take it.”',
       },
     ],
   },
@@ -557,7 +557,7 @@ const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
     reactions: [
       {
         persona: 'defector',
-        line: '“You filed the fabrication instead of smoothing it. A witness cut to fit the city’s need — and you left the seams showing.”',
+        line: '“A witness cut to the city’s measurements, and you filed it seams out. Good. I’m tired of smooth records.”',
       },
     ],
   },
@@ -785,11 +785,11 @@ function getPersonaReflection(personaId: PersonaId, state: GameState): string {
   }
 
   if (personaId === 'defector') {
-    if (state.methodTags.includes('fraud')) return '“You seated a city-made witness with a city-made seal. The most inside job there is — and now it is yours.”'
-    if (decision === 'strike-testimony') return '“You handed 81-C the one thing the city never priced: the choice to stay shut. Ellis knows the hand. Now no one can make them say it.”'
-    if (state.methodTags.includes('stealth')) return '“You read the certification path from outside it. A witness this convenient is never assembled where the public can watch.”'
-    if (state.alarm > 0) return '“The system noticed you. More useful: you saw which door the city opened to build a witness in the dark.”'
-    return '“Clean route. But a witness the city commissioned is never a clean consequence.”'
+    if (state.methodTags.includes('fraud')) return '“A city-made witness, seated with a city-made seal. The most inside job there is. It’s yours now — and I can tell you from experience, it stays yours.”'
+    if (decision === 'strike-testimony') return '“You gave Ellis the one thing the city never priced: the right to stay shut. They know the hand. Now no one can pull it out of them.”'
+    if (state.methodTags.includes('stealth')) return '“You read the certification path from the outside. Of course it was built where no one could watch. Convenient witnesses always are.”'
+    if (state.alarm > 0) return '“They noticed you. That happens. But you saw which door the city opened to build its witness in the dark. Keep that.”'
+    return '“The route was clean. Nothing the city commissions is. I’d know.”'
   }
 
   // The Small Archivist.
@@ -849,7 +849,7 @@ const precedentEffects: readonly PrecedentEffect[] = [
         reactions: [
           {
             persona: 'defector',
-            line: '“You’ve raised a dead hand before. The city found that one and watches its dormant seals faster now — this trace lit as you turned it.”',
+            line: '“You’ve woken a dead hand before. They found it. They watch the dormant seals faster now — this one lit a trace as it turned in your hand.”',
           },
           {
             persona: 'registrar',
