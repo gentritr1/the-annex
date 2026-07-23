@@ -366,6 +366,98 @@ export interface ClassificationRoomDefinition {
   worldOutcome: Readonly<Record<FieldActionId, SiteWorldOutcome>>
 }
 
+// ── Custody Rail (Registry Intake's "handling" verb) ─────────────────────────
+// A bounded, deterministic, view-local interaction a case may author at one field
+// site. The player seats the admitted carriers, tests an unassigned carrier against
+// the already-closed rail, then reads the audit mirror before the two canonical
+// methods unlock. Nothing here is persisted: the room's progress is React state
+// only, and the reducer/engine never learn it exists. Every case-specific string
+// and plate coordinate stays in authored content.
+
+export const CUSTODY_RAIL_STAGES = ['press', 'closure', 'mirror', 'methods'] as const
+
+export type CustodyRailStageId = (typeof CUSTODY_RAIL_STAGES)[number]
+
+export const CUSTODY_RAIL_PHASES = [
+  'intake',
+  'late-carrier',
+  'mirror',
+  'reading',
+  'methods',
+] as const
+
+export type CustodyRailPhaseId = (typeof CUSTODY_RAIL_PHASES)[number]
+
+export interface CustodyCarrierDefinition {
+  id: string
+  label: string
+  source: string
+  actionLabel: string
+  seatedLine: string
+}
+
+export type CustodyRailTreatment = 'chain' | 'return'
+
+export interface CustodyRailDefinition {
+  // The handling instruction above the three admitted carriers.
+  intro: string
+  // Exactly three admitted carriers. Each is seated into its own marked notch;
+  // the player may handle them in any order.
+  carriers: readonly [
+    CustodyCarrierDefinition,
+    CustodyCarrierDefinition,
+    CustodyCarrierDefinition,
+  ]
+  // Announced when the final admitted carrier seats and the official gate closes.
+  closureLine: string
+  // The unassigned carrier made available only after the official intake closes.
+  lateCarrier: {
+    label: string
+    source: string
+    prompt: string
+    actionLabel: string
+    refusalLine: string
+  }
+  // The audit mirror made available only after the late carrier is refused.
+  mirror: {
+    label: string
+    prompt: string
+    actionLabel: string
+    readingLabel: string
+    readingLine: string
+    restraintLine: string
+    readLine: string
+  }
+  // Explicit acknowledgement of the stationary reading beat.
+  proceedLabel: string
+  // Introduces the two unchanged canonical methods.
+  unlockLine: string
+  // Decorative close-read anchors, normalized to the 1600×900 master.
+  zones: Readonly<Record<CustodyRailStageId, { x: number; y: number }>>
+  // The three admitted carriers plus the unassigned fourth carrier, normalized
+  // to the same plate. These drive thin, pointer-inert latch traces only.
+  carrierAnchors: readonly [
+    { x: number; y: number },
+    { x: number; y: number },
+    { x: number; y: number },
+    { x: number; y: number },
+  ]
+  // Explicit method → visual treatment mapping. Presentation is never inferred
+  // from method tags, evidence, trust, or other canonical effects.
+  actionTreatments: Readonly<
+    Partial<Record<FieldActionId, CustodyRailTreatment>>
+  >
+}
+
+// Presentation handed up to the close-read plate. It is derived from view-local
+// reducer state and never persisted.
+export interface CustodyRailPlateState {
+  phase: CustodyRailPhaseId
+  seatedCarrierIds: readonly string[]
+  lateCarrierTried: boolean
+  mirrorRead: boolean
+}
+
 // ── Acoustic Shadow (the Maintenance Spine's "route-planning" verb) ──────────
 // A bounded, deterministic, view-local reconnaissance interaction a case may
 // author at one field site. The player reads a rain-masked sensor cadence and
@@ -496,6 +588,10 @@ export interface SiteDefinition {
   // canonical methods unlock (see AcousticShadowRoomDefinition). Absent on every
   // site but the one that authors the reconnaissance verb.
   acousticShadow?: AcousticShadowRoomDefinition
+  // Optional bounded custody-rail room presented before the two canonical methods
+  // unlock (see CustodyRailDefinition). Presentation only; absent from sites that
+  // do not author a physical intake-handling verb.
+  custodyRail?: CustodyRailDefinition
   // Optional presentation-only close read for a location. It can make a site
   // spatially distinct, but never carries canonical evidence or mutates state.
   closeup?: {

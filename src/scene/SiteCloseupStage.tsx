@@ -1,5 +1,6 @@
 import { useState, type CSSProperties } from 'react'
 import { acousticShadowStageFor } from '../game/acousticShadow'
+import { custodyRailStageFor } from '../game/custodyRail'
 import { roomStageFor } from '../game/room'
 import {
   resolveRainPresenceState,
@@ -9,6 +10,9 @@ import type {
   AcousticShadowPlateState,
   AcousticShadowRoomDefinition,
   AcousticShadowStageId,
+  CustodyRailDefinition,
+  CustodyRailPlateState,
+  CustodyRailTreatment,
   FieldActionDefinition,
   FieldActionId,
   RoomPlateState,
@@ -47,6 +51,13 @@ interface SiteCloseupStageProps {
   // only after the settled closeup is active and both reduced-motion signals are
   // clear, so the atomic master remains the no-download fallback.
   acousticDepthAssets?: AcousticShadowRoomDefinition['depthAssets']
+  // Registry Intake's view-local custody handling and authored source-space
+  // geometry. The definition also suppresses the old entry-time checksum flourish:
+  // the mirror must not answer before the player reaches it.
+  custodyStage?: CustodyRailPlateState
+  custodyDefinition?: CustodyRailDefinition
+  custodyPreviewVariant?: CustodyRailTreatment
+  custodyResolvedVariant?: CustodyRailTreatment
   depthEnhancementEnabled?: boolean
   // The auxiliary Care Ward matte is deliberately more conservative than the
   // code-native state traces: it never mounts during travel, reduced motion, or
@@ -68,6 +79,10 @@ export function SiteCloseupStage({
   acousticZones,
   acousticResolvedVariant,
   acousticDepthAssets,
+  custodyStage,
+  custodyDefinition,
+  custodyPreviewVariant,
+  custodyResolvedVariant,
   depthEnhancementEnabled = false,
   rainPresenceAssetEnabled = false,
 }: SiteCloseupStageProps) {
@@ -85,7 +100,11 @@ export function SiteCloseupStage({
     acousticStage && acousticZones
       ? acousticZones[acousticShadowStageFor(acousticStage)]
       : undefined
-  const derivedFocus = roomFocus ?? acousticFocus
+  const custodyFocus =
+    custodyStage && custodyDefinition
+      ? custodyDefinition.zones[custodyRailStageFor(custodyStage.phase)]
+      : undefined
+  const derivedFocus = roomFocus ?? acousticFocus ?? custodyFocus
   // A room stage takes precedence for the focus point while a room is active and no
   // method is being previewed/resolved, so the plate drifts along its own vocabulary
   // (the classification drawer/aperture/log, or the corridor's near/mid/far/door).
@@ -109,6 +128,8 @@ export function SiteCloseupStage({
   const showRoomStage = Boolean(roomStage && roomZones)
   const acousticPhase = acousticStage?.phase
   const showAcousticStage = Boolean(acousticStage && acousticZones)
+  const custodyPhase = custodyStage?.phase
+  const showCustodyStage = Boolean(custodyStage && custodyDefinition)
   const acousticDepthStage =
     acousticStage && acousticZones
       ? acousticShadowStageFor(acousticStage)
@@ -130,6 +151,7 @@ export function SiteCloseupStage({
       data-room-focus={derivedFocus && !emphasizedZone ? 'true' : undefined}
       data-room-phase={phase}
       data-acoustic-phase={acousticPhase}
+      data-custody-phase={custodyPhase}
       data-resolved={resolvedActionId ? 'true' : undefined}
       style={stageStyle}
       aria-hidden="true"
@@ -169,7 +191,7 @@ export function SiteCloseupStage({
               assetEnabled={rainPresenceAssetEnabled}
             />
           ) : null}
-          {closeup.atmosphere === 'checksum-echo' ? (
+          {closeup.atmosphere === 'checksum-echo' && !custodyDefinition ? (
             <div className="site-closeup-checksum-echo" />
           ) : null}
           {closeup.atmosphere === 'authority-diagnostic' ? (
@@ -187,8 +209,22 @@ export function SiteCloseupStage({
           {showAcousticStage && acousticStage && acousticZones ? (
             <AcousticShadowStagecraft acousticStage={acousticStage} acousticZones={acousticZones} />
           ) : null}
+          {showCustodyStage && custodyStage && custodyDefinition ? (
+            <CustodyRailStagecraft
+              custodyStage={custodyStage}
+              definition={custodyDefinition}
+              previewVariant={custodyPreviewVariant}
+            />
+          ) : null}
           {resolvedActionId && acousticZones && acousticResolvedVariant ? (
             <AcousticShadowResolved variant={acousticResolvedVariant} acousticZones={acousticZones} />
+          ) : null}
+          {resolvedActionId && custodyDefinition && custodyResolvedVariant ? (
+            <CustodyRailOutcomeTrace
+              variant={custodyResolvedVariant}
+              definition={custodyDefinition}
+              tone="resolved"
+            />
           ) : null}
           {closeup.zones ? (
             <div className="site-closeup-zones">
@@ -434,6 +470,184 @@ function RoomStagecraft({
 
       {/* Methods: the room settles toward its consequential centre. */}
       <div className="scr-settle" />
+    </div>
+  )
+}
+
+function custodyRailGeometry(definition: CustodyRailDefinition) {
+  const point = (value: { x: number; y: number }) =>
+    `${value.x * 100} ${value.y * 100}`
+  const admitted = [
+    definition.carrierAnchors[0],
+    definition.carrierAnchors[1],
+    definition.carrierAnchors[2],
+    definition.zones.closure,
+  ]
+  const fullRail = [...definition.carrierAnchors, definition.zones.closure]
+  const closure = definition.zones.closure
+  const mirror = definition.zones.mirror
+  const control = {
+    x: (closure.x + mirror.x) / 2,
+    y: Math.min(closure.y, mirror.y) - 0.015,
+  }
+  return {
+    admittedPath: `M ${admitted.map(point).join(' L ')}`,
+    fullRailPath: `M ${fullRail.map(point).join(' L ')}`,
+    latePath: `M ${point(definition.carrierAnchors[2])} L ${point(
+      definition.carrierAnchors[3],
+    )} L ${point(closure)}`,
+    mirrorPath: `M ${point(closure)} Q ${point(control)} ${point(mirror)}`,
+  }
+}
+
+// Registry Intake's authored, pointer-inert handling traces. Thin source-registered
+// latches let the existing machinery remember what the player handled: three
+// admitted carriers seat, the late carrier meets a physical stop, and only then
+// does the mirror branch answer. All semantic copy remains in the DOM room.
+function CustodyRailStagecraft({
+  custodyStage,
+  definition,
+  previewVariant,
+}: {
+  custodyStage: CustodyRailPlateState
+  definition: CustodyRailDefinition
+  previewVariant?: CustodyRailTreatment
+}) {
+  const anchor = (value: { x: number; y: number }): CSSProperties => ({
+    left: `${value.x * 100}%`,
+    top: `${value.y * 100}%`,
+  })
+  const geometry = custodyRailGeometry(definition)
+  const closureVisible = custodyStage.phase !== 'intake'
+
+  return (
+    <div
+      className="site-closeup-custody"
+      data-custody-phase={custodyStage.phase}
+      data-late-tried={custodyStage.lateCarrierTried ? 'true' : undefined}
+      data-mirror-read={custodyStage.mirrorRead ? 'true' : undefined}
+    >
+      <svg
+        className="crs-routes"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+      >
+        <path className="crs-rail-base" d={geometry.fullRailPath} />
+        {closureVisible ? (
+          <path
+            className="crs-late-route"
+            data-state={custodyStage.lateCarrierTried ? 'refused' : 'available'}
+            d={geometry.latePath}
+          />
+        ) : null}
+        {custodyStage.lateCarrierTried ? (
+          <path
+            className="crs-mirror-route"
+            data-state={custodyStage.mirrorRead ? 'read' : 'available'}
+            d={geometry.mirrorPath}
+          />
+        ) : null}
+      </svg>
+
+      {definition.carrierAnchors.map((carrierAnchor, index) => {
+        const admittedCarrier = definition.carriers[index]
+        const state = admittedCarrier
+          ? custodyStage.seatedCarrierIds.includes(admittedCarrier.id)
+            ? 'seated'
+            : 'waiting'
+          : custodyStage.lateCarrierTried
+            ? 'refused'
+            : custodyStage.phase === 'late-carrier'
+              ? 'current'
+              : 'waiting'
+        return (
+          <span
+            key={index}
+            className="crs-latch"
+            data-carrier={index + 1}
+            data-state={state}
+            style={anchor(carrierAnchor)}
+          />
+        )
+      })}
+
+      {custodyStage.seatedCarrierIds.length > 0 &&
+      custodyStage.phase === 'intake' ? (
+        <span
+          className="crs-press-response"
+          key={custodyStage.seatedCarrierIds.join('-')}
+          style={anchor(definition.zones.press)}
+        />
+      ) : null}
+      <span
+        className="crs-closure"
+        data-closed={closureVisible ? 'true' : undefined}
+        style={anchor(definition.zones.closure)}
+      />
+      <span
+        className="crs-mirror-ring"
+        data-state={
+          custodyStage.mirrorRead
+            ? 'read'
+            : custodyStage.lateCarrierTried
+              ? 'available'
+              : 'dormant'
+        }
+        style={anchor(definition.zones.mirror)}
+      />
+
+      {custodyStage.phase === 'methods' && previewVariant ? (
+        <CustodyRailOutcomeTrace
+          variant={previewVariant}
+          definition={definition}
+          tone="preview"
+        />
+      ) : null}
+    </div>
+  )
+}
+
+// Method attention and settled filed outcomes use the same two structural
+// silhouettes. Chain = one continuous line ending in the press; return = the
+// official line stops at closure and a separate dashed branch reaches the mirror.
+function CustodyRailOutcomeTrace({
+  variant,
+  definition,
+  tone,
+}: {
+  variant: CustodyRailTreatment
+  definition: CustodyRailDefinition
+  tone: 'preview' | 'resolved'
+}) {
+  const anchor = (value: { x: number; y: number }): CSSProperties => ({
+    left: `${value.x * 100}%`,
+    top: `${value.y * 100}%`,
+  })
+  const geometry = custodyRailGeometry(definition)
+  return (
+    <div
+      className="site-closeup-custody-outcome"
+      data-variant={variant}
+      data-tone={tone}
+    >
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path className="crso-official" d={geometry.admittedPath} />
+        {variant === 'return' ? (
+          <path className="crso-return" d={geometry.mirrorPath} />
+        ) : null}
+      </svg>
+      <span
+        className="crso-stop"
+        style={anchor(definition.zones.closure)}
+      />
+      <span
+        className={`crso-ring crso-ring--${variant}`}
+        style={anchor(
+          variant === 'chain'
+            ? definition.zones.press
+            : definition.zones.mirror,
+        )}
+      />
     </div>
   )
 }

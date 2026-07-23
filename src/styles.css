@@ -2274,6 +2274,197 @@ p {
   opacity: 1;
 }
 
+/* ── Registry Intake custody-rail stagecraft ─────────────────────────────────
+   Source-registered, pointer-inert traces over the existing master. The props in
+   the plate do the storytelling; these marks only retain handling state. */
+.site-closeup-custody,
+.site-closeup-custody-outcome {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  pointer-events: none;
+}
+.site-closeup-custody > *:not(svg):not(.site-closeup-custody-outcome),
+.site-closeup-custody-outcome > *:not(svg) {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+.crs-routes,
+.site-closeup-custody-outcome > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.crs-routes path,
+.site-closeup-custody-outcome path {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.crs-rail-base {
+  stroke: oklch(0.6 0.025 210 / 0.3);
+  stroke-width: 1.2;
+}
+.crs-late-route,
+.crs-mirror-route {
+  stroke-width: 1.8;
+  transition:
+    stroke 220ms var(--ease-out),
+    stroke-dasharray 220ms var(--ease-out),
+    opacity 220ms var(--ease-out);
+}
+.crs-late-route[data-state='available'] {
+  stroke: oklch(0.78 0.12 74 / 0.8);
+}
+.crs-late-route[data-state='refused'] {
+  stroke: oklch(0.58 0.025 210 / 0.72);
+  stroke-dasharray: 3 5;
+}
+.crs-mirror-route[data-state='available'] {
+  stroke: oklch(0.78 0.12 74 / 0.82);
+  stroke-dasharray: 4 5;
+}
+.crs-mirror-route[data-state='read'] {
+  stroke: var(--cyan);
+  stroke-width: 2.2;
+}
+
+/* Cartridge latch: solid inset registration when seated; dashed and offset at the
+   closure refusal. Shape carries every state independently of hue. */
+.crs-latch {
+  width: 13px;
+  height: 13px;
+  border: 1px solid oklch(0.62 0.025 210 / 0.38);
+  border-radius: 3px;
+  opacity: 0.38;
+  transform: translate(-50%, -50%) rotate(-18deg);
+  transition:
+    opacity 180ms var(--ease-out),
+    border-color 180ms var(--ease-out),
+    box-shadow 180ms var(--ease-out),
+    transform 150ms var(--ease-out);
+}
+.crs-latch[data-state='current'] {
+  opacity: 1;
+  border-color: var(--amber);
+  box-shadow: inset 0 0 0 2px oklch(0.72 0.14 70 / 0.18);
+}
+.crs-latch[data-state='seated'] {
+  opacity: 1;
+  border-color: var(--cyan);
+  box-shadow: inset 0 0 0 2px oklch(0.78 0.11 190 / 0.24);
+}
+.crs-latch[data-state='refused'] {
+  opacity: 0.78;
+  border-style: dashed;
+  border-color: var(--fog);
+  transform: translate(calc(-50% - 4px), -50%) rotate(-18deg);
+}
+
+/* One short press response per admitted carrier. It never loops and disappears
+   entirely under either reduced-motion signal. */
+.crs-press-response {
+  width: 7%;
+  aspect-ratio: 1;
+  border: 1.5px solid var(--amber);
+  border-radius: 50%;
+  opacity: 0;
+  animation: crs-press-seat 210ms var(--ease-out) both;
+}
+@keyframes crs-press-seat {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.82);
+  }
+  55% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0.42;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.crs-closure,
+.crso-stop {
+  width: 3px;
+  height: 14%;
+  background: oklch(0.7 0.035 210 / 0.75);
+  box-shadow: 0 0 0 1px oklch(0.03 0 0 / 0.55);
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(31deg);
+  transition: opacity 180ms var(--ease-out);
+}
+.crs-closure[data-closed='true'] {
+  opacity: 0.9;
+}
+
+.crs-mirror-ring {
+  width: 8%;
+  aspect-ratio: 1;
+  border: 1px solid oklch(0.6 0.025 210 / 0.42);
+  border-radius: 50%;
+  opacity: 0.35;
+  transition:
+    opacity 220ms var(--ease-out),
+    border-color 220ms var(--ease-out),
+    box-shadow 220ms var(--ease-out);
+}
+.crs-mirror-ring[data-state='available'] {
+  opacity: 0.9;
+  border-style: dashed;
+  border-color: var(--amber);
+}
+.crs-mirror-ring[data-state='read'] {
+  opacity: 1;
+  border-color: var(--cyan);
+  box-shadow:
+    inset 0 0 0 3px oklch(0.04 0 0 / 0.7),
+    inset 0 0 0 4px var(--cyan);
+}
+
+/* Preview and filed silhouettes share geometry but not colour: amber is player
+   attention, cyan is the settled record. */
+.site-closeup-custody-outcome {
+  color: var(--amber);
+}
+.site-closeup-custody-outcome[data-tone='resolved'] {
+  color: var(--cyan);
+}
+.site-closeup-custody-outcome path {
+  stroke: currentColor;
+}
+.crso-official {
+  stroke-width: 2.2;
+}
+.crso-return {
+  stroke-width: 2.2;
+  stroke-dasharray: 4 5;
+}
+.site-closeup-custody-outcome .crso-stop {
+  color: inherit;
+  background: currentColor;
+  opacity: 0.9;
+}
+.site-closeup-custody-outcome[data-variant='chain'] .crso-stop {
+  height: 9%;
+  opacity: 0.62;
+}
+.crso-ring {
+  width: 8%;
+  aspect-ratio: 1;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 3px oklch(0.04 0 0 / 0.62);
+}
+.crso-ring--return {
+  border-style: double;
+  border-width: 3px;
+}
+
 /* ── The Maintenance Spine Acoustic Shadow stagecraft (plate overlays) ─────────
    Authored, pointer-inert overlays in the plate's source space (from the room's
    near/mid/far/credential anchors on the corridor). Progress reads through the
@@ -2522,6 +2713,13 @@ p {
   transition: opacity 300ms var(--ease-out);
 }
 
+/* Registry methods remain absent from the plate until the custody reading has been
+   acknowledged. The props reveal the investigation before PROCEDURE / SYSTEMS. */
+.site-closeup-stage[data-custody-phase]:not([data-custody-phase='methods']) .site-closeup-zone {
+  opacity: 0;
+  transition: opacity 300ms var(--ease-out);
+}
+
 @keyframes site-closeup-enter {
   0% {
     clip-path: ellipse(2% 7% at var(--site-entry-x, 50%) var(--site-entry-y, 50%));
@@ -2717,6 +2915,30 @@ p {
   display: none;
 }
 
+.high-contrast .site-closeup-custody,
+.high-contrast .site-closeup-custody-outcome {
+  mix-blend-mode: normal;
+  filter: none;
+}
+.high-contrast .crs-rail-base,
+.high-contrast .crs-late-route,
+.high-contrast .crs-mirror-route,
+.high-contrast .site-closeup-custody-outcome path {
+  stroke: var(--record-bright);
+  filter: none;
+}
+.high-contrast .crs-latch,
+.high-contrast .crs-mirror-ring,
+.high-contrast .crso-ring {
+  border-color: var(--record-bright);
+  box-shadow: none;
+}
+.high-contrast .crs-closure,
+.high-contrast .crso-stop {
+  background: var(--record-bright);
+  box-shadow: none;
+}
+
 .high-contrast .site-closeup-rain-memory,
 .high-contrast .cwr-presence-field {
   display: none;
@@ -2802,6 +3024,10 @@ p {
 .reduce-motion .site-closeup-acoustic *,
 .reduce-motion .site-closeup-acoustic-resolved,
 .reduce-motion .site-closeup-acoustic-resolved *,
+.reduce-motion .site-closeup-custody,
+.reduce-motion .site-closeup-custody *,
+.reduce-motion .site-closeup-custody-outcome,
+.reduce-motion .site-closeup-custody-outcome *,
 .reduce-motion .site-closeup-acoustic-depth,
 .reduce-motion .site-closeup-acoustic-depth * {
   animation: none !important;
@@ -2815,8 +3041,13 @@ p {
 .reduce-motion .site-closeup-argument-register,
 .reduce-motion .site-closeup-category-register,
 .reduce-motion .scr-drawer-flatten,
+.reduce-motion .crs-press-response,
 .reduce-motion .site-closeup-acoustic-depth {
   display: none;
+}
+
+.reduce-motion .crs-latch[data-state='refused'] {
+  transform: translate(-50%, -50%) rotate(-18deg);
 }
 
 /* The rain-shadow occlusion has no one-shot to play under reduced motion, so it
@@ -2858,6 +3089,10 @@ p {
   .site-closeup-acoustic *,
   .site-closeup-acoustic-resolved,
   .site-closeup-acoustic-resolved *,
+  .site-closeup-custody,
+  .site-closeup-custody *,
+  .site-closeup-custody-outcome,
+  .site-closeup-custody-outcome *,
   .site-closeup-acoustic-depth,
   .site-closeup-acoustic-depth * {
     animation: none !important;
@@ -2871,8 +3106,13 @@ p {
   .site-closeup-argument-register,
   .site-closeup-category-register,
   .scr-drawer-flatten,
+  .crs-press-response,
   .site-closeup-acoustic-depth {
     display: none;
+  }
+
+  .crs-latch[data-state='refused'] {
+    transform: translate(-50%, -50%) rotate(-18deg);
   }
 
   .asc-shadow {
@@ -7684,6 +7924,31 @@ p {
 }
 
 @media (forced-colors: active) {
+  .site-closeup-custody,
+  .site-closeup-custody-outcome {
+    forced-color-adjust: auto;
+  }
+
+  .crs-rail-base,
+  .crs-late-route,
+  .crs-mirror-route,
+  .site-closeup-custody-outcome path {
+    stroke: CanvasText;
+  }
+
+  .crs-latch,
+  .crs-mirror-ring,
+  .crso-ring {
+    border-color: CanvasText;
+    box-shadow: none;
+  }
+
+  .crs-closure,
+  .crso-stop {
+    background: CanvasText;
+    box-shadow: none;
+  }
+
   .site-closeup-rain-memory,
   .cwr-presence-field {
     display: none;
@@ -8128,6 +8393,383 @@ p {
   .room-announce {
     height: auto;
     min-height: 3.3em;
+  }
+}
+
+/* ── Registry Intake custody rail ────────────────────────────────────────────
+   One fixed-height physical workstation. The admitted tray, closure refusal,
+   mirror reading, and canonical methods replace one another in place. */
+.custody-rail-room {
+  position: relative;
+  height: 384px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 4px 4px;
+  border-top: 1px solid var(--line);
+}
+.cr-announce {
+  margin: 0;
+  height: 2.7em;
+  overflow: hidden;
+  font-size: 0.76rem;
+  line-height: 1.34;
+  color: var(--amber-soft);
+}
+.custody-rail-room[data-custody-phase='reading'] .cr-announce,
+.custody-rail-room[data-custody-phase='methods'] .cr-announce {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.cr-stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.cr-intake,
+.cr-mirror-stage,
+.cr-reading-beat {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cr-reading-beat {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.cr-lead {
+  margin: 0;
+  color: var(--fog-dim);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.36;
+}
+
+/* Three assigned cartridges occupy fixed cells. Seated is a solid registration
+   mark + explicit word, not a green success state. */
+.cr-carriers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.cr-carrier {
+  position: relative;
+  min-height: 84px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 8px 9px;
+  color: var(--record);
+  background: var(--raised);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  text-align: left;
+  overflow: hidden;
+  transition:
+    background-color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out),
+    box-shadow 160ms var(--ease-out);
+}
+.cr-carrier:hover:not(:disabled) {
+  background: var(--raised-hover);
+}
+.cr-carrier:disabled {
+  cursor: default;
+  opacity: 1;
+}
+.cr-carrier-label {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.66rem;
+  font-weight: 750;
+  letter-spacing: 0.05em;
+  color: var(--record-bright);
+}
+.cr-carrier-source {
+  font-size: 0.65rem;
+  line-height: 1.25;
+  color: var(--fog);
+}
+.cr-carrier-state {
+  margin-top: auto;
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fog-dim);
+}
+.cr-carrier[data-seated='true'] {
+  border-color: var(--cyan-deep);
+  box-shadow: inset 0 0 0 1px oklch(0.78 0.11 190 / 0.22);
+  background:
+    linear-gradient(135deg, oklch(0.78 0.11 190 / 0.06), transparent 54%),
+    var(--concrete);
+}
+.cr-carrier[data-seated='true'] .cr-carrier-state {
+  color: var(--cyan);
+}
+
+.cr-rail-readout {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 11px;
+  background: var(--concrete);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px oklch(0.62 0.02 210 / 0.08);
+}
+.cr-rail-readout span,
+.cr-rail-readout strong {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.64rem;
+  letter-spacing: 0.04em;
+}
+.cr-rail-readout span {
+  color: var(--fog-dim);
+  text-transform: uppercase;
+}
+.cr-rail-readout strong {
+  color: var(--record);
+}
+
+/* The late slot is physically reserved from the first frame. Before it activates,
+   it reads as a closed stop rather than an undisclosed button. */
+.cr-late-slot {
+  min-height: 58px;
+  display: flex;
+}
+.cr-late-rest {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  color: var(--fog-dim);
+  background: var(--concrete);
+  border: 1px dashed var(--line);
+  border-radius: 6px;
+  font-size: 0.66rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.cr-late-carrier,
+.cr-mirror {
+  width: 100%;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 11px;
+  color: var(--record);
+  background: var(--raised);
+  border: 1px solid var(--amber);
+  border-radius: 6px;
+  text-align: left;
+  transition:
+    background-color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out);
+}
+.cr-late-carrier:hover,
+.cr-mirror:hover {
+  background: var(--raised-hover);
+}
+.cr-late-carrier > span:first-child,
+.cr-mirror > span:first-child,
+.cr-refused-carrier > span:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.cr-late-carrier strong,
+.cr-mirror strong,
+.cr-refused-carrier strong {
+  font-size: 0.78rem;
+  color: var(--record-bright);
+}
+.cr-late-carrier small,
+.cr-mirror small,
+.cr-refused-carrier small {
+  font-size: 0.62rem;
+  color: var(--fog-dim);
+}
+.cr-control-verb {
+  max-width: 46%;
+  font-size: 0.64rem;
+  font-weight: 650;
+  line-height: 1.25;
+  color: var(--amber-soft);
+  text-align: right;
+}
+
+/* The refused carrier remains as a broken physical receipt while the mirror becomes
+   the sole forward control. */
+.cr-refused-carrier {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--concrete);
+  border: 1px dashed var(--fog-dim);
+  border-radius: 6px;
+}
+.cr-refused-carrier > span:last-child {
+  max-width: 42%;
+  font-size: 0.62rem;
+  line-height: 1.25;
+  color: var(--fog);
+  text-align: right;
+  text-transform: uppercase;
+}
+.cr-mirror {
+  min-height: 72px;
+  border-color: var(--cyan-deep);
+}
+
+/* Stationary reading: the discovery gets the largest type in the room and remains
+   mounted until the player explicitly carries it forward. */
+.cr-reading {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  background: var(--concrete);
+  border: 1px solid var(--cyan);
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--cyan-deep);
+  overflow: hidden;
+}
+.cr-reading:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+.cr-reading-label {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.66rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  color: var(--cyan);
+}
+.cr-reading-line {
+  margin: 0;
+  font-size: 0.94rem;
+  font-weight: 680;
+  line-height: 1.38;
+  color: var(--record-bright);
+}
+.cr-reading-restraint {
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: var(--fog);
+}
+.cr-proceed {
+  min-height: 48px;
+  padding: 8px 14px;
+  color: var(--amber-soft);
+  background: oklch(0.16 0.03 78 / 0.35);
+  border: 1px solid var(--amber);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+.cr-proceed:hover {
+  background: oklch(0.2 0.04 78 / 0.45);
+}
+
+.cr-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.cr-unlock {
+  margin: 0 0 3px;
+  padding: 0 4px;
+  font-size: 0.75rem;
+  line-height: 1.34;
+  color: var(--amber-soft);
+}
+.custody-rail-room .choice-row {
+  min-height: 0;
+  grid-template-columns: minmax(0, 1fr) 20px;
+  gap: 2px 10px;
+  padding: 4px;
+}
+.custody-rail-room .choice-row.choice-row-armed {
+  grid-template-columns: minmax(0, 1fr) 54px;
+}
+.custody-rail-room .choice-method {
+  grid-column: 1 / -1;
+  padding: 0;
+  font-size: 0.6rem;
+}
+.custody-rail-room .choice-body {
+  grid-column: 1;
+}
+.custody-rail-room .choice-aside {
+  grid-column: 2;
+}
+.custody-rail-room .choice-body strong {
+  font-size: 0.79rem;
+  line-height: 1.22;
+}
+.custody-rail-room .choice-body > span {
+  font-size: 0.72rem;
+  line-height: 1.24;
+}
+.custody-rail-room .choice-body small {
+  font-size: 0.65rem;
+  line-height: 1.22;
+}
+.cr-methods:has(.choice-row-armed) .choice-row:not(.choice-row-armed) {
+  opacity: 0.42;
+}
+
+.site-record:has(.custody-rail-room) .site-description {
+  display: none;
+}
+
+.high-contrast .cr-carrier[data-seated='true'] {
+  outline: 2px solid var(--cyan);
+  outline-offset: -2px;
+  background: var(--concrete);
+}
+.high-contrast .cr-refused-carrier {
+  border-width: 2px;
+}
+.high-contrast .cr-reading {
+  outline: 1px solid var(--record);
+  outline-offset: -1px;
+}
+
+@media (max-width: 640px) {
+  .custody-rail-room {
+    height: auto;
+    min-height: 320px;
+  }
+  .cr-stage {
+    overflow: visible;
+  }
+  .cr-announce {
+    height: auto;
+    min-height: 2.7em;
   }
 }
 

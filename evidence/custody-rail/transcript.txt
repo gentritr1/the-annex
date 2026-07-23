@@ -1,0 +1,18 @@
+Registry Intake — Custody Rail runtime evidence
+
+PASS desktopHeightVariance: 0
+PASS desktopInspectorOverflowZero: true
+PASS exactlyOneLiveRegion: true
+PASS methodsAbsentBeforeAcknowledgement: true
+PASS readingUnclipped: true
+PASS focusNeverBody: true
+PASS noGenericChecksumEcho: true
+PASS preMethodZonesHidden: true
+PASS mobileNoHorizontalOverflow: true
+PASS controlsAtLeast44: true
+PASS complete room path
+PASS first activation arms
+PASS Escape disarms
+PASS trusted Enter seats a carrier and advances focus: {"seated":1,"active":"cr-carrier"}
+PASS chain settled silhouette: {"variant":"chain","title":"Custody chain authenticated","detail":"You proved where every admitted memory came from. You did not prove whom they make. — Registrar +2."}
+PASS return settled silhouette: {"variant":"return","title":"A late checksum surfaced","detail":"The city certified the “original” record in the fourth minute after the collapse, after the original archive was already gone. — Registrar −1, Small Archivist +1."}

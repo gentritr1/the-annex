@@ -6,6 +6,7 @@ import type {
   CaseChrome,
   CaseFile,
   ClassificationRoomDefinition,
+  CustodyRailDefinition,
   DecisionDefinition,
   DecisionId,
   EvidenceDefinition,
@@ -698,16 +699,88 @@ const maintenanceAcousticShadow: AcousticShadowRoomDefinition = {
   },
 }
 
+const registryCustodyRail: CustodyRailDefinition = {
+  intro:
+    'Three admitted carriers wait at the gate. Seat each in its marked notch; the rail reads custody marks without opening their contents.',
+  carriers: [
+    {
+      id: 'civic-backup-carrier',
+      label: 'Carrier 01',
+      source: 'Civic backup bundle',
+      actionLabel: 'Seat carrier 01 in its marked notch',
+      seatedLine: 'Carrier 01 seats. A source mark is present.',
+    },
+    {
+      id: 'care-record-carrier',
+      label: 'Carrier 02',
+      source: 'Care-record bundle',
+      actionLabel: 'Seat carrier 02 in its marked notch',
+      seatedLine: 'Carrier 02 seats. A handoff mark is present.',
+    },
+    {
+      id: 'private-memory-carrier',
+      label: 'Carrier 03',
+      source: 'Private-memory bundle',
+      actionLabel: 'Seat carrier 03 in its marked notch',
+      seatedLine: 'Carrier 03 seats. A closure mark is present.',
+    },
+  ],
+  closureLine:
+    'Three custody marks form a legible sequence. The closure gate lowers.',
+  lateCarrier: {
+    label: 'Unassigned carrier',
+    source: 'Blank custody seal',
+    prompt:
+      'Beyond the lowered gate, one sealed carrier waits without a custody mark.',
+    actionLabel: 'Test the unassigned carrier at the closure gate',
+    refusalLine:
+      'The closure gate refuses it. Official intake is already closed.',
+  },
+  mirror: {
+    label: 'Audit mirror',
+    prompt:
+      'The rail is still. Behind the gate, the audit mirror gives the refused carrier one open notch.',
+    actionLabel: 'Seat the carrier in the audit mirror',
+    readingLabel: 'MIRROR MARK 04',
+    readingLine:
+      'Fourth minute after the collapse · recorded after official intake closed.',
+    restraintLine:
+      'The mirror exposes timing, not cause or meaning. What mark 04 belongs to remains unread.',
+    readLine: 'Mirror mark 04 registered after official closure.',
+  },
+  proceedLabel: 'Set the rail and mirror readings side by side',
+  unlockLine:
+    'One reading can be authenticated for provenance. The other can be traced for timing. Neither can decide who 77-A is.',
+  zones: {
+    press: { x: 0.39, y: 0.62 },
+    closure: { x: 0.54, y: 0.51 },
+    mirror: { x: 0.64, y: 0.43 },
+    methods: { x: 0.52, y: 0.51 },
+  },
+  carrierAnchors: [
+    { x: 0.29, y: 0.7 },
+    { x: 0.35, y: 0.65 },
+    { x: 0.41, y: 0.6 },
+    { x: 0.47, y: 0.55 },
+  ],
+  actionTreatments: {
+    'authenticate-chain': 'chain',
+    'trace-checksum': 'return',
+  },
+}
+
 const sites: readonly SiteDefinition[] = [
   {
     id: 'registry',
     index: 'A',
     name: 'Registry intake',
-    description: 'The official chain — and the fourth minute after the collapse, the minute the record was never meant to hold.',
+    description:
+      'Admitted memory carriers enter on a custody rail. A mirror spindle keeps the audit copy.',
     actionIds: ['authenticate-chain', 'trace-checksum'],
+    custodyRail: registryCustodyRail,
     closeup: {
       src: '/images/site-scenes/registry-intake.webp',
-      caption: 'Custody rail · post-closure mirror',
+      caption: 'Custody rail · closure station',
       focalPoint: { x: 0.52, y: 0.51 },
       zones: [
         { actionId: 'authenticate-chain', x: 0.39, y: 0.62 },

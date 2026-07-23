@@ -8,6 +8,7 @@ import { resolveCommitConsent, sceneStateFor, witnessesRefusalOnCommit } from '.
 import { AnnexWorldStage } from '../world/AnnexWorldStage'
 import type {
   AcousticShadowPlateState,
+  CustodyRailPlateState,
   DepositionChoiceId,
   FieldActionId,
   GameState,
@@ -18,6 +19,7 @@ import type {
 import { AcousticShadowRoom } from './AcousticShadowRoom'
 import { ChoiceButton } from './ChoiceButton'
 import { ClassificationRoom } from './ClassificationRoom'
+import { CustodyRailRoom } from './CustodyRailRoom'
 import { Deposition } from './Deposition'
 import { ReactionQuotes } from './ReactionQuotes'
 
@@ -140,6 +142,10 @@ export function Investigation({
   // Drives the corridor near/mid/far/credential stagecraft and this phase's acoustics.
   const [acousticPresentation, setAcousticPresentation] =
     useState<AcousticShadowPlateState | null>(null)
+  // Registry Intake's custody-rail plate presentation (view-local; reset with the
+  // site). Drives carrier latches, the closure refusal, and the audit-mirror trace.
+  const [custodyPresentation, setCustodyPresentation] =
+    useState<CustodyRailPlateState | null>(null)
   // One-shot return-to-concourse emphasis: the site just left, held for a beat so
   // its altered portal is unmissable, then cleared to restore ordinary navigation.
   const [returnEmphasisSiteId, setReturnEmphasisSiteId] = useState<SiteId | null>(null)
@@ -483,6 +489,14 @@ export function Investigation({
         ? 'credential'
         : 'shadow'
       : undefined
+  const custodyResolvedVariant =
+    selectedSite.custodyRail && selectedCompletedAction
+      ? selectedSite.custodyRail.actionTreatments[selectedCompletedAction.id]
+      : undefined
+  const custodyPreviewVariant =
+    selectedSite.custodyRail && previewActionId
+      ? selectedSite.custodyRail.actionTreatments[previewActionId]
+      : undefined
   const selectedEvidence = selectedCompletedAction
     ? evidenceDefinitions.find((evidence) => evidence.id === selectedCompletedAction.evidenceId)
     : undefined
@@ -533,8 +547,14 @@ export function Investigation({
 
   function selectSite(siteId: SiteId, moveFocus = false, sourceElement?: HTMLElement) {
     setPreviewActionId(null)
-    setRoomPresentation(null)
-    setAcousticPresentation(null)
+    // The room component remains mounted while the selected threshold swaps
+    // between concourse and closeup. Preserve its plate state on that same-site
+    // transition; only an actual location switch remounts/reset the view-local room.
+    if (selectedSiteId !== siteId) {
+      setRoomPresentation(null)
+      setAcousticPresentation(null)
+      setCustodyPresentation(null)
+    }
     clearReturnEmphasis()
     setWorldLine('')
     const alreadyPresentingSite =
@@ -588,8 +608,6 @@ export function Investigation({
     if (!scene.world) return
     transitionEpochRef.current += 1
     setPreviewActionId(null)
-    setRoomPresentation(null)
-    setAcousticPresentation(null)
     setWorldPresentation({ kind: 'concourse' })
     // When the site the player is leaving carries a resolved room outcome, speak
     // its authored line once so the concourse alteration is perceivable non-visually.
@@ -702,6 +720,14 @@ export function Investigation({
                 acousticZones={selectedSite.acousticShadow?.zones}
                 acousticResolvedVariant={acousticResolvedVariant}
                 acousticDepthAssets={selectedSite.acousticShadow?.depthAssets}
+                custodyStage={
+                  selectedSite.custodyRail && !selectedCompletedAction
+                    ? (custodyPresentation ?? undefined)
+                    : undefined
+                }
+                custodyDefinition={selectedSite.custodyRail}
+                custodyPreviewVariant={custodyPreviewVariant}
+                custodyResolvedVariant={custodyResolvedVariant}
                 depthEnhancementEnabled={
                   presentationForRender.kind === 'closeup' &&
                   !sceneMotionReduced &&
@@ -876,6 +902,18 @@ export function Investigation({
               onCommitAction={handleCommitAction}
               onPreviewChange={setPreviewActionId}
               onRoomPresentationChange={setAcousticPresentation}
+            />
+          ) : selectedSite.custodyRail ? (
+            // Registry Intake presents a physical custody-rail handling ritual
+            // before its two canonical methods unlock. Keying it by site makes
+            // location switches reset the view-local work silently.
+            <CustodyRailRoom
+              key={selectedSite.id}
+              room={selectedSite.custodyRail}
+              actions={selectedActions}
+              onCommitAction={handleCommitAction}
+              onPreviewChange={setPreviewActionId}
+              onRoomPresentationChange={setCustodyPresentation}
             />
           ) : (
             // Keyed by site: switching location remounts the method list, so any

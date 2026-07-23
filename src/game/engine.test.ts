@@ -586,6 +586,71 @@ describe('deposition (Case 81)', () => {
   })
 })
 
+// Registry Intake's custody rail is view-local stagecraft over these same two
+// canonical actions. Freeze their complete engine effects so the physical room can
+// never alter evidence, trust, alarm, authority, tags, or filed copy.
+describe('Registry Intake canonical field-action effects (frozen)', () => {
+  it('authenticate-chain: custody-chain evidence, registrar +2, no alarm or override', () => {
+    const before = startInvestigation()
+    const after = gameReducer(before, {
+      type: 'COMMIT_FIELD_ACTION',
+      actionId: 'authenticate-chain',
+    })
+
+    expect(after.completedSites).toContain('registry')
+    expect(after.completedActions).toContain('authenticate-chain')
+    expect(after.evidence).toContain('custody-chain')
+    expect(after.methodTags).toEqual(expect.arrayContaining(['procedure']))
+    expect(after.alarm).toBe(before.alarm)
+    expect(after.tribunalOverride).toBe(false)
+    expect(after.trust.registrar).toBe(before.trust.registrar + 2)
+    expect(after.trust.shepherd).toBe(before.trust.shepherd)
+    expect(after.trust.defector).toBe(before.trust.defector)
+    expect(after.trust.archivist).toBe(before.trust.archivist)
+
+    const event = after.events.at(-1)
+    expect(event?.sourceType).toBe('field-action')
+    expect(event?.sourceId).toBe('authenticate-chain')
+    expect(event?.title).toBe('Custody chain authenticated')
+    expect(event?.detail).toBe(
+      'You proved where every admitted memory came from. You did not prove whom they make. — Registrar +2.',
+    )
+    expect(event?.tone).toBe('neutral')
+    expect(event?.methodTags).toEqual(['procedure'])
+  })
+
+  it('trace-checksum: checksum-drift evidence, registrar −1 / archivist +1, no alarm or override', () => {
+    const before = startInvestigation()
+    const after = gameReducer(before, {
+      type: 'COMMIT_FIELD_ACTION',
+      actionId: 'trace-checksum',
+    })
+
+    expect(after.completedSites).toContain('registry')
+    expect(after.completedActions).toContain('trace-checksum')
+    expect(after.evidence).toContain('checksum-drift')
+    expect(after.methodTags).toEqual(
+      expect.arrayContaining(['systems', 'procedure']),
+    )
+    expect(after.alarm).toBe(before.alarm)
+    expect(after.tribunalOverride).toBe(false)
+    expect(after.trust.registrar).toBe(before.trust.registrar - 1)
+    expect(after.trust.archivist).toBe(before.trust.archivist + 1)
+    expect(after.trust.shepherd).toBe(before.trust.shepherd)
+    expect(after.trust.defector).toBe(before.trust.defector)
+
+    const event = after.events.at(-1)
+    expect(event?.sourceType).toBe('field-action')
+    expect(event?.sourceId).toBe('trace-checksum')
+    expect(event?.title).toBe('A late checksum surfaced')
+    expect(event?.detail).toBe(
+      'The city certified the “original” record in the fourth minute after the collapse, after the original archive was already gone. — Registrar −1, Small Archivist +1.',
+    )
+    expect(event?.tone).toBe('neutral')
+    expect(event?.methodTags).toEqual(['systems', 'procedure'])
+  })
+})
+
 // Freezes the byte-identical committed effects of the two Maintenance Spine methods.
 // The Acoustic Shadow room is a view-local presentation over these SAME actions; it
 // must never alter what COMMIT_FIELD_ACTION does. Any drift in evidence, trust,

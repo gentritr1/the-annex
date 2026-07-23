@@ -13,6 +13,7 @@ import { createInitialGameState } from './engine'
 import {
   ACOUSTIC_SHADOW_PHASES,
   ACOUSTIC_SHADOW_STAGES,
+  CUSTODY_RAIL_STAGES,
   ROOM_STAGES,
   SCENE_STATES,
 } from './types'
@@ -395,6 +396,72 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
     })
   })
 
+  it('authors a complete, generic custody rail wherever a site declares one', () => {
+    const stageIds = new Set<string>(CUSTODY_RAIL_STAGES)
+    sites.forEach((site) => {
+      const rail = site.custodyRail
+      if (!rail) return
+
+      expect(rail.carriers).toHaveLength(3)
+      expectUnique(rail.carriers.map((carrier) => carrier.id))
+      rail.carriers.forEach((carrier) => {
+        ;[
+          carrier.label,
+          carrier.source,
+          carrier.actionLabel,
+          carrier.seatedLine,
+        ].forEach((line) => expect(line.trim().length).toBeGreaterThan(0))
+      })
+
+      ;[
+        rail.intro,
+        rail.closureLine,
+        rail.lateCarrier.label,
+        rail.lateCarrier.source,
+        rail.lateCarrier.prompt,
+        rail.lateCarrier.actionLabel,
+        rail.lateCarrier.refusalLine,
+        rail.mirror.label,
+        rail.mirror.prompt,
+        rail.mirror.actionLabel,
+        rail.mirror.readingLabel,
+        rail.mirror.readingLine,
+        rail.mirror.restraintLine,
+        rail.mirror.readLine,
+        rail.proceedLabel,
+        rail.unlockLine,
+      ].forEach((line) => expect(line.trim().length).toBeGreaterThan(0))
+
+      expect(new Set(Object.keys(rail.zones))).toEqual(stageIds)
+      Object.values(rail.zones).forEach((anchor) => {
+        expect(anchor.x).toBeGreaterThanOrEqual(0)
+        expect(anchor.x).toBeLessThanOrEqual(1)
+        expect(anchor.y).toBeGreaterThanOrEqual(0)
+        expect(anchor.y).toBeLessThanOrEqual(1)
+      })
+
+      expect(rail.carrierAnchors).toHaveLength(4)
+      rail.carrierAnchors.forEach((anchor) => {
+        expect(anchor.x).toBeGreaterThanOrEqual(0)
+        expect(anchor.x).toBeLessThanOrEqual(1)
+        expect(anchor.y).toBeGreaterThanOrEqual(0)
+        expect(anchor.y).toBeLessThanOrEqual(1)
+      })
+
+      expect(new Set(Object.keys(rail.actionTreatments))).toEqual(
+        new Set(site.actionIds),
+      )
+      const treatments = site.actionIds.map(
+        (actionId) => rail.actionTreatments[actionId],
+      )
+      treatments.forEach((treatment) =>
+        expect(['chain', 'return']).toContain(treatment),
+      )
+      expect(new Set(treatments)).toEqual(new Set(['chain', 'return']))
+      expect(site.actionIds).toHaveLength(2)
+    })
+  })
+
   it('maps a nonempty tension line for every reconstruction × decision pair', () => {
     let pairs = 0
     reconstructionDefinitions.forEach((model) => {
@@ -683,11 +750,66 @@ describe('Case 81 authors Ellis (figure + registry photograph)', () => {
   })
 })
 
-// Non-vacuity guard for the classification-room checks: the generic per-case test
-// returns early when a site has no room, so this asserts the case that DOES author
-// one (Case 77's Small Archive) actually carries it, and that its authored strings
-// are reached by the recursive no-placeholder string walk — the walk is what covers
-// the room copy, so proving reachability keeps that coverage honest.
+// Non-vacuity guards for the optional bounded rooms: generic per-case checks return
+// early when a site does not author one, so each concrete Case 77 room below proves
+// that its content exists and is reached by the recursive no-placeholder walk.
+describe('Case 77 authors the Registry Intake custody rail', () => {
+  const content = getCaseContent('case-77')
+  const registry = content.sites.find((site) => site.id === 'registry')
+  const rail = registry?.custodyRail
+
+  it('attaches the rail to Registry Intake with its two canonical methods', () => {
+    expect(rail).toBeDefined()
+    expect(registry?.actionIds).toEqual([
+      'authenticate-chain',
+      'trace-checksum',
+    ])
+    expect(rail?.actionTreatments).toEqual({
+      'authenticate-chain': 'chain',
+      'trace-checksum': 'return',
+    })
+  })
+
+  it('surfaces every handling and reading string to the content walk', () => {
+    const strings: string[] = []
+    collectStrings(content, strings)
+    expect(strings).toContain(rail!.intro)
+    expect(strings).toContain(rail!.carriers[0]!.actionLabel)
+    expect(strings).toContain(rail!.carriers[0]!.seatedLine)
+    expect(strings).toContain(rail!.closureLine)
+    expect(strings).toContain(rail!.lateCarrier.refusalLine)
+    expect(strings).toContain(rail!.mirror.readingLine)
+    expect(strings).toContain(rail!.mirror.restraintLine)
+    expect(strings).toContain(rail!.proceedLabel)
+    expect(strings).toContain(rail!.unlockLine)
+  })
+
+  it('keeps the fourth-minute fact behind the mirror reading', () => {
+    const preDiscoveryStrings: string[] = []
+    collectStrings(
+      {
+        description: registry!.description,
+        caption: registry!.closeup!.caption,
+        intro: rail!.intro,
+        carriers: rail!.carriers,
+        closureLine: rail!.closureLine,
+        lateCarrier: rail!.lateCarrier,
+        mirror: {
+          label: rail!.mirror.label,
+          prompt: rail!.mirror.prompt,
+          actionLabel: rail!.mirror.actionLabel,
+        },
+      },
+      preDiscoveryStrings,
+    )
+    expect(preDiscoveryStrings.join('\n')).not.toMatch(
+      /fourth minute|collapse \+04|checksum|certif|original|post-closure/i,
+    )
+    expect(rail!.mirror.readingLine).toMatch(/fourth minute/i)
+    expect(rail!.mirror.readingLabel).toBe('MIRROR MARK 04')
+  })
+})
+
 describe('Case 77 authors the Small Archive classification room', () => {
   const content = getCaseContent('case-77')
   const roomSite = content.sites.find((site) => site.room)
@@ -1064,6 +1186,8 @@ describe('site close-read pilots', () => {
       'trace-checksum',
     ])
     expect(registry?.closeup?.atmosphere).toBe('checksum-echo')
+    expect(registry?.closeup?.caption).toBe('Custody rail · closure station')
+    expect(registry?.custodyRail).toBeDefined()
   })
 
   it('ships the Case 77 Care Ward environment as an action-registered plate', () => {
