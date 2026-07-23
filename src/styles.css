@@ -1468,7 +1468,7 @@ p {
   transition: transform 360ms var(--ease-out);
 }
 
-.site-closeup-projection img {
+.site-closeup-projection > img {
   position: absolute;
   z-index: 0;
   inset: 0;
@@ -1483,12 +1483,165 @@ p {
   transform: scale(1.026);
 }
 
-.site-closeup-stage[data-emphasis='true'] img {
+.site-closeup-stage[data-emphasis='true'] .site-closeup-projection > img {
   filter: brightness(0.88) contrast(1.08) saturate(0.94);
 }
 
 .site-closeup-stage[data-resolved='true'] .site-closeup-projection {
   transform: scale(1.018);
+}
+
+/* Maintenance Spine depth enhancement. The approved master remains underneath as
+   the complete atomic fallback. Once both auxiliary assets load, a clean edited
+   plate is revealed only behind two source-pixel foreground cutouts. Their 0–4px
+   differential travel creates real occlusion without redrawing the corridor; the
+   rain matte is a low-opacity screen-blended VFX plate, not semantic content. */
+.site-closeup-acoustic-depth {
+  --asc-depth-left-x: 0px;
+  --asc-depth-pier-x: 0px;
+  --asc-depth-left-scale: 1;
+  --asc-depth-pier-scale: 1;
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms var(--ease-out);
+}
+
+.site-closeup-acoustic-depth[data-ready='true'] {
+  opacity: 1;
+}
+
+.asc-depth-clean,
+.asc-depth-foreground,
+.asc-depth-rain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.asc-depth-clean {
+  z-index: 0;
+  overflow: hidden;
+}
+
+.asc-depth-clean > img,
+.asc-depth-clean > span,
+.asc-depth-foreground {
+  width: 100%;
+  height: 100%;
+  background-position: 50% 50%;
+  background-size: 100% 100%;
+  filter: brightness(0.84) contrast(1.07) saturate(0.92);
+}
+
+.asc-depth-clean > img {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.asc-depth-clean > span {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+/* The backfill masks match the original-pixel cutouts. Their generated pixels are
+   invisible in the neutral pose and appear only in the few-pixel gutters uncovered
+   by parallax. */
+.asc-depth-clean--left {
+  clip-path: polygon(0 0, 21.5% 0, 28.8% 31%, 30.2% 100%, 0 100%);
+}
+
+.asc-depth-clean--pier {
+  clip-path: polygon(56.8% 0, 70.1% 0, 70.2% 63%, 67.5% 83.5%, 58% 84%, 57.2% 48%);
+}
+
+.asc-depth-foreground {
+  z-index: 1;
+  display: block;
+  background-repeat: no-repeat;
+  transition:
+    transform 420ms var(--ease-out),
+    filter 240ms var(--ease-out);
+}
+
+/* A fractional overlap keeps antialiased clip edges over the clean-plate seam. */
+.asc-depth-foreground--left {
+  clip-path: polygon(0 0, 21.8% 0, 29.1% 30.6%, 30.6% 100%, 0 100%);
+  transform: translateX(var(--asc-depth-left-x)) scale(var(--asc-depth-left-scale));
+  transform-origin: 0 58%;
+}
+
+.asc-depth-foreground--pier {
+  clip-path: polygon(56.5% 0, 70.4% 0, 70.5% 63.5%, 67.8% 84%, 57.7% 84.5%, 56.9% 48%);
+  transform: translateX(var(--asc-depth-pier-x)) scale(var(--asc-depth-pier-scale));
+  transform-origin: 64% 48%;
+}
+
+.site-closeup-acoustic-depth[data-depth-stage='mid'] {
+  --asc-depth-left-x: -1px;
+  --asc-depth-pier-x: 1px;
+  --asc-depth-left-scale: 1.002;
+  --asc-depth-pier-scale: 1.001;
+}
+
+.site-closeup-acoustic-depth[data-depth-stage='far'] {
+  --asc-depth-left-x: -4px;
+  --asc-depth-pier-x: 3px;
+  --asc-depth-left-scale: 1.006;
+  --asc-depth-pier-scale: 1.004;
+}
+
+.site-closeup-acoustic-depth[data-depth-stage='credential'] {
+  --asc-depth-left-x: -2px;
+  --asc-depth-pier-x: 2px;
+  --asc-depth-left-scale: 1.003;
+  --asc-depth-pier-scale: 1.002;
+}
+
+.asc-depth-rain {
+  z-index: 2;
+  display: block;
+  object-fit: fill;
+  opacity: 0.055;
+  filter: saturate(0.74) brightness(0.82);
+  mix-blend-mode: screen;
+  mask-image: linear-gradient(90deg, black 0 68%, rgb(0 0 0 / 0.72) 78%, transparent 96%);
+  animation: asc-depth-rain-drift 7.2s ease-in-out infinite alternate;
+}
+
+.site-closeup-acoustic-depth[data-depth-stage='mid'] .asc-depth-rain {
+  opacity: 0.07;
+}
+
+.site-closeup-acoustic-depth[data-depth-stage='far'] .asc-depth-rain {
+  opacity: 0.09;
+}
+
+.site-closeup-acoustic-depth[data-depth-stage='credential'] .asc-depth-rain,
+.site-closeup-acoustic-depth[data-resolved-variant='credential'] .asc-depth-rain {
+  opacity: 0.04;
+}
+
+@keyframes asc-depth-rain-drift {
+  from {
+    transform: translate3d(0, -3px, 0) scale(1.002);
+  }
+  to {
+    transform: translate3d(-1px, 4px, 0) scale(1.006);
+  }
+}
+
+.site-closeup-stage[data-emphasis='true'] .asc-depth-clean > img,
+.site-closeup-stage[data-emphasis='true'] .asc-depth-clean > span,
+.site-closeup-stage[data-emphasis='true'] .asc-depth-foreground {
+  filter: brightness(0.88) contrast(1.08) saturate(0.94);
 }
 
 .site-closeup-depth,
@@ -1504,7 +1657,7 @@ p {
 }
 
 .site-closeup-depth {
-  z-index: 1;
+  z-index: 2;
   inset: 0;
   background:
     linear-gradient(to bottom, oklch(0.06 0 0 / 0.44), transparent 27% 68%, oklch(0.06 0 0 / 0.6)),
@@ -2306,8 +2459,12 @@ p {
   }
 }
 
-.high-contrast .site-closeup-stage img {
+.high-contrast .site-closeup-stage .site-closeup-projection > img {
   filter: grayscale(0.35) brightness(0.72) contrast(1.24);
+}
+
+.high-contrast .site-closeup-acoustic-depth {
+  display: none;
 }
 
 .high-contrast .world-view--closeup .world-caption {
@@ -2362,7 +2519,9 @@ p {
 .reduce-motion .site-closeup-acoustic,
 .reduce-motion .site-closeup-acoustic *,
 .reduce-motion .site-closeup-acoustic-resolved,
-.reduce-motion .site-closeup-acoustic-resolved * {
+.reduce-motion .site-closeup-acoustic-resolved *,
+.reduce-motion .site-closeup-acoustic-depth,
+.reduce-motion .site-closeup-acoustic-depth * {
   animation: none !important;
   transition: none !important;
 }
@@ -2373,7 +2532,8 @@ p {
 .reduce-motion .site-closeup-authority-diagnostic,
 .reduce-motion .site-closeup-argument-register,
 .reduce-motion .site-closeup-category-register,
-.reduce-motion .scr-drawer-flatten {
+.reduce-motion .scr-drawer-flatten,
+.reduce-motion .site-closeup-acoustic-depth {
   display: none;
 }
 
@@ -2413,7 +2573,9 @@ p {
   .site-closeup-acoustic,
   .site-closeup-acoustic *,
   .site-closeup-acoustic-resolved,
-  .site-closeup-acoustic-resolved * {
+  .site-closeup-acoustic-resolved *,
+  .site-closeup-acoustic-depth,
+  .site-closeup-acoustic-depth * {
     animation: none !important;
     transition: none !important;
   }
@@ -2424,7 +2586,8 @@ p {
   .site-closeup-authority-diagnostic,
   .site-closeup-argument-register,
   .site-closeup-category-register,
-  .scr-drawer-flatten {
+  .scr-drawer-flatten,
+  .site-closeup-acoustic-depth {
     display: none;
   }
 
@@ -2441,6 +2604,13 @@ p {
 }
 
 @media (max-width: 460px) {
+  .site-closeup-acoustic-depth[data-depth-stage='far'] {
+    --asc-depth-left-x: -2px;
+    --asc-depth-pier-x: 2px;
+    --asc-depth-left-scale: 1.003;
+    --asc-depth-pier-scale: 1.002;
+  }
+
   .site-closeup-zone-label {
     top: 24px;
     left: 50%;

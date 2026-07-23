@@ -359,6 +359,18 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
         expect(anchor.y).toBeLessThanOrEqual(1)
       })
 
+      // Optional depth enhancement is an atomic pair. Both assets are local,
+      // raster-only presentation paths; the complete closeup remains the fallback.
+      if (room.depthAssets) {
+        expect(room.depthAssets.cleanBackplateSrc).toMatch(
+          /^\/images\/site-scenes\/.+\.(?:avif|jpe?g|png|webp)$/i,
+        )
+        expect(room.depthAssets.rainMatteSrc).toMatch(
+          /^\/images\/site-scenes\/.+\.(?:avif|jpe?g|png|webp)$/i,
+        )
+        expect(room.depthAssets.cleanBackplateSrc).not.toBe(room.depthAssets.rainMatteSrc)
+      }
+
       // A bounded acoustic treatment for EVERY phase.
       expect(new Set(Object.keys(room.acoustics))).toEqual(phaseIds)
       Object.values(room.acoustics).forEach((treatment) => expectBoundedAcoustics(treatment))
@@ -702,6 +714,10 @@ describe('Case 77 authors the Maintenance Spine acoustic-shadow room', () => {
     expect(roomSite?.id).toBe('maintenance')
     expect(roomSite?.acousticShadow).toBeDefined()
     expect(roomSite?.actionIds).toEqual(['walk-acoustic-shadow', 'forge-authority'])
+    expect(roomSite?.acousticShadow?.depthAssets).toEqual({
+      cleanBackplateSrc: '/images/site-scenes/maintenance-spine-depth-clean.jpg',
+      rainMatteSrc: '/images/site-scenes/maintenance-spine-rain-matte.jpg',
+    })
   })
 
   it('surfaces every authored checkpoint / band / pulse / feedback line to the string-walk', () => {

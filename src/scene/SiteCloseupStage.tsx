@@ -1,8 +1,9 @@
-import type { CSSProperties } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { acousticShadowStageFor } from '../game/acousticShadow'
 import { roomStageFor } from '../game/room'
 import type {
   AcousticShadowPlateState,
+  AcousticShadowRoomDefinition,
   AcousticShadowStageId,
   FieldActionDefinition,
   FieldActionId,
@@ -38,6 +39,11 @@ interface SiteCloseupStageProps {
   // keeps one quiet broken interval in the cadence with the door dormant; 'credential'
   // answers the amber aperture while the sensor chain stays intact. Presentation only.
   acousticResolvedVariant?: 'shadow' | 'credential'
+  // Optional source-faithful depth assets for the acoustic close read. They mount
+  // only after the settled closeup is active and both reduced-motion signals are
+  // clear, so the atomic master remains the no-download fallback.
+  acousticDepthAssets?: AcousticShadowRoomDefinition['depthAssets']
+  depthEnhancementEnabled?: boolean
 }
 
 // A view-only location close read. The authored raster creates spatial identity;
@@ -53,6 +59,8 @@ export function SiteCloseupStage({
   acousticStage,
   acousticZones,
   acousticResolvedVariant,
+  acousticDepthAssets,
+  depthEnhancementEnabled = false,
 }: SiteCloseupStageProps) {
   const focalX = closeup.focalPoint?.x ?? 0.5
   const focalY = closeup.focalPoint?.y ?? 0.5
@@ -92,6 +100,14 @@ export function SiteCloseupStage({
   const showRoomStage = Boolean(roomStage && roomZones)
   const acousticPhase = acousticStage?.phase
   const showAcousticStage = Boolean(acousticStage && acousticZones)
+  const acousticDepthStage =
+    acousticStage && acousticZones
+      ? acousticShadowStageFor(acousticStage)
+      : acousticResolvedVariant === 'credential'
+        ? 'credential'
+        : acousticResolvedVariant === 'shadow'
+          ? 'far'
+          : undefined
 
   return (
     <figure
@@ -114,6 +130,20 @@ export function SiteCloseupStage({
             loading="eager"
             decoding="async"
           />
+          {depthEnhancementEnabled && acousticDepthAssets && acousticDepthStage ? (
+            <AcousticShadowDepthStack
+              masterSrc={closeup.src}
+              cleanBackplateSrc={acousticDepthAssets.cleanBackplateSrc}
+              rainMatteSrc={acousticDepthAssets.rainMatteSrc}
+              depthStage={acousticDepthStage}
+              pulseKey={
+                acousticStage
+                  ? `${acousticStage.checkpointIndex}-${acousticStage.pulseIndex}`
+                  : `resolved-${acousticResolvedVariant ?? 'none'}`
+              }
+              resolvedVariant={acousticResolvedVariant}
+            />
+          ) : null}
           <div className="site-closeup-depth" />
           {closeup.atmosphere === 'category-register' && !showRoomStage ? (
             <div className="site-closeup-sweep" />
@@ -172,6 +202,81 @@ export function SiteCloseupStage({
         </div>
       </div>
     </figure>
+  )
+}
+
+// A deliberately shallow, source-faithful depth split for the Maintenance master.
+// The complete original remains below as the atomic fallback. Two copies of the
+// original are clipped to its nearest occluders and move by only a few pixels; an
+// edited clean plate is visible solely in the gutters they uncover. A generated
+// rain/reflection matte sits above them at low opacity. Both auxiliary assets must
+// load before the stack appears; any failure leaves the approved master untouched.
+function AcousticShadowDepthStack({
+  masterSrc,
+  cleanBackplateSrc,
+  rainMatteSrc,
+  depthStage,
+  pulseKey,
+  resolvedVariant,
+}: {
+  masterSrc: string
+  cleanBackplateSrc: string
+  rainMatteSrc: string
+  depthStage: AcousticShadowStageId
+  pulseKey: string
+  resolvedVariant?: 'shadow' | 'credential'
+}) {
+  const [cleanLoaded, setCleanLoaded] = useState(false)
+  const [rainLoaded, setRainLoaded] = useState(false)
+  const [failed, setFailed] = useState(false)
+  const ready = cleanLoaded && rainLoaded && !failed
+  const layerStyle = (src: string): CSSProperties => ({
+    backgroundImage: `url("${src}")`,
+  })
+
+  return (
+    <div
+      className="site-closeup-acoustic-depth"
+      data-ready={ready ? 'true' : undefined}
+      data-depth-stage={depthStage}
+      data-resolved-variant={resolvedVariant}
+    >
+      <div className="asc-depth-clean asc-depth-clean--left">
+        <img
+          src={cleanBackplateSrc}
+          alt=""
+          width={1600}
+          height={900}
+          decoding="async"
+          onLoad={() => setCleanLoaded(true)}
+          onError={() => setFailed(true)}
+        />
+      </div>
+      <div className="asc-depth-clean asc-depth-clean--pier" aria-hidden="true">
+        <span style={layerStyle(cleanBackplateSrc)} />
+      </div>
+
+      <span
+        className="asc-depth-foreground asc-depth-foreground--left"
+        style={layerStyle(masterSrc)}
+      />
+      <span
+        className="asc-depth-foreground asc-depth-foreground--pier"
+        style={layerStyle(masterSrc)}
+      />
+
+      <img
+        key={pulseKey}
+        className="asc-depth-rain"
+        src={rainMatteSrc}
+        alt=""
+        width={1600}
+        height={900}
+        decoding="async"
+        onLoad={() => setRainLoaded(true)}
+        onError={() => setFailed(true)}
+      />
+    </div>
   )
 }
 

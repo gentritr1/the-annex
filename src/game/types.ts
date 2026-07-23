@@ -466,6 +466,15 @@ export interface AcousticShadowRoomDefinition {
   // Decorative plate anchors per stage (see AcousticShadowStageId). Every key must
   // be a valid stage; coordinates are master-normalized [0,1].
   zones: Readonly<Record<AcousticShadowStageId, { x: number; y: number }>>
+  // Optional presentation-only depth assets for the Maintenance close read. The
+  // approved master remains the complete atomic fallback; `cleanBackplateSrc` is
+  // exposed only through narrow gutters behind source-pixel foreground cutouts,
+  // while `rainMatteSrc` is a low-opacity screen-blended atmosphere plate. Neither
+  // asset carries instructions, evidence, or interaction state.
+  depthAssets?: {
+    cleanBackplateSrc: string
+    rainMatteSrc: string
+  }
   // Per-phase acoustic perspective, reported through Investigation's existing
   // acoustic callback while the room is active. Based on the site's portal
   // acoustics; every phase must be authored. Presentation only — carries no

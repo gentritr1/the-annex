@@ -683,6 +683,12 @@ export function Investigation({
                 }
                 acousticZones={selectedSite.acousticShadow?.zones}
                 acousticResolvedVariant={acousticResolvedVariant}
+                acousticDepthAssets={selectedSite.acousticShadow?.depthAssets}
+                depthEnhancementEnabled={
+                  presentationForRender.kind === 'closeup' &&
+                  !sceneMotionReduced &&
+                  !state.settings.highContrast
+                }
               />
             )}
             {shownCloseup && scene.world && (

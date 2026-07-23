@@ -513,6 +513,10 @@ const maintenanceAcousticShadow: AcousticShadowRoomDefinition = {
     'Rain runs the spine, and the sensor pylons pulse in a cadence the archive keeps. Read the span, then cross on its rain-shadows — three checkpoints, one blind interval each.',
   listenLabel: 'Listen for the next pulse',
   bandGroupLabel: 'Choose where to cross this checkpoint',
+  depthAssets: {
+    cleanBackplateSrc: '/images/site-scenes/maintenance-spine-depth-clean.jpg',
+    rainMatteSrc: '/images/site-scenes/maintenance-spine-rain-matte.jpg',
+  },
   checkpoints: [
     {
       id: 'checkpoint-mouth',
