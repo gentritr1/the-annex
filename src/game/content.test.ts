@@ -217,6 +217,18 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
       if (site.closeup.zones) {
         expect(zoneIds).toEqual(new Set(site.actionIds))
       }
+      if (site.closeup.rainPresence) {
+        expect(site.closeup.atmosphere).toBe('rain-reflection')
+        expect(site.closeup.rainPresence.matteSrc).toMatch(
+          /^\/images\/site-scenes\/.+\.(?:jpe?g|webp)$/,
+        )
+        expect(new Set(Object.keys(site.closeup.rainPresence.actionTreatments))).toEqual(
+          new Set(site.actionIds),
+        )
+        expect(
+          new Set(Object.values(site.closeup.rainPresence.actionTreatments)),
+        ).toEqual(new Set(['listening', 'pressure']))
+      }
     })
   })
 
@@ -1061,6 +1073,13 @@ describe('site close-read pilots', () => {
       'listen-mara',
       'stress-test',
     ])
+    expect(ward?.closeup?.rainPresence).toEqual({
+      matteSrc: '/images/site-scenes/care-ward-rain-memory.jpg',
+      actionTreatments: {
+        'listen-mara': 'listening',
+        'stress-test': 'pressure',
+      },
+    })
   })
 
   it('ships the Case 77 Maintenance Spine environment as an optimized plate', () => {

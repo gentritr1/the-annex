@@ -1,0 +1,83 @@
+{
+  "capturedAt": "2026-07-23",
+  "buildScript": "index-RviZpz4A.js",
+  "gates": {
+    "lint": "pass",
+    "tests": {
+      "status": "pass",
+      "passed": 218,
+      "total": 218
+    },
+    "build": "pass"
+  },
+  "normalPressureResolved": {
+    "state": "pressure-resolved",
+    "baseSrc": "/images/site-scenes/care-ward-12.webp",
+    "rainReady": true,
+    "rainRegions": 3,
+    "rainAnimations": [
+      "cwr-rain-left",
+      "cwr-rain-right",
+      "cwr-rain-floor"
+    ],
+    "traceOpacity": 0.86,
+    "traceColor": "oklch(0.78 0.11 190)",
+    "documentOverflowX": 0
+  },
+  "normalCareResolved": {
+    "state": "listening-resolved",
+    "rainReady": true,
+    "rainRegions": 3,
+    "rainAnimations": [
+      "cwr-rain-left",
+      "cwr-rain-right",
+      "cwr-rain-floor"
+    ],
+    "traceOpacity": 0.86,
+    "traceColor": "oklch(0.78 0.11 190)",
+    "documentOverflowX": 0
+  },
+  "reducedMotionHighContrastCareResolved": {
+    "state": "listening-resolved",
+    "rainRootMounted": false,
+    "rainRegions": 0,
+    "traceOpacity": 1,
+    "traceBorder": "2px solid",
+    "traceAnimation": "none",
+    "traceTransitionDuration": "0s",
+    "documentOverflowX": 0
+  },
+  "screenshots": [
+    {
+      "file": "care-resolved-desktop.jpg",
+      "width": 1280,
+      "height": 800,
+      "sha256": "ef0958f822332da627d127171d90d733f7121addbb4da027f274d8bb84132de1"
+    },
+    {
+      "file": "pressure-resolved-desktop.jpg",
+      "width": 812,
+      "height": 911,
+      "sha256": "a10c845b3c6c146e6162d2f7845e31ec8d2379dce5c752f22c5edb2a3f88c9d8"
+    },
+    {
+      "file": "pressure-resolved-mobile.jpg",
+      "width": 375,
+      "height": 812,
+      "sha256": "5a9b254b129734e5cdd06509c9aa04e97b65ca8df7f877edd1e2228c87becad2"
+    },
+    {
+      "file": "care-resolved-reduced-high-contrast-mobile.jpg",
+      "width": 375,
+      "height": 812,
+      "sha256": "8cb943955986bae4865d313e1beb9fcc9e567bdb26745e31b7fb23fa8a3cd76c"
+    }
+  ],
+  "scope": {
+    "engineDiffLines": 0,
+    "persistenceDiffLines": 0,
+    "worldDiffLines": 0,
+    "motionDiffLines": 0,
+    "audioDiffLines": 0
+  }
+}

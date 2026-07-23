@@ -1,6 +1,10 @@
 import { useState, type CSSProperties } from 'react'
 import { acousticShadowStageFor } from '../game/acousticShadow'
 import { roomStageFor } from '../game/room'
+import {
+  resolveRainPresenceState,
+  type RainPresenceState,
+} from './rainPresence'
 import type {
   AcousticShadowPlateState,
   AcousticShadowRoomDefinition,
@@ -44,6 +48,10 @@ interface SiteCloseupStageProps {
   // clear, so the atomic master remains the no-download fallback.
   acousticDepthAssets?: AcousticShadowRoomDefinition['depthAssets']
   depthEnhancementEnabled?: boolean
+  // The auxiliary Care Ward matte is deliberately more conservative than the
+  // code-native state traces: it never mounts during travel, reduced motion, or
+  // high contrast. The approved master remains the complete fallback.
+  rainPresenceAssetEnabled?: boolean
 }
 
 // A view-only location close read. The authored raster creates spatial identity;
@@ -61,6 +69,7 @@ export function SiteCloseupStage({
   acousticResolvedVariant,
   acousticDepthAssets,
   depthEnhancementEnabled = false,
+  rainPresenceAssetEnabled = false,
 }: SiteCloseupStageProps) {
   const focalX = closeup.focalPoint?.x ?? 0.5
   const focalY = closeup.focalPoint?.y ?? 0.5
@@ -108,6 +117,11 @@ export function SiteCloseupStage({
         : acousticResolvedVariant === 'shadow'
           ? 'far'
           : undefined
+  const rainPresenceState = resolveRainPresenceState(
+    closeup.rainPresence,
+    activeActionId,
+    resolvedActionId,
+  )
 
   return (
     <figure
@@ -149,7 +163,11 @@ export function SiteCloseupStage({
             <div className="site-closeup-sweep" />
           ) : null}
           {closeup.atmosphere === 'rain-reflection' ? (
-            <div className="site-closeup-rain-memory" />
+            <CareWardRainPresence
+              definition={closeup.rainPresence}
+              state={rainPresenceState}
+              assetEnabled={rainPresenceAssetEnabled}
+            />
           ) : null}
           {closeup.atmosphere === 'checksum-echo' ? (
             <div className="site-closeup-checksum-echo" />
@@ -202,6 +220,81 @@ export function SiteCloseupStage({
         </div>
       </div>
     </figure>
+  )
+}
+
+// Care Ward's approved master carries the person, room, and complete fallback
+// composition. This auxiliary image contains only source-registered rain and wet
+// reflection fragments on black, revealed through three regions that leave the
+// privacy membrane and anonymous patient untouched. The separate code-native trace
+// layer stays available under reduced motion and high contrast so both methods
+// retain distinct silhouettes without relying on color or a downloaded asset.
+function CareWardRainPresence({
+  definition,
+  state,
+  assetEnabled,
+}: {
+  definition: NonNullable<SiteDefinition['closeup']>['rainPresence']
+  state: RainPresenceState
+  assetEnabled: boolean
+}) {
+  return (
+    <>
+      {definition && assetEnabled ? (
+        <CareWardRainMatte definition={definition} state={state} />
+      ) : null}
+      <div className="site-closeup-care-trace" data-state={state}>
+        <span className="cwr-presence-field cwr-presence-field--listening" />
+        <span className="cwr-presence-field cwr-presence-field--pressure" />
+        <span className="cwr-method-trace cwr-method-trace--listening" />
+        <span className="cwr-method-trace cwr-method-trace--pressure" />
+      </div>
+    </>
+  )
+}
+
+// The loader owns readiness so disabling the optional matte unmounts and resets
+// the whole lifecycle. Re-enabling waits for a fresh load event, and a prior
+// transient failure can retry without an effect-driven state reset.
+function CareWardRainMatte({
+  definition,
+  state,
+}: {
+  definition: NonNullable<
+    NonNullable<SiteDefinition['closeup']>['rainPresence']
+  >
+  state: RainPresenceState
+}) {
+  const [matteLoaded, setMatteLoaded] = useState(false)
+  const [matteFailed, setMatteFailed] = useState(false)
+  const matteReady = matteLoaded && !matteFailed
+  const matteStyle: CSSProperties = {
+    backgroundImage: `url("${definition.matteSrc}")`,
+  }
+
+  return (
+    <div
+      className="site-closeup-rain-memory"
+      data-enabled="true"
+      data-ready={matteReady ? 'true' : undefined}
+      data-state={state}
+    >
+      <img
+        className="cwr-rain cwr-rain--rear-left"
+        src={definition.matteSrc}
+        alt=""
+        width={1600}
+        height={900}
+        decoding="async"
+        onLoad={() => setMatteLoaded(true)}
+        onError={() => setMatteFailed(true)}
+      />
+      <span className="cwr-rain cwr-rain--rear-right" style={matteStyle} />
+      <span className="cwr-rain cwr-rain--floor" style={matteStyle} />
+      <span className="cwr-rain-fallback cwr-rain-fallback--left" />
+      <span className="cwr-rain-fallback cwr-rain-fallback--right" />
+      <span className="cwr-rain-fallback cwr-rain-fallback--floor" />
+    </div>
   )
 }
 

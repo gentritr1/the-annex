@@ -1647,6 +1647,7 @@ p {
 .site-closeup-depth,
 .site-closeup-sweep,
 .site-closeup-rain-memory,
+.site-closeup-care-trace,
 .site-closeup-checksum-echo,
 .site-closeup-authority-diagnostic,
 .site-closeup-argument-register,
@@ -1682,23 +1683,254 @@ p {
   animation: site-closeup-scan 1.8s ease-out 220ms both;
 }
 
-/* Care Ward's impossible rain is already present in the authored plate. This
-   very slow reflection drift gives it just enough life to read as remembered
-   weather, never as a second literal window. */
+/* Care Ward 12: still body, moving room. The generated auxiliary matte contains
+   only rain and wet reflection fragments on black. Three source-space regions keep
+   the central privacy membrane/patient untouched while the outer wall and floor
+   remember weather at slightly different tempos. The CSS fragments are the
+   quiet load/error fallback; the approved master remains complete underneath. */
 .site-closeup-rain-memory {
-  z-index: 2;
-  inset: 8% 15% 24%;
-  opacity: 0.13;
-  background: repeating-linear-gradient(
-    96deg,
-    transparent 0 36px,
-    oklch(0.84 0.08 205 / 0.14) 38px,
-    transparent 40px 74px
-  );
-  background-size: 140% 100%;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+}
+
+.cwr-rain,
+.cwr-rain-fallback {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.cwr-rain {
+  object-fit: fill;
+  background-position: 50% 50%;
+  background-size: 100% 100%;
+  opacity: 0;
+  filter: saturate(0.68) brightness(0.8) contrast(1.08);
   mix-blend-mode: screen;
-  mask-image: linear-gradient(to bottom, transparent, black 18% 72%, transparent);
-  animation: site-closeup-rain-memory 11s ease-in-out infinite alternate;
+  transition: opacity 420ms var(--ease-out);
+}
+
+.site-closeup-rain-memory[data-ready='true'] .cwr-rain {
+  opacity: 0.15;
+}
+
+.cwr-rain--rear-left {
+  clip-path: polygon(12% 8%, 42.5% 8%, 42.5% 62%, 34% 69%, 11% 61%);
+  animation: cwr-rain-left 12.8s ease-in-out infinite alternate;
+}
+
+.cwr-rain--rear-right {
+  clip-path: polygon(58.5% 8%, 88% 8%, 90% 62%, 66% 69%, 58.5% 62%);
+  animation: cwr-rain-right 9.6s ease-in-out infinite alternate;
+}
+
+.cwr-rain--floor {
+  clip-path: polygon(8% 56%, 92% 56%, 95% 93%, 5% 93%);
+  mask-image: linear-gradient(
+    90deg,
+    black 0 42.5%,
+    transparent 42.5% 58.5%,
+    black 58.5% 100%
+  );
+  animation: cwr-rain-floor 14.4s ease-in-out infinite alternate;
+}
+
+.site-closeup-rain-memory[data-state^='listening'][data-ready='true']
+  .cwr-rain--rear-left {
+  opacity: 0.21;
+}
+
+.site-closeup-rain-memory[data-state^='pressure'][data-ready='true']
+  .cwr-rain--rear-right {
+  opacity: 0.22;
+}
+
+.site-closeup-rain-memory[data-state]:not([data-state='idle'])[data-ready='true']
+  .cwr-rain--floor {
+  opacity: 0.19;
+}
+
+.cwr-rain-fallback {
+  opacity: 0;
+  mix-blend-mode: screen;
+  transition: opacity 180ms var(--ease-out);
+}
+
+.site-closeup-rain-memory[data-enabled='true']:not([data-ready='true'])
+  .cwr-rain-fallback {
+  opacity: 0.1;
+}
+
+.cwr-rain-fallback--left,
+.cwr-rain-fallback--right {
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 42px,
+    oklch(0.84 0.08 205 / 0.12) 43px,
+    transparent 45px 78px
+  );
+  mask-image: linear-gradient(to bottom, transparent 8%, black 24% 61%, transparent 72%);
+}
+
+.cwr-rain-fallback--left {
+  clip-path: polygon(12% 8%, 42.5% 8%, 42.5% 64%, 11% 62%);
+}
+
+.cwr-rain-fallback--right {
+  clip-path: polygon(58.5% 8%, 88% 8%, 90% 62%, 58.5% 64%);
+  transform: translateY(2px);
+}
+
+.cwr-rain-fallback--floor {
+  background: repeating-linear-gradient(
+    174deg,
+    transparent 0 54px,
+    oklch(0.84 0.08 205 / 0.1) 55px,
+    transparent 57px 96px
+  );
+  clip-path: polygon(9% 58%, 42.5% 56%, 42.5% 92%, 58.5% 92%, 58.5% 56%, 91% 58%, 94% 93%, 6% 93%);
+  mask-image: linear-gradient(to bottom, transparent, black 28% 74%, transparent);
+}
+
+/* Method states sit above the room veil but below the existing source-registered
+   labels. Listening is a continuous relational line from the empty chair toward
+   the platform; pressure is a segmented diagnostic arc from the apparatus. Their
+   silhouettes remain distinct without color in high contrast. */
+.site-closeup-care-trace {
+  z-index: 3;
+  inset: 0;
+  overflow: hidden;
+}
+
+.cwr-presence-field,
+.cwr-method-trace {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 220ms var(--ease-out),
+    color 220ms var(--ease-out);
+}
+
+.cwr-presence-field--listening {
+  top: 27%;
+  left: 10%;
+  width: 34%;
+  height: 50%;
+  background: radial-gradient(
+    ellipse at 34% 58%,
+    oklch(0.78 0.13 74 / 0.34),
+    oklch(0.72 0.11 74 / 0.09) 44%,
+    transparent 72%
+  );
+  mix-blend-mode: screen;
+}
+
+.cwr-presence-field--pressure {
+  top: 29%;
+  left: 59%;
+  width: 33%;
+  height: 48%;
+  background: radial-gradient(
+    ellipse at 66% 52%,
+    oklch(0.78 0.12 74 / 0.24),
+    oklch(0.72 0.1 74 / 0.07) 42%,
+    transparent 70%
+  );
+  mix-blend-mode: screen;
+}
+
+.cwr-method-trace {
+  color: var(--amber-soft);
+  filter: drop-shadow(0 0 5px currentColor);
+}
+
+.cwr-method-trace::after {
+  content: '';
+  position: absolute;
+  display: block;
+}
+
+.cwr-method-trace--listening {
+  top: 62%;
+  left: 24%;
+  width: 18%;
+  height: 2px;
+  border-top: 1px solid currentColor;
+  transform: rotate(3deg);
+  transform-origin: 0 50%;
+}
+
+.cwr-method-trace--listening::after {
+  top: -3px;
+  right: -1px;
+  width: 5px;
+  height: 5px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: var(--night);
+}
+
+.cwr-method-trace--pressure {
+  top: 49%;
+  left: 61%;
+  width: 18%;
+  height: 15%;
+  border-top: 1px dashed currentColor;
+  border-right: 1px dashed currentColor;
+  border-radius: 0 72% 0 0;
+  transform: rotate(7deg);
+  transform-origin: 100% 50%;
+}
+
+.cwr-method-trace--pressure::after {
+  right: -3px;
+  bottom: -1px;
+  width: 7px;
+  height: 7px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+}
+
+.site-closeup-care-trace[data-state='listening-preview']
+  .cwr-presence-field--listening {
+  opacity: 0.34;
+}
+
+.site-closeup-care-trace[data-state='pressure-preview']
+  .cwr-presence-field--pressure {
+  opacity: 0.28;
+}
+
+.site-closeup-care-trace[data-state='listening-preview']
+  .cwr-method-trace--listening,
+.site-closeup-care-trace[data-state='pressure-preview']
+  .cwr-method-trace--pressure {
+  opacity: 0.64;
+}
+
+.site-closeup-care-trace[data-state$='resolved'] .cwr-method-trace {
+  color: var(--cyan);
+}
+
+.site-closeup-care-trace[data-state='listening-resolved']
+  .cwr-method-trace--listening,
+.site-closeup-care-trace[data-state='pressure-resolved']
+  .cwr-method-trace--pressure {
+  opacity: 0.86;
+}
+
+.site-closeup-care-trace[data-state='listening-resolved']
+  .cwr-presence-field--listening,
+.site-closeup-care-trace[data-state='pressure-resolved']
+  .cwr-presence-field--pressure {
+  opacity: 0.12;
 }
 
 /* Registry reads once in two beats: the official rail reaches its closure
@@ -2332,12 +2564,30 @@ p {
   }
 }
 
-@keyframes site-closeup-rain-memory {
+@keyframes cwr-rain-left {
   from {
-    background-position: 0 0;
+    transform: translate3d(0, -2px, 0) scale(1.002);
   }
   to {
-    background-position: 36px 10px;
+    transform: translate3d(-1px, 2px, 0) scale(1.004);
+  }
+}
+
+@keyframes cwr-rain-right {
+  from {
+    transform: translate3d(0, -1px, 0) scale(1.002);
+  }
+  to {
+    transform: translate3d(1px, 2px, 0) scale(1.004);
+  }
+}
+
+@keyframes cwr-rain-floor {
+  from {
+    transform: translate3d(-1px, 0, 0) scale(1.001);
+  }
+  to {
+    transform: translate3d(1px, 1px, 0) scale(1.003);
   }
 }
 
@@ -2467,6 +2717,36 @@ p {
   display: none;
 }
 
+.high-contrast .site-closeup-rain-memory,
+.high-contrast .cwr-presence-field {
+  display: none;
+}
+
+.high-contrast .cwr-method-trace {
+  color: var(--record-bright) !important;
+  filter: none;
+}
+
+.high-contrast .cwr-method-trace--listening {
+  border-top-width: 2px;
+}
+
+.high-contrast .cwr-method-trace--pressure {
+  border-top-width: 2px;
+  border-right-width: 2px;
+}
+
+.high-contrast .site-closeup-care-trace[data-state='listening-preview']
+  .cwr-method-trace--listening,
+.high-contrast .site-closeup-care-trace[data-state='pressure-preview']
+  .cwr-method-trace--pressure,
+.high-contrast .site-closeup-care-trace[data-state='listening-resolved']
+  .cwr-method-trace--listening,
+.high-contrast .site-closeup-care-trace[data-state='pressure-resolved']
+  .cwr-method-trace--pressure {
+  opacity: 1;
+}
+
 .high-contrast .world-view--closeup .world-caption {
   padding: 7px 9px;
   background: var(--night);
@@ -2505,6 +2785,8 @@ p {
 .reduce-motion .site-closeup-projection img,
 .reduce-motion .site-closeup-sweep,
 .reduce-motion .site-closeup-rain-memory,
+.reduce-motion .site-closeup-care-trace,
+.reduce-motion .site-closeup-care-trace *,
 .reduce-motion .site-closeup-checksum-echo::before,
 .reduce-motion .site-closeup-checksum-echo::after,
 .reduce-motion .site-closeup-authority-diagnostic::before,
@@ -2559,6 +2841,8 @@ p {
   .site-closeup-projection img,
   .site-closeup-sweep,
   .site-closeup-rain-memory,
+  .site-closeup-care-trace,
+  .site-closeup-care-trace *,
   .site-closeup-checksum-echo::before,
   .site-closeup-checksum-echo::after,
   .site-closeup-authority-diagnostic::before,
@@ -7396,6 +7680,39 @@ p {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .site-closeup-rain-memory,
+  .cwr-presence-field {
+    display: none;
+  }
+
+  .cwr-method-trace {
+    color: CanvasText !important;
+    filter: none;
+    forced-color-adjust: auto;
+  }
+
+  .cwr-method-trace--listening {
+    border-top-width: 2px;
+  }
+
+  .cwr-method-trace--pressure {
+    border-top-width: 2px;
+    border-right-width: 2px;
+  }
+
+  .site-closeup-care-trace[data-state='listening-preview']
+    .cwr-method-trace--listening,
+  .site-closeup-care-trace[data-state='pressure-preview']
+    .cwr-method-trace--pressure,
+  .site-closeup-care-trace[data-state='listening-resolved']
+    .cwr-method-trace--listening,
+  .site-closeup-care-trace[data-state='pressure-resolved']
+    .cwr-method-trace--pressure {
+    opacity: 1;
   }
 }
 

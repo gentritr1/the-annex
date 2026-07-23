@@ -518,6 +518,17 @@ export interface SiteDefinition {
       | 'authority-diagnostic'
       | 'argument-register'
       | 'category-register'
+    // Optional presentation-only rain-memory treatment for the Care Ward close
+    // read. The action map is explicit so a visual state is never inferred from
+    // method tags, trust effects, or other canonical game semantics. The approved
+    // closeup remains the complete fallback when this auxiliary matte is absent,
+    // disabled, or fails to load.
+    rainPresence?: {
+      matteSrc: string
+      actionTreatments: Readonly<
+        Partial<Record<FieldActionId, 'listening' | 'pressure'>>
+      >
+    }
   }
   // Read at debrief when the site was never visited in this run.
   unvisitedNote: string

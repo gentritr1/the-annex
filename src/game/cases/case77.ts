@@ -733,6 +733,13 @@ const sites: readonly SiteDefinition[] = [
         { actionId: 'stress-test', x: 0.78, y: 0.54 },
       ],
       atmosphere: 'rain-reflection',
+      rainPresence: {
+        matteSrc: '/images/site-scenes/care-ward-rain-memory.jpg',
+        actionTreatments: {
+          'listen-mara': 'listening',
+          'stress-test': 'pressure',
+        },
+      },
     },
     unvisitedNote:
       'You never entered Care ward 12. 77-A stayed a file that never had to answer you.',

@@ -90,6 +90,14 @@ function prefersReducedMotion() {
   )
 }
 
+function forcedColorsActive() {
+  return (
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(forced-colors: active)').matches
+  )
+}
+
 export function Investigation({
   state,
   depositionEntry,
@@ -116,6 +124,7 @@ export function Investigation({
     sites.find((site) => !state.completedSites.includes(site.id)) ?? sites[0]!
   const [selectedSiteId, setSelectedSiteId] = useState<SiteId>(() => initialSite.id)
   const [osReducedMotion, setOsReducedMotion] = useState(prefersReducedMotion)
+  const [osForcedColors, setOsForcedColors] = useState(forcedColorsActive)
   const [worldPresentation, setWorldPresentation] = useState<WorldPresentation>(() =>
     scene.world
       ? { kind: 'concourse' }
@@ -161,6 +170,15 @@ export function Investigation({
   useEffect(() => {
     const query = window.matchMedia('(prefers-reduced-motion: reduce)')
     const onChange = (event: MediaQueryListEvent) => setOsReducedMotion(event.matches)
+    query.addEventListener('change', onChange)
+    return () => query.removeEventListener('change', onChange)
+  }, [])
+
+  // Forced-colors is also a no-download gate for optional blended raster effects,
+  // not merely a CSS hiding rule. The code-native structural traces remain.
+  useEffect(() => {
+    const query = window.matchMedia('(forced-colors: active)')
+    const onChange = (event: MediaQueryListEvent) => setOsForcedColors(event.matches)
     query.addEventListener('change', onChange)
     return () => query.removeEventListener('change', onChange)
   }, [])
@@ -688,6 +706,12 @@ export function Investigation({
                   presentationForRender.kind === 'closeup' &&
                   !sceneMotionReduced &&
                   !state.settings.highContrast
+                }
+                rainPresenceAssetEnabled={
+                  presentationForRender.kind === 'closeup' &&
+                  !sceneMotionReduced &&
+                  !state.settings.highContrast &&
+                  !osForcedColors
                 }
               />
             )}
