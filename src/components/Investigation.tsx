@@ -7,6 +7,7 @@ import { SITE_CLOSEUP_ENTRY_MS, SiteCloseupStage } from '../scene/SiteCloseupSta
 import { resolveCommitConsent, sceneStateFor, witnessesRefusalOnCommit } from '../scene/sceneState'
 import { AnnexWorldStage } from '../world/AnnexWorldStage'
 import type {
+  AcousticShadowPlateState,
   DepositionChoiceId,
   FieldActionId,
   GameState,
@@ -14,6 +15,7 @@ import type {
   SceneAcousticTreatment,
   SiteId,
 } from '../game/types'
+import { AcousticShadowRoom } from './AcousticShadowRoom'
 import { ChoiceButton } from './ChoiceButton'
 import { ClassificationRoom } from './ClassificationRoom'
 import { Deposition } from './Deposition'
@@ -125,6 +127,10 @@ export function Investigation({
   // The room's decorative plate presentation (view-local; reset when the site
   // changes). Drives the close-read plate's drawer/refusal/aperture/log stagecraft.
   const [roomPresentation, setRoomPresentation] = useState<RoomPlateState | null>(null)
+  // The acoustic-shadow room's plate presentation (view-local; reset with the site).
+  // Drives the corridor near/mid/far/credential stagecraft and this phase's acoustics.
+  const [acousticPresentation, setAcousticPresentation] =
+    useState<AcousticShadowPlateState | null>(null)
   // One-shot return-to-concourse emphasis: the site just left, held for a beat so
   // its altered portal is unmissable, then cleared to restore ordinary navigation.
   const [returnEmphasisSiteId, setReturnEmphasisSiteId] = useState<SiteId | null>(null)
@@ -389,12 +395,23 @@ export function Investigation({
         : (scene.world.portals.find((portal) => portal.siteId === presentationForRender.siteId)
             ?.acoustics ?? null)
     : null
+  // While the acoustic-shadow room is active (its site selected, unfiled, and
+  // reporting a phase), its authored per-phase treatment replaces the portal's
+  // static one on the SAME callback. The room is view-local, so leaving the site
+  // (acousticPresentation reset to null) restores the ordinary portal derivation.
+  const acousticRoomTreatment =
+    selectedSite.acousticShadow &&
+    acousticPresentation &&
+    !state.completedSites.includes(selectedSite.id)
+      ? selectedSite.acousticShadow.acoustics[acousticPresentation.phase]
+      : null
+  const effectiveAcoustic = acousticRoomTreatment ?? acousticTreatment
 
   // Keep the audio graph synchronized from authored view data only. Returning to
   // the hub restores its treatment; leaving Investigation restores the dry bed.
   useEffect(() => {
-    onAcousticTreatmentChange(acousticTreatment)
-  }, [acousticTreatment, onAcousticTreatmentChange])
+    onAcousticTreatmentChange(effectiveAcoustic)
+  }, [effectiveAcoustic, onAcousticTreatmentChange])
   useEffect(
     () => () => {
       onAcousticTreatmentChange(null)
@@ -439,6 +456,15 @@ export function Investigation({
   const selectedActions = selectedSite.actionIds
     .map((actionId) => resolveFieldAction(content, actionId, state.precedents))
     .filter((action): action is NonNullable<typeof action> => Boolean(action))
+  // Which resolved acoustic-shadow crossing the settled plate should render, once a
+  // maintenance method is filed. The credential-forging method takes the override;
+  // the shadow walk does not — so the flag distinguishes the two without an id.
+  const acousticResolvedVariant: 'shadow' | 'credential' | undefined =
+    selectedSite.acousticShadow && selectedCompletedAction
+      ? selectedCompletedAction.grantsTribunalOverride
+        ? 'credential'
+        : 'shadow'
+      : undefined
   const selectedEvidence = selectedCompletedAction
     ? evidenceDefinitions.find((evidence) => evidence.id === selectedCompletedAction.evidenceId)
     : undefined
@@ -490,6 +516,7 @@ export function Investigation({
   function selectSite(siteId: SiteId, moveFocus = false, sourceElement?: HTMLElement) {
     setPreviewActionId(null)
     setRoomPresentation(null)
+    setAcousticPresentation(null)
     clearReturnEmphasis()
     setWorldLine('')
     const alreadyPresentingSite =
@@ -544,6 +571,7 @@ export function Investigation({
     transitionEpochRef.current += 1
     setPreviewActionId(null)
     setRoomPresentation(null)
+    setAcousticPresentation(null)
     setWorldPresentation({ kind: 'concourse' })
     // When the site the player is leaving carries a resolved room outcome, speak
     // its authored line once so the concourse alteration is perceivable non-visually.
@@ -650,6 +678,11 @@ export function Investigation({
                 resolvedActionId={selectedCompletedAction?.id}
                 roomStage={selectedSite.room ? (roomPresentation ?? undefined) : undefined}
                 roomZones={selectedSite.room?.zones}
+                acousticStage={
+                  selectedSite.acousticShadow ? (acousticPresentation ?? undefined) : undefined
+                }
+                acousticZones={selectedSite.acousticShadow?.zones}
+                acousticResolvedVariant={acousticResolvedVariant}
               />
             )}
             {shownCloseup && scene.world && (
@@ -800,6 +833,19 @@ export function Investigation({
               onCommitAction={handleCommitAction}
               onPreviewChange={setPreviewActionId}
               onRoomPresentationChange={setRoomPresentation}
+            />
+          ) : selectedSite.acousticShadow ? (
+            // A site that authors an acoustic-shadow room presents its route-planning
+            // crossing before the two canonical methods unlock. Keyed by site so
+            // switching location resets the view-local room. The methods still commit
+            // through the same path.
+            <AcousticShadowRoom
+              key={selectedSite.id}
+              room={selectedSite.acousticShadow}
+              actions={selectedActions}
+              onCommitAction={handleCommitAction}
+              onPreviewChange={setPreviewActionId}
+              onRoomPresentationChange={setAcousticPresentation}
             />
           ) : (
             // Keyed by site: switching location remounts the method list, so any

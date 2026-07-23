@@ -366,6 +366,113 @@ export interface ClassificationRoomDefinition {
   worldOutcome: Readonly<Record<FieldActionId, SiteWorldOutcome>>
 }
 
+// ── Acoustic Shadow (the Maintenance Spine's "route-planning" verb) ──────────
+// A bounded, deterministic, view-local reconnaissance interaction a case may
+// author at one field site. The player reads a rain-masked sensor cadence and
+// plots a crossing through three checkpoints before the two canonical methods
+// unlock. Nothing here is persisted: the room's progress is React state only
+// (same contract as the classification room), and the reducer/engine never learn
+// it exists. Every string is authored content — walked by the no-placeholder
+// content test. Fully generic: no Case-77 vocabulary lives in these shapes.
+
+// The four decorative plate anchors the room can emphasise along the corridor's
+// depth. A fixed vocabulary (like RoomStageId): the view reports one derived from
+// the phase + checkpoint depth, and the room's authored `zones` map each to a
+// coordinate on the close-read plate. The content test asserts every authored
+// zone key is one of these. 'near'/'mid'/'far' march into the perspective toward
+// the vanishing route; 'credential' is the sealed amber service door.
+export const ACOUSTIC_SHADOW_STAGES = ['near', 'mid', 'far', 'credential'] as const
+
+export type AcousticShadowStageId = (typeof ACOUSTIC_SHADOW_STAGES)[number]
+
+// The derived lifecycle phase of an acoustic-shadow room, in authored order. The
+// reducer never stores it (see acousticShadowPhase in acousticShadow.ts); the view
+// reads it to swap the bounded tableau's content in place and to drift the plate.
+// 'survey' is the pristine first look down the span; 'crossing' is any active
+// checkpoint; 'route-ready' shows the two canonical methods.
+export const ACOUSTIC_SHADOW_PHASES = ['survey', 'crossing', 'route-ready'] as const
+
+export type AcousticShadowPhaseId = (typeof ACOUSTIC_SHADOW_PHASES)[number]
+
+// A band's exposure at one pulse. 'exposed' means the sensor beam reaches it first
+// (choosing it waits, never fails); 'masked' means the rain breaks the beam there
+// (choosing it advances the crossing). Never conveyed by colour alone in the view.
+export type AcousticExposure = 'masked' | 'exposed'
+
+// One physically named shadow band available at a checkpoint (a drain channel, a
+// structural pier, a service wall, a rain curtain). `exposedLine` is the authored,
+// non-punitive line shown when the band is chosen while exposed: the beam reaches
+// it first, so the investigator waits.
+export interface AcousticShadowBandDefinition {
+  id: string
+  name: string
+  exposedLine: string
+}
+
+// One discrete authored sensor-pulse state at a checkpoint. `reading` is the
+// in-voice line describing where the beam currently registers; `exposure` maps
+// EACH band id at this checkpoint to its exposure this pulse. Exactly one pulse
+// per checkpoint masks exactly one band — the blind interval (content-test enforced).
+export interface AcousticShadowPulseDefinition {
+  id: string
+  label: string
+  reading: string
+  exposure: Readonly<Record<string, AcousticExposure>>
+}
+
+// One checkpoint: a station along the spine, exactly two named bands, and the
+// authored pulse cycle whose one blind interval the player must find and cross.
+export interface AcousticShadowCheckpointDefinition {
+  id: string
+  station: string
+  prompt: string
+  bands: readonly [AcousticShadowBandDefinition, AcousticShadowBandDefinition]
+  pulses: readonly AcousticShadowPulseDefinition[]
+  // Announced when the player crosses on the masked band: why the shadow holds.
+  crossLine: string
+}
+
+// The room's decorative presentation state handed up to the close-read plate. It
+// is view-derived (never persisted): the phase plus the depth/pulse counters the
+// plate keys its drift and overlays off.
+export interface AcousticShadowPlateState {
+  phase: AcousticShadowPhaseId
+  // 0..2 while crossing, 3 once the route is ready (past the last checkpoint).
+  checkpointIndex: number
+  pulseIndex: number
+  routeReady: boolean
+  // How many bands have been tried-while-exposed at the current checkpoint.
+  attemptedCount: number
+}
+
+export interface AcousticShadowRoomDefinition {
+  // The survey lead shown above the first checkpoint.
+  intro: string
+  // The manual pulse-advance control text ("Listen for the next pulse").
+  listenLabel: string
+  // The band group's accessible label.
+  bandGroupLabel: string
+  // Exactly three checkpoints, in crossing order.
+  checkpoints: readonly [
+    AcousticShadowCheckpointDefinition,
+    AcousticShadowCheckpointDefinition,
+    AcousticShadowCheckpointDefinition,
+  ]
+  // The one concise route-ready line kept above the methods after the third cross.
+  routeReadyLine: string
+  // The dormant credential door's single restrained amber response at route-ready,
+  // establishing the second approach without activating it.
+  credentialLine: string
+  // Decorative plate anchors per stage (see AcousticShadowStageId). Every key must
+  // be a valid stage; coordinates are master-normalized [0,1].
+  zones: Readonly<Record<AcousticShadowStageId, { x: number; y: number }>>
+  // Per-phase acoustic perspective, reported through Investigation's existing
+  // acoustic callback while the room is active. Based on the site's portal
+  // acoustics; every phase must be authored. Presentation only — carries no
+  // instruction and stays fully legible while ambience is muted.
+  acoustics: Readonly<Record<AcousticShadowPhaseId, SceneAcousticTreatment>>
+}
+
 export interface SiteDefinition {
   id: SiteId
   index: string
@@ -376,6 +483,10 @@ export interface SiteDefinition {
   // methods unlock (see ClassificationRoomDefinition). Absent on every site but
   // the one that authors the filing verb.
   room?: ClassificationRoomDefinition
+  // Optional bounded acoustic-shadow route-planning room presented before the two
+  // canonical methods unlock (see AcousticShadowRoomDefinition). Absent on every
+  // site but the one that authors the reconnaissance verb.
+  acousticShadow?: AcousticShadowRoomDefinition
   // Optional presentation-only close read for a location. It can make a site
   // spatially distinct, but never carries canonical evidence or mutates state.
   closeup?: {

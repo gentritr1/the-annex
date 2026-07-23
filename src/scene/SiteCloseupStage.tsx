@@ -1,6 +1,9 @@
 import type { CSSProperties } from 'react'
+import { acousticShadowStageFor } from '../game/acousticShadow'
 import { roomStageFor } from '../game/room'
 import type {
+  AcousticShadowPlateState,
+  AcousticShadowStageId,
   FieldActionDefinition,
   FieldActionId,
   RoomPlateState,
@@ -25,6 +28,16 @@ interface SiteCloseupStageProps {
   roomStage?: RoomPlateState
   // The room's authored plate anchors, in master-normalized [0,1] coordinates.
   roomZones?: Readonly<Record<RoomStageId, { x: number; y: number }>>
+  // The acoustic-shadow room's derived presentation (phase + depth/pulse counters).
+  // Presentation only — same aria-hidden, pointer-inert contract as the room props,
+  // kept separate from them. Drives the near/mid/far/credential stagecraft below.
+  acousticStage?: AcousticShadowPlateState
+  // The acoustic-shadow room's authored plate anchors, master-normalized [0,1].
+  acousticZones?: Readonly<Record<AcousticShadowStageId, { x: number; y: number }>>
+  // Which resolved crossing to render once a maintenance method is filed: 'shadow'
+  // keeps one quiet broken interval in the cadence with the door dormant; 'credential'
+  // answers the amber aperture while the sensor chain stays intact. Presentation only.
+  acousticResolvedVariant?: 'shadow' | 'credential'
 }
 
 // A view-only location close read. The authored raster creates spatial identity;
@@ -37,6 +50,9 @@ export function SiteCloseupStage({
   resolvedActionId,
   roomStage,
   roomZones,
+  acousticStage,
+  acousticZones,
+  acousticResolvedVariant,
 }: SiteCloseupStageProps) {
   const focalX = closeup.focalPoint?.x ?? 0.5
   const focalY = closeup.focalPoint?.y ?? 0.5
@@ -46,12 +62,19 @@ export function SiteCloseupStage({
   // The room's current stagecraft anchor, resolved from its phase → authored zone.
   const roomFocus =
     roomStage && roomZones ? roomZones[roomStageFor(roomStage.phase)] : undefined
-  // The room stage takes precedence for the focus point while a room is active and
-  // no method is being previewed/resolved, so the plate drifts toward the drawer,
-  // the reserved aperture, the restriction shutter, or the consequential centre.
+  // The acoustic-shadow room's current anchor, resolved from its plate → authored
+  // zone (near/mid/far as checkpoints cross, credential once the route is ready).
+  const acousticFocus =
+    acousticStage && acousticZones
+      ? acousticZones[acousticShadowStageFor(acousticStage)]
+      : undefined
+  const derivedFocus = roomFocus ?? acousticFocus
+  // A room stage takes precedence for the focus point while a room is active and no
+  // method is being previewed/resolved, so the plate drifts along its own vocabulary
+  // (the classification drawer/aperture/log, or the corridor's near/mid/far/door).
   const focusPoint =
-    roomFocus && !emphasizedZone
-      ? roomFocus
+    derivedFocus && !emphasizedZone
+      ? derivedFocus
       : { x: emphasizedZone?.x ?? closeup.focalPoint?.x ?? 0.5, y: emphasizedZone?.y ?? closeup.focalPoint?.y ?? 0.5 }
   const stageStyle = {
     '--site-focal-position-x': `${focalX * 100}%`,
@@ -67,13 +90,16 @@ export function SiteCloseupStage({
 
   const phase = roomStage?.phase
   const showRoomStage = Boolean(roomStage && roomZones)
+  const acousticPhase = acousticStage?.phase
+  const showAcousticStage = Boolean(acousticStage && acousticZones)
 
   return (
     <figure
       className="site-closeup-stage"
-      data-emphasis={emphasizedZone || roomFocus ? 'true' : undefined}
-      data-room-focus={roomFocus && !emphasizedZone ? 'true' : undefined}
+      data-emphasis={emphasizedZone || derivedFocus ? 'true' : undefined}
+      data-room-focus={derivedFocus && !emphasizedZone ? 'true' : undefined}
       data-room-phase={phase}
+      data-acoustic-phase={acousticPhase}
       data-resolved={resolvedActionId ? 'true' : undefined}
       style={stageStyle}
       aria-hidden="true"
@@ -109,6 +135,12 @@ export function SiteCloseupStage({
           ) : null}
           {showRoomStage && roomStage && roomZones ? (
             <RoomStagecraft roomStage={roomStage} roomZones={roomZones} />
+          ) : null}
+          {showAcousticStage && acousticStage && acousticZones ? (
+            <AcousticShadowStagecraft acousticStage={acousticStage} acousticZones={acousticZones} />
+          ) : null}
+          {resolvedActionId && acousticZones && acousticResolvedVariant ? (
+            <AcousticShadowResolved variant={acousticResolvedVariant} acousticZones={acousticZones} />
           ) : null}
           {closeup.zones ? (
             <div className="site-closeup-zones">
@@ -204,6 +236,100 @@ function RoomStagecraft({
 
       {/* Methods: the room settles toward its consequential centre. */}
       <div className="scr-settle" />
+    </div>
+  )
+}
+
+// The authored, pointer-inert plate overlays for the Acoustic Shadow crossing. They
+// live in plate source space (percentage of the 1600×900 projection) from the room's
+// authored near/mid/far/credential anchors on the corridor. Progress reads through
+// perspective: the three checkpoint registrations march into the vanishing route and
+// dim as they are crossed; a shadow break occludes the reflection at the current
+// stage; the sealed amber credential only answers once the route is ready. CSS gates
+// every one-shot off under reduced motion, landing each phase on its distinct static
+// composition. Essential meaning stays in the DOM room text; this is flourish.
+function AcousticShadowStagecraft({
+  acousticStage,
+  acousticZones,
+}: {
+  acousticStage: AcousticShadowPlateState
+  acousticZones: Readonly<Record<AcousticShadowStageId, { x: number; y: number }>>
+}) {
+  const anchor = (point: { x: number; y: number }): CSSProperties => ({
+    left: `${point.x * 100}%`,
+    top: `${point.y * 100}%`,
+  })
+  const depthStages: readonly AcousticShadowStageId[] = ['near', 'mid', 'far']
+  const currentStage = acousticShadowStageFor(acousticStage)
+  return (
+    <div
+      className="site-closeup-acoustic"
+      data-acoustic-phase={acousticStage.phase}
+      data-route-ready={acousticStage.routeReady ? 'true' : undefined}
+    >
+      {/* Three checkpoint registrations along the corridor depth: ahead, current,
+          crossed. Perspective compression + dimming carries the progress. */}
+      {depthStages.map((stage, index) => {
+        const registration = acousticStage.routeReady
+          ? 'crossed'
+          : index < acousticStage.checkpointIndex
+            ? 'crossed'
+            : index === acousticStage.checkpointIndex
+              ? 'current'
+              : 'ahead'
+        return (
+          <span
+            key={stage}
+            className="asc-checkpoint"
+            data-depth={stage}
+            data-state={registration}
+            style={anchor(acousticZones[stage])}
+          />
+        )
+      })}
+      {/* The rain-shadow break at the current stage — occludes the beam reflection.
+          Remounts per pulse so the occlusion replays; static under reduced motion. */}
+      {!acousticStage.routeReady ? (
+        <span
+          className="asc-shadow"
+          key={`shadow-${acousticStage.checkpointIndex}-${acousticStage.pulseIndex}`}
+          style={anchor(acousticZones[currentStage])}
+        />
+      ) : null}
+      {/* The sealed service door: faint at rest, a single restrained amber answer
+          once the route is ready and the door is noticed. */}
+      <span
+        className="asc-credential"
+        data-route-ready={acousticStage.routeReady ? 'true' : undefined}
+        style={anchor(acousticZones.credential)}
+      />
+    </div>
+  )
+}
+
+// The settled maintenance closeup after a method is filed. Neither outcome reads as
+// the morally correct route: 'shadow' keeps one quiet broken interval in the sensor
+// cadence along the corridor with the credential door dormant; 'credential' answers
+// the amber aperture at the door while the corridor's sensor chain stays intact. The
+// authored resolved record is the semantic explanation; this is decorative.
+function AcousticShadowResolved({
+  variant,
+  acousticZones,
+}: {
+  variant: 'shadow' | 'credential'
+  acousticZones: Readonly<Record<AcousticShadowStageId, { x: number; y: number }>>
+}) {
+  const anchor = (point: { x: number; y: number }): CSSProperties => ({
+    left: `${point.x * 100}%`,
+    top: `${point.y * 100}%`,
+  })
+  return (
+    <div className="site-closeup-acoustic-resolved" data-variant={variant}>
+      {variant === 'shadow' ? (
+        <span className="asc-broken-interval" style={anchor(acousticZones.far)} />
+      ) : (
+        <span className="asc-credential-amber" style={anchor(acousticZones.credential)} />
+      )}
     </div>
   )
 }

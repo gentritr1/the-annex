@@ -585,3 +585,66 @@ describe('deposition (Case 81)', () => {
     expect(event?.methodTags).toEqual(['procedure'])
   })
 })
+
+// Freezes the byte-identical committed effects of the two Maintenance Spine methods.
+// The Acoustic Shadow room is a view-local presentation over these SAME actions; it
+// must never alter what COMMIT_FIELD_ACTION does. Any drift in evidence, trust,
+// alarm, override, method tags, or event copy breaks this guard.
+describe('Maintenance Spine canonical field-action effects (frozen)', () => {
+  it('walk-acoustic-shadow: sensor-omission evidence, defector +2, no alarm, no override', () => {
+    const before = startInvestigation()
+    const after = gameReducer(before, {
+      type: 'COMMIT_FIELD_ACTION',
+      actionId: 'walk-acoustic-shadow',
+    })
+
+    expect(after.completedSites).toContain('maintenance')
+    expect(after.completedActions).toContain('walk-acoustic-shadow')
+    expect(after.evidence).toContain('sensor-omission')
+    expect(after.methodTags).toEqual(expect.arrayContaining(['stealth', 'nonlethal']))
+    // Alarm delta 0, no override granted.
+    expect(after.alarm).toBe(before.alarm)
+    expect(after.tribunalOverride).toBe(false)
+    // Trust delta { defector: +2 } exactly (other personas unchanged).
+    expect(after.trust.defector).toBe(before.trust.defector + 2)
+    expect(after.trust.registrar).toBe(before.trust.registrar)
+    expect(after.trust.shepherd).toBe(before.trust.shepherd)
+    expect(after.trust.archivist).toBe(before.trust.archivist)
+    // The logged event is neutral (no alarm) and carries the authored copy.
+    const event = after.events.at(-1)
+    expect(event?.sourceType).toBe('field-action')
+    expect(event?.sourceId).toBe('walk-acoustic-shadow')
+    expect(event?.title).toBe('You entered the absent corridor')
+    expect(event?.tone).toBe('neutral')
+    expect(event?.methodTags).toEqual(['stealth', 'nonlethal'])
+    expect(event?.detail).toContain('The fourth minute was excluded by policy')
+  })
+
+  it('forge-authority: maintenance-override evidence, +1 alarm, tribunal override, defector +1 / registrar −1', () => {
+    const before = startInvestigation()
+    const after = gameReducer(before, {
+      type: 'COMMIT_FIELD_ACTION',
+      actionId: 'forge-authority',
+    })
+
+    expect(after.completedSites).toContain('maintenance')
+    expect(after.completedActions).toContain('forge-authority')
+    expect(after.evidence).toContain('maintenance-override')
+    expect(after.methodTags).toEqual(expect.arrayContaining(['systems', 'fraud']))
+    // Alarm delta +1, override granted.
+    expect(after.alarm).toBe(before.alarm + 1)
+    expect(after.tribunalOverride).toBe(true)
+    // Trust delta { defector: +1, registrar: -1 } exactly.
+    expect(after.trust.defector).toBe(before.trust.defector + 1)
+    expect(after.trust.registrar).toBe(before.trust.registrar - 1)
+    expect(after.trust.shepherd).toBe(before.trust.shepherd)
+    expect(after.trust.archivist).toBe(before.trust.archivist)
+    // The logged event is a warning (alarm raised) with the authored copy.
+    const event = after.events.at(-1)
+    expect(event?.sourceId).toBe('forge-authority')
+    expect(event?.title).toBe('A dead credential answered')
+    expect(event?.tone).toBe('warning')
+    expect(event?.methodTags).toEqual(['systems', 'fraud'])
+    expect(event?.detail).toContain('an authority the system accepts and the law does not')
+  })
+})

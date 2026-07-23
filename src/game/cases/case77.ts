@@ -1,5 +1,6 @@
 import { CivicArchiveArt } from '../../scene/CivicArchiveArt'
 import type {
+  AcousticShadowRoomDefinition,
   ApproachDefinition,
   CaseDefinition,
   CaseChrome,
@@ -499,6 +500,200 @@ const smallArchiveRoom: ClassificationRoomDefinition = {
   },
 }
 
+// The Maintenance Spine's reconnaissance verb, authored as a bounded acoustic-
+// shadow route-planning room. The player reads the rain-masked sensor cadence at
+// three checkpoints, advancing each pulse by hand, and crosses on the one blind
+// interval where the rain holds a shadow. No clock, no failure: an exposed band
+// only waits. After the third crossing the route is plotted and the two canonical
+// methods (walk-acoustic-shadow / forge-authority) unlock in place. Every string is
+// in-voice with curly punctuation; nothing here is persisted, and none of it
+// reveals either method's canonical finding before commitment.
+const maintenanceAcousticShadow: AcousticShadowRoomDefinition = {
+  intro:
+    'Rain runs the spine, and the sensor pylons pulse in a cadence the archive keeps. Read the span, then cross on its rain-shadows — three checkpoints, one blind interval each.',
+  listenLabel: 'Listen for the next pulse',
+  bandGroupLabel: 'Choose where to cross this checkpoint',
+  checkpoints: [
+    {
+      id: 'checkpoint-mouth',
+      station: 'The mouth of the spine',
+      prompt:
+        'You crouch in the foreground cover where the corridor begins. The first pylon rank stands between you and the wet floor ahead.',
+      bands: [
+        {
+          id: 'drain-channel',
+          name: 'The drain channel',
+          exposedLine:
+            'The channel is lit end to end — the beam pools in the water before you would reach it. You hold at the mouth and let the pulse move on.',
+        },
+        {
+          id: 'structural-pier',
+          name: 'The structural pier',
+          exposedLine:
+            'The pier stands in full registration; step to it now and you cross its light. You wait for the beam to turn.',
+        },
+      ],
+      pulses: [
+        {
+          id: 'mouth-open',
+          label: 'Open sweep',
+          reading:
+            'The pulse opens wide. The beam rakes the length of the wet floor, and both the channel and the pier stand plainly lit.',
+          exposure: { 'drain-channel': 'exposed', 'structural-pier': 'exposed' },
+        },
+        {
+          id: 'mouth-break',
+          label: 'Rain break',
+          reading:
+            'Rain sheets off the first pylon and folds into the drain. For this beat the channel drinks the light and gives nothing back; the pier still holds its edge.',
+          exposure: { 'drain-channel': 'masked', 'structural-pier': 'exposed' },
+        },
+        {
+          id: 'mouth-pull',
+          label: 'Pull-back',
+          reading:
+            'The beam retracts toward the pylons. The channel dries to a hard bright line again, and the pier keeps its reflection.',
+          exposure: { 'drain-channel': 'exposed', 'structural-pier': 'exposed' },
+        },
+      ],
+      crossLine:
+        'You go low, under the rain that eats the drain, and the beam finds only moving water where you were.',
+    },
+    {
+      id: 'checkpoint-rank',
+      station: 'The mid-span pylons',
+      prompt:
+        'Past the first cover you reach the pylon rank at mid-span. The sweep is faster here, and the vanishing point pulls the light long.',
+      bands: [
+        {
+          id: 'rain-curtain',
+          name: 'The rain curtain',
+          exposedLine:
+            'The curtain is thin and bright just now — the beam passes clean through it and would catch you mid-step. You wait for the water to thicken.',
+        },
+        {
+          id: 'pylon-shadow',
+          name: 'The pylon shadow',
+          exposedLine:
+            'The pylon shadow only looks safe; its near edge is fully lit. You let the sweep run on.',
+        },
+      ],
+      pulses: [
+        {
+          id: 'rank-rake',
+          label: 'Steady rake',
+          reading:
+            'The beam sweeps steady across the rank. The curtain glitters and the pylon shadow is a thin, exposed sliver.',
+          exposure: { 'rain-curtain': 'exposed', 'pylon-shadow': 'exposed' },
+        },
+        {
+          id: 'rank-deep',
+          label: 'Deep pull',
+          reading:
+            'The sweep runs deep toward the vanishing point. The shadow widens, but its near edge still takes the light.',
+          exposure: { 'rain-curtain': 'exposed', 'pylon-shadow': 'exposed' },
+        },
+        {
+          id: 'rank-fall',
+          label: 'Curtain fall',
+          reading:
+            'A full curtain of rain drops between two pylons. The beam scatters inside the water and reads nothing behind it.',
+          exposure: { 'rain-curtain': 'masked', 'pylon-shadow': 'exposed' },
+        },
+      ],
+      crossLine:
+        'You slip through the falling water while the beam drowns in it, and come out on the far side of the rank unread.',
+    },
+    {
+      id: 'checkpoint-gate',
+      station: 'The far gate',
+      prompt:
+        'The corridor tightens toward its far gate, where the sensor line runs thin and distant and warm runoff crosses the floor.',
+      bands: [
+        {
+          id: 'service-wall',
+          name: 'The service wall',
+          exposedLine:
+            'The service wall throws the beam straight back at you; it would read you against it. You keep to cover.',
+        },
+        {
+          id: 'runoff-grate',
+          name: 'The runoff grate',
+          exposedLine:
+            'The grate is clear and lit — cross it now and the far sensor logs your step. You wait for the steam.',
+        },
+      ],
+      pulses: [
+        {
+          id: 'gate-far',
+          label: 'Far register',
+          reading:
+            'At the far gate the beam is a tight, distant line. The wall holds a hard reflection; the grate breathes a little steam but stays lit.',
+          exposure: { 'service-wall': 'exposed', 'runoff-grate': 'exposed' },
+        },
+        {
+          id: 'gate-bloom',
+          label: 'Steam bloom',
+          reading:
+            'Warm runoff blooms steam off the grate. For this beat the beam diffuses into the cloud and the grate goes blind.',
+          exposure: { 'service-wall': 'exposed', 'runoff-grate': 'masked' },
+        },
+        {
+          id: 'gate-settle',
+          label: 'Settle',
+          reading:
+            'The steam thins and settles. The grate hardens back into the beam’s reach, and the wall keeps its reflection.',
+          exposure: { 'service-wall': 'exposed', 'runoff-grate': 'exposed' },
+        },
+      ],
+      crossLine:
+        'You cross under the steam-blind grate to the far gate. The span is read end to end — three shadows, one line.',
+    },
+  ],
+  routeReadyLine:
+    'The route is plotted end to end — three rain-shadows, one line across the spine. Not yet crossed.',
+  credentialLine:
+    'To the right, the sealed service door answers with one faint amber tick — a dead credential, and nothing more.',
+  // Plate anchors on maintenance-spine.webp: the near foreground cover, the mid
+  // pylon rank, the far vanishing gate, and the sealed amber service door (right).
+  zones: {
+    near: { x: 0.3, y: 0.66 },
+    mid: { x: 0.46, y: 0.54 },
+    far: { x: 0.55, y: 0.46 },
+    credential: { x: 0.85, y: 0.52 },
+  },
+  // Per-phase acoustic perspective, based on the maintenance portal's acoustics
+  // (humHz 52, rain at weatherLevel 0.32). Crossing muffles the rain and lifts the
+  // hum pressure a touch; route-ready thins the rain and drifts a shade brighter
+  // toward the amber door. Every state stays fully legible while muted.
+  acoustics: {
+    survey: {
+      weatherLevel: 0.3,
+      weatherCutoffHz: 820,
+      roomLevel: 0.9,
+      roomCutoffHz: 170,
+      humHz: 52,
+      humLevel: 0.6,
+    },
+    crossing: {
+      weatherLevel: 0.38,
+      weatherCutoffHz: 720,
+      roomLevel: 0.94,
+      roomCutoffHz: 160,
+      humHz: 52,
+      humLevel: 0.7,
+    },
+    'route-ready': {
+      weatherLevel: 0.26,
+      weatherCutoffHz: 900,
+      roomLevel: 0.86,
+      roomCutoffHz: 180,
+      humHz: 55,
+      humLevel: 0.58,
+    },
+  },
+}
+
 const sites: readonly SiteDefinition[] = [
   {
     id: 'registry',
@@ -544,6 +739,7 @@ const sites: readonly SiteDefinition[] = [
     name: 'Maintenance spine',
     description: 'A rain-slicked sensor ecology built around permissions the public record never mentions.',
     actionIds: ['walk-acoustic-shadow', 'forge-authority'],
+    acousticShadow: maintenanceAcousticShadow,
     closeup: {
       src: '/images/site-scenes/maintenance-spine.webp',
       caption: 'Sensor route · blind interval · dormant credential',

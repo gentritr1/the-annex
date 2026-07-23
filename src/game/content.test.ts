@@ -10,8 +10,19 @@ import {
   resolveFieldAction,
 } from './content'
 import { createInitialGameState } from './engine'
-import { ROOM_STAGES, SCENE_STATES } from './types'
-import type { CaseDefinition, GameState, MethodTag, SceneAcousticTreatment } from './types'
+import {
+  ACOUSTIC_SHADOW_PHASES,
+  ACOUSTIC_SHADOW_STAGES,
+  ROOM_STAGES,
+  SCENE_STATES,
+} from './types'
+import type {
+  AcousticExposure,
+  CaseDefinition,
+  GameState,
+  MethodTag,
+  SceneAcousticTreatment,
+} from './types'
 
 function expectUnique(ids: readonly string[]) {
   expect(new Set(ids).size).toBe(ids.length)
@@ -286,6 +297,77 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
       // The two methods resolve to visibly distinct outcomes.
       expectUnique(outcomes.map((outcome) => outcome.outcomeId))
       expectUnique(outcomes.map((outcome) => outcome.variant))
+    })
+  })
+
+  it('authors a complete, generic acoustic-shadow room wherever a site declares one', () => {
+    const stageIds = new Set<string>(ACOUSTIC_SHADOW_STAGES)
+    const phaseIds = new Set<string>(ACOUSTIC_SHADOW_PHASES)
+    sites.forEach((site) => {
+      const room = site.acousticShadow
+      if (!room) return
+
+      // The room lines above/around the crossing.
+      ;[room.intro, room.listenLabel, room.bandGroupLabel, room.routeReadyLine, room.credentialLine].forEach(
+        (line) => expect(line.trim().length).toBeGreaterThan(0),
+      )
+
+      // Exactly three checkpoints, unique ids; each with a station, prompt, cross line.
+      expect(room.checkpoints).toHaveLength(3)
+      expectUnique(room.checkpoints.map((checkpoint) => checkpoint.id))
+      room.checkpoints.forEach((checkpoint) => {
+        ;[checkpoint.station, checkpoint.prompt, checkpoint.crossLine].forEach((line) =>
+          expect(line.trim().length).toBeGreaterThan(0),
+        )
+
+        // Exactly two bands, unique ids, each with a name and a non-punitive line.
+        expect(checkpoint.bands).toHaveLength(2)
+        const bandIds = checkpoint.bands.map((band) => band.id)
+        expectUnique(bandIds)
+        checkpoint.bands.forEach((band) => {
+          expect(band.name.trim().length).toBeGreaterThan(0)
+          expect(band.exposedLine.trim().length).toBeGreaterThan(0)
+        })
+
+        // Pulses: ≥2, unique ids, each with a label + reading, and an exposure entry
+        // for EVERY band of this checkpoint with a valid value.
+        expect(checkpoint.pulses.length).toBeGreaterThanOrEqual(2)
+        expectUnique(checkpoint.pulses.map((pulse) => pulse.id))
+        let maskedCount = 0
+        checkpoint.pulses.forEach((pulse) => {
+          expect(pulse.label.trim().length).toBeGreaterThan(0)
+          expect(pulse.reading.trim().length).toBeGreaterThan(0)
+          expect(new Set(Object.keys(pulse.exposure))).toEqual(new Set(bandIds))
+          bandIds.forEach((bandId) => {
+            const exposure: AcousticExposure = pulse.exposure[bandId]!
+            expect(['masked', 'exposed']).toContain(exposure)
+            if (exposure === 'masked') maskedCount += 1
+          })
+        })
+        // Exactly one blind interval per checkpoint: exactly one masked (pulse, band).
+        expect(maskedCount).toBe(1)
+      })
+
+      // Plate zone anchors reference stages that exist, in master-normalized bounds,
+      // and cover every stage.
+      expect(new Set(Object.keys(room.zones))).toEqual(stageIds)
+      Object.entries(room.zones).forEach(([stage, anchor]) => {
+        expect(stageIds.has(stage)).toBe(true)
+        expect(anchor.x).toBeGreaterThanOrEqual(0)
+        expect(anchor.x).toBeLessThanOrEqual(1)
+        expect(anchor.y).toBeGreaterThanOrEqual(0)
+        expect(anchor.y).toBeLessThanOrEqual(1)
+      })
+
+      // A bounded acoustic treatment for EVERY phase.
+      expect(new Set(Object.keys(room.acoustics))).toEqual(phaseIds)
+      Object.values(room.acoustics).forEach((treatment) => expectBoundedAcoustics(treatment))
+
+      // The room's site exposes exactly the two canonical methods it gates.
+      expect(site.actionIds).toHaveLength(2)
+      site.actionIds.forEach((actionId) =>
+        expect(fieldActions.some((action) => action.id === actionId)).toBe(true),
+      )
     })
   })
 
@@ -609,6 +691,45 @@ describe('Case 77 authors the Small Archive classification room', () => {
     expect(strings).toContain(room.slips[0]!.label)
     expect(strings).toContain(room.readingLead)
     expect(strings).toContain(room.proceedLabel)
+  })
+})
+
+describe('Case 77 authors the Maintenance Spine acoustic-shadow room', () => {
+  const content = getCaseContent('case-77')
+  const roomSite = content.sites.find((site) => site.acousticShadow)
+
+  it('attaches the room to the Maintenance Spine with its two canonical methods', () => {
+    expect(roomSite?.id).toBe('maintenance')
+    expect(roomSite?.acousticShadow).toBeDefined()
+    expect(roomSite?.actionIds).toEqual(['walk-acoustic-shadow', 'forge-authority'])
+  })
+
+  it('surfaces every authored checkpoint / band / pulse / feedback line to the string-walk', () => {
+    const strings: string[] = []
+    collectStrings(content, strings)
+    const room = roomSite!.acousticShadow!
+    // A checkpoint prompt + cross line, a band name + exposed line, a pulse reading,
+    // and the route-ready + credential lines must all be reachable from the walked
+    // tree (otherwise the no-placeholder test is vacuous over the room copy).
+    expect(strings).toContain(room.checkpoints[0]!.prompt)
+    expect(strings).toContain(room.checkpoints[0]!.crossLine)
+    expect(strings).toContain(room.checkpoints[0]!.bands[0]!.name)
+    expect(strings).toContain(room.checkpoints[0]!.bands[0]!.exposedLine)
+    expect(strings).toContain(room.checkpoints[0]!.pulses[0]!.reading)
+    expect(strings).toContain(room.routeReadyLine)
+    expect(strings).toContain(room.credentialLine)
+  })
+
+  it('does not reveal either method’s canonical finding before commitment', () => {
+    const strings: string[] = []
+    collectStrings(roomSite!.acousticShadow, strings)
+    const blob = strings.join('\n')
+    // walk-acoustic-shadow's exclusive finding: the fourth minute excluded by policy.
+    expect(blob).not.toMatch(/fourth minute/i)
+    expect(blob).not.toMatch(/excluded by policy/i)
+    // forge-authority's exclusive capability: an authority the law does not accept.
+    expect(blob).not.toMatch(/tribunal (write )?access/i)
+    expect(blob).not.toMatch(/without a vote/i)
   })
 })
 
