@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { getCaseContent, resolveFieldAction } from '../game/content'
+import { getCaseContent, personaName, resolveFieldAction } from '../game/content'
 import { canEnterTribunal } from '../game/engine'
 import {
   acousticStepLabel,
@@ -19,6 +19,7 @@ import type {
   DepositionChoiceId,
   FieldActionId,
   GameState,
+  PersonaId,
   RoomPlateState,
   SceneAcousticTreatment,
   SiteId,
@@ -895,7 +896,12 @@ export function Investigation({
                 </span>
                 <div>
                   <strong>{selectedEvent?.title ?? selectedCompletedAction.title}</strong>
-                  <p>{selectedEvent?.detail ?? selectedCompletedAction.eventDetail}</p>
+                  {/* The authored eventDetail is the narrative alone; the logged
+                      event string appends the trust arithmetic to it. Keeping the
+                      prose clean here and filing the deltas in the grid below lets
+                      the scene's words read as words (screenshot finding: the
+                      filed card ran story and mechanics into one paragraph). */}
+                  <p>{selectedCompletedAction.eventDetail}</p>
                   <div className="record-delta" aria-label="Filed result">
                     {selectedEvidence && (
                       <span>
@@ -911,6 +917,20 @@ export function Investigation({
                           : 'No new trace'}
                       </strong>
                     </span>
+                    {Object.values(selectedCompletedAction.trust ?? {}).some(Boolean) && (
+                      <span>
+                        <small>Standing</small>
+                        <strong>
+                          {Object.entries(selectedCompletedAction.trust ?? {})
+                            .filter(([, delta]) => delta !== 0)
+                            .map(
+                              ([id, delta]) =>
+                                `${personaName(id as PersonaId)} ${delta > 0 ? '+' : ''}${delta}`,
+                            )
+                            .join(' · ')}
+                        </strong>
+                      </span>
+                    )}
                     {selectedCompletedAction.grantsTribunalOverride && (
                       <span>
                         <small>Authority</small>

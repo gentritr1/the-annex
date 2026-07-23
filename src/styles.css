@@ -3346,14 +3346,30 @@ p {
   min-height: 0;
 }
 
+/* The switcher sizes to its pane, not the viewport — a viewport breakpoint left a
+   700–1100px window where side-by-side panes squeezed the 4-across tiles until
+   "Maintenance spine" bled out of its box. Container-query on the pane instead:
+   4×1 when the pane affords ~145px per tile, else 2×2 — never a 3+1 wrap. The
+   1px gap over the line-colored track draws the separators in either shape. */
+.world-pane {
+  container-type: inline-size;
+}
+
 .site-switcher {
   min-height: 72px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
   overflow: hidden;
-  background: var(--concrete);
+  background: var(--line);
   border: 1px solid var(--line);
   border-radius: 8px;
+}
+
+@container (max-width: 600px) {
+  .site-switcher {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .site-switch {
@@ -3366,7 +3382,7 @@ p {
   padding: 9px 10px;
   color: var(--fog);
   text-align: left;
-  background: transparent;
+  background: var(--concrete);
   border: 0;
   transition:
     color 180ms var(--ease-out),
@@ -3374,9 +3390,6 @@ p {
     box-shadow 180ms var(--ease-out);
 }
 
-.site-switch + .site-switch {
-  border-left: 1px solid var(--line);
-}
 
 .site-switch:hover {
   color: var(--record);
@@ -3423,6 +3436,7 @@ p {
   color: inherit;
   font-size: 0.74rem;
   line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 .site-switch small {
@@ -5979,17 +5993,6 @@ p {
     min-height: 320px;
   }
 
-  .site-switcher {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .site-switch:nth-child(3) {
-    border-left: 0;
-  }
-
-  .site-switch:nth-child(n + 3) {
-    border-top: 1px solid var(--line);
-  }
 
   .site-inspector {
     overflow: visible;
