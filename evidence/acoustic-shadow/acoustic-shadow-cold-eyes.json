@@ -1,0 +1,26 @@
+{
+  "phase": "survey",
+  "station": "The mouth of the spine",
+  "progress": "1 / 3",
+  "pulseLabel": "Open sweep",
+  "reading": "The pulse opens wide. The beam rakes the length of the wet floor, and both the channel and the pier stand plainly lit.",
+  "listen": "Listen for the next pulsepulse 1 / 3",
+  "bands": [
+    {
+      "name": "The drain channel",
+      "exposure": "exposed",
+      "state": "Beam-exposed · the beam reaches it first",
+      "waited": false
+    },
+    {
+      "name": "The structural pier",
+      "exposure": "exposed",
+      "state": "Beam-exposed · the beam reaches it first",
+      "waited": false
+    }
+  ],
+  "methods": [],
+  "routeReady": null,
+  "credential": null,
+  "liveRegion": ""
+}

@@ -1,0 +1,80 @@
+STEP: COLD EYES: fresh save → Maintenance spine, what a new player sees
+   click "Open a new audit"
+   click first briefing approach
+   click Maintenance spine
+PASS  survey phase reached; station "The mouth of the spine", pulse "Open sweep"
+PASS  two named bands with text exposure: The drain channel [exposed] | The structural pier [exposed]
+PASS  methods are NOT shown before the route is ready
+   click "Open a new audit"
+   click first briefing approach
+   click Maintenance spine
+   click Listen (find the blind interval)
+PASS  blind interval visible: The drain channel [masked] | The structural pier [exposed]
+STEP: GEOMETRY: overflow measurements across every state (transitions disabled)
+   click "Open a new audit"
+   click first briefing approach
+   click Maintenance spine
+   click Listen for the next pulse
+   click masked band #1 (cross)
+   click Listen for the next pulse
+   click Listen for the next pulse
+   click masked band #1 (cross)
+   click Listen for the next pulse
+   click masked band #2 (cross)
+   click arm walk method
+   click arm forge method
+PASS  tableau height FIXED across all states: 384px
+PASS  inspector overflow is 0 in EVERY state
+PASS  stage inner overflow ≤1px in every state (max 0)
+STEP: KEYBOARD OPERABILITY: trusted Space/Tab drive the controls
+   click "Open a new audit"
+   click first briefing approach
+   click Maintenance spine
+PASS  trusted Space on Listen advances the pulse (pulse 1 / 3 → pulse 2 / 3)
+PASS  trusted Space on the masked band crosses the checkpoint (1 / 3 → 2 / 3)
+PASS  after a keyboard cross, focus lands on .as-reading (not body)
+STEP: FOCUS TARGETS: capture focus landing after each transition, commit walk
+   click "Open a new audit"
+   click first briefing approach
+   click Maintenance spine
+   click Listen for the next pulse
+   click masked band #1 (cross)
+PASS  after crossing checkpoint 1, focus lands on .as-reading (not body)
+   click Listen for the next pulse
+   click Listen for the next pulse
+   click masked band #1 (cross)
+PASS  after crossing checkpoint 2, focus lands on .as-reading (not body)
+   click Listen for the next pulse
+   click masked band #2 (cross)
+PASS  after crossing checkpoint 3, focus lands on .choice-row.choice-row-default (not body)
+PASS  at route-ready, focus lands on the first method: .choice-row.choice-row-default
+   click arm walk method
+PASS  first activation arms the walk method ("Walk the acoustic shadow — select again to file")
+   click confirm walk method
+PASS  walk-acoustic-shadow committed via two-step armed confirm
+STEP: RESOLVED closeups: walk vs forge, labels hidden
+PASS  walk resolved = shadow (broken interval), no amber: {"variant":"shadow","brokenInterval":true,"credentialAmber":false}
+   click "Open a new audit"
+   click first briefing approach
+   click Maintenance spine
+   click Listen for the next pulse
+   click masked band #1 (cross)
+   click Listen for the next pulse
+   click Listen for the next pulse
+   click masked band #1 (cross)
+   click Listen for the next pulse
+   click masked band #2 (cross)
+   click arm forge
+   click confirm forge
+PASS  forge resolved = credential (amber aperture), no broken interval: {"variant":"credential","brokenInterval":false,"credentialAmber":true}
+STEP: ACCESSIBILITY: high contrast, large text, app + OS reduced motion, mobile 375
+   click "Open a new audit"
+   click first briefing approach
+   click Maintenance spine
+PASS  high contrast: masked band carries a non-colour outline (solid)
+PASS  large text: inspector overflow 0 (room grows/scrolls, no horizontal clip)
+   click "Open a new audit"
+   click first briefing approach
+   click Maintenance spine
+PASS  mobile 375: no horizontal overflow (scrollW 375 ≤ clientW 375)
+PASS  mobile targets ≥44px (band 63, listen 44)

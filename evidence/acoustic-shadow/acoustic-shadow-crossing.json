@@ -1,0 +1,26 @@
+{
+  "phase": "crossing",
+  "station": "The mouth of the spine",
+  "progress": "1 / 3",
+  "pulseLabel": "Rain break",
+  "reading": "Rain sheets off the first pylon and folds into the drain. For this beat the channel drinks the light and gives nothing back; the pier still holds its edge.",
+  "listen": "Listen for the next pulsepulse 2 / 3",
+  "bands": [
+    {
+      "name": "The drain channel",
+      "exposure": "masked",
+      "state": "Rain-masked · cross here",
+      "waited": false
+    },
+    {
+      "name": "The structural pier",
+      "exposure": "exposed",
+      "state": "Beam-exposed · the beam reaches it first",
+      "waited": false
+    }
+  ],
+  "methods": [],
+  "routeReady": null,
+  "credential": null,
+  "liveRegion": "Rain sheets off the first pylon and folds into the drain. For this beat the channel drinks the light and gives nothing back; the pier still holds its edge."
+}

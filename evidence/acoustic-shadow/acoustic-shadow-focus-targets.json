@@ -1,0 +1,37 @@
+[
+  {
+    "afterCrossCheckpoint": 1,
+    "focusLandsOn": {
+      "selector": ".as-reading",
+      "text": "Steady rakeThe beam sweeps steady across"
+    }
+  },
+  {
+    "afterCrossCheckpoint": 2,
+    "focusLandsOn": {
+      "selector": ".as-reading",
+      "text": "Far registerAt the far gate the beam is "
+    }
+  },
+  {
+    "afterCrossCheckpoint": 3,
+    "focusLandsOn": {
+      "selector": ".choice-row.choice-row-default",
+      "text": "StealthWalk the acoustic shadowCross the"
+    }
+  },
+  {
+    "atRouteReady": true,
+    "focusLandsOn": {
+      "selector": ".choice-row.choice-row-default",
+      "text": "StealthWalk the acoustic shadowCross the"
+    }
+  },
+  {
+    "armedMethod": "Walk the acoustic shadow — select again to file",
+    "committed": {
+      "resolved": true,
+      "state": "Filed"
+    }
+  }
+]

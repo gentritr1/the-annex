@@ -1,0 +1,68 @@
+[
+  {
+    "phase": "survey",
+    "roomHeight": 384,
+    "stageScrollH": 328,
+    "stageClientH": 328,
+    "stageOverflow": 0,
+    "inspectorScrollH": 538,
+    "inspectorClientH": 538,
+    "inspectorOverflow": 0,
+    "state": "survey"
+  },
+  {
+    "phase": "crossing",
+    "roomHeight": 384,
+    "stageScrollH": 328,
+    "stageClientH": 328,
+    "stageOverflow": 0,
+    "inspectorScrollH": 538,
+    "inspectorClientH": 538,
+    "inspectorOverflow": 0,
+    "state": "after-cross-0"
+  },
+  {
+    "phase": "crossing",
+    "roomHeight": 384,
+    "stageScrollH": 328,
+    "stageClientH": 328,
+    "stageOverflow": 0,
+    "inspectorScrollH": 538,
+    "inspectorClientH": 538,
+    "inspectorOverflow": 0,
+    "state": "after-cross-1"
+  },
+  {
+    "phase": "route-ready",
+    "roomHeight": 384,
+    "stageScrollH": 369,
+    "stageClientH": 369,
+    "stageOverflow": 0,
+    "inspectorScrollH": 538,
+    "inspectorClientH": 538,
+    "inspectorOverflow": 0,
+    "state": "after-cross-2"
+  },
+  {
+    "phase": "route-ready",
+    "roomHeight": 384,
+    "stageScrollH": 369,
+    "stageClientH": 369,
+    "stageOverflow": 0,
+    "inspectorScrollH": 538,
+    "inspectorClientH": 538,
+    "inspectorOverflow": 0,
+    "state": "route-ready-walk-armed"
+  },
+  {
+    "phase": "route-ready",
+    "roomHeight": 384,
+    "stageScrollH": 369,
+    "stageClientH": 369,
+    "stageOverflow": 0,
+    "inspectorScrollH": 538,
+    "inspectorClientH": 538,
+    "inspectorOverflow": 0,
+    "state": "route-ready-forge-armed"
+  }
+]

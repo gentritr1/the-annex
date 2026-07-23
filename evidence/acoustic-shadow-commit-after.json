@@ -1,0 +1,172 @@
+{
+  "preCommit": {
+    "schemaVersion": 2,
+    "caseId": "case-77",
+    "phase": "investigation",
+    "runNumber": 1,
+    "primaryApproach": "covert",
+    "completedSites": [],
+    "completedActions": [],
+    "evidence": [],
+    "methodTags": [
+      "stealth"
+    ],
+    "trust": {
+      "registrar": 0,
+      "shepherd": 0,
+      "defector": 1,
+      "archivist": 0
+    },
+    "alarm": 0,
+    "tribunalOverride": false,
+    "selectedFragments": [],
+    "reconstruction": null,
+    "decision": null,
+    "depositionRecord": null,
+    "events": [
+      {
+        "sourceType": "approach",
+        "sourceId": "covert",
+        "title": "Begin outside permission",
+        "detail": "Map what the official audit path has been designed not to show. — Defector +1.",
+        "tone": "neutral",
+        "methodTags": [
+          "stealth"
+        ],
+        "id": "run-1-event-1",
+        "order": 1
+      }
+    ],
+    "previousRuns": [],
+    "precedents": {},
+    "settings": {},
+    "announcement": "Begin outside permission. Investigation sites are available."
+  },
+  "walkAcousticShadow": {
+    "schemaVersion": 2,
+    "caseId": "case-77",
+    "phase": "investigation",
+    "runNumber": 1,
+    "primaryApproach": "covert",
+    "completedSites": [
+      "maintenance"
+    ],
+    "completedActions": [
+      "walk-acoustic-shadow"
+    ],
+    "evidence": [
+      "sensor-omission"
+    ],
+    "methodTags": [
+      "stealth",
+      "nonlethal"
+    ],
+    "trust": {
+      "registrar": 0,
+      "shepherd": 0,
+      "defector": 3,
+      "archivist": 0
+    },
+    "alarm": 0,
+    "tribunalOverride": false,
+    "selectedFragments": [],
+    "reconstruction": null,
+    "decision": null,
+    "depositionRecord": null,
+    "events": [
+      {
+        "sourceType": "approach",
+        "sourceId": "covert",
+        "title": "Begin outside permission",
+        "detail": "Map what the official audit path has been designed not to show. — Defector +1.",
+        "tone": "neutral",
+        "methodTags": [
+          "stealth"
+        ],
+        "id": "run-1-event-1",
+        "order": 1
+      },
+      {
+        "sourceType": "field-action",
+        "sourceId": "walk-acoustic-shadow",
+        "title": "You entered the absent corridor",
+        "detail": "The fourth minute was excluded by policy, not lost to the rain the sensors blame. Someone wanted this gap visible to insiders. — Defector +2.",
+        "tone": "neutral",
+        "methodTags": [
+          "stealth",
+          "nonlethal"
+        ],
+        "id": "run-1-event-2",
+        "order": 2
+      }
+    ],
+    "previousRuns": [],
+    "precedents": {},
+    "settings": {},
+    "announcement": "You entered the absent corridor. New evidence added."
+  },
+  "forgeAuthority": {
+    "schemaVersion": 2,
+    "caseId": "case-77",
+    "phase": "investigation",
+    "runNumber": 1,
+    "primaryApproach": "covert",
+    "completedSites": [
+      "maintenance"
+    ],
+    "completedActions": [
+      "forge-authority"
+    ],
+    "evidence": [
+      "maintenance-override"
+    ],
+    "methodTags": [
+      "stealth",
+      "systems",
+      "fraud"
+    ],
+    "trust": {
+      "registrar": -1,
+      "shepherd": 0,
+      "defector": 2,
+      "archivist": 0
+    },
+    "alarm": 1,
+    "tribunalOverride": true,
+    "selectedFragments": [],
+    "reconstruction": null,
+    "decision": null,
+    "depositionRecord": null,
+    "events": [
+      {
+        "sourceType": "approach",
+        "sourceId": "covert",
+        "title": "Begin outside permission",
+        "detail": "Map what the official audit path has been designed not to show. — Defector +1.",
+        "tone": "neutral",
+        "methodTags": [
+          "stealth"
+        ],
+        "id": "run-1-event-1",
+        "order": 1
+      },
+      {
+        "sourceType": "field-action",
+        "sourceId": "forge-authority",
+        "title": "A dead credential answered",
+        "detail": "You now hold an authority the system accepts and the law does not. — Registrar −1, Defector +1.",
+        "tone": "warning",
+        "methodTags": [
+          "systems",
+          "fraud"
+        ],
+        "id": "run-1-event-2",
+        "order": 2
+      }
+    ],
+    "previousRuns": [],
+    "precedents": {},
+    "settings": {},
+    "announcement": "A dead credential answered. New evidence added."
+  }
+}

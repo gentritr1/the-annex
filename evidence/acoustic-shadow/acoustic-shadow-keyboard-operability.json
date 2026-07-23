@@ -1,0 +1,17 @@
+{
+  "listenSpace": {
+    "pulseBefore": "pulse 1 / 3",
+    "pulseAfter": "pulse 2 / 3",
+    "advanced": true,
+    "focusKept": true
+  },
+  "bandSpaceCross": {
+    "progBefore": "1 / 3",
+    "progAfter": "2 / 3",
+    "crossed": true,
+    "focusLandsOn": {
+      "selector": ".as-reading",
+      "text": "Steady rakeThe beam sweeps steady across"
+    }
+  }
+}
