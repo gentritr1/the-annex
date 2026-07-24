@@ -2730,27 +2730,26 @@ p {
   transition: opacity 300ms var(--ease-out);
 }
 
+/* The entry reveal is carried entirely by the clip-path aperture and the scale
+   settle — NOT by ramping the plate's opacity. A prior version animated opacity
+   0.25 -> 1 held by `animation-fill-mode: both`; on re-entering a site whose
+   plate was already cached the animation could strand at its 0% frame, leaving
+   the whole (dark) diorama at 0.25 opacity — i.e. black. Opacity stays 1 across
+   every frame so the plate can never strand invisible, whatever the timing. */
 @keyframes site-closeup-enter {
   0% {
     clip-path: ellipse(2% 7% at var(--site-entry-x, 50%) var(--site-entry-y, 50%));
-    opacity: 0.25;
     transform: scale(1.028);
-  }
-  32% {
-    clip-path: ellipse(12% 24% at var(--site-entry-x, 50%) var(--site-entry-y, 50%));
-    opacity: 1;
   }
   70% {
     clip-path: ellipse(72% 98% at var(--site-entry-x, 50%) var(--site-entry-y, 50%));
   }
   99% {
     clip-path: ellipse(160% 180% at var(--site-entry-x, 50%) var(--site-entry-y, 50%));
-    opacity: 1;
     transform: scale(1);
   }
   100% {
     clip-path: none;
-    opacity: 1;
     transform: scale(1);
   }
 }
