@@ -95,30 +95,43 @@
     background: #05070a url('/images/site-scenes/care-ward-12.webp') center/cover no-repeat;
   }
 
-  /* rain matte — screen-blended, the core reactive layer */
+  /* rain matte — screen-blended, the core reactive layer. The wrapper owns the
+     state opacity/filter/blend/mask; TWO child layers carry the photograph and
+     drift downward on the same cycle a half-period apart, each fading to zero
+     exactly when its background-position resets. A photographic matte cannot
+     tile, so a single sliding layer snaps visibly at every loop point (glaring
+     at pressure's 0.62 opacity); the crossfade resets only while invisible. */
   .rain-matte {
-    background: url('/images/site-scenes/care-ward-rain-memory.jpg') center/cover no-repeat;
     mix-blend-mode: screen;
     opacity: var(--rain-op-rest);
     filter: blur(var(--rain-blur-rest));
     transition: opacity 300ms var(--ease-out), filter 300ms var(--ease-out);
     /* clip roughly to the impossible window over her, slight drift */
     mask-image: linear-gradient(to bottom, transparent 2%, black 16% 82%, transparent 96%);
-    animation: rain-drift var(--rain-fall-rest) linear infinite;
   }
+  .rain-matte-layer {
+    position: absolute;
+    inset: 0;
+    background: url('/images/site-scenes/care-ward-rain-memory.jpg') center/cover no-repeat;
+    animation: rain-cycle var(--rain-dur, var(--rain-fall-rest)) linear infinite;
+  }
+  .rain-matte-layer-b {
+    animation-delay: calc(var(--rain-dur, var(--rain-fall-rest)) / -2);
+  }
+  .plate[data-state="listen"] { --rain-dur: var(--rain-fall-listen); }
+  .plate[data-state="pressure"] { --rain-dur: var(--rain-fall-pressure); }
   .plate[data-state="listen"] .rain-matte {
     opacity: var(--rain-op-listen);
     filter: blur(var(--rain-blur-listen));
-    animation-duration: var(--rain-fall-listen);
   }
   .plate[data-state="pressure"] .rain-matte {
     opacity: var(--rain-op-pressure);
     filter: blur(var(--rain-blur-pressure));
-    animation-duration: var(--rain-fall-pressure);
   }
-  @keyframes rain-drift {
-    0%   { background-position: center 0; }
-    100% { background-position: center 26px; }
+  @keyframes rain-cycle {
+    0%   { background-position: center 0;    opacity: 0; }
+    50%  { background-position: center 13px; opacity: 1; }
+    100% { background-position: center 26px; opacity: 0; }
   }
 
   /* hand-written CSS rain streaks canvas sits above matte */
@@ -484,6 +497,9 @@
     opacity: var(--rain-op-rest);
     filter: none;
   }
+  /* static path: one full-opacity layer, no drift, no second copy */
+  body.reduce-motion .rain-matte-layer { opacity: 1; }
+  body.reduce-motion .rain-matte-layer-b { display: none; }
   body.reduce-motion #rain-canvas { display: none; }
   body.reduce-motion .beat-line { opacity: 1; transform: none; }
   body.reduce-motion .advance-hint { display: none !important; }
@@ -511,7 +527,7 @@
     <div class="plate" id="plate" data-state="rest">
       <div class="grade">
         <div class="layer plate-base"></div>
-        <div class="layer rain-matte" id="rainMatte"></div>
+        <div class="layer rain-matte" id="rainMatte"><div class="rain-matte-layer"></div><div class="rain-matte-layer rain-matte-layer-b"></div></div>
         <canvas id="rain-canvas"></canvas>
         <div class="layer wash warm"></div>
         <div class="layer wash cold"></div>
@@ -622,7 +638,11 @@
     }
   };
 
-  var CADENCE = 600;
+  // Per-line hold scaled to reading length (~subtitle pacing): a short clause
+  // holds ≥1.7s, a long sentence up to 4.5s. Click/key still advances instantly.
+  function lineHold(text) {
+    return Math.min(4500, Math.max(1700, 900 + text.length * 45));
+  }
   var reduceMotion = false;
   var armed = null;          // 'listen' | 'pressure' | null
   var previewLock = null;    // during beat/result, ignore hover previews
@@ -721,7 +741,7 @@
     addBeatLine(beatQueue[beatIndex], false);
     beatIndex++;
     window.clearTimeout(beatTimer);
-    beatTimer = window.setTimeout(nextBeatLine, CADENCE);
+    beatTimer = window.setTimeout(nextBeatLine, lineHold(beatQueue[beatIndex - 1].text));
   }
 
   // click / key advances instantly
