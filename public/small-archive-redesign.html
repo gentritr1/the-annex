@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Small Archive — scene-first redesign</title>
+<style>
+  /* ============================================================
+     THE ANNEX — Small Archive classification room — scene-first prototype
+     Grammar standard matched: public/care-ward-redesign.html
+     Palette (oklch dark neutrals + amber ~0.75/0.12/75 + cyan ~0.78/0.11/190):
+       --night oklch(0.09 0 0)  --amber oklch(0.75 0.12 75)  --cyan oklch(0.78 0.11 190)
+     Scar honored: the only looping/drifting texture (archive grain) crossfades
+       to opacity 0 exactly at its background-position reset (two-layer, half-period).
+     ============================================================ */
+  :root {
+    --night: oklch(0.09 0 0);
+    --night-soft: oklch(0.12 0.006 250);
+    --record: oklch(0.94 0.012 190);
+    --fog: oklch(0.72 0.018 220);
+    --fog-dim: oklch(0.58 0.018 225);
+    --amber: oklch(0.75 0.12 75);
+    --amber-soft: oklch(0.87 0.08 80);
+    --cyan: oklch(0.78 0.11 190);
+    --loss: oklch(0.68 0.12 25);            /* Failed-recovery accent (muted rose) */
+    --line: oklch(0.32 0.018 235);
+    --ease-out: cubic-bezier(0.165, 0.84, 0.44, 1);
+
+    /* ---- AMBIENT SPEC (absolute values, mirrored in README) ---------------
+       Read live from getComputedStyle(plate).getPropertyValue('--x'). */
+    --grade: brightness(1) contrast(1) saturate(1);   /* whole-plate light temperature */
+    --drawer-glow: 0.5;    /* amber pool over the open card drawer (x0.35 y0.72) */
+    --shelf-glow: 0;       /* pale light reaching shelf zero  (x0.28 y0.88)      */
+    --index-harden: 0;     /* cold steel sheen over the restriction index (x0.66 y0.42) */
+    --vignette: 0.62;      /* room closes in as this rises                        */
+    --dust-op: 0.30;       /* archive grain haze                                  */
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--night);
+    color: var(--record);
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow: hidden;
+  }
+  body { min-width: 320px; }
+
+  /* ---- STAGE: plate fills the viewport, letterboxed, max ~1600 ---- */
+  .stage {
+    position: fixed; inset: 0;
+    display: grid; place-items: center;
+    background: var(--night);
+  }
+  .plate {
+    position: relative;
+    width: min(100vw, calc(100vh * 16 / 9), 1600px);
+    aspect-ratio: 16 / 9;
+    max-height: 100vh;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 0 120px oklch(0 0 0 / 0.9) inset;
+  }
+
+  /* ---- AMBIENT STATE MAP (base room states + method previews) ----
+     Never ramps opacity from a low value with fill:both on the plate itself
+     (scar annex-scene-opacity-strand); base plate opacity is always 1. */
+  .plate[data-ambient="settled"] {
+    --grade: brightness(1.05) contrast(1.02) saturate(1);
+    --vignette: 0.56; --dust-op: 0.22;
+  }
+  .plate[data-ambient="shelf"] {
+    --grade: brightness(1.09) contrast(1.02) saturate(1.02);
+    --shelf-glow: 0.42; --vignette: 0.50; --dust-op: 0.20; --drawer-glow: 0.20;
+  }
+  .plate[data-ambient="answer"] {           /* warm, open — shelf light brightens */
+    --grade: brightness(1.18) contrast(1.0) saturate(1.06);
+    --shelf-glow: 0.74; --vignette: 0.40; --dust-op: 0.16; --drawer-glow: 0.22; --index-harden: 0;
+  }
+  .plate[data-ambient="seal"] {             /* cold, shuttered — index hardens, room closes in */
+    --grade: brightness(0.82) contrast(1.20) saturate(0.85);
+    --shelf-glow: 0.16; --vignette: 0.88; --dust-op: 0.42; --drawer-glow: 0.14; --index-harden: 0.60;
+  }
+  /* filing calms the drawer glow one step per card (only while base state) */
+  .plate[data-filed="1"] { --drawer-glow: 0.40; }
+  .plate[data-filed="2"] { --drawer-glow: 0.30; }
+  .plate[data-filed="3"] { --drawer-glow: 0.22; }
+
+  .grade {
+    position: absolute; inset: 0;
+    filter: var(--grade);
+    transition: filter 320ms var(--ease-out);
+  }
+  .layer { position: absolute; inset: 0; }
+
+  .plate-base {
+    background: #05070a url('/images/site-scenes/small-archive.webp') center/cover no-repeat;
+  }
+
+  /* amber pool over the open card drawer (authored anchor x0.35 y0.72) */
+  .drawer-glow {
+    background: radial-gradient(ellipse 26% 30% at 35% 72%,
+      oklch(0.75 0.12 75 / 0.55), transparent 66%);
+    opacity: var(--drawer-glow);
+    mix-blend-mode: screen;
+    transition: opacity 340ms var(--ease-out);
+    pointer-events: none;
+  }
+  /* pale light reaching shelf zero (authored anchor x0.28 y0.88) */
+  .shelf-glow {
+    background: radial-gradient(ellipse 28% 24% at 28% 88%,
+      oklch(0.82 0.05 200 / 0.6), transparent 70%);
+    opacity: var(--shelf-glow);
+    mix-blend-mode: screen;
+    transition: opacity 360ms var(--ease-out);
+    pointer-events: none;
+  }
+  /* cold steel sheen hardening the restriction index (authored anchor x0.66 y0.42) */
+  .index-harden {
+    background: radial-gradient(ellipse 20% 40% at 66% 42%,
+      oklch(0.7 0.03 235 / 0.65), transparent 62%);
+    opacity: var(--index-harden);
+    mix-blend-mode: screen;
+    transition: opacity 340ms var(--ease-out);
+    pointer-events: none;
+  }
+  .vignette {
+    background: radial-gradient(ellipse 82% 78% at 46% 50%,
+      transparent 0%, transparent 42%, oklch(0 0 0 / var(--vignette)) 100%);
+    transition: background 320ms var(--ease-out);
+    pointer-events: none;
+  }
+
+  /* ---- ARCHIVE GRAIN (the one looping texture) ----
+     Two child layers drift on the same slow cycle a half-period apart, each
+     fading to opacity 0 exactly when its background-position resets — a matte
+     grain cannot tile seamlessly, so a single sliding copy would snap at every
+     loop. Scar (care-ward rain matte): reset ONLY while faded to zero. */
+  .dust {
+    opacity: var(--dust-op);
+    mix-blend-mode: screen;
+    transition: opacity 360ms var(--ease-out);
+    pointer-events: none;
+  }
+  .dust-layer {
+    position: absolute; inset: -10%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    animation: grain-drift 7.5s linear infinite;
+  }
+  .dust-layer-b { animation-delay: -3.75s; }
+  @keyframes grain-drift {
+    0%   { background-position: 0 0;        opacity: 0; }
+    50%  { background-position: 14px -20px; opacity: 1; }
+    100% { background-position: 28px -40px; opacity: 0; }
+  }
+
+  /* ---- SITE LABEL + REST CAPTION ---- */
+  .site-label {
+    position: absolute;
+    top: clamp(12px, 2.4vw, 28px);
+    left: clamp(12px, 2.4vw, 30px);
+    font-size: clamp(11px, 1.4vw, 15px);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--fog); z-index: 40;
+    text-shadow: 0 1px 8px oklch(0 0 0 / 0.9);
+  }
+  .rest-caption {
+    position: absolute;
+    left: 50%; bottom: clamp(18px, 5vh, 54px);
+    transform: translateX(-50%);
+    max-width: 80%; text-align: center;
+    font-size: clamp(13px, 1.7vw, 18px);
+    color: oklch(0.9 0.01 210 / 0.86);
+    z-index: 40;
+    text-shadow: 0 1px 12px oklch(0 0 0 / 0.95);
+    transition: opacity 260ms var(--ease-out);
+    pointer-events: none;
+  }
+  .plate[data-beat] .rest-caption,
+  .plate:not([data-phase="rest"]) .rest-caption { opacity: 0; }
+
+  /* ---- ZONES (in-scene ring-zone buttons) ---- */
+  .zone {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: grid; justify-items: center; gap: 8px;
+    min-width: 44px; min-height: 44px;
+    padding: 12px 14px;
+    border: 0; background: transparent; color: var(--record);
+    cursor: pointer; z-index: 30; font: inherit;
+    -webkit-tap-highlight-color: transparent;
+    opacity: 0; visibility: hidden;
+    transition: opacity 300ms var(--ease-out), visibility 300ms var(--ease-out);
+  }
+  .zone.on { opacity: 1; visibility: visible; }
+  .zone:disabled { cursor: default; }
+  .plate[data-beat] .zone { opacity: 0 !important; visibility: hidden !important; pointer-events: none; }
+
+  /* anchors (master-normalized authored coordinates) */
+  .zone-drawer  { left: 35%; top: 72%; }
+  .zone-shelf   { left: 28%; top: 88%; }
+  .zone-shutter { left: 66%; top: 42%; }
+  .slot-continuation { left: 40%; top: 82%; }
+  .slot-property     { left: 54%; top: 82%; }
+  .slot-failed       { left: 68%; top: 82%; }
+  .zone-answer  { left: 40%; top: 54%; }
+  .zone-seal    { left: 66%; top: 44%; }
+
+  .zone-ring {
+    width: 58px; height: 58px; border-radius: 50%;
+    border: 1.5px solid oklch(0.86 0.04 210 / 0.34);
+    display: grid; place-items: center;
+    transition: border-color 220ms var(--ease-out), box-shadow 220ms var(--ease-out),
+                transform 220ms var(--ease-out), background 220ms var(--ease-out);
+    backdrop-filter: blur(1px);
+  }
+  .zone-ring::before {
+    content: ''; width: 7px; height: 7px; border-radius: 50%;
+    background: oklch(0.86 0.04 210 / 0.5);
+    transition: background 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
+  }
+  .zone:hover .zone-ring, .zone:focus-visible .zone-ring { transform: scale(1.08); }
+  .zone:focus-visible { outline: none; }
+  .zone:focus-visible .zone-ring { outline: 2px solid var(--record); outline-offset: 4px; }
+
+  /* per-zone accents */
+  .zone-drawer  .zone-ring { border-color: oklch(0.82 0.1 78 / 0.5); }
+  .slot-continuation .zone-ring { border-color: oklch(0.8 0.1 78 / 0.4); }
+  .slot-property     .zone-ring { border-color: oklch(0.78 0.1 200 / 0.4); }
+  .slot-failed       .zone-ring { border-color: oklch(0.7 0.1 28 / 0.4); }
+  .zone-shelf   .zone-ring { border-color: oklch(0.82 0.05 200 / 0.45); }
+  .zone-shutter .zone-ring { border-color: oklch(0.7 0.03 235 / 0.5); }
+  .zone-answer  .zone-ring { border-color: oklch(0.82 0.1 78 / 0.4); }
+  .zone-seal    .zone-ring { border-color: oklch(0.78 0.09 205 / 0.4); }
+
+  .zone-drawer:hover .zone-ring, .zone-drawer:focus-visible .zone-ring,
+  .slot-continuation:hover .zone-ring, .slot-continuation:focus-visible .zone-ring,
+  .zone-answer:hover .zone-ring, .zone-answer:focus-visible .zone-ring {
+    border-color: var(--amber);
+    box-shadow: 0 0 24px oklch(0.75 0.12 75 / 0.5), 0 0 0 1px oklch(0.75 0.12 75 / 0.3);
+  }
+  .slot-property:hover .zone-ring, .slot-property:focus-visible .zone-ring,
+  .zone-shelf:hover .zone-ring, .zone-shelf:focus-visible .zone-ring,
+  .zone-seal:hover .zone-ring, .zone-seal:focus-visible .zone-ring,
+  .zone-shutter:hover .zone-ring, .zone-shutter:focus-visible .zone-ring {
+    border-color: var(--cyan);
+    box-shadow: 0 0 24px oklch(0.78 0.11 190 / 0.5), 0 0 0 1px oklch(0.78 0.11 190 / 0.3);
+  }
+  .slot-failed:hover .zone-ring, .slot-failed:focus-visible .zone-ring {
+    border-color: var(--loss);
+    box-shadow: 0 0 24px oklch(0.68 0.12 25 / 0.5), 0 0 0 1px oklch(0.68 0.12 25 / 0.3);
+  }
+
+  /* armed pulse */
+  .zone.armed .zone-ring {
+    animation: arm-pulse 1.4s ease-in-out infinite;
+    border-color: var(--amber-soft);
+    box-shadow: 0 0 32px oklch(0.75 0.12 75 / 0.6), 0 0 0 2px var(--amber);
+  }
+  .slot-property.armed .zone-ring, .zone-shelf.armed .zone-ring, .zone-seal.armed .zone-ring {
+    border-color: var(--cyan);
+    box-shadow: 0 0 32px oklch(0.78 0.11 190 / 0.6), 0 0 0 2px var(--cyan);
+  }
+  .slot-failed.armed .zone-ring {
+    border-color: var(--loss);
+    box-shadow: 0 0 32px oklch(0.68 0.12 25 / 0.6), 0 0 0 2px var(--loss);
+  }
+  @keyframes arm-pulse { 0%,100% { transform: scale(1.06); } 50% { transform: scale(1.16); } }
+
+  .zone-cap {
+    max-width: 34vw; text-align: center;
+    opacity: 0; transform: translateY(4px);
+    transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out);
+    pointer-events: none;
+    text-shadow: 0 1px 10px oklch(0 0 0 / 0.95);
+  }
+  .zone:hover .zone-cap, .zone:focus-visible .zone-cap, .zone.armed .zone-cap {
+    opacity: 1; transform: translateY(0);
+  }
+  /* slot category labels stay visible so the class is always legible */
+  .slot .slot-name { opacity: 0.9; }
+  .zone-cap .cap-title {
+    display: block; font-size: clamp(12px, 1.5vw, 16px);
+    letter-spacing: 0.02em; color: var(--record);
+  }
+  .slot-name { display: block; font-size: clamp(11px, 1.4vw, 15px); letter-spacing: 0.03em; }
+  .slot-continuation .slot-name { color: var(--amber-soft); }
+  .slot-property .slot-name { color: var(--cyan); }
+  .slot-failed .slot-name { color: var(--loss); }
+  .zone-cap .cap-detail {
+    display: block; margin-top: 3px;
+    font-size: clamp(10px, 1.15vw, 12px);
+    color: oklch(0.82 0.01 210 / 0.8); line-height: 1.35;
+  }
+  .zone-cap .cap-arm {
+    display: none; margin-top: 4px;
+    font-size: clamp(10px, 1.1vw, 12px);
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--amber);
+  }
+  .zone.armed .cap-arm { display: block; }
+  .slot-property.armed .cap-arm, .zone-shelf.armed .cap-arm, .zone-seal.armed .cap-arm { color: var(--cyan); }
+  .slot-failed.armed .cap-arm { color: var(--loss); }
+
+  /* filed stubs stacking inside a slot */
+  .slot-fill {
+    position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%);
+    display: flex; flex-direction: column-reverse; gap: 2px; align-items: center;
+    pointer-events: none;
+  }
+  .filed-stub {
+    width: 30px; height: 3px; border-radius: 1px;
+    background: oklch(0.8 0.02 90 / 0.85);
+    box-shadow: 0 1px 4px oklch(0 0 0 / 0.7);
+  }
+
+  /* ---- THE CARD (physical, typographic — not illustrated) ---- */
+  .card {
+    position: absolute;
+    left: 48%; top: 40%;
+    transform: translate(-50%, -50%);
+    width: min(58vw, 268px);
+    padding: 18px 20px 16px;
+    text-align: left;
+    background: linear-gradient(160deg, oklch(0.9 0.02 92), oklch(0.82 0.03 88));
+    color: oklch(0.2 0.02 60);
+    border: 0; border-radius: 4px;
+    box-shadow: 0 18px 40px oklch(0 0 0 / 0.7), 0 2px 0 oklch(0.7 0.03 88) inset;
+    cursor: pointer; font: inherit; z-index: 34;
+    transform-origin: 50% 100%;
+    opacity: 0; visibility: hidden;
+    transition: opacity 300ms var(--ease-out), visibility 300ms var(--ease-out),
+                transform 460ms var(--ease-out);
+  }
+  .card.on { opacity: 1; visibility: visible; }
+  .card::after {  /* folded corner keyline */
+    content: ''; position: absolute; top: 0; right: 0;
+    border-width: 0 14px 14px 0; border-style: solid;
+    border-color: transparent oklch(0.72 0.03 88) transparent transparent;
+  }
+  .card:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+  .card .card-title {
+    display: block; font-size: clamp(11px, 1.3vw, 13px);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: oklch(0.42 0.04 50); margin-bottom: 8px;
+  }
+  .card .card-q {
+    display: block; font-size: clamp(15px, 1.9vw, 20px);
+    line-height: 1.34; font-weight: 500; color: oklch(0.18 0.02 55);
+  }
+  .card .card-src {
+    display: block; margin-top: 12px;
+    font-size: clamp(10px, 1.2vw, 12px); font-style: italic;
+    color: oklch(0.44 0.03 55);
+    border-top: 1px solid oklch(0.6 0.03 70 / 0.5); padding-top: 8px;
+  }
+  .card.pocket { background: linear-gradient(160deg, oklch(0.86 0.03 60), oklch(0.76 0.04 52)); }
+  .card.pocket .card-q { color: oklch(0.2 0.03 45); }
+
+  /* filing: fly toward slot + flatten (JS sets --fx/--fy target offset) */
+  .card.filing {
+    transform: translate(calc(-50% + var(--fx, 0px)), calc(-50% + var(--fy, 0px)))
+               scaleY(0.06) rotateX(4deg);
+    opacity: 0;
+  }
+  /* refusal: lift at the corner, buckle, spring straight — never files */
+  .card.refuse { animation: card-refuse 620ms var(--ease-out); }
+  @keyframes card-refuse {
+    0%   { transform: translate(-50%, -50%) rotate(0deg); }
+    22%  { transform: translate(-50%, -58%) rotate(-5deg) skewX(3deg); }
+    46%  { transform: translate(-50%, -50%) rotate(2.5deg) scaleY(0.92); }
+    68%  { transform: translate(-50%, -47%) rotate(-1.5deg); }
+    100% { transform: translate(-50%, -50%) rotate(0deg); }
+  }
+  .card.refuse { box-shadow: 0 18px 40px oklch(0 0 0 / 0.7), 0 0 0 2px var(--loss); }
+  /* placement onto shelf zero (JS sets --sx/--sy) */
+  .card.placing {
+    transform: translate(calc(-50% + var(--sx, 0px)), calc(-50% + var(--sy, 0px)))
+               scale(0.42) rotate(-2deg);
+  }
+
+  /* card resting on shelf zero after placement */
+  .shelved {
+    position: absolute; left: 28%; top: 88%;
+    transform: translate(-50%, -50%);
+    width: 58px; height: 40px; border-radius: 3px;
+    background: linear-gradient(160deg, oklch(0.84 0.03 60), oklch(0.72 0.04 52));
+    box-shadow: 0 6px 16px oklch(0 0 0 / 0.7), 0 0 22px oklch(0.82 0.05 200 / 0.4);
+    z-index: 28; opacity: 0; visibility: hidden;
+    transition: opacity 400ms var(--ease-out), visibility 400ms var(--ease-out);
+    pointer-events: none;
+  }
+  .shelved.on { opacity: 1; visibility: visible; }
+
+  /* ---- STAGED BEAT TEXT ---- */
+  .beat {
+    position: absolute; left: 50%; bottom: 15%;
+    transform: translateX(-50%);
+    width: min(76%, 760px); max-height: 64%;
+    z-index: 50; display: none;
+    flex-direction: column; justify-content: flex-end; gap: 11px;
+    text-align: center; overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 22%, black 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 22%, black 100%);
+  }
+  .plate[data-beat] .beat { display: flex; }
+  .plate[data-result] .beat { bottom: 19%; }
+  .beat-line {
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out);
+    text-shadow: 0 2px 18px oklch(0 0 0 / 0.98), 0 0 40px oklch(0 0 0 / 0.9);
+  }
+  .beat-line.show { opacity: 1; transform: translateY(0); }
+  .beat-line.event {
+    font-size: clamp(15px, 2vw, 22px); font-weight: 400;
+    letter-spacing: 0.02em; color: var(--amber-soft);
+  }
+  .beat-line.narrate {
+    font-size: clamp(15px, 2.1vw, 23px); line-height: 1.42;
+    font-weight: 300; color: var(--record);
+  }
+  .beat-line.system {
+    font-size: clamp(13px, 1.7vw, 19px); line-height: 1.4;
+    font-style: italic; letter-spacing: 0.02em;
+    color: oklch(0.74 0.02 220 / 0.92);
+  }
+  .beat-line.slip {
+    font-size: clamp(13px, 1.65vw, 18px); line-height: 1.45;
+    color: oklch(0.82 0.015 210 / 0.9);
+    font-family: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, monospace;
+  }
+  .beat-line.dialogue {
+    font-size: clamp(16px, 2.2vw, 25px); line-height: 1.4;
+    font-weight: 300; color: var(--record);
+  }
+  .beat-line.speaker {
+    font-size: clamp(11px, 1.3vw, 14px);
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--fog); margin-top: 6px;
+  }
+  .beat-line.speaker.archivist { color: var(--amber); }
+  .beat-line.speaker.registrar { color: var(--cyan); }
+  .beat-line.speaker.shepherd  { color: var(--amber-soft); }
+
+  .advance-hint {
+    position: absolute; left: 50%; bottom: clamp(14px, 4vh, 36px);
+    transform: translateX(-50%);
+    font-size: 12px; letter-spacing: 0.1em;
+    color: oklch(0.7 0.01 210 / 0.6); z-index: 55; display: none;
+    animation: hint-fade 2s ease-in-out infinite;
+  }
+  .plate[data-beat="playing"] .advance-hint { display: block; }
+  @keyframes hint-fade { 0%,100%{opacity:0.35} 50%{opacity:0.8} }
+
+  /* ---- RESULT STRIP ---- */
+  .result {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 60;
+    transform: translateY(110%);
+    transition: transform 460ms var(--ease-out);
+    background: linear-gradient(to top, oklch(0.1 0.008 245 / 0.96), oklch(0.1 0.008 245 / 0.72));
+    border-top: 1px solid var(--line);
+    backdrop-filter: blur(6px);
+    padding: 14px clamp(14px, 3vw, 34px);
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px;
+  }
+  .plate[data-result] .result { transform: translateY(0); }
+  .result .r-evidence { font-size: clamp(12px, 1.5vw, 15px); color: var(--record); }
+  .result .r-evidence b { color: var(--cyan); font-weight: 600; }
+  .result .r-standing { font-size: clamp(11px, 1.35vw, 14px); color: var(--fog); display: flex; gap: 14px; flex-wrap: wrap; }
+  .result .r-standing .pos { color: var(--amber-soft); }
+  .result .r-standing .neg { color: var(--loss); }
+  .result .r-replay {
+    margin-left: auto; font-size: 13px; color: var(--cyan);
+    background: transparent; border: 1px solid oklch(0.78 0.11 190 / 0.4);
+    border-radius: 999px; padding: 8px 16px; cursor: pointer;
+    letter-spacing: 0.02em; transition: background 200ms, border-color 200ms;
+    min-height: 44px;
+  }
+  .result .r-replay:hover, .result .r-replay:focus-visible {
+    background: oklch(0.78 0.11 190 / 0.12); border-color: var(--cyan); outline: none;
+  }
+  .result .r-replay:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+  /* ---- REDUCE-MOTION TOGGLE ---- */
+  .rm-toggle {
+    position: absolute; top: clamp(12px, 2.4vw, 28px); right: clamp(12px, 2.4vw, 30px);
+    z-index: 45; display: flex; align-items: center; gap: 8px;
+    font-size: 12px; letter-spacing: 0.06em; color: var(--fog);
+    background: oklch(0.12 0.006 245 / 0.6); border: 1px solid var(--line);
+    border-radius: 999px; padding: 7px 12px 7px 14px; cursor: pointer;
+    min-height: 44px; backdrop-filter: blur(4px);
+  }
+  .rm-toggle:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+  .rm-switch {
+    width: 34px; height: 18px; border-radius: 999px;
+    background: var(--line); position: relative; transition: background 200ms; flex: 0 0 auto;
+  }
+  .rm-switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--fog); transition: transform 200ms, background 200ms;
+  }
+  .rm-toggle[aria-pressed="true"] .rm-switch { background: oklch(0.78 0.11 190 / 0.5); }
+  .rm-toggle[aria-pressed="true"] .rm-switch::after { transform: translateX(16px); background: var(--cyan); }
+
+  /* ---- REDUCED MOTION: kill animation, states switch instantly, all text legible ---- */
+  body.reduce-motion * { animation: none !important; transition: none !important; }
+  body.reduce-motion .dust-layer { opacity: 1; }
+  body.reduce-motion .dust-layer-b { display: none; }
+  body.reduce-motion .beat-line { opacity: 1; transform: none; }
+  /* the continue affordance stays (reduce-motion is advance-paced, not auto) */
+  /* instant, legible refusal instead of the spring animation */
+  body.reduce-motion .card.refuse { animation: none !important; box-shadow: 0 18px 40px oklch(0 0 0 / 0.7), 0 0 0 2px var(--loss); }
+
+  /* ---- MOBILE (375px) ---- */
+  @media (max-width: 560px) {
+    .plate { width: 100vw; height: 100vh; max-height: 100vh; aspect-ratio: auto; }
+    .zone-ring { width: 50px; height: 50px; }
+    .slot-continuation { left: 24%; top: 84%; }
+    .slot-property     { left: 50%; top: 84%; }
+    .slot-failed       { left: 76%; top: 84%; }
+    .zone-drawer  { left: 32%; top: 68%; }
+    .zone-shelf   { left: 22%; top: 90%; }
+    .zone-shutter { left: 70%; top: 40%; }
+    .zone-answer  { left: 34%; top: 56%; }
+    .zone-seal    { left: 68%; top: 42%; }
+    .card { top: 36%; width: min(78vw, 250px); }
+    .shelved { left: 22%; top: 90%; }
+    .zone-cap { max-width: 42vw; }
+    .beat { width: 86%; }
+    .beat-line.dialogue { font-size: 18px; }
+    .beat-line.narrate { font-size: 17px; }
+    .result { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .result .r-replay { margin-left: 0; }
+    .rest-caption { font-size: 13px; bottom: 92px; }
+  }
+</style>
+</head>
+<body>
+  <main class="stage">
+    <div class="plate" id="plate" data-phase="rest" data-ambient="rest">
+      <div class="grade">
+        <div class="layer plate-base"></div>
+        <div class="layer drawer-glow"></div>
+        <div class="layer shelf-glow"></div>
+        <div class="layer index-harden"></div>
+        <div class="layer dust" id="dust"><div class="dust-layer"></div><div class="dust-layer dust-layer-b"></div></div>
+        <div class="layer vignette"></div>
+      </div>
+
+      <span class="site-label">The Small Archive</span>
+
+      <button type="button" class="rm-toggle" id="rmToggle" aria-pressed="false" aria-label="Reduce motion">
+        <span class="rm-switch" aria-hidden="true"></span>
+        <span>Reduce motion</span>
+      </button>
+
+      <p class="rest-caption" id="restCaption">The drawer waits, its cards unread in the dark.</p>
+
+      <!-- the shelved pocket card sits here after placement -->
+      <div class="shelved" id="shelved" aria-hidden="true"></div>
+
+      <!-- DRAWER: draws a card -->
+      <button type="button" class="zone zone-drawer on" id="zoneDrawer" aria-label="Draw a card to classify from the open drawer.">
+        <span class="zone-ring" aria-hidden="true"></span>
+        <span class="zone-cap">
+          <span class="cap-title" id="drawerTitle">Draw a card</span>
+          <span class="cap-detail">Read what the drawer holds.</span>
+        </span>
+      </button>
+
+      <!-- THE CARD -->
+      <button type="button" class="card" id="card" aria-label="Question card. Choose a class below to file it.">
+        <span class="card-title" id="cardTitle"></span>
+        <span class="card-q" id="cardQ"></span>
+        <span class="card-src" id="cardSrc"></span>
+      </button>
+
+      <!-- CATEGORY SLOTS -->
+      <button type="button" class="zone slot slot-continuation" id="slotContinuation" aria-label="File this card under Continuation.">
+        <span class="zone-ring" aria-hidden="true"><span class="slot-fill" data-fill="continuation"></span></span>
+        <span class="zone-cap">
+          <span class="slot-name">Continuation</span>
+          <span class="cap-detail">File here — the person continues.</span>
+          <span class="cap-arm">Select again to file</span>
+        </span>
+      </button>
+      <button type="button" class="zone slot slot-property" id="slotProperty" aria-label="File this card under Property.">
+        <span class="zone-ring" aria-hidden="true"><span class="slot-fill" data-fill="property"></span></span>
+        <span class="zone-cap">
+          <span class="slot-name">Property</span>
+          <span class="cap-detail">File here — a thing that is owned.</span>
+          <span class="cap-arm">Select again to file</span>
+        </span>
+      </button>
+      <button type="button" class="zone slot slot-failed" id="slotFailed" aria-label="File this card under Failed recovery.">
+        <span class="zone-ring" aria-hidden="true"><span class="slot-fill" data-fill="failed"></span></span>
+        <span class="zone-cap">
+          <span class="slot-name">Failed recovery</span>
+          <span class="cap-detail">File here — the recovery did not hold.</span>
+          <span class="cap-arm">Select again to file</span>
+        </span>
+      </button>
+
+      <!-- SHELF ZERO (opens after the third refusal) -->
+      <button type="button" class="zone zone-shelf" id="zoneShelf" aria-label="Set the unfiled card on shelf zero.">
+        <span class="zone-ring" aria-hidden="true"></span>
+        <span class="zone-cap">
+          <span class="cap-title">Shelf zero</span>
+          <span class="cap-detail">Set it where nothing is filed.</span>
+          <span class="cap-arm">Select again to place</span>
+        </span>
+      </button>
+
+      <!-- RESTRICTION INDEX (shutter) -->
+      <button type="button" class="zone zone-shutter" id="zoneShutter" aria-label="Read the removal slips beside shelf zero.">
+        <span class="zone-ring" aria-hidden="true"></span>
+        <span class="zone-cap">
+          <span class="cap-title">Read the removal slips</span>
+          <span class="cap-detail">Three slips beside shelf zero.</span>
+        </span>
+      </button>
+
+      <!-- TWO METHODS -->
+      <button type="button" class="zone zone-answer" id="zoneAnswer" aria-label="Answer the question the statute avoids.">
+        <span class="zone-ring" aria-hidden="true"></span>
+        <span class="zone-cap">
+          <span class="cap-title">Answer the question the statute avoids</span>
+          <span class="cap-detail">Warm, open — file your doubt where no box waits.</span>
+          <span class="cap-arm">Select again to commit</span>
+        </span>
+      </button>
+      <button type="button" class="zone zone-seal" id="zoneSeal" aria-label="Seal the prohibited category index.">
+        <span class="zone-ring" aria-hidden="true"></span>
+        <span class="zone-cap">
+          <span class="cap-title">Seal the prohibited category index</span>
+          <span class="cap-detail">Cold, shuttered — lock the index and keep the rule.</span>
+          <span class="cap-arm">Select again to commit</span>
+        </span>
+      </button>
+
+      <!-- staged beat -->
+      <div class="beat" id="beat" aria-live="polite"></div>
+      <div class="advance-hint" id="advanceHint">click or press any key to continue</div>
+
+      <!-- result strip -->
+      <div class="result" id="result" role="status">
+        <span class="r-evidence" id="rEvidence"></span>
+        <span class="r-standing" id="rStanding"></span>
+        <button type="button" class="r-replay" id="rReplay">Replay the other path</button>
+      </div>
+    </div>
+  </main>
+
+<script>
+(function () {
+  'use strict';
+
+  var plate = document.getElementById('plate');
+  var body = document.body;
+  var beatEl = document.getElementById('beat');
+  var advanceHint = document.getElementById('advanceHint');
+  var resultEl = document.getElementById('result');
+  var rEvidence = document.getElementById('rEvidence');
+  var rStanding = document.getElementById('rStanding');
+  var rReplay = document.getElementById('rReplay');
+  var rmToggle = document.getElementById('rmToggle');
+
+  var zoneDrawer = document.getElementById('zoneDrawer');
+  var drawerTitle = document.getElementById('drawerTitle');
+  var card = document.getElementById('card');
+  var cardTitle = document.getElementById('cardTitle');
+  var cardQ = document.getElementById('cardQ');
+  var cardSrc = document.getElementById('cardSrc');
+  var shelved = document.getElementById('shelved');
+  var zoneShelf = document.getElementById('zoneShelf');
+  var zoneShutter = document.getElementById('zoneShutter');
+  var zoneAnswer = document.getElementById('zoneAnswer');
+  var zoneSeal = document.getElementById('zoneSeal');
+
+  var SLOTS = [
+    { id: 'continuation', name: 'Continuation', el: document.getElementById('slotContinuation') },
+    { id: 'property',     name: 'Property',     el: document.getElementById('slotProperty') },
+    { id: 'failed',       name: 'Failed recovery', el: document.getElementById('slotFailed') }
+  ];
+  var slotById = {};
+  SLOTS.forEach(function (s) { slotById[s.id] = s; });
+
+  // ---------------- VERBATIM CONTENT ----------------
+  var CARDS = [
+    {
+      title: 'The ledger card',
+      q: 'Do Mara’s debts wake when her hand does?',
+      src: 'Pulled from the property drawer',
+      filed: '“There,” the Archivist says, flattening the corner. “A whole person, folded to fit the drawer.”'
+    },
+    {
+      title: 'The room-twelve card',
+      q: 'Is the rain she remembers hers, or the room’s?',
+      src: 'Pulled from the continuation drawer',
+      filed: 'The card goes quiet under the label, the way a face goes quiet behind glass.'
+    },
+    {
+      title: 'The scar card',
+      q: 'If the body never carried it, whose pain is the scar?',
+      src: 'Pulled from the recovery drawer',
+      filed: 'It files. The question stops being a question and becomes a box the form has already checked.'
+    }
+  ];
+  function statuteLine(name) {
+    return '“The statute reads it as ' + name + ' and keeps nothing else.”';
+  }
+
+  var POCKET = {
+    title: 'The pocket card',
+    q: '“If Mara ended, who did 77-A become while everyone argued about Mara?”',
+    src: 'The card the Archivist kept in her pocket',
+    refusals: [
+      'The card will not lie flat. It lifts at the corner and slides back into your hand.',
+      'You press harder this time. The card buckles, then springs straight, refusing the fold.',
+      'The third class will not even take the corner. There was never a drawer cut for this one.'
+    ],
+    objection: '“Category error,” the form insists. “Refile under a permitted class.”',
+    shelfPrompt: '“Unfiled,” the system says. “This record has no class.”',
+    placement: 'The Archivist sets it on the empty shelf beneath the others. “Then it lives here, with nothing over it.”'
+  };
+
+  var SLIPS = [
+    { cls: 'narrate', text: 'Beside shelf zero, three removal slips mark where cards used to sit. Turn each and read what the register kept.' },
+    { cls: 'slip', text: 'A slip where a name used to be: ‘Composite — recovered, contested, withdrawn from taxonomy at office request.’ The name itself is a clean rectangle of nothing.' },
+    { cls: 'slip', text: '‘Held eleven months. Recognised by two. Reclassified as property of the estate that paid for the recovery.’ No one signed for the person.' },
+    { cls: 'slip', text: 'The last slip is only a date and a verdict: ‘Failed recovery. File closed.’ Whoever they were, the closing is all the record kept.' }
+  ];
+
+  var UNLOCK = 'The Archivist slides the drawer aside and looks up. “Now — hand me your answer, or close the drawer on the slips.”';
+
+  var METHODS = {
+    answer: {
+      ambient: 'answer',
+      beat: [
+        { cls: 'event', text: 'Your uncertainty entered the archive' },
+        { cls: 'narrate', text: 'The Archivist filed the person between ‘continuation’ and ‘property.’ The system objected to the category.' },
+        { cls: 'speaker archivist', text: 'THE SMALL ARCHIVIST —' },
+        { cls: 'dialogue', text: '“You told me when Mara might have stopped. Most adults won’t. I filed your doubt where the form keeps no box for it.”' }
+      ],
+      evidence: 'Question filed under no category',
+      standing: [
+        { who: 'The Small Archivist', delta: '+2', kind: 'pos' },
+        { who: 'The Shepherd', delta: '+1', kind: 'pos' }
+      ]
+    },
+    seal: {
+      ambient: 'seal',
+      beat: [
+        { cls: 'event', text: 'The missing people remained indexed' },
+        { cls: 'narrate', text: 'You confirmed that earlier composites existed, then repeated the rule that erased their names.' },
+        { cls: 'speaker archivist', text: 'THE SMALL ARCHIVIST —' },
+        { cls: 'dialogue', text: '“Three people were on that shelf. You confirmed they were real, then locked it and kept the rule that took their names.”' },
+        { cls: 'speaker registrar', text: 'THE REGISTRAR —' },
+        { cls: 'dialogue', text: '“Precedent secured where the tribunal keeps what it cannot say aloud. Custody preserved. That is the correct place for it.”' }
+      ],
+      evidence: 'Sealed category index',
+      standing: [
+        { who: 'The Registrar', delta: '+1', kind: 'pos' },
+        { who: 'The Small Archivist', delta: '−2', kind: 'neg' }
+      ]
+    }
+  };
+
+  // ---------------- STATE ----------------
+  var reduceMotion = false;
+  var phase = 'rest';          // rest | filing | pocket | shelf | slips | methods | result
+  var cardIndex = 0;           // routine cards filed (0..3)
+  var refusalIndex = 0;        // pocket refusals so far (0..3)
+  var pocketDrawn = false;
+  var armed = null;            // currently armed zone id
+  var methodPreviewOn = false; // during methods, hover drives ambient preview
+  var beatQueue = null, beatIndex = 0, beatTimer = null, beatDone = null, beatFinished = false;
+  var filedCounts = { continuation: 0, property: 0, failed: 0 };
+
+  function lineHold(text) { return Math.min(4500, Math.max(1700, 900 + text.length * 45)); }
+  // run post-animation logic inline under reduce-motion (true 0-duration), else after the settle
+  function runAfter(ms, fn) { if (reduceMotion) fn(); else setTimeout(fn, ms); }
+
+  // ---------------- helpers ----------------
+  function show(el) { el.classList.add('on'); }
+  function hide(el) { el.classList.remove('on'); el.classList.remove('armed'); }
+  function setAmbient(name) { plate.setAttribute('data-ambient', name); }
+  function focusEl(el) {
+    if (!el) return;
+    try { el.focus(); } catch (e) {}
+    // retry after commit in case the element only just became focusable
+    requestAnimationFrame(function () { if (document.activeElement !== el) { try { el.focus(); } catch (e) {} } });
+  }
+  function slotsOn(on) {
+    SLOTS.forEach(function (s) { if (on) show(s.el); else hide(s.el); });
+  }
+  function disarmAll() {
+    [zoneShelf, zoneAnswer, zoneSeal].forEach(function (z) { z.classList.remove('armed'); });
+    SLOTS.forEach(function (s) { s.el.classList.remove('armed'); });
+    armed = null;
+  }
+
+  // ---------------- staged beat ----------------
+  function playBeat(lines, onDone) {
+    clearTimeout(beatTimer);
+    beatQueue = lines; beatIndex = 0; beatDone = onDone || null; beatFinished = false;
+    beatEl.innerHTML = '';
+    plate.setAttribute('data-beat', 'playing');
+    if (reduceMotion) {
+      // durations 0: render every line at once, fully legible, and WAIT for an
+      // explicit advance (click/key) — never auto-advance timed text for a
+      // reduced-motion reader, and never overwrite a line before it is read.
+      lines.forEach(function (ln) { addBeatLine(ln, true); });
+      beatIndex = lines.length;
+      return;
+    }
+    showNextLine();
+  }
+  function addBeatLine(ln, instant) {
+    var p = document.createElement('p');
+    p.className = 'beat-line ' + ln.cls;
+    p.textContent = ln.text;
+    beatEl.appendChild(p);
+    if (instant) { p.classList.add('show'); }
+    else { void p.offsetWidth; requestAnimationFrame(function () { p.classList.add('show'); }); }
+  }
+  function showNextLine() {
+    clearTimeout(beatTimer);
+    if (beatIndex >= beatQueue.length) { finishBeat(); return; }
+    addBeatLine(beatQueue[beatIndex], false);
+    beatIndex++;
+    if (beatIndex < beatQueue.length) {
+      beatTimer = setTimeout(showNextLine, lineHold(beatQueue[beatIndex - 1].text));
+    } else {
+      // hold the final line, then finish
+      beatTimer = setTimeout(finishBeat, lineHold(beatQueue[beatIndex - 1].text));
+    }
+  }
+  function finishBeat() {
+    if (beatFinished) return;
+    beatFinished = true;
+    clearTimeout(beatTimer);
+    plate.setAttribute('data-beat', 'done');
+    var cb = beatDone; beatDone = null;
+    if (cb) cb();
+  }
+  function advanceBeat() {
+    if (plate.getAttribute('data-beat') !== 'playing') return;
+    clearTimeout(beatTimer);
+    if (reduceMotion) { finishBeat(); return; }   // all lines already shown
+    if (beatIndex < beatQueue.length) { showNextLine(); }
+    else { finishBeat(); }
+  }
+  function clearBeat() {
+    clearTimeout(beatTimer);
+    beatEl.innerHTML = '';
+    plate.removeAttribute('data-beat');
+  }
+
+  // ---------------- FILING ----------------
+  function updateDrawerCta() {
+    if (cardIndex >= 3) drawerTitle.textContent = 'Draw the last card';
+    else drawerTitle.textContent = 'Draw a card';
+  }
+  function drawNext() {
+    if (phase !== 'filing' && phase !== 'rest') return;
+    if (plate.getAttribute('data-beat')) clearBeat();
+    if (cardIndex < 3) {
+      showRoutineCard(CARDS[cardIndex]);
+      phase = 'filing';
+    } else if (!pocketDrawn) {
+      pocketDrawn = true;
+      showPocketCard();
+      phase = 'pocket';
+      refusalIndex = 0;
+    }
+    plate.setAttribute('data-phase', phase);
+  }
+  function populateCard(data, isPocket) {
+    cardTitle.textContent = data.title;
+    cardQ.textContent = data.q;
+    cardSrc.textContent = data.src;
+    card.classList.toggle('pocket', !!isPocket);
+    card.classList.remove('filing', 'refuse', 'placing');
+    card.style.removeProperty('--fx');
+    card.style.removeProperty('--fy');
+  }
+  function showRoutineCard(data) {
+    populateCard(data, false);
+    show(card);
+    hide(zoneDrawer);
+    slotsOn(true);
+    disarmAll();
+    focusEl(SLOTS[0].el);
+  }
+  function showPocketCard() {
+    populateCard(POCKET, true);
+    show(card);
+    hide(zoneDrawer);
+    slotsOn(true);
+    disarmAll();
+    focusEl(SLOTS[0].el);
+  }
+
+  function slotActivate(slot) {
+    if (plate.getAttribute('data-beat') === 'playing') return;
+    if (phase === 'filing') {
+      if (armed === slot.id) { doFile(slot); } else { armSlot(slot); }
+    } else if (phase === 'pocket') {
+      if (armed === slot.id) { doRefuse(slot); } else { armSlot(slot); }
+    }
+  }
+  function armSlot(slot) {
+    disarmAll();
+    armed = slot.id;
+    slot.el.classList.add('armed');
+    focusEl(slot.el);
+  }
+
+  function doFile(slot) {
+    disarmAll();
+    slotsOn(false);
+    // fly the card toward the chosen slot and flatten
+    if (!reduceMotion) {
+      var cr = card.getBoundingClientRect();
+      var sr = slot.el.getBoundingClientRect();
+      var dx = (sr.left + sr.width / 2) - (cr.left + cr.width / 2);
+      var dy = (sr.top + sr.height / 2) - (cr.top + cr.height / 2);
+      card.style.setProperty('--fx', dx.toFixed(1) + 'px');
+      card.style.setProperty('--fy', dy.toFixed(1) + 'px');
+      void card.offsetWidth;
+      card.classList.add('filing');
+    }
+    var chosen = CARDS[cardIndex];
+    var chosenName = slot.name;
+    runAfter(460, function () {
+      hide(card);
+      card.classList.remove('filing');
+      // drop a filed stub into that slot
+      filedCounts[slot.id]++;
+      var fill = slot.el.querySelector('.slot-fill');
+      if (fill) { var st = document.createElement('span'); st.className = 'filed-stub'; fill.appendChild(st); }
+      cardIndex++;
+      // calm the drawer glow one step; room settles after the third
+      if (cardIndex < 3) plate.setAttribute('data-filed', String(cardIndex));
+      else { plate.setAttribute('data-filed', '3'); setAmbient('settled'); }
+      updateDrawerCta();
+      playBeat([
+        { cls: 'narrate', text: chosen.filed },
+        { cls: 'system', text: statuteLine(chosenName) }
+      ], function () {
+        // return to the drawer for the next card (or the pocket card)
+        clearBeat();
+        show(zoneDrawer);
+        phase = 'filing';
+        plate.setAttribute('data-phase', phase);
+        focusEl(zoneDrawer);
+      });
+    });
+  }
+
+  // ---------------- POCKET REFUSAL ----------------
+  function doRefuse(slot) {
+    disarmAll();
+    slotsOn(false);
+    if (!reduceMotion) { void card.offsetWidth; card.classList.add('refuse'); }
+    else { card.classList.add('refuse'); }
+    var line = POCKET.refusals[refusalIndex];
+    var wasThird = (refusalIndex >= 2);
+    // on the third refusal the system's "Unfiled…" verdict joins the same beat,
+    // so every refusal line is read before shelf zero opens (legible in both modes)
+    var lines = [
+      { cls: 'narrate', text: line },
+      { cls: 'system', text: POCKET.objection }
+    ];
+    if (wasThird) lines.push({ cls: 'system', text: POCKET.shelfPrompt });
+    playBeat(lines, function () {
+      card.classList.remove('refuse');
+      refusalIndex++;
+      clearBeat();
+      if (!wasThird) {
+        // another attempt — card back in hand, slots live again
+        slotsOn(true);
+        focusEl(SLOTS[0].el);
+      } else {
+        phase = 'shelf';
+        plate.setAttribute('data-phase', phase);
+        slotsOn(false);
+        show(zoneShelf);
+        focusEl(zoneShelf);
+      }
+    });
+  }
+
+  // ---------------- SHELF ZERO ----------------
+  function shelfActivate() {
+    if (plate.getAttribute('data-beat') === 'playing') return;
+    if (phase !== 'shelf') return;
+    if (armed === 'zoneShelf') { doPlaceShelf(); } else { armShelf(); }
+  }
+  function armShelf() {
+    disarmAll();
+    armed = 'zoneShelf';
+    zoneShelf.classList.add('armed');
+    focusEl(zoneShelf);
+  }
+  function doPlaceShelf() {
+    disarmAll();
+    hide(zoneShelf);
+    if (!reduceMotion) {
+      var cr = card.getBoundingClientRect();
+      var sr = zoneShelf.getBoundingClientRect();
+      var dx = (sr.left + sr.width / 2) - (cr.left + cr.width / 2);
+      var dy = (sr.top + sr.height / 2) - (cr.top + cr.height / 2);
+      card.style.setProperty('--sx', dx.toFixed(1) + 'px');
+      card.style.setProperty('--sy', dy.toFixed(1) + 'px');
+      void card.offsetWidth;
+      card.classList.add('placing');
+    }
+    runAfter(460, function () {
+      hide(card);
+      card.classList.remove('placing');
+      show(shelved);                 // the card now rests on shelf zero
+      setAmbient('shelf');           // light reaches the lower shelf
+      playBeat([{ cls: 'narrate', text: POCKET.placement }], function () {
+        clearBeat();
+        phase = 'slips';
+        plate.setAttribute('data-phase', phase);
+        show(zoneShutter);
+        focusEl(zoneShutter);
+      });
+    });
+  }
+
+  // ---------------- RESTRICTION SLIPS ----------------
+  function readSlips() {
+    if (plate.getAttribute('data-beat') === 'playing') return;
+    if (phase !== 'slips') return;
+    hide(zoneShutter);
+    // lead-in, three slips read one by one, then the Archivist's unlock line —
+    // one beat so every line stays legible (advance-paced under reduce-motion)
+    playBeat(SLIPS.concat([{ cls: 'narrate', text: UNLOCK }]), openMethods);
+  }
+
+  // ---------------- METHODS ----------------
+  function openMethods() {
+    phase = 'methods';
+    plate.setAttribute('data-phase', phase);
+    clearBeat();
+    setAmbient('shelf');
+    show(zoneAnswer);
+    show(zoneSeal);
+    methodPreviewOn = true;
+    focusEl(zoneAnswer);
+  }
+  function methodPreview(name) {
+    if (!methodPreviewOn) return;
+    setAmbient(name);
+  }
+  function methodPreviewOff(name) {
+    if (!methodPreviewOn) return;
+    if (armed === 'zone' + name.charAt(0).toUpperCase() + name.slice(1)) return;
+    setAmbient('shelf');
+  }
+  function methodActivate(name) {
+    if (plate.getAttribute('data-beat') === 'playing') return;
+    if (phase !== 'methods') return;
+    var id = (name === 'answer') ? 'zoneAnswer' : 'zoneSeal';
+    if (armed === id) { commitMethod(name); } else { armMethod(name, id); }
+  }
+  function armMethod(name, id) {
+    disarmAll();
+    armed = id;
+    (name === 'answer' ? zoneAnswer : zoneSeal).classList.add('armed');
+    setAmbient(name);   // hold the previewed room while armed
+    focusEl(name === 'answer' ? zoneAnswer : zoneSeal);
+  }
+  function commitMethod(name) {
+    disarmAll();
+    methodPreviewOn = false;
+    phase = 'result';
+    plate.setAttribute('data-phase', phase);
+    hide(zoneAnswer); hide(zoneSeal);
+    var m = METHODS[name];
+    setAmbient(m.ambient);
+    playBeat(m.beat, function () { showResult(name); });
+  }
+  function showResult(name) {
+    if (plate.hasAttribute('data-result')) return;
+    var m = METHODS[name];
+    rEvidence.innerHTML = 'Evidence admitted: <b>' + m.evidence + '</b>';
+    rStanding.innerHTML = 'Standing: ' + m.standing.map(function (s) {
+      return '<span>' + s.who + ' <span class="' + s.kind + '">' + s.delta + '</span></span>';
+    }).join(' · ');
+    advanceHint.style.display = 'none';
+    plate.setAttribute('data-result', name);
+  }
+
+  // ---------------- REPLAY (back to the methods step only) ----------------
+  function replay() {
+    plate.removeAttribute('data-result');
+    clearBeat();
+    disarmAll();
+    setAmbient('shelf');
+    phase = 'methods';
+    plate.setAttribute('data-phase', phase);
+    methodPreviewOn = true;
+    show(zoneAnswer);
+    show(zoneSeal);
+    advanceHint.style.display = '';
+    focusEl(zoneAnswer);
+  }
+
+  // ---------------- wiring ----------------
+  zoneDrawer.addEventListener('click', function (e) { e.preventDefault(); drawNext(); });
+  card.addEventListener('click', function (e) {
+    e.preventDefault();
+    // convenience: focusing the card and activating jumps to the first slot
+    if (phase === 'filing' || phase === 'pocket') focusEl(SLOTS[0].el);
+  });
+  SLOTS.forEach(function (s) {
+    s.el.addEventListener('click', function (e) { e.preventDefault(); slotActivate(s); });
+  });
+  zoneShelf.addEventListener('click', function (e) { e.preventDefault(); shelfActivate(); });
+  zoneShutter.addEventListener('click', function (e) { e.preventDefault(); readSlips(); });
+
+  [['answer', zoneAnswer], ['seal', zoneSeal]].forEach(function (pair) {
+    var name = pair[0], el = pair[1];
+    el.addEventListener('mouseenter', function () { methodPreview(name); });
+    el.addEventListener('mouseleave', function () { methodPreviewOff(name); });
+    el.addEventListener('focus', function () { methodPreview(name); });
+    el.addEventListener('blur', function () { methodPreviewOff(name); });
+    el.addEventListener('click', function (e) { e.preventDefault(); methodActivate(name); });
+  });
+
+  rReplay.addEventListener('click', function (e) { e.preventDefault(); replay(); });
+
+  // global click: advance the beat, or disarm
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('.zone') || e.target.closest('.card') ||
+        e.target.closest('.r-replay') || e.target.closest('.rm-toggle')) return;
+    if (plate.getAttribute('data-beat') === 'playing') { advanceBeat(); return; }
+    if (armed) { disarmAll(); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { if (armed) disarmAll(); return; }
+    if (plate.getAttribute('data-beat') === 'playing') {
+      if (e.key === 'Tab') return;
+      e.preventDefault();
+      advanceBeat();
+    }
+  });
+
+  // ---------------- reduce motion ----------------
+  function applyReduceMotion(on) {
+    reduceMotion = on;
+    body.classList.toggle('reduce-motion', on);
+    rmToggle.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+  rmToggle.addEventListener('click', function () { applyReduceMotion(!reduceMotion); });
+
+  var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  applyReduceMotion(mq.matches);
+
+  updateDrawerCta();
+
+  // ---------------- verification hook ----------------
+  window.__smallArchive = {
+    draw: drawNext,
+    fileInto: function (id) { var s = slotById[id]; if (s) { slotActivate(s); slotActivate(s); } },
+    armSlot: function (id) { var s = slotById[id]; if (s) slotActivate(s); },
+    attemptPocket: function (id) { var s = slotById[id]; if (s) { slotActivate(s); slotActivate(s); } },
+    placeShelf: function () { shelfActivate(); shelfActivate(); },
+    readSlips: readSlips,
+    method: function (name) { methodActivate(name); methodActivate(name); },
+    armMethod: function (name) { methodActivate(name); },   // single arm (cap + ambient preview)
+    hoverMethod: function (name) { methodPreview(name); },
+    unhoverMethod: function (name) { methodPreviewOff(name); },
+    advance: advanceBeat,
+    replay: replay,
+    setReduceMotion: applyReduceMotion,
+    getPhase: function () { return phase; },
+    getAmbient: function () { return plate.getAttribute('data-ambient'); },
+    isBeatPlaying: function () { return plate.getAttribute('data-beat') === 'playing'; },
+    beatText: function () { return Array.prototype.map.call(beatEl.children, function (c) { return c.textContent; }); },
+    stripText: function () {
+      if (!plate.hasAttribute('data-result')) return null;
+      return rEvidence.textContent + ' · ' + rStanding.textContent;
+    },
+    var: function (name) { return getComputedStyle(plate).getPropertyValue(name).trim(); }
+  };
+})();
+</script>
+</body>
+</html>
