@@ -116,7 +116,8 @@ p {
 }
 
 .annex-app.high-contrast,
-.deposition-portal.high-contrast {
+.deposition-portal.high-contrast,
+.scene-detail-portal.high-contrast {
   --concrete: oklch(0.11 0 0);
   --raised: oklch(0.19 0 0);
   --raised-hover: oklch(0.24 0 0);
@@ -9274,5 +9275,1168 @@ p {
   .annex-world-portal-shutter > span {
     transition: none !important;
     animation: none !important;
+  }
+}
+
+/* ══ Scene-first pilot ═══════════════════════════════════════════════════════
+   A location can host its two methods IN the close read instead of in the
+   inspector list (content opt-in: `closeup.sceneFirst`). Everything below is
+   presentation for that one grammar. Three rules govern it:
+
+   1. The live buttons are a SIBLING of the aria-hidden close-read figure, never
+      a child, and the figure's decorative zone mirror is suppressed while they
+      are up — one control per method, announced exactly once.
+   2. No reveal is carried by an opacity ramp held open by animation-fill-mode.
+      Every entry here is a fill-mode-less animation whose RESTING style is the
+      visible one, so a suppressed or stranded animation still leaves the thing
+      on screen (the documented opacity-strand scar).
+   3. Every selector is scoped at least as specifically as the rule it replaces,
+      so an existing .choice-row / .site-inspector rule cannot win by source
+      order (the cascade-override scar).
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* ── The live zone layer: the plate's own projection geometry, mirrored ────── */
+
+.scene-zones-live {
+  position: absolute;
+  z-index: 7;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  container-type: size;
+}
+
+/* Identical cover math to .site-closeup-cover, driven by the identical custom
+   properties (see scene/closeupGeometry.ts) — a ring and the prop it names can
+   never drift apart under responsive cropping. */
+.scene-zones-live-cover {
+  position: absolute;
+  top: var(--site-focal-position-y, 50%);
+  left: var(--site-focal-position-x, 50%);
+  width: max(100cqw, calc(100cqh * 16 / 9));
+  height: max(100cqh, calc(100cqw * 9 / 16));
+  transform: translate(var(--site-focal-offset-x, -50%), var(--site-focal-offset-y, -50%));
+}
+
+.scene-zones-live-projection {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  transform: scale(1);
+  transform-origin: var(--site-focus-x, 50%) var(--site-focus-y, 50%);
+  transition: transform 360ms var(--ease-out);
+}
+
+/* Mirrors the plate's action-focus camera exactly, so the rings ride the same
+   1.026 scale the photograph does. */
+.scene-zones-live[data-emphasis='true'] .scene-zones-live-projection {
+  transform: scale(1.026);
+}
+
+/* ── One zone: the canonical ChoiceButton, wearing a ring ──────────────────── */
+
+/* A zero-size anchor point at the authored coordinate. The ring is pinned to it
+   exactly (the same convention the decorative .site-closeup-zone mark uses), and
+   the caption is a separately positioned box that can slide inboard at the
+   plate's edges without ever moving the ring off its prop. */
+.scene-zone {
+  position: absolute;
+  z-index: 3;
+  width: 0;
+  height: 0;
+  pointer-events: auto;
+}
+
+.scene-zone-ring {
+  position: absolute;
+  z-index: 1;
+  top: -31px;
+  left: -31px;
+  width: 62px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid oklch(0.86 0.04 210 / 0.35);
+  border-radius: 50%;
+  pointer-events: none;
+  backdrop-filter: blur(1px);
+  transition:
+    border-color 220ms var(--ease-out),
+    box-shadow 220ms var(--ease-out),
+    transform 220ms var(--ease-out),
+    background 220ms var(--ease-out);
+}
+
+.scene-zone-ring::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: oklch(0.86 0.04 210 / 0.55);
+  transition:
+    background 220ms var(--ease-out),
+    box-shadow 220ms var(--ease-out);
+}
+
+.scene-zone[data-treatment='listen'] .scene-zone-ring {
+  border-color: oklch(0.82 0.1 74 / 0.4);
+}
+
+.scene-zone[data-treatment='pressure'] .scene-zone-ring {
+  border-color: oklch(0.78 0.1 200 / 0.4);
+}
+
+/* The wrapped canonical button. Its semantics, arm/confirm two-step, disarm
+   gestures and commit path are untouched; only its box is restyled. */
+.scene-zone .choice-row {
+  position: absolute;
+  z-index: 2;
+  /* Top edge 45px above the anchor, so the 62px ring (centred on the anchor)
+     sits inside the button's own hit area with 14px of padding above it. */
+  top: -36px;
+  left: 0;
+  width: min(42cqw, 250px);
+  min-height: 44px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  align-items: start;
+  gap: 3px;
+  /* 5px above the ring + 62px ring + 4px breathing room */
+  padding: 71px 8px 6px;
+  border: 0;
+  background: transparent;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+/* At the plate's edges the caption slides inboard instead of being cropped. The
+   ring never moves: only this box does. */
+.scene-zone[data-edge='start'] .choice-row {
+  transform: translateX(-28%);
+}
+
+.scene-zone[data-edge='end'] .choice-row {
+  transform: translateX(-72%);
+}
+
+.scene-zone .choice-row:hover,
+.scene-zone .choice-row:active,
+.scene-zone .choice-row.choice-row-armed,
+.scene-zone .choice-row.choice-row-armed:hover {
+  grid-template-columns: minmax(0, 1fr);
+  background: transparent;
+  box-shadow: none;
+}
+
+.scene-zone .choice-row:focus-visible {
+  outline: none;
+}
+
+.scene-zone .choice-row:focus-visible ~ .scene-zone-ring {
+  outline: 2px solid var(--record);
+  outline-offset: 4px;
+}
+
+/* The button's own arrow column carries nothing the caption does not already
+   say here; it is aria-hidden at rest, so removing it costs no announcement. */
+.scene-zone .choice-aside {
+  display: none;
+}
+
+/* The caption: hidden by a clip, never by opacity or display, so the button
+   keeps its full accessible name at every moment. */
+.scene-zone .choice-method,
+.scene-zone .choice-body {
+  clip-path: inset(0 0 100% 0);
+  transform: translateY(4px);
+  transition:
+    clip-path 220ms var(--ease-out),
+    transform 220ms var(--ease-out);
+}
+
+.scene-zone:has(.choice-row:hover) .choice-method,
+.scene-zone:has(.choice-row:hover) .choice-body,
+.scene-zone:has(.choice-row:focus-visible) .choice-method,
+.scene-zone:has(.choice-row:focus-visible) .choice-body,
+.scene-zone:has(.choice-row-armed) .choice-method,
+.scene-zone:has(.choice-row-armed) .choice-body {
+  clip-path: inset(-40% -60% -40% -60%);
+  transform: translateY(0);
+}
+
+.scene-zone .choice-method {
+  align-self: center;
+  padding-top: 0;
+  color: var(--fog);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.58rem;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 10px oklch(0 0 0 / 0.95);
+}
+
+.scene-zone[data-treatment='listen'] .choice-method {
+  color: var(--amber-soft);
+}
+
+.scene-zone[data-treatment='pressure'] .choice-method {
+  color: var(--cyan);
+}
+
+.scene-zone .choice-body {
+  justify-items: center;
+  gap: 3px;
+  text-align: center;
+}
+
+.scene-zone .choice-body strong {
+  font-size: 0.88rem;
+  line-height: 1.2;
+  text-shadow: 0 1px 10px oklch(0 0 0 / 0.95);
+}
+
+.scene-zone .choice-body > span {
+  max-width: 30ch;
+  color: oklch(0.82 0.01 210 / 0.86);
+  font-size: 0.74rem;
+  line-height: 1.3;
+  text-shadow: 0 1px 10px oklch(0 0 0 / 0.95);
+}
+
+/* The pre-commit cost stays reserved in the layout (so arming never shifts the
+   ring off its prop) and un-clips at the decision, as the harness requires. */
+.scene-zone .choice-body small {
+  max-width: 30ch;
+  font-size: 0.7rem;
+  line-height: 1.3;
+  clip-path: inset(0 0 100% 0);
+  text-shadow: 0 1px 10px oklch(0 0 0 / 0.95);
+  transition: clip-path 220ms var(--ease-out);
+}
+
+.scene-zone:has(.choice-row-armed) .choice-body small {
+  clip-path: inset(-40% -60% -40% -60%);
+}
+
+.scene-zone:has(.choice-row:hover) .scene-zone-ring,
+.scene-zone:has(.choice-row:focus-visible) .scene-zone-ring {
+  transform: scale(1.08);
+}
+
+.scene-zone[data-treatment='listen']:has(.choice-row:hover) .scene-zone-ring,
+.scene-zone[data-treatment='listen']:has(.choice-row:focus-visible) .scene-zone-ring {
+  border-color: var(--amber);
+  box-shadow:
+    0 0 26px oklch(0.72 0.14 70 / 0.5),
+    0 0 0 1px oklch(0.72 0.14 70 / 0.3);
+}
+
+.scene-zone[data-treatment='listen']:has(.choice-row:hover) .scene-zone-ring::before,
+.scene-zone[data-treatment='listen']:has(.choice-row:focus-visible) .scene-zone-ring::before {
+  background: var(--amber-soft);
+  box-shadow: 0 0 10px var(--amber);
+}
+
+.scene-zone[data-treatment='pressure']:has(.choice-row:hover) .scene-zone-ring,
+.scene-zone[data-treatment='pressure']:has(.choice-row:focus-visible) .scene-zone-ring {
+  border-color: var(--cyan);
+  box-shadow:
+    0 0 26px oklch(0.78 0.11 190 / 0.5),
+    0 0 0 1px oklch(0.78 0.11 190 / 0.3);
+}
+
+.scene-zone[data-treatment='pressure']:has(.choice-row:hover) .scene-zone-ring::before,
+.scene-zone[data-treatment='pressure']:has(.choice-row:focus-visible) .scene-zone-ring::before {
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan);
+}
+
+/* Armed: the ring breathes. Pure transform, no fill mode — a suppressed
+   animation leaves the ring at its ordinary resting size, never invisible. */
+.scene-zone:has(.choice-row-armed) .scene-zone-ring {
+  border-color: var(--amber-soft);
+  box-shadow:
+    0 0 34px oklch(0.72 0.14 70 / 0.7),
+    0 0 0 2px var(--amber);
+  animation: scene-zone-arm-pulse 1.4s ease-in-out infinite;
+}
+
+.scene-zone[data-treatment='pressure']:has(.choice-row-armed) .scene-zone-ring {
+  border-color: var(--cyan);
+  box-shadow:
+    0 0 34px oklch(0.78 0.11 190 / 0.7),
+    0 0 0 2px var(--cyan);
+}
+
+@keyframes scene-zone-arm-pulse {
+  0%,
+  100% {
+    transform: scale(1.06);
+  }
+  50% {
+    transform: scale(1.16);
+  }
+}
+
+/* While one method is armed its sibling recedes — the same read the inspector
+   list already performs with :has(). */
+.scene-zones-live:has(.choice-row-armed) .scene-zone:not(:has(.choice-row-armed)) {
+  opacity: 0.28;
+}
+
+/* ── The staged beat ──────────────────────────────────────────────────────── */
+
+.scene-beat {
+  position: absolute;
+  z-index: 12;
+  inset: 0;
+  pointer-events: none;
+}
+
+.scene-beat-catcher {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* The standing plate caption yields to the stanza (the prototype does the same
+   with its rest caption): on a short plate the two would otherwise print over
+   each other, which no text assertion can see. */
+.world-view--scene-beat .world-caption,
+.world-view--scene-quiet .world-caption {
+  opacity: 0;
+}
+
+.scene-beat-lines {
+  position: absolute;
+  left: 50%;
+  /* Clears the advance control below it at every plate height. */
+  bottom: 26%;
+  width: min(86%, 620px);
+  max-height: 62%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 10px;
+  overflow: hidden;
+  text-align: center;
+  transform: translateX(-50%);
+  pointer-events: none;
+  /* Older clauses fade off the top so the newest one is always the clearest. */
+  mask-image: linear-gradient(to bottom, transparent 0%, black 22%, black 100%);
+}
+
+.scene-beat[data-phase='held'] .scene-beat-lines {
+  bottom: 34%;
+}
+
+.scene-beat-line {
+  margin: 0;
+  text-shadow:
+    0 2px 18px oklch(0 0 0 / 0.98),
+    0 0 40px oklch(0 0 0 / 0.9);
+  animation: scene-beat-line-in 420ms var(--ease-out);
+}
+
+@keyframes scene-beat-line-in {
+  from {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(8px);
+  }
+  to {
+    clip-path: inset(-30% -60% -30% -60%);
+    transform: translateY(0);
+  }
+}
+
+.scene-beat-line--subject {
+  color: var(--record);
+  font-size: 1.05rem;
+  font-weight: 300;
+  line-height: 1.4;
+}
+
+.scene-beat-line--speaker {
+  margin-top: 4px;
+  color: var(--fog);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.scene-beat-line--speaker[data-speaker='shepherd'] {
+  color: var(--amber);
+}
+
+.scene-beat-line--speaker[data-speaker='registrar'] {
+  color: var(--cyan);
+}
+
+.scene-beat-line--persona {
+  color: oklch(0.88 0.012 210 / 0.94);
+  font-size: 0.92rem;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.scene-beat-advance {
+  position: absolute;
+  z-index: 2;
+  bottom: 11%;
+  left: 50%;
+  min-height: 44px;
+  padding: 8px 18px;
+  color: var(--cyan);
+  background: oklch(0.1 0.008 240 / 0.66);
+  border: 1px solid oklch(0.78 0.11 190 / 0.4);
+  border-radius: 999px;
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+  transform: translateX(-50%);
+  cursor: pointer;
+  pointer-events: auto;
+  backdrop-filter: blur(4px);
+  transition:
+    background 200ms var(--ease-out),
+    border-color 200ms var(--ease-out);
+}
+
+.scene-beat-advance:hover {
+  background: oklch(0.78 0.11 190 / 0.14);
+  border-color: var(--cyan);
+}
+
+.scene-beat-hint {
+  position: absolute;
+  bottom: 3%;
+  left: 50%;
+  margin: 0;
+  color: oklch(0.7 0.01 210 / 0.6);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  opacity: 0.6;
+  transform: translateX(-50%);
+  pointer-events: none;
+  animation: scene-beat-hint-fade 2s ease-in-out infinite;
+}
+
+@keyframes scene-beat-hint-fade {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* ── The result strip ─────────────────────────────────────────────────────── */
+
+.scene-result {
+  position: absolute;
+  z-index: 13;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  padding: 12px clamp(12px, 3vw, 26px);
+  background: linear-gradient(
+    to top,
+    oklch(0.1 0.008 240 / 0.96),
+    oklch(0.1 0.008 240 / 0.74)
+  );
+  border-top: 1px solid var(--line);
+  pointer-events: auto;
+  backdrop-filter: blur(6px);
+  /* Slides up from below. No fill mode: the resting style IS the docked one. */
+  animation: scene-result-in 460ms var(--ease-out);
+}
+
+@keyframes scene-result-in {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.scene-result-evidence {
+  margin: 0;
+  color: var(--record);
+  font-size: 0.86rem;
+}
+
+.scene-result-evidence strong {
+  color: var(--cyan);
+}
+
+.scene-result-standing {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 0;
+  color: var(--fog);
+  font-size: 0.78rem;
+}
+
+.scene-result-standing span[data-sign='pos'] {
+  color: var(--amber-soft);
+}
+
+.scene-result-standing span[data-sign='neg'] {
+  color: var(--coral);
+}
+
+.scene-result-dismiss {
+  margin-left: auto;
+  min-height: 44px;
+  padding: 8px 16px;
+  color: var(--cyan);
+  background: transparent;
+  border: 1px solid oklch(0.78 0.11 190 / 0.4);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition:
+    background 200ms var(--ease-out),
+    border-color 200ms var(--ease-out);
+}
+
+.scene-result-dismiss:hover {
+  background: oklch(0.78 0.11 190 / 0.12);
+  border-color: var(--cyan);
+}
+
+/* ── The summonable location detail ───────────────────────────────────────── */
+
+.scene-detail-summon {
+  position: absolute;
+  z-index: 14;
+  top: 16px;
+  right: 18px;
+  min-height: 40px;
+  padding: 8px 14px;
+  color: var(--fog);
+  background: oklch(0.09 0.01 235 / 0.88);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.64rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition:
+    color 180ms var(--ease-out),
+    border-color 180ms var(--ease-out);
+}
+
+.scene-detail-summon:hover {
+  color: var(--record-bright);
+  border-color: var(--record);
+}
+
+.scene-detail-portal {
+  position: fixed;
+  z-index: 60;
+  inset: 0;
+  display: flex;
+  justify-content: flex-end;
+  color: var(--record);
+  background: oklch(0 0 0 / 0.52);
+}
+
+.scene-detail-drawer {
+  width: min(520px, 100%);
+  height: 100%;
+  overflow-y: auto;
+  background: var(--night-soft);
+  border-left: 1px solid var(--line);
+  animation: scene-detail-drawer-in 220ms var(--ease-out);
+}
+
+@keyframes scene-detail-drawer-in {
+  from {
+    transform: translateX(28px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.scene-detail-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px 14px;
+  background: var(--night-soft);
+  border-bottom: 1px solid var(--line);
+}
+
+.scene-detail-header h2 {
+  margin: 4px 0 0;
+  font-size: 1.1rem;
+}
+
+.scene-detail-close {
+  min-height: 44px;
+  padding: 8px 14px;
+  color: var(--fog);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.scene-detail-close:hover {
+  color: var(--record-bright);
+  border-color: var(--line-strong);
+}
+
+.scene-detail-body {
+  display: grid;
+  gap: 22px;
+  padding: 18px 20px 28px;
+}
+
+.scene-detail-description {
+  margin: 0;
+  color: var(--fog);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.scene-detail-filed h3,
+.scene-detail-methods h3 {
+  margin: 0 0 10px;
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fog);
+}
+
+.scene-detail-filed > p {
+  margin: 0 0 14px;
+  color: var(--record);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.scene-detail-methods {
+  display: grid;
+  gap: 14px;
+}
+
+.scene-detail-method {
+  padding: 14px;
+  background: var(--concrete);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.scene-detail-method[data-filed='true'] {
+  border-color: var(--amber);
+}
+
+.scene-detail-method h4 {
+  margin: 4px 0 6px;
+  color: var(--record-bright);
+  font-size: 0.96rem;
+}
+
+.scene-detail-method p {
+  margin: 0;
+  color: var(--fog);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.scene-detail-method-label {
+  margin: 0;
+  color: var(--amber);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.62rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.scene-detail-method-cost {
+  margin-top: 6px !important;
+  color: var(--fog-dim) !important;
+  font-size: 0.76rem !important;
+}
+
+/* ── The inspector's scene-first stand-in ─────────────────────────────────── */
+
+.scene-first-note {
+  margin: 0;
+  padding: 14px 16px 18px;
+  color: var(--fog);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+/* ── Narrow viewports ─────────────────────────────────────────────────────── */
+
+@media (max-width: 700px) {
+  /* The short plate affords ~105px below an anchor at y 0.56. A narrow caption
+     wrapped the title onto three lines and pushed the pre-commit cost off the
+     plate's bottom edge exactly when the player armed — so the caption goes WIDE
+     here instead (only one is ever shown at a time, so two wide captions can
+     never collide) and the ring shrinks to buy the last few pixels. */
+  .scene-zone .choice-row {
+    top: -28px;
+    width: min(84cqw, 300px);
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 44px;
+    gap: 3px;
+    padding: 54px 6px 6px;
+  }
+
+  .scene-zone .choice-row.choice-row-armed {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .scene-zone-ring {
+    top: -22px;
+    left: -22px;
+    width: 44px;
+    height: 44px;
+  }
+
+  /* The narrow plate crops hard: at this width the anchors sit within ~35px of
+     the plate edge, so the caption box is aligned to the ring instead of centred
+     on it. The RING still never moves. */
+  .scene-zone[data-edge='start'] .choice-row {
+    transform: translateX(-8%);
+  }
+
+  .scene-zone[data-edge='end'] .choice-row {
+    transform: translateX(-92%);
+  }
+
+  .scene-zone .choice-method {
+    font-size: 0.55rem;
+  }
+
+  .scene-zone .choice-body strong {
+    font-size: 0.8rem;
+    line-height: 1.15;
+  }
+
+  /* There is no room for the method's full sentence over a ~240px plate. It is
+     taken out of the LAYOUT but stays in the accessibility tree (and in the
+     summonable location detail, which is the canonical prose surface). */
+  .scene-zone .choice-body > span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .scene-zone .choice-body small {
+    max-width: 46ch;
+    font-size: 0.66rem;
+    line-height: 1.25;
+  }
+
+  .scene-beat-lines {
+    width: 88%;
+    gap: 6px;
+    bottom: 32%;
+    max-height: 58%;
+  }
+
+  .scene-beat[data-phase='held'] .scene-beat-lines {
+    bottom: 42%;
+  }
+
+  /* The short plate has no room for both the control and the hint; the control's
+     own label carries the instruction. */
+  .scene-beat-hint {
+    display: none;
+  }
+
+  .scene-beat-advance {
+    bottom: 6%;
+    padding: 8px 14px;
+    font-size: 0.72rem;
+  }
+
+  .scene-beat-line--subject {
+    font-size: 0.94rem;
+  }
+
+  .scene-beat-line--persona {
+    font-size: 0.84rem;
+  }
+
+  .scene-result {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .scene-result-dismiss {
+    margin-left: 0;
+  }
+
+  .scene-detail-summon {
+    top: 10px;
+    right: 10px;
+    padding-inline: 10px;
+    font-size: 0.6rem;
+  }
+
+  .scene-detail-drawer {
+    width: 100%;
+    border-left: 0;
+  }
+}
+
+/* ══ Ambient preview state-sets ══════════════════════════════════════════════
+   The whole plate answers the method under consideration. Every number below is
+   an ABSOLUTE authored value ported from the approved prototype's :root spec —
+   never a multiplier on an existing constant, so nothing here can ship an
+   invisible change. Sites that author no `closeup.previewTreatment` render no
+   data-preview-treatment attribute and are untouched by all of it.
+
+     state     rain opacity   rain blur   light temperature                                       vignette
+     rest      0.28           1.1px       hue-rotate(0) saturate(1) brightness(1) contrast(1)      0.55 @ 50%/46%
+     listen    0.16           2.4px       hue-rotate(-12deg) saturate(1.08) brightness(1.1) …0.96  0.42, wider/left
+     pressure  0.62           0px         hue-rotate(18deg) saturate(0.82) brightness(0.82) …1.22  0.86, tight/right
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.site-closeup-stage[data-preview-treatment] {
+  --preview-rain-opacity: 0.28;
+  --preview-rain-blur: 1.1px;
+  --preview-rain-fall: 2.4s;
+  --preview-tint: hue-rotate(0deg) saturate(1) brightness(1) contrast(1);
+  --preview-vignette-shape: ellipse 78% 74% at 50% 46%;
+  --preview-vignette-stop: 44%;
+  --preview-vignette-alpha: 0.55;
+  --preview-warm: 0;
+  --preview-cold: 0;
+}
+
+.site-closeup-stage[data-preview-treatment='listen'] {
+  --preview-rain-opacity: 0.16;
+  --preview-rain-blur: 2.4px;
+  --preview-rain-fall: 4.2s;
+  --preview-tint: hue-rotate(-12deg) saturate(1.08) brightness(1.1) contrast(0.96);
+  --preview-vignette-shape: ellipse 82% 80% at 42% 50%;
+  --preview-vignette-stop: 50%;
+  --preview-vignette-alpha: 0.42;
+  --preview-warm: 0.85;
+  --preview-cold: 0;
+}
+
+.site-closeup-stage[data-preview-treatment='pressure'] {
+  --preview-rain-opacity: 0.62;
+  --preview-rain-blur: 0px;
+  --preview-rain-fall: 1.1s;
+  --preview-tint: hue-rotate(18deg) saturate(0.82) brightness(0.82) contrast(1.22);
+  --preview-vignette-shape: ellipse 66% 62% at 62% 44%;
+  --preview-vignette-stop: 34%;
+  --preview-vignette-alpha: 0.86;
+  --preview-warm: 0;
+  --preview-cold: 0.9;
+}
+
+/* The light temperature grades the whole photographic stack, exactly as the
+   prototype's .grade wrapper does. Declared at (0,2,0) — at or above every
+   existing .site-closeup-projection rule — so source order cannot beat it. */
+.site-closeup-stage[data-preview-treatment] .site-closeup-projection {
+  filter: var(--preview-tint);
+  transition:
+    transform 360ms var(--ease-out),
+    filter 300ms var(--ease-out);
+}
+
+/* The reactive vignette below subsumes the static plate veil, rather than
+   stacking a second darkening pass on top of it. */
+.site-closeup-stage[data-preview-treatment] .site-closeup-depth {
+  display: none;
+}
+
+.scene-preview-rain {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  opacity: var(--preview-rain-opacity, 0.28);
+  filter: blur(var(--preview-rain-blur, 1.1px));
+  mix-blend-mode: screen;
+  pointer-events: none;
+  /* Clipped roughly to the impossible window over her, with a little drift. */
+  mask-image: linear-gradient(to bottom, transparent 2%, black 16% 82%, transparent 96%);
+  transition:
+    opacity 300ms var(--ease-out),
+    filter 300ms var(--ease-out);
+}
+
+/* Two layers on the same cycle, a half period apart. Each fades to zero exactly
+   when its background-position resets, so the reset is never visible — a single
+   sliding layer snaps at every loop point, glaring at pressure's 0.62. The
+   animation is infinite with NO fill mode: its resting style is the layer's own,
+   so a suppressed animation leaves a static matte, never a blank one. */
+.scene-preview-rain-layer {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background-position: center 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  animation: scene-preview-rain-cycle var(--preview-rain-fall, 2.4s) linear infinite;
+}
+
+.scene-preview-rain-layer--b {
+  animation-delay: calc(var(--preview-rain-fall, 2.4s) / -2);
+}
+
+@keyframes scene-preview-rain-cycle {
+  0% {
+    background-position: center 0;
+    opacity: 0;
+  }
+  50% {
+    background-position: center 13px;
+    opacity: 1;
+  }
+  100% {
+    background-position: center 26px;
+    opacity: 0;
+  }
+}
+
+.scene-preview-wash {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  transition: opacity 300ms var(--ease-out);
+}
+
+.scene-preview-wash--warm {
+  background: radial-gradient(
+    ellipse 40% 52% at 23% 56%,
+    oklch(0.78 0.13 74 / 0.5),
+    transparent 70%
+  );
+  opacity: var(--preview-warm, 0);
+}
+
+.scene-preview-wash--cold {
+  background: radial-gradient(
+    ellipse 38% 50% at 78% 52%,
+    oklch(0.7 0.12 235 / 0.5),
+    transparent 70%
+  );
+  opacity: var(--preview-cold, 0);
+}
+
+.scene-preview-vignette {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  background: radial-gradient(
+    var(--preview-vignette-shape, ellipse 78% 74% at 50% 46%),
+    transparent 0%,
+    transparent var(--preview-vignette-stop, 44%),
+    oklch(0 0 0 / var(--preview-vignette-alpha, 0.55)) 100%
+  );
+  pointer-events: none;
+  transition: background 300ms var(--ease-out);
+}
+
+/* High contrast and forced colours take the code-native trace layer only: the
+   graded photograph, the washes, and the reactive vignette all stand down. */
+.high-contrast .site-closeup-stage[data-preview-treatment] .site-closeup-projection {
+  filter: none;
+}
+
+.high-contrast .scene-preview-wash,
+.high-contrast .scene-preview-vignette,
+.high-contrast .scene-preview-rain {
+  display: none;
+}
+
+@media (forced-colors: active) {
+  .site-closeup-stage[data-preview-treatment] .site-closeup-projection {
+    filter: none;
+  }
+
+  .scene-preview-wash,
+  .scene-preview-vignette,
+  .scene-preview-rain {
+    display: none;
+  }
+}
+
+/* ══ Scene-first pilot: reduced motion, high contrast, forced colours ════════
+   Reduced motion is not "the same thing, faster": the staged beat becomes
+   ADVANCE-PACED in the component (every line at once, and no timer ever
+   completes it — a beat that runs on a clock is unreadable for the people who
+   asked for less motion). Here the rest of it lands: the rain goes static at its
+   resting density, the room switches state instantly, and nothing drifts.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.reduce-motion .scene-zones-live-projection,
+.reduce-motion .scene-zone,
+.reduce-motion .scene-zone *,
+.reduce-motion .scene-zone-ring,
+.reduce-motion .scene-beat,
+.reduce-motion .scene-beat *,
+.reduce-motion .scene-result,
+.reduce-motion .scene-detail-drawer,
+.reduce-motion .scene-preview-rain,
+.reduce-motion .scene-preview-rain-layer,
+.reduce-motion .scene-preview-wash,
+.reduce-motion .scene-preview-vignette,
+.reduce-motion .site-closeup-stage[data-preview-treatment] .site-closeup-projection {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* One static layer at full strength, held at the resting density: no drift, no
+   second copy, and no rain reaction to hover. */
+.reduce-motion .scene-preview-rain {
+  opacity: 0.28;
+  filter: none;
+}
+
+.reduce-motion .scene-preview-rain-layer {
+  opacity: 1;
+}
+
+.reduce-motion .scene-preview-rain-layer--b {
+  display: none;
+}
+
+.reduce-motion .scene-beat-hint {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-zones-live-projection,
+  .scene-zone,
+  .scene-zone *,
+  .scene-zone-ring,
+  .scene-beat,
+  .scene-beat *,
+  .scene-result,
+  .scene-detail-drawer,
+  .scene-preview-rain,
+  .scene-preview-rain-layer,
+  .scene-preview-wash,
+  .scene-preview-vignette,
+  .site-closeup-stage[data-preview-treatment] .site-closeup-projection {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .scene-preview-rain {
+    opacity: 0.28;
+    filter: none;
+  }
+
+  .scene-preview-rain-layer {
+    opacity: 1;
+  }
+
+  .scene-preview-rain-layer--b {
+    display: none;
+  }
+
+  .scene-beat-hint {
+    display: none !important;
+  }
+}
+
+/* High contrast: the ring, the staged text, and the docked strip drop every
+   glow, blur, and translucency and stand on the record palette alone. */
+.high-contrast .scene-zone-ring {
+  border-color: var(--record);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.high-contrast .scene-zone:has(.choice-row-armed) .scene-zone-ring {
+  border-color: var(--amber-soft);
+  box-shadow: 0 0 0 2px var(--amber-soft);
+}
+
+.high-contrast .scene-beat-line,
+.high-contrast .scene-result-evidence,
+.high-contrast .scene-zone .choice-method,
+.high-contrast .scene-zone .choice-body strong,
+.high-contrast .scene-zone .choice-body > span,
+.high-contrast .scene-zone .choice-body small {
+  text-shadow: none;
+}
+
+.high-contrast .scene-beat-lines {
+  mask-image: none;
+}
+
+.high-contrast .scene-result,
+.high-contrast .scene-beat-advance,
+.high-contrast .scene-detail-summon {
+  background: var(--night);
+  backdrop-filter: none;
+}
+
+@media (forced-colors: active) {
+  .scene-zone-ring {
+    border-color: CanvasText;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  .scene-zone:has(.choice-row-armed) .scene-zone-ring {
+    border-color: Highlight;
+    box-shadow: none;
+  }
+
+  /* Every method stays fully legible: the armed ring is the state cue, not a
+     brightness difference the forced palette would flatten anyway. */
+  .scene-zones-live:has(.choice-row-armed) .scene-zone:not(:has(.choice-row-armed)) {
+    opacity: 1;
+  }
+
+  .scene-beat-lines {
+    mask-image: none;
+  }
+
+  .scene-beat-line,
+  .scene-result-evidence,
+  .scene-detail-summon {
+    text-shadow: none;
+  }
+
+  .scene-result,
+  .scene-beat-advance,
+  .scene-detail-summon,
+  .scene-detail-drawer {
+    background: Canvas;
+    backdrop-filter: none;
   }
 }

@@ -2,6 +2,8 @@ import { useState, type CSSProperties } from 'react'
 import { acousticShadowStageFor } from '../game/acousticShadow'
 import { custodyRailStageFor } from '../game/custodyRail'
 import { roomStageFor } from '../game/room'
+import { closeupStageStyle } from './closeupGeometry'
+import { resolvePreviewTreatment } from './previewTreatment'
 import {
   resolveRainPresenceState,
   type RainPresenceState,
@@ -19,8 +21,6 @@ import type {
   RoomStageId,
   SiteDefinition,
 } from '../game/types'
-
-export const SITE_CLOSEUP_ENTRY_MS = 360
 
 interface SiteCloseupStageProps {
   closeup: NonNullable<SiteDefinition['closeup']>
@@ -63,6 +63,10 @@ interface SiteCloseupStageProps {
   // code-native state traces: it never mounts during travel, reduced motion, or
   // high contrast. The approved master remains the complete fallback.
   rainPresenceAssetEnabled?: boolean
+  // Scene-first sites host the REAL method buttons in a live layer outside this
+  // aria-hidden figure. When that layer is up, the decorative zone mirror below is
+  // suppressed so a method is never rendered — or announced — twice.
+  interactiveZones?: boolean
 }
 
 // A view-only location close read. The authored raster creates spatial identity;
@@ -85,9 +89,8 @@ export function SiteCloseupStage({
   custodyResolvedVariant,
   depthEnhancementEnabled = false,
   rainPresenceAssetEnabled = false,
+  interactiveZones = false,
 }: SiteCloseupStageProps) {
-  const focalX = closeup.focalPoint?.x ?? 0.5
-  const focalY = closeup.focalPoint?.y ?? 0.5
   const actionById = new Map(actions.map((action) => [action.id, action]))
   const emphasizedActionId = resolvedActionId ?? activeActionId
   const emphasizedZone = closeup.zones?.find((zone) => zone.actionId === emphasizedActionId)
@@ -112,17 +115,7 @@ export function SiteCloseupStage({
     derivedFocus && !emphasizedZone
       ? derivedFocus
       : { x: emphasizedZone?.x ?? closeup.focalPoint?.x ?? 0.5, y: emphasizedZone?.y ?? closeup.focalPoint?.y ?? 0.5 }
-  const stageStyle = {
-    '--site-focal-position-x': `${focalX * 100}%`,
-    '--site-focal-position-y': `${focalY * 100}%`,
-    '--site-focal-offset-x': `${focalX * -100}%`,
-    '--site-focal-offset-y': `${focalY * -100}%`,
-    '--site-focus-x': `${focusPoint.x * 100}%`,
-    '--site-focus-y': `${focusPoint.y * 100}%`,
-    '--site-entry-x': `${(entryOrigin?.x ?? 0.5) * 100}%`,
-    '--site-entry-y': `${(entryOrigin?.y ?? 0.5) * 100}%`,
-    '--site-closeup-entry-duration': `${SITE_CLOSEUP_ENTRY_MS}ms`,
-  } as CSSProperties
+  const stageStyle = closeupStageStyle(closeup, entryOrigin, focusPoint)
 
   const phase = roomStage?.phase
   const showRoomStage = Boolean(roomStage && roomZones)
@@ -143,6 +136,15 @@ export function SiteCloseupStage({
     activeActionId,
     resolvedActionId,
   )
+  // The generalized ambient state-set. When a site authors it, it subsumes the
+  // Care-Ward-specific rain matte (which would otherwise double the same
+  // atmosphere) while the code-native trace layer below stays in place as the
+  // colour-free, no-download fallback.
+  const previewTreatment = resolvePreviewTreatment(
+    closeup.previewTreatment,
+    activeActionId,
+    resolvedActionId,
+  )
 
   return (
     <figure
@@ -153,6 +155,7 @@ export function SiteCloseupStage({
       data-acoustic-phase={acousticPhase}
       data-custody-phase={custodyPhase}
       data-resolved={resolvedActionId ? 'true' : undefined}
+      data-preview-treatment={closeup.previewTreatment ? previewTreatment : undefined}
       style={stageStyle}
       aria-hidden="true"
     >
@@ -181,6 +184,12 @@ export function SiteCloseupStage({
             />
           ) : null}
           <div className="site-closeup-depth" />
+          {closeup.previewTreatment ? (
+            <ScenePreviewAtmosphere
+              definition={closeup.previewTreatment}
+              assetEnabled={rainPresenceAssetEnabled}
+            />
+          ) : null}
           {closeup.atmosphere === 'category-register' && !showRoomStage ? (
             <div className="site-closeup-sweep" />
           ) : null}
@@ -188,7 +197,7 @@ export function SiteCloseupStage({
             <CareWardRainPresence
               definition={closeup.rainPresence}
               state={rainPresenceState}
-              assetEnabled={rainPresenceAssetEnabled}
+              assetEnabled={rainPresenceAssetEnabled && !closeup.previewTreatment}
             />
           ) : null}
           {closeup.atmosphere === 'checksum-echo' && !custodyDefinition ? (
@@ -226,7 +235,7 @@ export function SiteCloseupStage({
               tone="resolved"
             />
           ) : null}
-          {closeup.zones ? (
+          {closeup.zones && !interactiveZones ? (
             <div className="site-closeup-zones">
               {closeup.zones.map((zone) => {
                 const action = actionById.get(zone.actionId)
@@ -256,6 +265,42 @@ export function SiteCloseupStage({
         </div>
       </div>
     </figure>
+  )
+}
+
+// The generalized ambient state-set, ported from the approved prototype in
+// ABSOLUTE authored values (see the [data-preview-treatment] rules in styles.css
+// — rest 0.28/1.1px, listen 0.16/2.4px/−12°, pressure 0.62/0px/+18°). The rain
+// matte cannot tile, so a single sliding layer would snap visibly at every loop
+// point; TWO layers drift on the same cycle a half-period apart, each faded to
+// zero exactly when its background-position resets, so the reset is never seen.
+// The layers are pointer-inert and carry no meaning the DOM does not already
+// hold — the whole stack is skipped when the auxiliary asset is not enabled.
+function ScenePreviewAtmosphere({
+  definition,
+  assetEnabled,
+}: {
+  definition: NonNullable<NonNullable<SiteDefinition['closeup']>['previewTreatment']>
+  assetEnabled: boolean
+}) {
+  const layerStyle: CSSProperties = {
+    backgroundImage: `url("${definition.matteSrc}")`,
+  }
+  return (
+    <>
+      {assetEnabled ? (
+        <div className="scene-preview-rain">
+          <span className="scene-preview-rain-layer" style={layerStyle} />
+          <span
+            className="scene-preview-rain-layer scene-preview-rain-layer--b"
+            style={layerStyle}
+          />
+        </div>
+      ) : null}
+      <div className="scene-preview-wash scene-preview-wash--warm" />
+      <div className="scene-preview-wash scene-preview-wash--cold" />
+      <div className="scene-preview-vignette" />
+    </>
   )
 }
 

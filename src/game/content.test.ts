@@ -753,6 +753,48 @@ describe('Case 81 authors Ellis (figure + registry photograph)', () => {
 // Non-vacuity guards for the optional bounded rooms: generic per-case checks return
 // early when a site does not author one, so each concrete Case 77 room below proves
 // that its content exists and is reached by the recursive no-placeholder walk.
+// The scene-first grammar is a per-site content opt-in with a deliberately small
+// blast radius: exactly one location across every registered case hosts it today.
+// This test is the guard on that radius — if a second site opts in, the pilot's
+// verification (and its screenshots) no longer cover the shipped surface.
+describe('scene-first opt-in stays scoped to the pilot', () => {
+  const sceneFirstSites = registeredCases.flatMap(([caseId, content]) =>
+    content.sites
+      .filter((site) => site.closeup?.sceneFirst)
+      .map((site) => `${caseId}/${site.id}`),
+  )
+
+  it('is authored on exactly one location, in Case 77', () => {
+    expect(sceneFirstSites).toEqual(['case-77/care-ward'])
+  })
+
+  it('only opts in a plain method site that authors an anchor per method', () => {
+    const site = getCaseContent('case-77').sites.find((item) => item.id === 'care-ward')!
+    expect(site.room).toBeUndefined()
+    expect(site.acousticShadow).toBeUndefined()
+    expect(site.custodyRail).toBeUndefined()
+    const anchored = (site.closeup?.zones ?? []).map((zone) => zone.actionId)
+    expect([...anchored].sort()).toEqual([...site.actionIds].sort())
+  })
+
+  it('binds every anchored method to exactly one ambient treatment token', () => {
+    const site = getCaseContent('case-77').sites.find((item) => item.id === 'care-ward')!
+    const treatments = site.closeup?.previewTreatment?.actionTreatments ?? {}
+    expect(Object.keys(treatments).sort()).toEqual([...site.actionIds].sort())
+    // Two methods must not preview the same room, or the preview says nothing.
+    expect(new Set(Object.values(treatments)).size).toBe(site.actionIds.length)
+  })
+
+  it('leaves every other site — and all of Case 81 — on the ordinary path', () => {
+    registeredCases.forEach(([, content]) => {
+      content.sites.forEach((site) => {
+        if (site.closeup?.sceneFirst) return
+        expect(site.closeup?.previewTreatment).toBeUndefined()
+      })
+    })
+  })
+})
+
 describe('Case 77 authors the Registry Intake custody rail', () => {
   const content = getCaseContent('case-77')
   const registry = content.sites.find((site) => site.id === 'registry')

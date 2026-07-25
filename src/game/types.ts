@@ -216,6 +216,15 @@ export interface EvidenceDefinition {
   contradiction: string
 }
 
+// One hand-authored line of a committed action's staged reveal. `speaker` absent
+// means the moment's own voice (the subject, the room); a persona id attributes
+// the line to that voice. Static content only — field-action definitions are
+// never part of persisted GameState, so this field needs no save migration.
+export interface FieldActionBeat {
+  speaker?: PersonaId
+  text: string
+}
+
 export interface FieldActionDefinition {
   id: FieldActionId
   siteId: SiteId
@@ -236,6 +245,10 @@ export interface FieldActionDefinition {
   // The persona(s) who speak in the moment this action is committed, in their
   // established voice. Read view-side; never persisted.
   reactions?: readonly PersonaReaction[]
+  // Optional hand-authored pacing for the staged in-scene reveal. When absent,
+  // assembleBeats() falls back to the eventDetail clauses + reactions above, so
+  // every action still stages without authoring anything. Presentation only.
+  beat?: readonly FieldActionBeat[]
 }
 
 // ── Classification room (the Small Archive's "filing" verb) ──────────────────
@@ -574,6 +587,14 @@ export interface AcousticShadowRoomDefinition {
   acoustics: Readonly<Record<AcousticShadowPhaseId, SceneAcousticTreatment>>
 }
 
+// The ambient states a scene-first plate can settle into while a method is being
+// considered or after it is filed. A fixed presentation vocabulary (like
+// SceneStateId): the authored map binds an action id to one token, and the
+// stylesheet binds each token to one absolute atmosphere state-set.
+export const PREVIEW_TREATMENTS = ['listen', 'pressure'] as const
+
+export type PreviewTreatmentToken = (typeof PREVIEW_TREATMENTS)[number]
+
 export interface SiteDefinition {
   id: SiteId
   index: string
@@ -608,12 +629,28 @@ export interface SiteDefinition {
       x: number
       y: number
     }[]
+    // Authored opt-in: this location hosts its methods IN the scene, as real
+    // buttons at the anchors above, instead of in the inspector's method list.
+    // A content flag rather than a view-side site-id list, so no component ever
+    // names a case's location. Ignored unless the site is plain (no bounded room)
+    // and authors `zones`; the inspector list remains the canonical control
+    // whenever the settled close read is not on screen.
+    sceneFirst?: boolean
     atmosphere?:
       | 'rain-reflection'
       | 'checksum-echo'
       | 'authority-diagnostic'
       | 'argument-register'
       | 'category-register'
+    // Optional generalized ambient preview for a scene-first site. Same explicit
+    // action → token map as rainPresence (never inferred from method tags), but
+    // the token drives one whole authored atmosphere state-set — light
+    // temperature, rain density, vignette — instead of a single matte. Sites that
+    // do not author it render no `data-preview-treatment` and are untouched.
+    previewTreatment?: {
+      matteSrc: string
+      actionTreatments: Readonly<Partial<Record<FieldActionId, PreviewTreatmentToken>>>
+    }
     // Optional presentation-only rain-memory treatment for the Care Ward close
     // read. The action map is explicit so a visual state is never inferred from
     // method tags, trust effects, or other canonical game semantics. The approved

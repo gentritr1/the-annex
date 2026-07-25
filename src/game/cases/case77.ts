@@ -262,6 +262,17 @@ const fieldActions: readonly FieldActionDefinition[] = [
         line: '“You let her finish before you measured her. She was a person in that room, not a file. I’ll remember the order you chose.”',
       },
     ],
+    // Hand-authored pacing for the staged in-scene reveal: her three clauses,
+    // then the Shepherd. Same words as the record above, broken where a person
+    // would breathe.
+    beat: [
+      { text: '“It rained on the window all night,” she told you.' },
+      { text: '“There was no window.' },
+      { text: 'Write down that I know that.”' },
+      { speaker: 'shepherd', text: 'You let her finish before you measured her.' },
+      { speaker: 'shepherd', text: 'She was a person in that room, not a file.' },
+      { speaker: 'shepherd', text: 'I’ll remember the order you chose.' },
+    ],
   },
   {
     id: 'stress-test',
@@ -288,6 +299,24 @@ const fieldActions: readonly FieldActionDefinition[] = [
         persona: 'registrar',
         line: '“Repeatable pain, same site, no tissue. That is a finding the record can hold. The method is sound, whatever the ward feels.”',
       },
+    ],
+    // Hand-authored pacing: the procedure's own account, then the two voices
+    // that disagree about what it produced.
+    beat: [
+      { text: '77-A reported pain where her body has never been injured.' },
+      { text: 'When it ended she said, “Mara would have told you to stop.' },
+      { text: 'I didn’t.' },
+      { text: 'Decide what that means.”' },
+      { speaker: 'shepherd', text: 'You pressed her until the pain answered. It answered.' },
+      {
+        speaker: 'shepherd',
+        text: 'She’ll carry that you had to hurt her before you would believe her.',
+      },
+      {
+        speaker: 'registrar',
+        text: 'Repeatable pain, same site, no tissue. That is a finding the record can hold.',
+      },
+      { speaker: 'registrar', text: 'The method is sound, whatever the ward feels.' },
     ],
   },
   {
@@ -805,7 +834,18 @@ const sites: readonly SiteDefinition[] = [
         { actionId: 'listen-mara', x: 0.23, y: 0.56 },
         { actionId: 'stress-test', x: 0.78, y: 0.54 },
       ],
+      sceneFirst: true,
       atmosphere: 'rain-reflection',
+      // The whole room answers the method under consideration: care softens and
+      // warms the rain, coercion sharpens and floods it. One token per method,
+      // explicit — never inferred from method tags or trust.
+      previewTreatment: {
+        matteSrc: '/images/site-scenes/care-ward-rain-memory.jpg',
+        actionTreatments: {
+          'listen-mara': 'listen',
+          'stress-test': 'pressure',
+        },
+      },
       rainPresence: {
         matteSrc: '/images/site-scenes/care-ward-rain-memory.jpg',
         actionTreatments: {

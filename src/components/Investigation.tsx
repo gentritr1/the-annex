@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { assembleBeats } from '../game/beats'
 import { getCaseContent, personaName, resolveFieldAction } from '../game/content'
 import { canEnterTribunal } from '../game/engine'
 import {
@@ -9,8 +10,14 @@ import {
   type FieldCtaKind,
 } from '../game/fieldCta'
 import { resolveSiteOutcomes } from '../game/room'
+import { BeatStage } from '../scene/BeatStage'
 import { SceneStage } from '../scene/SceneStage'
-import { SITE_CLOSEUP_ENTRY_MS, SiteCloseupStage } from '../scene/SiteCloseupStage'
+import {
+  SITE_CLOSEUP_ENTRY_MS,
+  closeupFocusPoint,
+  closeupStageStyle,
+} from '../scene/closeupGeometry'
+import { SiteCloseupStage } from '../scene/SiteCloseupStage'
 import { resolveCommitConsent, sceneStateFor, witnessesRefusalOnCommit } from '../scene/sceneState'
 import { AnnexWorldStage } from '../world/AnnexWorldStage'
 import type {
@@ -30,6 +37,8 @@ import { ClassificationRoom } from './ClassificationRoom'
 import { CustodyRailRoom } from './CustodyRailRoom'
 import { Deposition } from './Deposition'
 import { ReactionQuotes } from './ReactionQuotes'
+import { SceneDetailDrawer } from './SceneDetailDrawer'
+import { SceneZone } from './SceneZone'
 
 interface InvestigationProps {
   state: GameState
@@ -79,6 +88,19 @@ const WITNESS_REFUSAL_LINE = 'The room dims. Ellis Marne’s “no” stays in i
 // to the filed card, so the refusal treatment has time to ramp. Reduced motion
 // skips the hold entirely (instant jump + immediate handoff).
 const WITNESS_HOLD_MS = 2500
+
+// How long a scene-first room settles into its filed state before the staged
+// reveal begins. Absolute, ported from the approved prototype. Reduced motion
+// skips the settle entirely; the beat then waits for the player, never a clock.
+const SCENE_BEAT_SETTLE_MS = 520
+
+// The scene-first staged reveal, view-local and never persisted. 'settling' is
+// the held breath after the commit has ALREADY dispatched, 'playing' stages the
+// authored lines, 'done' holds the stanza under the result strip.
+interface SceneBeatState {
+  actionId: FieldActionId
+  phase: 'settling' | 'playing' | 'done'
+}
 
 interface CloseupEntryOrigin {
   x: number
@@ -154,6 +176,12 @@ export function Investigation({
   // site). Drives carrier latches, the closure refusal, and the audit-mirror trace.
   const [custodyPresentation, setCustodyPresentation] =
     useState<CustodyRailPlateState | null>(null)
+  // The scene-first pilot's staged reveal and its summonable detail drawer. Both
+  // are view-local: nothing here is dispatched, saved, or read by the engine, and
+  // a reload mid-beat simply resumes at the already-filed record.
+  const [sceneBeat, setSceneBeat] = useState<SceneBeatState | null>(null)
+  const sceneResultRef = useRef<HTMLButtonElement>(null)
+  const [detailDrawerOpen, setDetailDrawerOpen] = useState(false)
   // One-shot return-to-concourse emphasis: the site just left, held for a beat so
   // its altered portal is unmissable, then cleared to restore ordinary navigation.
   const [returnEmphasisSiteId, setReturnEmphasisSiteId] = useState<SiteId | null>(null)
@@ -168,6 +196,26 @@ export function Investigation({
   // The live stage wrapper, so both the open-transcript reveal and the witnessed-
   // refusal beat can bring the reacting room into view behind / after the modal.
   const worldViewRef = useRef<HTMLDivElement>(null)
+  // Reveal the workspace of the site just selected. On a scene-first location the
+  // methods live IN the close read, so scrolling the inspector card to centre —
+  // which pushes the plate off the top of a narrow viewport — would hide the only
+  // controls. Those sites bring the stage into view instead and hand focus to the
+  // (still canonical, still always-mounted) site card without a second scroll.
+  function revealSiteWorkspace(siteId: SiteId, instant: boolean, sceneFirst: boolean) {
+    if (!sceneFirst) {
+      focusSiteCard(siteId, instant)
+      return
+    }
+    // Centred, not 'start': the narrow layout stacks a sticky case-file bar above
+    // the workspace, and aligning the plate's top to the scroll port slides it
+    // under that bar. Centring a short plate clears both the header and the
+    // switcher below it.
+    worldViewRef.current?.scrollIntoView({
+      behavior: instant ? 'auto' : 'smooth',
+      block: 'center',
+    })
+    document.getElementById(`site-card-${siteId}`)?.focus({ preventScroll: true })
+  }
   const siteInspectorRef = useRef<HTMLElement>(null)
   const holdTimerRef = useRef<number | null>(null)
   const transitionEpochRef = useRef(0)
@@ -270,6 +318,34 @@ export function Investigation({
     })
     return () => window.cancelAnimationFrame(frame)
   }, [sceneMotionReduced])
+
+  // The scene-first settle: the room holds its filed state for a breath before the
+  // first line arrives. The commit has already been dispatched by the time this
+  // runs — this timer only paces a reveal, and cancelling it loses no record.
+  const sceneBeatPhase = sceneBeat?.phase
+  useEffect(() => {
+    if (sceneBeatPhase !== 'settling') return
+    const timer = window.setTimeout(
+      () => {
+        setSceneBeat((current) =>
+          current && current.phase === 'settling' ? { ...current, phase: 'playing' } : current,
+        )
+      },
+      sceneMotionReduced ? 0 : SCENE_BEAT_SETTLE_MS,
+    )
+    return () => window.clearTimeout(timer)
+  }, [sceneBeatPhase, sceneMotionReduced])
+
+  // When the stanza settles, the beat's own advance control unmounts. Hand the
+  // keyboard route straight to the result strip so the chain zone → beat →
+  // record never drops focus to <body>.
+  useEffect(() => {
+    if (sceneBeatPhase !== 'done') return
+    const frame = window.requestAnimationFrame(() => {
+      sceneResultRef.current?.focus({ preventScroll: true })
+    })
+    return () => window.cancelAnimationFrame(frame)
+  }, [sceneBeatPhase])
 
   // Clear any pending hold timer if the phase unmounts mid-beat.
   useEffect(
@@ -380,6 +456,26 @@ export function Investigation({
     })
   }
 
+  // The scene-first commit. The dispatch fires FIRST and unconditionally; the
+  // staged reveal is set afterwards, over already-updated state. If the beat were
+  // ever to fail to mount, the event log, evidence, and trust are already written
+  // exactly as the inspector's method list writes them.
+  function handleSceneFirstCommit(actionId: FieldActionId) {
+    setPreviewActionId(null)
+    onCommitAction(actionId)
+    setSceneBeat({ actionId, phase: 'settling' })
+  }
+
+  // Dismiss the result strip and hand the keyboard route to the filed record, the
+  // same landing the inspector method list has always used after a commit.
+  function dismissSceneBeat() {
+    setSceneBeat(null)
+    window.requestAnimationFrame(() => {
+      siteInspectorRef.current?.scrollTo({ top: 0, behavior: 'auto' })
+      siteInspectorRef.current?.focus({ preventScroll: true })
+    })
+  }
+
   function handleAbandonDeposition() {
     onDepositionEntryChange(null)
     // The portalled dialog unmounts immediately. Return keyboard users to the
@@ -468,6 +564,13 @@ export function Investigation({
       ? selectedSite.id
       : undefined
   const sceneActive = presentationForRender.kind !== 'closeup'
+  // True while an in-scene caption or the staged reveal is speaking for the plate.
+  const sceneQuietCaption = Boolean(
+    sceneBeat ||
+      (previewActionId &&
+        selectedSite.closeup?.sceneFirst &&
+        presentationForRender.kind === 'closeup'),
+  )
   const worldViewClass = [
     'world-view',
     scene.world ? 'world-view--spatial' : '',
@@ -475,6 +578,11 @@ export function Investigation({
     shownCloseup ? 'world-view--closeup' : '',
     presentationForRender.kind === 'travel' ? 'world-view--traveling' : '',
     presentationForRender.kind === 'arriving' ? 'world-view--arriving' : '',
+    // While a zone caption or a staged reveal owns the plate, the standing plate
+    // caption stands down — as the approved prototype's rest caption does. On a
+    // short plate the two otherwise print over each other.
+    sceneBeat ? 'world-view--scene-beat' : '',
+    sceneQuietCaption ? 'world-view--scene-quiet' : '',
   ]
     .filter(Boolean)
     .join(' ')
@@ -515,6 +623,38 @@ export function Investigation({
       )
     : undefined
   const openSites = sites.filter((site) => !state.completedSites.includes(site.id))
+
+  // ── The scene-first seam ────────────────────────────────────────────────────
+  // A location opts in through content (`closeup.sceneFirst`), and only qualifies
+  // if it is a plain method site with authored plate anchors. No component names
+  // a site or an action id; a site that does not opt in renders exactly as before.
+  const sceneFirstSite = Boolean(
+    selectedSite.closeup?.sceneFirst &&
+      (selectedSite.closeup?.zones?.length ?? 0) > 0 &&
+      !selectedSite.room &&
+      !selectedSite.acousticShadow &&
+      !selectedSite.custodyRail,
+  )
+  // The close read is up (entering or settled): the inspector hands its method
+  // list to the scene, and the scene owns the detail summon, beat, and result.
+  const sceneFirstPlate = sceneFirstSite && Boolean(shownCloseup)
+  // The live buttons only mount on the SETTLED plate, so nothing is clickable over
+  // an opening aperture and the two controls never overlap during the entry.
+  const sceneFirstZonesLive =
+    sceneFirstPlate && presentationForRender.kind === 'closeup' && !selectedCompletedAction
+  const sceneFirstEmphasisId = selectedCompletedAction?.id ?? previewActionId
+  const sceneFirstFocus = shownCloseup
+    ? closeupFocusPoint(shownCloseup, sceneFirstEmphasisId)
+    : { x: 0.5, y: 0.5 }
+  // Assembled fresh each render on purpose: BeatStage's reveal clock keys off
+  // primitive line data, so a new array identity can never reset a line mid-hold.
+  const sceneBeatAction = sceneBeat
+    ? resolveFieldAction(content, sceneBeat.actionId, state.precedents)
+    : undefined
+  const sceneBeatLines = sceneBeatAction ? assembleBeats(sceneBeatAction) : []
+  const sceneStandingEntries = Object.entries(selectedCompletedAction?.trust ?? {}).filter(
+    ([, delta]) => delta !== 0,
+  )
 
   // The site inspector is always mounted, so the methods aren't gated behind a
   // separate "enter the site" step — they're gated behind the close-read ritual, or
@@ -602,6 +742,9 @@ export function Investigation({
 
   function selectSite(siteId: SiteId, moveFocus = false, sourceElement?: HTMLElement) {
     setPreviewActionId(null)
+    // The staged reveal and its drawer belong to the location being left.
+    setSceneBeat(null)
+    setDetailDrawerOpen(false)
     // The room component remains mounted while the selected threshold swaps
     // between concourse and closeup. Preserve its plate state on that same-site
     // transition; only an actual location switch remounts/reset the view-local room.
@@ -616,16 +759,28 @@ export function Investigation({
       worldPresentation.kind !== 'map' &&
       worldPresentation.kind !== 'concourse' &&
       worldPresentation.siteId === siteId
+    const target = sites.find((site) => site.id === siteId)
+    const targetIsSceneFirst = Boolean(
+      target?.closeup?.sceneFirst &&
+        (target.closeup.zones?.length ?? 0) > 0 &&
+        !target.room &&
+        !target.acousticShadow &&
+        !target.custodyRail,
+    )
     if (selectedSiteId === siteId && alreadyPresentingSite) {
       if (moveFocus) {
         window.requestAnimationFrame(() =>
-          focusSiteCard(siteId, reducedMotion || prefersReducedMotion()),
+          revealSiteWorkspace(
+            siteId,
+            reducedMotion || prefersReducedMotion(),
+            targetIsSceneFirst,
+          ),
         )
       }
       return
     }
 
-    const targetSite = sites.find((site) => site.id === siteId)
+    const targetSite = target
     if (!targetSite) return
     const origin = entryOriginFor(siteId, sourceElement)
     const epoch = transitionEpochRef.current + 1
@@ -644,7 +799,7 @@ export function Investigation({
 
     // The workspace updates immediately while the stage travels. OS-only reduced
     // motion uses the same instant scroll behavior as the in-game preference.
-    window.requestAnimationFrame(() => focusSiteCard(siteId, instant))
+    window.requestAnimationFrame(() => revealSiteWorkspace(siteId, instant, targetIsSceneFirst))
   }
 
   // How long portal emphasis holds on an actual return from a resolved room before
@@ -663,6 +818,8 @@ export function Investigation({
     if (!scene.world) return
     transitionEpochRef.current += 1
     setPreviewActionId(null)
+    setSceneBeat(null)
+    setDetailDrawerOpen(false)
     setWorldPresentation({ kind: 'concourse' })
     // When the site the player is leaving carries a resolved room outcome, speak
     // its authored line once so the concourse alteration is perceivable non-visually.
@@ -800,8 +957,107 @@ export function Investigation({
                   !state.settings.highContrast &&
                   !osForcedColors
                 }
+                interactiveZones={sceneFirstSite}
               />
             )}
+
+            {/* The scene-first interactive layer. It is a SIBLING of the
+                aria-hidden close-read figure, never a child of it, so the real
+                method buttons stay in the accessibility tree; the figure's
+                decorative zone mirror is suppressed above so nothing announces
+                twice. It reuses the plate's own projection geometry, so a ring
+                sits on the prop it names through every responsive crop. */}
+            {sceneFirstZonesLive && shownCloseup && (
+              <div
+                className="scene-zones-live"
+                data-emphasis={sceneFirstEmphasisId ? 'true' : undefined}
+                style={closeupStageStyle(shownCloseup, closeupEntryOrigin, sceneFirstFocus)}
+              >
+                <div className="scene-zones-live-cover">
+                  <div className="scene-zones-live-projection">
+                    {shownCloseup.zones?.map((zone) => {
+                      const action = selectedActions.find((item) => item.id === zone.actionId)
+                      if (!action) return null
+                      return (
+                        <SceneZone
+                          key={zone.actionId}
+                          action={action}
+                          x={zone.x}
+                          y={zone.y}
+                          treatment={
+                            shownCloseup.previewTreatment?.actionTreatments[zone.actionId]
+                          }
+                          onAttentionChange={(active) => {
+                            setPreviewActionId((current) =>
+                              active
+                                ? zone.actionId
+                                : current === zone.actionId
+                                  ? null
+                                  : current,
+                            )
+                          }}
+                          onCommit={() => handleSceneFirstCommit(zone.actionId)}
+                        />
+                      )
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {sceneFirstPlate && sceneBeat && sceneBeat.phase !== 'settling' && (
+              <BeatStage
+                key={sceneBeat.actionId}
+                lines={sceneBeatLines}
+                reducedMotion={sceneMotionReduced}
+                held={sceneBeat.phase === 'done'}
+                onComplete={() =>
+                  setSceneBeat((current) =>
+                    current && current.phase === 'playing'
+                      ? { ...current, phase: 'done' }
+                      : current,
+                  )
+                }
+              />
+            )}
+
+            {sceneFirstPlate && sceneBeat?.phase === 'done' && selectedCompletedAction && (
+              <div className="scene-result" role="status">
+                <p className="scene-result-evidence">
+                  Evidence admitted:{' '}
+                  <strong>{selectedEvidence?.title ?? selectedCompletedAction.eventTitle}</strong>
+                </p>
+                {sceneStandingEntries.length > 0 && (
+                  <p className="scene-result-standing">
+                    Standing:{' '}
+                    {sceneStandingEntries.map(([id, delta]) => (
+                      <span key={id} data-sign={delta > 0 ? 'pos' : 'neg'}>
+                        {personaName(id as PersonaId)} {delta > 0 ? `+${delta}` : delta}
+                      </span>
+                    ))}
+                  </p>
+                )}
+                <button
+                  className="scene-result-dismiss"
+                  type="button"
+                  ref={sceneResultRef}
+                  onClick={dismissSceneBeat}
+                >
+                  Close the record <span aria-hidden="true">→</span>
+                </button>
+              </div>
+            )}
+
+            {sceneFirstPlate && (
+              <button
+                className="scene-detail-summon"
+                type="button"
+                onClick={() => setDetailDrawerOpen(true)}
+              >
+                Location detail
+              </button>
+            )}
+
             {shownCloseup && scene.world && (
               <button className="world-return" type="button" onClick={returnToConcourse}>
                 <span aria-hidden="true">←</span> Return to concourse
@@ -998,9 +1254,26 @@ export function Investigation({
           ) : (
             // Keyed by site: switching location remounts the method list, so any
             // armed commit resets silently with it (one of the three disarms).
-            <div className="site-actions" key={selectedSite.id}>
-              <p className="site-action-prompt">Choose one method. This location then closes.</p>
-              {selectedActions.map((action) => {
+            <div
+              className={`site-actions ${sceneFirstPlate ? 'site-actions-scene-first' : ''}`}
+              key={selectedSite.id}
+            >
+              <p className="site-action-prompt">
+                {sceneFirstPlate
+                  ? 'Choose one method in the room. This location then closes.'
+                  : 'Choose one method. This location then closes.'}
+              </p>
+              {/* Scene-first: the two methods are the marked points on the plate,
+                  rendered exactly once. The canonical list returns here the moment
+                  the close read is not on screen, so methods are never gated
+                  behind entering a view. */}
+              {sceneFirstPlate ? (
+                <p className="scene-first-note">
+                  The two methods stand in the room above. Open the location detail for the
+                  full text of each.
+                </p>
+              ) : null}
+              {sceneFirstPlate ? null : selectedActions.map((action) => {
                 // A deposition entry opens its authored transcript interaction;
                 // its own final confirmation is the canonical commit.
                 const isDepositionEntry = Boolean(deposition?.entryActionIds.includes(action.id))
@@ -1069,6 +1342,18 @@ export function Investigation({
           </div>
         )}
       </footer>
+
+      {detailDrawerOpen && (
+        <SceneDetailDrawer
+          site={selectedSite}
+          actions={selectedActions}
+          completedAction={selectedCompletedAction}
+          evidenceTitle={selectedEvidence?.title}
+          eventTitle={selectedEvent?.title}
+          settings={state.settings}
+          onClose={() => setDetailDrawerOpen(false)}
+        />
+      )}
 
       {depositionEntry && (
         <Deposition
