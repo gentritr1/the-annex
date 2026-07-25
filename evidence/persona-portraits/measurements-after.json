@@ -1,0 +1,1924 @@
+{
+  "mode": "after",
+  "url": "http://127.0.0.1:3000/",
+  "capturedAt": "2026-07-25T15:09:26.916Z",
+  "node": "v24.18.0",
+  "checks": [
+    {
+      "step": "[1280x800] the speaker line carries the portrait inside the aria-hidden stanza",
+      "pass": true,
+      "detail": {
+        "speakerLines": 1,
+        "speakerText": "The Shepherd —",
+        "speakerDataSpeaker": "shepherd",
+        "portraitInSpeaker": true,
+        "stanzaAriaHidden": "true",
+        "liveRegionText": "“It rained on the window all night,” she told you. “There was no window. Write down that I know that.” The Shepherd — "
+      }
+    },
+    {
+      "step": "AT name counts · beat-stanza-1280x800 — recorded for before/after comparison",
+      "pass": true,
+      "detail": {
+        "selector": ".scene-beat",
+        "counts": {
+          "The Registrar": 0,
+          "The Shepherd": 1,
+          "The Defector": 0,
+          "The Small Archivist": 0
+        }
+      }
+    },
+    {
+      "step": "[1280x800] beat live region captured for byte comparison",
+      "pass": true,
+      "detail": {
+        "bytes": 252,
+        "text": "“It rained on the window all night,” she told you. “There was no window. Write down that I know that.” The Shepherd — You let her finish before you measured her. She was a person in that room, not a file. I’ll remember the order you chose. "
+      }
+    },
+    {
+      "step": "[1280x800] every standing delta carries a 24px decorative chip that decoded",
+      "pass": true,
+      "detail": {
+        "entries": 2,
+        "text": "Standing: The Shepherd +2The Small Archivist +1",
+        "chips": [
+          {
+            "persona": "shepherd",
+            "width": 24,
+            "height": 27.53,
+            "ariaHidden": "true",
+            "alt": "",
+            "naturalWidth": 360,
+            "filter": "none",
+            "blend": "normal"
+          },
+          {
+            "persona": "archivist",
+            "width": 24,
+            "height": 27.53,
+            "ariaHidden": "true",
+            "alt": "",
+            "naturalWidth": 360,
+            "filter": "none",
+            "blend": "normal"
+          }
+        ]
+      }
+    },
+    {
+      "step": "AT name counts · result-strip-1280x800 — every named persona appears exactly once",
+      "pass": true,
+      "detail": {
+        "selector": ".scene-result",
+        "counts": {
+          "The Registrar": 0,
+          "The Shepherd": 1,
+          "The Defector": 0,
+          "The Small Archivist": 1
+        }
+      }
+    },
+    {
+      "step": "[1280x800] the filed card's attributed lines carry 34px chips",
+      "pass": true,
+      "detail": {
+        "lines": 1,
+        "chips": [
+          {
+            "persona": "shepherd",
+            "width": 34,
+            "height": 39.14,
+            "ariaHidden": "true",
+            "alt": "",
+            "naturalWidth": 360,
+            "filter": "none"
+          }
+        ],
+        "names": [
+          "The Shepherd"
+        ]
+      }
+    },
+    {
+      "step": "AT name counts · filed-card-reaction-block-1280x800 — every named persona appears exactly once",
+      "pass": true,
+      "detail": {
+        "selector": ".reaction-block",
+        "counts": {
+          "The Registrar": 0,
+          "The Shepherd": 1,
+          "The Defector": 0,
+          "The Small Archivist": 0
+        }
+      }
+    },
+    {
+      "step": "AT name counts · filed-card-1280x800 — recorded for before/after comparison",
+      "pass": true,
+      "detail": {
+        "selector": ".resolved-action",
+        "counts": {
+          "The Registrar": 0,
+          "The Shepherd": 2,
+          "The Defector": 0,
+          "The Small Archivist": 1
+        }
+      }
+    },
+    {
+      "step": "[375x812] the speaker line carries the portrait inside the aria-hidden stanza",
+      "pass": true,
+      "detail": {
+        "speakerLines": 1,
+        "speakerText": "The Shepherd —",
+        "speakerDataSpeaker": "shepherd",
+        "portraitInSpeaker": true,
+        "stanzaAriaHidden": "true",
+        "liveRegionText": "“It rained on the window all night,” she told you. “There was no window. Write down that I know that.” The Shepherd — "
+      }
+    },
+    {
+      "step": "AT name counts · beat-stanza-375x812 — recorded for before/after comparison",
+      "pass": true,
+      "detail": {
+        "selector": ".scene-beat",
+        "counts": {
+          "The Registrar": 0,
+          "The Shepherd": 1,
+          "The Defector": 0,
+          "The Small Archivist": 0
+        }
+      }
+    },
+    {
+      "step": "[375x812] beat live region captured for byte comparison",
+      "pass": true,
+      "detail": {
+        "bytes": 252,
+        "text": "“It rained on the window all night,” she told you. “There was no window. Write down that I know that.” The Shepherd — You let her finish before you measured her. She was a person in that room, not a file. I’ll remember the order you chose. "
+      }
+    },
+    {
+      "step": "[375x812] every standing delta carries a 24px decorative chip that decoded",
+      "pass": true,
+      "detail": {
+        "entries": 2,
+        "text": "Standing: The Shepherd +2The Small Archivist +1",
+        "chips": [
+          {
+            "persona": "shepherd",
+            "width": 24,
+            "height": 27.53,
+            "ariaHidden": "true",
+            "alt": "",
+            "naturalWidth": 360,
+            "filter": "none",
+            "blend": "normal"
+          },
+          {
+            "persona": "archivist",
+            "width": 24,
+            "height": 27.53,
+            "ariaHidden": "true",
+            "alt": "",
+            "naturalWidth": 360,
+            "filter": "none",
+            "blend": "normal"
+          }
+        ]
+      }
+    },
+    {
+      "step": "AT name counts · result-strip-375x812 — every named persona appears exactly once",
+      "pass": true,
+      "detail": {
+        "selector": ".scene-result",
+        "counts": {
+          "The Registrar": 0,
+          "The Shepherd": 1,
+          "The Defector": 0,
+          "The Small Archivist": 1
+        }
+      }
+    },
+    {
+      "step": "[375x812] the filed card's attributed lines carry 34px chips",
+      "pass": true,
+      "detail": {
+        "lines": 1,
+        "chips": [
+          {
+            "persona": "shepherd",
+            "width": 34,
+            "height": 39.14,
+            "ariaHidden": "true",
+            "alt": "",
+            "naturalWidth": 360,
+            "filter": "none"
+          }
+        ],
+        "names": [
+          "The Shepherd"
+        ]
+      }
+    },
+    {
+      "step": "AT name counts · filed-card-reaction-block-375x812 — every named persona appears exactly once",
+      "pass": true,
+      "detail": {
+        "selector": ".reaction-block",
+        "counts": {
+          "The Registrar": 0,
+          "The Shepherd": 1,
+          "The Defector": 0,
+          "The Small Archivist": 0
+        }
+      }
+    },
+    {
+      "step": "AT name counts · filed-card-375x812 — recorded for before/after comparison",
+      "pass": true,
+      "detail": {
+        "selector": ".resolved-action",
+        "counts": {
+          "The Registrar": 0,
+          "The Shepherd": 2,
+          "The Defector": 0,
+          "The Small Archivist": 1
+        }
+      }
+    },
+    {
+      "step": "[1280x800] rail row height is unchanged by the 20px→40px cell",
+      "pass": true,
+      "detail": {
+        "railVisible": true,
+        "afterHeights": [
+          58,
+          58,
+          58,
+          58
+        ],
+        "reconstructedHeights": [
+          58,
+          58,
+          58,
+          58
+        ],
+        "minHeight": "58px",
+        "columns": "8px 40px 206.047px 58.9531px"
+      }
+    },
+    {
+      "step": "[1280x800] four roles still legible in the row",
+      "pass": true,
+      "detail": {
+        "roles": [
+          "Custodian of legal continuity",
+          "Care-ward advocate",
+          "Compromised systems guide",
+          "Collector of missing categories"
+        ],
+        "clipped": [
+          false,
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "step": "[1280x800] rail portraits are matted, unfiltered at rest, decorative, and decoded",
+      "pass": true,
+      "detail": [
+        {
+          "persona": "registrar",
+          "width": 40,
+          "height": 46.11,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360,
+          "imgFilter": "none",
+          "imgOpacity": "1",
+          "markOpacity": "0",
+          "markAnimation": "none",
+          "mixBlendMode": "normal",
+          "background": "oklch(0.12 0.006 240)",
+          "border": "1px solid"
+        },
+        {
+          "persona": "shepherd",
+          "width": 40,
+          "height": 46.11,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360,
+          "imgFilter": "none",
+          "imgOpacity": "1",
+          "markOpacity": "0",
+          "markAnimation": "none",
+          "mixBlendMode": "normal",
+          "background": "oklch(0.12 0.006 240)",
+          "border": "1px solid"
+        },
+        {
+          "persona": "defector",
+          "width": 40,
+          "height": 46.11,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360,
+          "imgFilter": "none",
+          "imgOpacity": "1",
+          "markOpacity": "0",
+          "markAnimation": "none",
+          "mixBlendMode": "normal",
+          "background": "oklch(0.12 0.006 240)",
+          "border": "1px solid"
+        },
+        {
+          "persona": "archivist",
+          "width": 40,
+          "height": 46.11,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360,
+          "imgFilter": "none",
+          "imgOpacity": "1",
+          "markOpacity": "0",
+          "markAnimation": "none",
+          "mixBlendMode": "normal",
+          "background": "oklch(0.12 0.006 240)",
+          "border": "1px solid"
+        }
+      ]
+    },
+    {
+      "step": "AT name counts · rail-social-memory-1280x800 — every named persona appears exactly once",
+      "pass": true,
+      "detail": {
+        "selector": ".persona-list",
+        "counts": {
+          "The Registrar": 1,
+          "The Shepherd": 1,
+          "The Defector": 1,
+          "The Small Archivist": 1
+        }
+      }
+    },
+    {
+      "step": "[1280x800] the un-plated row shows the sigil and keeps the breathe; plated rows do not",
+      "pass": true,
+      "detail": [
+        {
+          "plated": true,
+          "hasImg": true,
+          "markOpacity": "0",
+          "markAnimation": "none",
+          "rowHeight": 58
+        },
+        {
+          "plated": false,
+          "hasImg": false,
+          "markOpacity": "0.765493",
+          "markAnimation": "ambience-breathe",
+          "rowHeight": 58
+        },
+        {
+          "plated": true,
+          "hasImg": true,
+          "markOpacity": "0",
+          "markAnimation": "none",
+          "rowHeight": 58
+        },
+        {
+          "plated": true,
+          "hasImg": true,
+          "markOpacity": "0",
+          "markAnimation": "none",
+          "rowHeight": 58
+        }
+      ]
+    },
+    {
+      "step": "[375x812] rail row height is unchanged by the 20px→40px cell",
+      "pass": true,
+      "detail": {
+        "railVisible": true,
+        "afterHeights": [
+          58,
+          58,
+          58,
+          58
+        ],
+        "reconstructedHeights": [
+          58,
+          58,
+          58,
+          58
+        ],
+        "minHeight": "58px",
+        "columns": "8px 40px 202.047px 58.9531px"
+      }
+    },
+    {
+      "step": "[375x812] four roles still legible in the row",
+      "pass": true,
+      "detail": {
+        "roles": [
+          "Custodian of legal continuity",
+          "Care-ward advocate",
+          "Compromised systems guide",
+          "Collector of missing categories"
+        ],
+        "clipped": [
+          false,
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "step": "[375x812] rail portraits are matted, unfiltered at rest, decorative, and decoded",
+      "pass": true,
+      "detail": [
+        {
+          "persona": "registrar",
+          "width": 40,
+          "height": 46.11,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360,
+          "imgFilter": "none",
+          "imgOpacity": "1",
+          "markOpacity": "0",
+          "markAnimation": "none",
+          "mixBlendMode": "normal",
+          "background": "oklch(0.12 0.006 240)",
+          "border": "1px solid"
+        },
+        {
+          "persona": "shepherd",
+          "width": 40,
+          "height": 46.11,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360,
+          "imgFilter": "none",
+          "imgOpacity": "1",
+          "markOpacity": "0",
+          "markAnimation": "none",
+          "mixBlendMode": "normal",
+          "background": "oklch(0.12 0.006 240)",
+          "border": "1px solid"
+        },
+        {
+          "persona": "defector",
+          "width": 40,
+          "height": 46.11,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360,
+          "imgFilter": "none",
+          "imgOpacity": "1",
+          "markOpacity": "0",
+          "markAnimation": "none",
+          "mixBlendMode": "normal",
+          "background": "oklch(0.12 0.006 240)",
+          "border": "1px solid"
+        },
+        {
+          "persona": "archivist",
+          "width": 40,
+          "height": 46.11,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360,
+          "imgFilter": "none",
+          "imgOpacity": "1",
+          "markOpacity": "0",
+          "markAnimation": "none",
+          "mixBlendMode": "normal",
+          "background": "oklch(0.12 0.006 240)",
+          "border": "1px solid"
+        }
+      ]
+    },
+    {
+      "step": "AT name counts · rail-social-memory-375x812 — every named persona appears exactly once",
+      "pass": true,
+      "detail": {
+        "selector": ".persona-list",
+        "counts": {
+          "The Registrar": 1,
+          "The Shepherd": 1,
+          "The Defector": 1,
+          "The Small Archivist": 1
+        }
+      }
+    },
+    {
+      "step": "[375x812] the un-plated row shows the sigil and keeps the breathe; plated rows do not",
+      "pass": true,
+      "detail": [
+        {
+          "plated": true,
+          "hasImg": true,
+          "markOpacity": "0",
+          "markAnimation": "none",
+          "rowHeight": 58
+        },
+        {
+          "plated": false,
+          "hasImg": false,
+          "markOpacity": "0.768654",
+          "markAnimation": "ambience-breathe",
+          "rowHeight": 58
+        },
+        {
+          "plated": true,
+          "hasImg": true,
+          "markOpacity": "0",
+          "markAnimation": "none",
+          "rowHeight": 58
+        },
+        {
+          "plated": true,
+          "hasImg": true,
+          "markOpacity": "0",
+          "markAnimation": "none",
+          "rowHeight": 58
+        }
+      ]
+    },
+    {
+      "step": "[1280x800] the non-pilot Registry intake custody rail still reaches its methods",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "step": "[1280x800] every debrief reflection takes the card portrait",
+      "pass": true,
+      "detail": {
+        "blockquotes": 4,
+        "cards": [
+          {
+            "persona": "registrar",
+            "width": 40,
+            "ariaHidden": "true",
+            "alt": "",
+            "naturalWidth": 360
+          },
+          {
+            "persona": "shepherd",
+            "width": 40,
+            "ariaHidden": "true",
+            "alt": "",
+            "naturalWidth": 360
+          },
+          {
+            "persona": "defector",
+            "width": 40,
+            "ariaHidden": "true",
+            "alt": "",
+            "naturalWidth": 360
+          },
+          {
+            "persona": "archivist",
+            "width": 40,
+            "ariaHidden": "true",
+            "alt": "",
+            "naturalWidth": 360
+          }
+        ],
+        "names": [
+          "The Registrar",
+          "The Shepherd",
+          "The Defector",
+          "The Small Archivist"
+        ]
+      }
+    },
+    {
+      "step": "AT name counts · debrief-1280x800 — every named persona appears exactly once",
+      "pass": true,
+      "detail": {
+        "selector": ".reflection-list",
+        "counts": {
+          "The Registrar": 1,
+          "The Shepherd": 1,
+          "The Defector": 1,
+          "The Small Archivist": 1
+        }
+      }
+    },
+    {
+      "step": "[375x812] the non-pilot Registry intake custody rail still reaches its methods",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "step": "[375x812] every debrief reflection takes the card portrait",
+      "pass": true,
+      "detail": {
+        "blockquotes": 4,
+        "cards": [
+          {
+            "persona": "registrar",
+            "width": 40,
+            "ariaHidden": "true",
+            "alt": "",
+            "naturalWidth": 360
+          },
+          {
+            "persona": "shepherd",
+            "width": 40,
+            "ariaHidden": "true",
+            "alt": "",
+            "naturalWidth": 360
+          },
+          {
+            "persona": "defector",
+            "width": 40,
+            "ariaHidden": "true",
+            "alt": "",
+            "naturalWidth": 360
+          },
+          {
+            "persona": "archivist",
+            "width": 40,
+            "ariaHidden": "true",
+            "alt": "",
+            "naturalWidth": 360
+          }
+        ],
+        "names": [
+          "The Registrar",
+          "The Shepherd",
+          "The Defector",
+          "The Small Archivist"
+        ]
+      }
+    },
+    {
+      "step": "AT name counts · debrief-375x812 — every named persona appears exactly once",
+      "pass": true,
+      "detail": {
+        "selector": ".reflection-list",
+        "counts": {
+          "The Registrar": 1,
+          "The Shepherd": 1,
+          "The Defector": 1,
+          "The Small Archivist": 1
+        }
+      }
+    },
+    {
+      "step": "[1280x800 forced-colors] the plate stands down and the currentColor sigil takes over",
+      "pass": true,
+      "detail": [
+        {
+          "persona": "registrar",
+          "imgOpacity": "0",
+          "imgInTree": true,
+          "markOpacity": "1",
+          "markSvg": true,
+          "rowHeight": 58
+        },
+        {
+          "persona": "shepherd",
+          "imgOpacity": "0",
+          "imgInTree": true,
+          "markOpacity": "1",
+          "markSvg": true,
+          "rowHeight": 58
+        },
+        {
+          "persona": "defector",
+          "imgOpacity": "0",
+          "imgInTree": true,
+          "markOpacity": "1",
+          "markSvg": true,
+          "rowHeight": 58
+        },
+        {
+          "persona": "archivist",
+          "imgOpacity": "0",
+          "imgInTree": true,
+          "markOpacity": "1",
+          "markSvg": true,
+          "rowHeight": 58
+        }
+      ]
+    },
+    {
+      "step": "[1280x800 reduced-motion] the stanza is advance-paced and no portrait animates",
+      "pass": true,
+      "detail": {
+        "lines": 7,
+        "result": false,
+        "speakerPortraits": 1,
+        "portraitAnimations": [
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none"
+        ]
+      }
+    },
+    {
+      "step": "[1280x800 reduced-motion] no breathe survives on the rail",
+      "pass": true,
+      "detail": [
+        {
+          "cls": "persona-portrait persona-portrait--card persona-portrait--plated",
+          "animationName": "none",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "cls": "persona-portrait-mark",
+          "animationName": "none",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "cls": "persona-portrait persona-portrait--card persona-portrait--plated",
+          "animationName": "none",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "cls": "persona-portrait-mark",
+          "animationName": "none",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "cls": "persona-portrait persona-portrait--card persona-portrait--plated",
+          "animationName": "none",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "cls": "persona-portrait-mark",
+          "animationName": "none",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "cls": "persona-portrait persona-portrait--card persona-portrait--plated",
+          "animationName": "none",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "cls": "persona-portrait-mark",
+          "animationName": "none",
+          "animationDuration": "1e-05s"
+        }
+      ]
+    },
+    {
+      "step": "[375x812 reduced-motion] the stanza is advance-paced and no portrait animates",
+      "pass": true,
+      "detail": {
+        "lines": 7,
+        "result": false,
+        "speakerPortraits": 1,
+        "portraitAnimations": [
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none"
+        ]
+      }
+    },
+    {
+      "step": "[375x812 reduced-motion] no breathe survives on the rail",
+      "pass": true,
+      "detail": [
+        {
+          "cls": "persona-portrait persona-portrait--card persona-portrait--plated",
+          "animationName": "none",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "cls": "persona-portrait-mark",
+          "animationName": "none",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "cls": "persona-portrait persona-portrait--card persona-portrait--plated",
+          "animationName": "none",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "cls": "persona-portrait-mark",
+          "animationName": "none",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "cls": "persona-portrait persona-portrait--card persona-portrait--plated",
+          "animationName": "none",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "cls": "persona-portrait-mark",
+          "animationName": "none",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "cls": "persona-portrait persona-portrait--card persona-portrait--plated",
+          "animationName": "none",
+          "animationDuration": "1e-05s"
+        },
+        {
+          "cls": "persona-portrait-mark",
+          "animationName": "none",
+          "animationDuration": "1e-05s"
+        }
+      ]
+    }
+  ],
+  "shots": [
+    "01-beat-speaker-after-1280x800.png",
+    "02-result-strip-after-1280x800.png",
+    "03-filed-card-reaction-after-1280x800.png",
+    "01-beat-speaker-after-375x812.png",
+    "02-result-strip-after-375x812.png",
+    "03-filed-card-reaction-after-375x812.png",
+    "04-rail-entity-cards-after-1280x800.png",
+    "05-value-eyeball-four-portraits-after-1280x800.png",
+    "06-sigil-fallback-after-1280x800.png",
+    "04-rail-entity-cards-after-375x812.png",
+    "06-sigil-fallback-after-375x812.png",
+    "07-debrief-reflections-after-1280x800.png",
+    "07-debrief-reflections-after-375x812.png",
+    "08-forced-colors-rail-after-1280x800.png",
+    "09-reduced-motion-beat-after-1280x800.png",
+    "10-reduced-motion-rail-after-1280x800.png",
+    "09-reduced-motion-beat-after-375x812.png",
+    "10-reduced-motion-rail-after-375x812.png"
+  ],
+  "measurements": {
+    "beat:1280x800": {
+      "speakerLines": 1,
+      "speakerText": "The Shepherd —",
+      "speakerDataSpeaker": "shepherd",
+      "portraitInSpeaker": true,
+      "stanzaAriaHidden": "true",
+      "liveRegionText": "“It rained on the window all night,” she told you. “There was no window. Write down that I know that.” The Shepherd — "
+    },
+    "atText:beat-stanza-1280x800": {
+      "text": "“It rained on the window all night,” she told you. “There was no window. Write down that I know that.” The Shepherd — Continue",
+      "counts": {
+        "The Registrar": 0,
+        "The Shepherd": 1,
+        "The Defector": 0,
+        "The Small Archivist": 0
+      }
+    },
+    "liveRegion:1280x800": "“It rained on the window all night,” she told you. “There was no window. Write down that I know that.” The Shepherd — You let her finish before you measured her. She was a person in that room, not a file. I’ll remember the order you chose. ",
+    "resultStrip:1280x800": {
+      "entries": 2,
+      "text": "Standing: The Shepherd +2The Small Archivist +1",
+      "chips": [
+        {
+          "persona": "shepherd",
+          "width": 24,
+          "height": 27.53,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360,
+          "filter": "none",
+          "blend": "normal"
+        },
+        {
+          "persona": "archivist",
+          "width": 24,
+          "height": 27.53,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360,
+          "filter": "none",
+          "blend": "normal"
+        }
+      ]
+    },
+    "atText:result-strip-1280x800": {
+      "text": "Evidence admitted: The rain in room twelve Standing: The Shepherd +2 The Small Archivist +1 Close the record",
+      "counts": {
+        "The Registrar": 0,
+        "The Shepherd": 1,
+        "The Defector": 0,
+        "The Small Archivist": 1
+      }
+    },
+    "filedCardReactions:1280x800": {
+      "lines": 1,
+      "chips": [
+        {
+          "persona": "shepherd",
+          "width": 34,
+          "height": 39.14,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360,
+          "filter": "none"
+        }
+      ],
+      "names": [
+        "The Shepherd"
+      ]
+    },
+    "atText:filed-card-reaction-block-1280x800": {
+      "text": "The Shepherd “You let her finish before you measured her. She was a person in that room, not a file. I’ll remember the order you chose.”",
+      "counts": {
+        "The Registrar": 0,
+        "The Shepherd": 1,
+        "The Defector": 0,
+        "The Small Archivist": 0
+      }
+    },
+    "atText:filed-card-1280x800": {
+      "text": "77-A was heard before she was measured “It rained on the window all night,” she told you. “There was no window. Write down that I know that.” Her impossible room matched a metaphor Mara once used when she was afraid. Filed result Evidence admitted The rain in room twelve Civic trace No new trace Standing The Shepherd +2 · The Small Archivist +1 The Shepherd “You let her finish before you measured her. She was a person in that room, not a file. I’ll remember the order you chose.”",
+      "counts": {
+        "The Registrar": 0,
+        "The Shepherd": 2,
+        "The Defector": 0,
+        "The Small Archivist": 1
+      }
+    },
+    "axTree:filed-card-1280x800": [
+      {
+        "role": "StaticText",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Shepherd +2 · The Small Archivist +1"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Shepherd +2 · The Small Archivist "
+      },
+      {
+        "role": "StaticText",
+        "name": "The Registrar"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Defector"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Small Archivist"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Registrar"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Defector"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Small Archivist"
+      }
+    ],
+    "beat:375x812": {
+      "speakerLines": 1,
+      "speakerText": "The Shepherd —",
+      "speakerDataSpeaker": "shepherd",
+      "portraitInSpeaker": true,
+      "stanzaAriaHidden": "true",
+      "liveRegionText": "“It rained on the window all night,” she told you. “There was no window. Write down that I know that.” The Shepherd — "
+    },
+    "atText:beat-stanza-375x812": {
+      "text": "“It rained on the window all night,” she told you. “There was no window. Write down that I know that.” The Shepherd — Continue",
+      "counts": {
+        "The Registrar": 0,
+        "The Shepherd": 1,
+        "The Defector": 0,
+        "The Small Archivist": 0
+      }
+    },
+    "liveRegion:375x812": "“It rained on the window all night,” she told you. “There was no window. Write down that I know that.” The Shepherd — You let her finish before you measured her. She was a person in that room, not a file. I’ll remember the order you chose. ",
+    "resultStrip:375x812": {
+      "entries": 2,
+      "text": "Standing: The Shepherd +2The Small Archivist +1",
+      "chips": [
+        {
+          "persona": "shepherd",
+          "width": 24,
+          "height": 27.53,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360,
+          "filter": "none",
+          "blend": "normal"
+        },
+        {
+          "persona": "archivist",
+          "width": 24,
+          "height": 27.53,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360,
+          "filter": "none",
+          "blend": "normal"
+        }
+      ]
+    },
+    "atText:result-strip-375x812": {
+      "text": "Evidence admitted: The rain in room twelve Standing: The Shepherd +2 The Small Archivist +1 Close the record",
+      "counts": {
+        "The Registrar": 0,
+        "The Shepherd": 1,
+        "The Defector": 0,
+        "The Small Archivist": 1
+      }
+    },
+    "filedCardReactions:375x812": {
+      "lines": 1,
+      "chips": [
+        {
+          "persona": "shepherd",
+          "width": 34,
+          "height": 39.14,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360,
+          "filter": "none"
+        }
+      ],
+      "names": [
+        "The Shepherd"
+      ]
+    },
+    "atText:filed-card-reaction-block-375x812": {
+      "text": "The Shepherd “You let her finish before you measured her. She was a person in that room, not a file. I’ll remember the order you chose.”",
+      "counts": {
+        "The Registrar": 0,
+        "The Shepherd": 1,
+        "The Defector": 0,
+        "The Small Archivist": 0
+      }
+    },
+    "atText:filed-card-375x812": {
+      "text": "77-A was heard before she was measured “It rained on the window all night,” she told you. “There was no window. Write down that I know that.” Her impossible room matched a metaphor Mara once used when she was afraid. Filed result Evidence admitted The rain in room twelve Civic trace No new trace Standing The Shepherd +2 · The Small Archivist +1 The Shepherd “You let her finish before you measured her. She was a person in that room, not a file. I’ll remember the order you chose.”",
+      "counts": {
+        "The Registrar": 0,
+        "The Shepherd": 2,
+        "The Defector": 0,
+        "The Small Archivist": 1
+      }
+    },
+    "axTree:filed-card-375x812": [
+      {
+        "role": "StaticText",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Shepherd +2 · The Small Archivist +1"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Shepherd +2 · The Small Archivist +1"
+      }
+    ],
+    "railRows:1280x800": {
+      "after": [
+        {
+          "height": 58,
+          "minHeight": "58px",
+          "columns": "8px 40px 206.047px 58.9531px",
+          "roleText": "Custodian of legal continuity",
+          "roleClipped": false
+        },
+        {
+          "height": 58,
+          "minHeight": "58px",
+          "columns": "8px 40px 238.797px 26.2031px",
+          "roleText": "Care-ward advocate",
+          "roleClipped": false
+        },
+        {
+          "height": 58,
+          "minHeight": "58px",
+          "columns": "8px 40px 206.047px 58.9531px",
+          "roleText": "Compromised systems guide",
+          "roleClipped": false
+        },
+        {
+          "height": 58,
+          "minHeight": "58px",
+          "columns": "8px 40px 195.266px 69.7344px",
+          "roleText": "Collector of missing categories",
+          "roleClipped": false
+        }
+      ],
+      "reconstructedPreChange": [
+        {
+          "height": 58,
+          "minHeight": "58px",
+          "columns": "8px 20px 226.047px 58.9531px",
+          "roleText": "Custodian of legal continuity",
+          "roleClipped": false
+        },
+        {
+          "height": 58,
+          "minHeight": "58px",
+          "columns": "8px 20px 258.797px 26.2031px",
+          "roleText": "Care-ward advocate",
+          "roleClipped": false
+        },
+        {
+          "height": 58,
+          "minHeight": "58px",
+          "columns": "8px 20px 226.047px 58.9531px",
+          "roleText": "Compromised systems guide",
+          "roleClipped": false
+        },
+        {
+          "height": 58,
+          "minHeight": "58px",
+          "columns": "8px 20px 215.266px 69.7344px",
+          "roleText": "Collector of missing categories",
+          "roleClipped": false
+        }
+      ]
+    },
+    "railPortraits:1280x800": [
+      {
+        "persona": "registrar",
+        "width": 40,
+        "height": 46.11,
+        "ariaHidden": "true",
+        "alt": "",
+        "naturalWidth": 360,
+        "imgFilter": "none",
+        "imgOpacity": "1",
+        "markOpacity": "0",
+        "markAnimation": "none",
+        "mixBlendMode": "normal",
+        "background": "oklch(0.12 0.006 240)",
+        "border": "1px solid"
+      },
+      {
+        "persona": "shepherd",
+        "width": 40,
+        "height": 46.11,
+        "ariaHidden": "true",
+        "alt": "",
+        "naturalWidth": 360,
+        "imgFilter": "none",
+        "imgOpacity": "1",
+        "markOpacity": "0",
+        "markAnimation": "none",
+        "mixBlendMode": "normal",
+        "background": "oklch(0.12 0.006 240)",
+        "border": "1px solid"
+      },
+      {
+        "persona": "defector",
+        "width": 40,
+        "height": 46.11,
+        "ariaHidden": "true",
+        "alt": "",
+        "naturalWidth": 360,
+        "imgFilter": "none",
+        "imgOpacity": "1",
+        "markOpacity": "0",
+        "markAnimation": "none",
+        "mixBlendMode": "normal",
+        "background": "oklch(0.12 0.006 240)",
+        "border": "1px solid"
+      },
+      {
+        "persona": "archivist",
+        "width": 40,
+        "height": 46.11,
+        "ariaHidden": "true",
+        "alt": "",
+        "naturalWidth": 360,
+        "imgFilter": "none",
+        "imgOpacity": "1",
+        "markOpacity": "0",
+        "markAnimation": "none",
+        "mixBlendMode": "normal",
+        "background": "oklch(0.12 0.006 240)",
+        "border": "1px solid"
+      }
+    ],
+    "atText:rail-social-memory-1280x800": {
+      "text": "The Registrar Custodian of legal continuity uncertain The Shepherd Care-ward advocate open The Defector Compromised systems guide uncertain The Small Archivist Collector of missing categories uncertain",
+      "counts": {
+        "The Registrar": 1,
+        "The Shepherd": 1,
+        "The Defector": 1,
+        "The Small Archivist": 1
+      }
+    },
+    "axTree:rail-1280x800": [
+      {
+        "role": "StaticText",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Shepherd +2 · The Small Archivist +1"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Shepherd +2 · The Small Archivist "
+      },
+      {
+        "role": "StaticText",
+        "name": "The Registrar"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Defector"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Small Archivist"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Registrar"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Defector"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Small Archivist"
+      }
+    ],
+    "sigilFallback:1280x800": [
+      {
+        "plated": true,
+        "hasImg": true,
+        "markOpacity": "0",
+        "markAnimation": "none",
+        "rowHeight": 58
+      },
+      {
+        "plated": false,
+        "hasImg": false,
+        "markOpacity": "0.765493",
+        "markAnimation": "ambience-breathe",
+        "rowHeight": 58
+      },
+      {
+        "plated": true,
+        "hasImg": true,
+        "markOpacity": "0",
+        "markAnimation": "none",
+        "rowHeight": 58
+      },
+      {
+        "plated": true,
+        "hasImg": true,
+        "markOpacity": "0",
+        "markAnimation": "none",
+        "rowHeight": 58
+      }
+    ],
+    "railRows:375x812": {
+      "after": [
+        {
+          "height": 58,
+          "minHeight": "58px",
+          "columns": "8px 40px 202.047px 58.9531px",
+          "roleText": "Custodian of legal continuity",
+          "roleClipped": false
+        },
+        {
+          "height": 58,
+          "minHeight": "58px",
+          "columns": "8px 40px 234.797px 26.2031px",
+          "roleText": "Care-ward advocate",
+          "roleClipped": false
+        },
+        {
+          "height": 58,
+          "minHeight": "58px",
+          "columns": "8px 40px 202.047px 58.9531px",
+          "roleText": "Compromised systems guide",
+          "roleClipped": false
+        },
+        {
+          "height": 58,
+          "minHeight": "58px",
+          "columns": "8px 40px 191.266px 69.7344px",
+          "roleText": "Collector of missing categories",
+          "roleClipped": false
+        }
+      ],
+      "reconstructedPreChange": [
+        {
+          "height": 58,
+          "minHeight": "58px",
+          "columns": "8px 20px 222.047px 58.9531px",
+          "roleText": "Custodian of legal continuity",
+          "roleClipped": false
+        },
+        {
+          "height": 58,
+          "minHeight": "58px",
+          "columns": "8px 20px 254.797px 26.2031px",
+          "roleText": "Care-ward advocate",
+          "roleClipped": false
+        },
+        {
+          "height": 58,
+          "minHeight": "58px",
+          "columns": "8px 20px 222.047px 58.9531px",
+          "roleText": "Compromised systems guide",
+          "roleClipped": false
+        },
+        {
+          "height": 58,
+          "minHeight": "58px",
+          "columns": "8px 20px 211.266px 69.7344px",
+          "roleText": "Collector of missing categories",
+          "roleClipped": false
+        }
+      ]
+    },
+    "railPortraits:375x812": [
+      {
+        "persona": "registrar",
+        "width": 40,
+        "height": 46.11,
+        "ariaHidden": "true",
+        "alt": "",
+        "naturalWidth": 360,
+        "imgFilter": "none",
+        "imgOpacity": "1",
+        "markOpacity": "0",
+        "markAnimation": "none",
+        "mixBlendMode": "normal",
+        "background": "oklch(0.12 0.006 240)",
+        "border": "1px solid"
+      },
+      {
+        "persona": "shepherd",
+        "width": 40,
+        "height": 46.11,
+        "ariaHidden": "true",
+        "alt": "",
+        "naturalWidth": 360,
+        "imgFilter": "none",
+        "imgOpacity": "1",
+        "markOpacity": "0",
+        "markAnimation": "none",
+        "mixBlendMode": "normal",
+        "background": "oklch(0.12 0.006 240)",
+        "border": "1px solid"
+      },
+      {
+        "persona": "defector",
+        "width": 40,
+        "height": 46.11,
+        "ariaHidden": "true",
+        "alt": "",
+        "naturalWidth": 360,
+        "imgFilter": "none",
+        "imgOpacity": "1",
+        "markOpacity": "0",
+        "markAnimation": "none",
+        "mixBlendMode": "normal",
+        "background": "oklch(0.12 0.006 240)",
+        "border": "1px solid"
+      },
+      {
+        "persona": "archivist",
+        "width": 40,
+        "height": 46.11,
+        "ariaHidden": "true",
+        "alt": "",
+        "naturalWidth": 360,
+        "imgFilter": "none",
+        "imgOpacity": "1",
+        "markOpacity": "0",
+        "markAnimation": "none",
+        "mixBlendMode": "normal",
+        "background": "oklch(0.12 0.006 240)",
+        "border": "1px solid"
+      }
+    ],
+    "atText:rail-social-memory-375x812": {
+      "text": "The Registrar Custodian of legal continuity uncertain The Shepherd Care-ward advocate open The Defector Compromised systems guide uncertain The Small Archivist Collector of missing categories uncertain",
+      "counts": {
+        "The Registrar": 1,
+        "The Shepherd": 1,
+        "The Defector": 1,
+        "The Small Archivist": 1
+      }
+    },
+    "axTree:rail-375x812": [
+      {
+        "role": "StaticText",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Shepherd +2 · The Small Archivist +1"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Shepherd +2 · The Small Archivist +1"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Registrar"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Defector"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Small Archivist"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Registrar"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Defector"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Small Archivist"
+      }
+    ],
+    "sigilFallback:375x812": [
+      {
+        "plated": true,
+        "hasImg": true,
+        "markOpacity": "0",
+        "markAnimation": "none",
+        "rowHeight": 58
+      },
+      {
+        "plated": false,
+        "hasImg": false,
+        "markOpacity": "0.768654",
+        "markAnimation": "ambience-breathe",
+        "rowHeight": 58
+      },
+      {
+        "plated": true,
+        "hasImg": true,
+        "markOpacity": "0",
+        "markAnimation": "none",
+        "rowHeight": 58
+      },
+      {
+        "plated": true,
+        "hasImg": true,
+        "markOpacity": "0",
+        "markAnimation": "none",
+        "rowHeight": 58
+      }
+    ],
+    "debrief:1280x800": {
+      "blockquotes": 4,
+      "cards": [
+        {
+          "persona": "registrar",
+          "width": 40,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360
+        },
+        {
+          "persona": "shepherd",
+          "width": 40,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360
+        },
+        {
+          "persona": "defector",
+          "width": 40,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360
+        },
+        {
+          "persona": "archivist",
+          "width": 40,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360
+        }
+      ],
+      "names": [
+        "The Registrar",
+        "The Shepherd",
+        "The Defector",
+        "The Small Archivist"
+      ]
+    },
+    "atText:debrief-1280x800": {
+      "text": "The Registrar open “You treated procedure as evidence, not as innocence. That distinction is admissible.” The Shepherd committed “She will remember that someone listened before deciding what she was.” The Defector uncertain “The route was clean. The consequences won’t be. They never are.” The Small Archivist uncertain “You let a person speak before a category did. I saved the order.”",
+      "counts": {
+        "The Registrar": 1,
+        "The Shepherd": 1,
+        "The Defector": 1,
+        "The Small Archivist": 1
+      }
+    },
+    "axTree:debrief-1280x800": [
+      {
+        "role": "StaticText",
+        "name": "The Registrar"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Defector"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Small Archivist"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Registrar"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Defector"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Small Archivist"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Registrar"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Defector"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Small Archivist"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Registrar"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Defector"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Small Archivist"
+      }
+    ],
+    "debrief:375x812": {
+      "blockquotes": 4,
+      "cards": [
+        {
+          "persona": "registrar",
+          "width": 40,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360
+        },
+        {
+          "persona": "shepherd",
+          "width": 40,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360
+        },
+        {
+          "persona": "defector",
+          "width": 40,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360
+        },
+        {
+          "persona": "archivist",
+          "width": 40,
+          "ariaHidden": "true",
+          "alt": "",
+          "naturalWidth": 360
+        }
+      ],
+      "names": [
+        "The Registrar",
+        "The Shepherd",
+        "The Defector",
+        "The Small Archivist"
+      ]
+    },
+    "atText:debrief-375x812": {
+      "text": "The Registrar open “You treated procedure as evidence, not as innocence. That distinction is admissible.” The Shepherd committed “She will remember that someone listened before deciding what she was.” The Defector uncertain “The route was clean. The consequences won’t be. They never are.” The Small Archivist uncertain “You let a person speak before a category did. I saved the order.”",
+      "counts": {
+        "The Registrar": 1,
+        "The Shepherd": 1,
+        "The Defector": 1,
+        "The Small Archivist": 1
+      }
+    },
+    "axTree:debrief-375x812": [
+      {
+        "role": "StaticText",
+        "name": "The Registrar"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Defector"
+      },
+      {
+        "role": "StaticText",
+        "name": "The Small Archivist"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Registrar"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Shepherd"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Defector"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "The Small Archivist"
+      }
+    ],
+    "forcedColors:1280x800": [
+      {
+        "persona": "registrar",
+        "imgOpacity": "0",
+        "imgInTree": true,
+        "markOpacity": "1",
+        "markSvg": true,
+        "rowHeight": 58
+      },
+      {
+        "persona": "shepherd",
+        "imgOpacity": "0",
+        "imgInTree": true,
+        "markOpacity": "1",
+        "markSvg": true,
+        "rowHeight": 58
+      },
+      {
+        "persona": "defector",
+        "imgOpacity": "0",
+        "imgInTree": true,
+        "markOpacity": "1",
+        "markSvg": true,
+        "rowHeight": 58
+      },
+      {
+        "persona": "archivist",
+        "imgOpacity": "0",
+        "imgInTree": true,
+        "markOpacity": "1",
+        "markSvg": true,
+        "rowHeight": 58
+      }
+    ],
+    "reducedMotionRail:1280x800": [
+      {
+        "cls": "persona-portrait persona-portrait--card persona-portrait--plated",
+        "animationName": "none",
+        "animationDuration": "1e-05s"
+      },
+      {
+        "cls": "persona-portrait-mark",
+        "animationName": "none",
+        "animationDuration": "1e-05s"
+      },
+      {
+        "cls": "persona-portrait persona-portrait--card persona-portrait--plated",
+        "animationName": "none",
+        "animationDuration": "1e-05s"
+      },
+      {
+        "cls": "persona-portrait-mark",
+        "animationName": "none",
+        "animationDuration": "1e-05s"
+      },
+      {
+        "cls": "persona-portrait persona-portrait--card persona-portrait--plated",
+        "animationName": "none",
+        "animationDuration": "1e-05s"
+      },
+      {
+        "cls": "persona-portrait-mark",
+        "animationName": "none",
+        "animationDuration": "1e-05s"
+      },
+      {
+        "cls": "persona-portrait persona-portrait--card persona-portrait--plated",
+        "animationName": "none",
+        "animationDuration": "1e-05s"
+      },
+      {
+        "cls": "persona-portrait-mark",
+        "animationName": "none",
+        "animationDuration": "1e-05s"
+      }
+    ],
+    "reducedMotionRail:375x812": [
+      {
+        "cls": "persona-portrait persona-portrait--card persona-portrait--plated",
+        "animationName": "none",
+        "animationDuration": "1e-05s"
+      },
+      {
+        "cls": "persona-portrait-mark",
+        "animationName": "none",
+        "animationDuration": "1e-05s"
+      },
+      {
+        "cls": "persona-portrait persona-portrait--card persona-portrait--plated",
+        "animationName": "none",
+        "animationDuration": "1e-05s"
+      },
+      {
+        "cls": "persona-portrait-mark",
+        "animationName": "none",
+        "animationDuration": "1e-05s"
+      },
+      {
+        "cls": "persona-portrait persona-portrait--card persona-portrait--plated",
+        "animationName": "none",
+        "animationDuration": "1e-05s"
+      },
+      {
+        "cls": "persona-portrait-mark",
+        "animationName": "none",
+        "animationDuration": "1e-05s"
+      },
+      {
+        "cls": "persona-portrait persona-portrait--card persona-portrait--plated",
+        "animationName": "none",
+        "animationDuration": "1e-05s"
+      },
+      {
+        "cls": "persona-portrait-mark",
+        "animationName": "none",
+        "animationDuration": "1e-05s"
+      }
+    ]
+  },
+  "passed": 37,
+  "failed": 0
+}

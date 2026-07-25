@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { PersonaPortrait } from '../components/PersonaPortrait'
 import { beatHoldMs, type BeatLine } from '../game/beats'
 import { personaName } from '../game/content'
 
@@ -144,6 +145,13 @@ export function BeatStage({
             data-speaker={line.kind === 'subject' ? undefined : line.speaker}
             key={`${index}-${line.kind}`}
           >
+            {/* The speaker's face, inside the aria-hidden stanza only. The live
+                region above mirrors renderedText() and nothing else, so the
+                portrait changes nothing an AT user hears — which is precisely
+                why the face goes here rather than into a restructured beat. */}
+            {line.kind === 'speaker' && (
+              <PersonaPortrait personaId={line.speaker} size="chip" />
+            )}
             {renderedText(line)}
           </p>
         ))}

@@ -36,6 +36,7 @@ import { ChoiceButton } from './ChoiceButton'
 import { ClassificationRoom } from './ClassificationRoom'
 import { CustodyRailRoom } from './CustodyRailRoom'
 import { Deposition } from './Deposition'
+import { PersonaPortrait } from './PersonaPortrait'
 import { ReactionQuotes } from './ReactionQuotes'
 import { SceneDetailDrawer } from './SceneDetailDrawer'
 import { SceneZone } from './SceneZone'
@@ -1032,6 +1033,11 @@ export function Investigation({
                     Standing:{' '}
                     {sceneStandingEntries.map(([id, delta]) => (
                       <span key={id} data-sign={delta > 0 ? 'pos' : 'neg'}>
+                        {/* A stance change is FELT here, on the plate, where the
+                            player is already looking — so this is where the face
+                            belongs. It is a mount, not an animation: reduced
+                            motion needs nothing from it. */}
+                        <PersonaPortrait personaId={id as PersonaId} size="chip" />
                         {personaName(id as PersonaId)} {delta > 0 ? `+${delta}` : delta}
                       </span>
                     ))}

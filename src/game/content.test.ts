@@ -750,6 +750,47 @@ describe('Case 81 authors Ellis (figure + registry photograph)', () => {
   })
 })
 
+// The persona roster is global content, not case content: it is the one authored
+// list every case shares. The portrait is optional exactly as caseFile.dossierImage
+// is, so the contract is all-or-nothing per persona — a half-authored triple would
+// render a frame with no caption or an image with no alt, and neither failure is
+// visible to a type check.
+describe('persona roster portraits', () => {
+  it('gives every persona a complete portrait triple or none at all', () => {
+    personas.forEach((persona) => {
+      const portrait = persona.portrait
+      if (!portrait) return
+      expect(portrait.src, `${persona.id} src`).toMatch(/^\/images\/personas\/[a-z-]+\.webp$/)
+      expect(portrait.caption.trim().length, `${persona.id} caption`).toBeGreaterThan(0)
+      expect(portrait.alt.trim().length, `${persona.id} alt`).toBeGreaterThan(0)
+    })
+  })
+
+  // Non-vacuity: the guard above returns early on an unportraited persona, so
+  // assert the roster is in fact fully authored rather than silently empty.
+  it('authors all four roster portraits, each in that persona’s own voice', () => {
+    expect(personas.filter((persona) => persona.portrait)).toHaveLength(personas.length)
+    personas.forEach((persona) => {
+      expect(persona.portrait?.src).toContain(persona.id)
+      // The alt is the record's own description and is the ONLY string a screen
+      // reader ever gets from a portrait, so it must name the presence.
+      expect(persona.portrait?.alt).toContain(persona.name.replace(/^The /, ''))
+    })
+  })
+
+  // The duty-roster frame is what keeps the four presences from reading as four
+  // more case subjects; the Archivist's caption is the one that must NOT read as a
+  // credential, because she holds none the city issued.
+  it('captions three as credentials and the Archivist off-register', () => {
+    const credentialed = personas.filter((persona) => persona.id !== 'archivist')
+    credentialed.forEach((persona) => {
+      expect(persona.portrait?.caption.toLowerCase()).toContain('credential')
+    })
+    const archivist = personas.find((persona) => persona.id === 'archivist')
+    expect(archivist?.portrait?.caption.toLowerCase()).toContain('no credential')
+  })
+})
+
 // Non-vacuity guards for the optional bounded rooms: generic per-case checks return
 // early when a site does not author one, so each concrete Case 77 room below proves
 // that its content exists and is reached by the recursive no-placeholder walk.

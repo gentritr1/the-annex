@@ -191,11 +191,26 @@ export interface PersonaReaction {
   line: string
 }
 
+// A painterly duty-roster portrait a persona may carry. Deliberately the exact
+// shape and optionality of CaseFileDossierImage below — additive, optional, and
+// id-free, so components render it generically wherever it is authored. Never
+// serialized: persistence writes GameState only, and static content definitions
+// are not part of a save. The frame, not the photograph, carries the fiction's
+// distinction: a persona is on the DUTY ROSTER, a case subject is IN THE FILE.
+export interface PersonaPortrait {
+  src: string
+  caption: string
+  alt: string
+}
+
 export interface PersonaDefinition {
   id: PersonaId
   name: string
   role: string
   principle: string
+  // Optional roster portrait (see PersonaPortrait). A persona with none renders
+  // the abstract sigil it has always had.
+  portrait?: PersonaPortrait
 }
 
 export interface ApproachDefinition {

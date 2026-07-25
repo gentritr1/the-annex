@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { PersonaSigil } from '../ambience/sigils'
 import { getCaseContent, getReactionsForSource, methodLabels, personas } from '../game/content'
 import { getTrustLabel } from '../game/engine'
 import type { EvidenceStatus, GameState, PersonaId } from '../game/types'
 import { DossierPhoto } from './DossierPhoto'
+import { PersonaPortrait } from './PersonaPortrait'
 import { ReactionQuotes } from './ReactionQuotes'
 
 interface CaseRailProps {
@@ -170,9 +170,10 @@ export function CaseRail({ state }: CaseRailProps) {
                       className={pulse === 'rise' ? 'pulse-rise' : pulse === 'fall' ? 'pulse-fall' : undefined}
                     >
                       <span className={`persona-signal trust-${getTrustLabel(trust)}`} aria-hidden="true" />
-                      <span className="persona-sigil" aria-hidden="true">
-                        <PersonaSigil personaId={persona.id} />
-                      </span>
+                      {/* The row's second grid cell. It widens 20px → 40px; the
+                          row's min-height does not move (any height change here
+                          is a bug, not a trade-off — plan §6 risk 3). */}
+                      <PersonaPortrait personaId={persona.id} size="card" />
                       <span>
                         <strong>{persona.name}</strong>
                         <small>{persona.role}</small>

@@ -30,30 +30,55 @@ export const methodLabels: Readonly<Record<MethodTag, string>> = {
   coercion: 'Coercion',
 }
 
+// Roster portraits (painterly noir, one per presence). The captions are duty-roster
+// entries, not dossier captions: three name a credential the city issued, and the
+// Archivist's deliberately names none — she holds no credential at all, which is
+// the whole of her position and the last thing that could make her read as a
+// subject on file rather than a custodian at her post.
 export const personas: readonly PersonaDefinition[] = [
   {
     id: 'registrar',
     name: 'The Registrar',
     role: 'Custodian of legal continuity',
     principle: 'A person is a chain the city can verify.',
+    portrait: {
+      src: '/images/personas/registrar.webp',
+      caption: 'Registrar · standing credential',
+      alt: 'Roster portrait of the Registrar, custodian of legal continuity.',
+    },
   },
   {
     id: 'shepherd',
     name: 'The Shepherd',
     role: 'Care-ward advocate',
     principle: 'Care recognizes a self before procedure does.',
+    portrait: {
+      src: '/images/personas/shepherd.webp',
+      caption: 'Care ward · standing credential',
+      alt: 'Roster portrait of the Shepherd, care-ward advocate.',
+    },
   },
   {
     id: 'defector',
     name: 'The Defector',
     role: 'Compromised systems guide',
     principle: 'Every clean record is hiding who paid for it.',
+    portrait: {
+      src: '/images/personas/defector.webp',
+      caption: 'Systems office · credential withdrawn',
+      alt: 'Roster portrait of the Defector, compromised systems guide.',
+    },
   },
   {
     id: 'archivist',
     name: 'The Small Archivist',
     role: 'Collector of missing categories',
     principle: 'What you refuse to name still becomes evidence.',
+    portrait: {
+      src: '/images/personas/archivist.webp',
+      caption: 'No credential issued · shelf zero, kept by hand',
+      alt: 'Roster portrait of the Small Archivist, collector of missing categories.',
+    },
   },
 ]
 

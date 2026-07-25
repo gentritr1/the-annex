@@ -1,4 +1,4 @@
-import { MirrorSigil, PersonaSigil } from '../ambience/sigils'
+import { MirrorSigil } from '../ambience/sigils'
 import {
   getCaseContent,
   getPriorVerdictForCase,
@@ -15,6 +15,7 @@ import type {
   GameState,
   SiteDefinition,
 } from '../game/types'
+import { PersonaPortrait } from './PersonaPortrait'
 
 interface DebriefProps {
   state: GameState
@@ -194,9 +195,7 @@ export function Debrief({
           {personas.map((persona) => (
             <blockquote key={persona.id}>
               <div>
-                <span className="reflection-sigil" aria-hidden="true">
-                  <PersonaSigil personaId={persona.id} />
-                </span>
+                <PersonaPortrait personaId={persona.id} size="card" />
                 <strong>{persona.name}</strong>
                 <span>
                   {getTrustLabel(state.trust[persona.id])}

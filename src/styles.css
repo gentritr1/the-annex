@@ -3763,18 +3763,11 @@ p {
   gap: 10px;
 }
 
-.reaction-sigil {
-  flex: 0 0 auto;
-  width: 17px;
-  height: 17px;
+/* The gutter face on every attributed line — a 34px roster chip where a 17px
+   sigil used to sit. Neutral by construction: the portrait carries no state, so
+   cyan and coral stay reserved for the trust pulse. */
+.reaction-line .persona-portrait {
   margin-top: 1px;
-  color: var(--fog);
-}
-
-.reaction-sigil svg {
-  display: block;
-  width: 100%;
-  height: 100%;
 }
 
 /* Scoped under .reaction-block so these win over the ancestor element selectors
@@ -5130,18 +5123,10 @@ p {
   gap: 14px;
 }
 
-/* Persona sigil beside each debrief reflection (~26px). */
-.reflection-sigil {
-  flex: 0 0 auto;
-  width: 26px;
-  height: 26px;
-  color: var(--cyan);
-}
-
-.reflection-sigil svg {
-  display: block;
-  width: 100%;
-  height: 100%;
+/* Roster portrait beside each debrief reflection — the same card the rail row
+   wears, so the cast is one set of faces across the run and its aftermath. */
+.reflection-list .persona-portrait {
+  align-self: flex-start;
 }
 
 .reflection-list strong {
@@ -5415,10 +5400,15 @@ p {
   list-style: none;
 }
 
+/* Compact entity card: signal dot · 40px roster portrait · name+role · standing.
+   The second cell widened 20px → 40px when the portraits landed; min-height is
+   deliberately UNCHANGED, because a 40px frame fits a 58px row with the existing
+   gap and any height change here would be a density regression, not a
+   trade-off (plan §6 risk 3). */
 .persona-list li {
   min-height: 58px;
   display: grid;
-  grid-template-columns: 8px 20px minmax(0, 1fr) auto;
+  grid-template-columns: 8px 40px minmax(0, 1fr) auto;
   align-items: center;
   gap: 10px;
   border-bottom: 1px solid var(--line);
@@ -5435,33 +5425,23 @@ p {
   border-radius: 50%;
 }
 
-/* Persona sigil — 20px mark beside each name; idle "breathe" is applied per
-   row below (phase-offset), and is suppressed under the reduce-motion path. */
-.persona-sigil {
-  width: 20px;
-  height: 20px;
-  color: var(--fog-dim);
-}
-
-.persona-sigil svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.persona-list li:nth-child(1) .persona-sigil {
+/* Idle "breathe" — retained ONLY for rows still showing the abstract mark, i.e.
+   a persona with no portrait authored. A pulsing opacity on a stroke sigil is
+   ambience; on a human face it is uncanny, so a portraited row does not breathe
+   at all (plan §2.b). Still suppressed outright under the reduce-motion path. */
+.persona-list li:nth-child(1) .persona-portrait:not(.persona-portrait--plated) .persona-portrait-mark {
   animation: ambience-breathe 7.2s ease-in-out infinite;
 }
 
-.persona-list li:nth-child(2) .persona-sigil {
+.persona-list li:nth-child(2) .persona-portrait:not(.persona-portrait--plated) .persona-portrait-mark {
   animation: ambience-breathe 8.1s ease-in-out -1.6s infinite;
 }
 
-.persona-list li:nth-child(3) .persona-sigil {
+.persona-list li:nth-child(3) .persona-portrait:not(.persona-portrait--plated) .persona-portrait-mark {
   animation: ambience-breathe 7.7s ease-in-out -3.2s infinite;
 }
 
-.persona-list li:nth-child(4) .persona-sigil {
+.persona-list li:nth-child(4) .persona-portrait:not(.persona-portrait--plated) .persona-portrait-mark {
   animation: ambience-breathe 9.4s ease-in-out -4.8s infinite;
 }
 
@@ -6897,6 +6877,118 @@ p {
 
 .registry-caption {
   color: var(--fog-dim);
+}
+
+/* ── persona roster portraits (duty roster, NOT subject dossier) ───── */
+/* Ellis wears .registry-photo because she is the case's subject, held in the
+   file. The four presences are not subjects — they are the people who speak to
+   you about one — so they get their own frame and their own caption vocabulary
+   while sharing the border/backing/radius values, and the two read as one world.
+   MATTED, NEVER BLENDED: an <img> inside a bordered frame over --night-soft, no
+   mix-blend-mode and no screen composite (the Ellis raster-ghosting scar).
+   NO FILTER AT REST: the palette is painted into the plate (painterly noir), so
+   the registry filter values below appear only on the high-contrast path.
+   Zero keyframes, zero transitions: a portrait is a mount, not an animation. */
+.persona-portrait {
+  position: relative;
+  flex: 0 0 auto;
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: var(--night-soft);
+}
+
+/* One delivered geometry (360×418) at three widths; the height follows the ratio
+   so the frame never re-crops the reviewed plate. */
+.persona-portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* The abstract stroke mark the presences have always had. It is the fallback
+   when no portrait is authored, and it is the forced-colors path: a photograph
+   cannot be trusted to survive a forced palette; a currentColor stroke can. */
+.persona-portrait-mark {
+  display: grid;
+  width: 100%;
+  aspect-ratio: 360 / 418;
+  color: var(--fog-dim);
+  place-items: center;
+}
+
+.persona-portrait-mark svg {
+  display: block;
+  width: 60%;
+  height: auto;
+}
+
+/* With a plate mounted the mark waits behind it — present in the DOM so the
+   forced-colors swap costs no layout shift and no second component. */
+.persona-portrait--plated .persona-portrait-mark {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  opacity: 0;
+}
+
+.persona-portrait--chip {
+  width: 34px;
+}
+
+.persona-portrait--card {
+  width: 40px;
+}
+
+.persona-portrait--sheet {
+  width: 120px;
+}
+
+/* The full roster record: frame plus its duty-roster caption. Three captions
+   name a credential the city issued; the Archivist's names none. */
+.persona-portrait-record {
+  margin: 0;
+  width: max-content;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.persona-portrait-caption {
+  color: var(--fog-dim);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.64rem;
+  letter-spacing: 0.02em;
+}
+
+/* High contrast: promote the frame to the record palette and fall back to the
+   registry treatment, which is where those values now live. */
+.high-contrast .persona-portrait {
+  border-color: var(--record);
+}
+
+.high-contrast .persona-portrait img {
+  filter: grayscale(0.35) contrast(0.98) brightness(0.97);
+}
+
+/* Forced colours: the plate stands down (opacity, not display — the sheet's
+   authored alt must stay in the accessibility tree) and the sigil takes over. */
+@media (forced-colors: active) {
+  .persona-portrait {
+    border-color: CanvasText;
+    background: Canvas;
+  }
+
+  .persona-portrait img {
+    opacity: 0;
+  }
+
+  .persona-portrait--plated .persona-portrait-mark {
+    color: CanvasText;
+    opacity: 1;
+  }
 }
 
 /* ── flat map (Case 77): the civic-archive exterior + rain ─────────── */
@@ -9659,13 +9751,25 @@ p {
   line-height: 1.4;
 }
 
+/* The speaker line carries the speaker's face. The stanza is centred, so the row
+   centres too: chip, then the name exactly as it was already printed. */
 .scene-beat-line--speaker {
   margin-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
   color: var(--fog);
   font-size: 0.66rem;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
+}
+
+/* Over a lit plate the frame needs a hair more separation than --line gives it. */
+.scene-beat-line--speaker .persona-portrait {
+  border-color: oklch(0.82 0.01 210 / 0.34);
+  box-shadow: 0 2px 14px oklch(0 0 0 / 0.7);
 }
 
 .scene-beat-line--speaker[data-speaker='shepherd'] {
@@ -9785,6 +9889,19 @@ p {
   margin: 0;
   color: var(--fog);
   font-size: 0.78rem;
+}
+
+/* Each delta carries the face whose standing moved — the quiet toast. 24px: the
+   strip is a single line and the chip must not out-weigh the name beside it. */
+.scene-result-standing > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.scene-result-standing .persona-portrait {
+  width: 24px;
+  border-color: oklch(0.82 0.01 210 / 0.3);
 }
 
 .scene-result-standing span[data-sign='pos'] {
