@@ -34,6 +34,7 @@ import type {
   SiteId,
 } from '../game/types'
 import { AcousticShadowRoom } from './AcousticShadowRoom'
+import { CaseFileSummon } from './CaseFileDrawer'
 import { ChoiceButton } from './ChoiceButton'
 import { ClassificationRoom } from './ClassificationRoom'
 import { CustodyRailRoom } from './CustodyRailRoom'
@@ -45,6 +46,12 @@ import { SceneZone } from './SceneZone'
 
 interface InvestigationProps {
   state: GameState
+  // Whether the summoned case file is open. Owned by App (the surface is
+  // shell-wide) but summoned from the scene chrome here, so this component can
+  // enforce the mutual exclusivity with the location-detail drawer: exactly one
+  // aria-modal dialog is ever over the plate.
+  caseFileOpen: boolean
+  onCaseFileOpenChange: (open: boolean) => void
   // Which deposition entry action, if any, has its transcript open. Lifted to App
   // so the ambient-audio scene state reads the same value (view-local otherwise).
   depositionEntry: FieldActionId | null
@@ -135,6 +142,8 @@ function forcedColorsActive() {
 
 export function Investigation({
   state,
+  caseFileOpen,
+  onCaseFileOpenChange,
   depositionEntry,
   onDepositionEntryChange,
   onAcousticTreatmentChange,
@@ -490,6 +499,22 @@ export function Investigation({
       siteInspectorRef.current?.scrollTo({ top: 0, behavior: 'auto' })
       siteInspectorRef.current?.focus({ preventScroll: true })
     })
+  }
+
+  // MUTUAL EXCLUSIVITY, enforced in code rather than trusted to the player's
+  // route: the two summons are the only two aria-modal dialogs this surface can
+  // raise, and opening either closes the other. Two live focus traps over one
+  // plate is the hazard the tabbed case file was designed to remove; this is the
+  // second belt. Asserted live in the step-G harness with
+  // document.querySelectorAll('[aria-modal="true"]').length === 1.
+  function openDetailDrawer() {
+    onCaseFileOpenChange(false)
+    setDetailDrawerOpen(true)
+  }
+
+  function openCaseFile() {
+    setDetailDrawerOpen(false)
+    onCaseFileOpenChange(true)
   }
 
   function handleAbandonDeposition() {
@@ -992,14 +1017,14 @@ export function Investigation({
       <p className="sr-only" role="status" aria-live="polite">
         {worldLine}
       </p>
+      {/* The always-on set, reduced to what the scene cannot say for itself.
+          The page's own label copy is gone from view — the room says it better —
+          but the <h1> survives as sr-only so heading order and the id other
+          surfaces reference are untouched. */}
       <header className="field-commandbar">
-        <div>
-          <p className="section-context">Active field record</p>
-          <h1 id="field-heading">Investigate the district</h1>
-        </div>
-        <p className="field-command-copy">
-          Choose a location, then decide what becomes admissible there.
-        </p>
+        <h1 className="sr-only" id="field-heading">
+          Investigate the district
+        </h1>
         <div className="field-objectives" aria-label="Tribunal requirements">
           <span data-complete={state.completedSites.length >= 2 ? 'true' : undefined}>
             <strong>
@@ -1011,11 +1036,31 @@ export function Investigation({
             <strong>{reconstruction ? 'Filed' : 'Needed'}</strong>
             model
           </span>
+          {/* THE ALARM PROMOTION. Civic alarm used to live only in the rail; the
+              moment the rail went behind a summon a raised alarm would have
+              become invisible, which is a strictly worse game. It joins the
+              always-on facts here — never on the plate, where a docked room
+              console or a staged beat can cover the chrome — rendered only when
+              it is nonzero, in the existing coral text-risk convention. This is
+              the one place the restructure deliberately ADDS density. */}
+          {state.alarm > 0 && (
+            <span className="field-alarm" data-alarm="true">
+              <strong className="text-risk">
+                {state.alarm} trace{state.alarm === 1 ? '' : 's'}
+              </strong>
+              civic alarm
+            </span>
+          )}
         </div>
-        <p className="field-threshold">
-          The tribunal will hear a record of two sites. The other two are yours to
-          leave read or unread.
-        </p>
+        {/* Onboarding copy that becomes noise once understood: it holds until the
+            first site is filed, after which the objectives counter carries the
+            same fact numerically. */}
+        {state.completedSites.length === 0 && (
+          <p className="field-threshold">
+            The tribunal will hear a record of two sites. The other two are yours to
+            leave read or unread.
+          </p>
+        )}
       </header>
 
       <div className="field-workspace">
@@ -1195,15 +1240,20 @@ export function Investigation({
               </div>
             )}
 
-            {sceneFirstPlate && (
-              <button
-                className="scene-detail-summon"
-                type="button"
-                onClick={() => setDetailDrawerOpen(true)}
-              >
-                Location detail
-              </button>
-            )}
+            {/* The plate's summon rail. Both summons live in ONE positioned
+                flex row anchored top-right, so they can never overlap each
+                other however the plate crops — the cross-zone rule that came
+                out of the rooms round. The concourse return keeps its own
+                top-LEFT anchor, so the three controls occupy three separate
+                regions of the chrome. */}
+            <div className="scene-summons">
+              <CaseFileSummon state={state} onOpen={openCaseFile} />
+              {sceneFirstPlate && (
+                <button className="scene-detail-summon" type="button" onClick={openDetailDrawer}>
+                  Location detail
+                </button>
+              )}
+            </div>
 
             {shownCloseup && scene.world && (
               <button className="world-return" type="button" onClick={returnToConcourse}>
@@ -1430,22 +1480,13 @@ export function Investigation({
         </section>
       </div>
 
+      {/* The route breadcrumb is gone: it duplicated the CTA, which already names
+          the next step in the same words. The filed-model block moved into the
+          case file's Case tab — a filed record belongs in the file. */}
       <footer className={`field-dock ${tribunalReady ? 'field-dock-ready' : ''}`}>
-        <div className="field-route" aria-label="Case progression">
-          <span data-current="true">Field</span>
-          <span aria-hidden="true">→</span>
-          <span data-ready={state.completedSites.length > 0 ? 'true' : undefined}>Memory</span>
-          <span aria-hidden="true">→</span>
-          <span data-ready={tribunalReady ? 'true' : undefined}>Tribunal</span>
-        </div>
-
         <div className="field-dock-copy">
           {reconstruction ? (
-            <details className="filed-model">
-              <summary>{reconstruction.title} · model filed</summary>
-              <p>{reconstruction.thesis}</p>
-              <ReactionQuotes reactions={reconstruction.reactions} />
-            </details>
+            <p>{reconstruction.title} · model filed</p>
           ) : (
             <p>
               {state.completedSites.length === 0
@@ -1467,7 +1508,9 @@ export function Investigation({
         )}
       </footer>
 
-      {detailDrawerOpen && (
+      {/* The second belt on mutual exclusivity: even if some future route set
+          both flags, only one dialog can render. */}
+      {detailDrawerOpen && !caseFileOpen && (
         <SceneDetailDrawer
           site={selectedSite}
           actions={selectedActions}

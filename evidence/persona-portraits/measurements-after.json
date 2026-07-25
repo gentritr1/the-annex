@@ -1,7 +1,7 @@
 {
   "mode": "after",
   "url": "http://127.0.0.1:3000/",
-  "capturedAt": "2026-07-25T15:09:26.916Z",
+  "capturedAt": "2026-07-25T19:21:40.938Z",
   "node": "v24.18.0",
   "checks": [
     {
@@ -268,7 +268,7 @@
           58
         ],
         "minHeight": "58px",
-        "columns": "8px 40px 206.047px 58.9531px"
+        "columns": "8px 40px 346.047px 58.9531px"
       }
     },
     {
@@ -382,7 +382,7 @@
         {
           "plated": false,
           "hasImg": false,
-          "markOpacity": "0.765493",
+          "markOpacity": "0.767028",
           "markAnimation": "ambience-breathe",
           "rowHeight": 58
         },
@@ -534,7 +534,7 @@
         {
           "plated": false,
           "hasImg": false,
-          "markOpacity": "0.768654",
+          "markOpacity": "0.767021",
           "markAnimation": "ambience-breathe",
           "rowHeight": 58
         },
@@ -735,34 +735,6 @@
           "none",
           "none",
           "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
           "none"
         ]
       }
@@ -821,34 +793,6 @@
         "result": false,
         "speakerPortraits": 1,
         "portraitAnimations": [
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
-          "none",
           "none",
           "none",
           "none",
@@ -1037,39 +981,7 @@
       },
       {
         "role": "InlineTextBox",
-        "name": "The Shepherd +2 · The Small Archivist "
-      },
-      {
-        "role": "StaticText",
-        "name": "The Registrar"
-      },
-      {
-        "role": "StaticText",
-        "name": "The Shepherd"
-      },
-      {
-        "role": "StaticText",
-        "name": "The Defector"
-      },
-      {
-        "role": "StaticText",
-        "name": "The Small Archivist"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "The Registrar"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "The Shepherd"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "The Defector"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "The Small Archivist"
+        "name": "The Shepherd +2 · The Small Archivist +1"
       }
     ],
     "beat:375x812": {
@@ -1183,28 +1095,28 @@
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 40px 206.047px 58.9531px",
+          "columns": "8px 40px 346.047px 58.9531px",
           "roleText": "Custodian of legal continuity",
           "roleClipped": false
         },
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 40px 238.797px 26.2031px",
+          "columns": "8px 40px 378.797px 26.2031px",
           "roleText": "Care-ward advocate",
           "roleClipped": false
         },
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 40px 206.047px 58.9531px",
+          "columns": "8px 40px 346.047px 58.9531px",
           "roleText": "Compromised systems guide",
           "roleClipped": false
         },
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 40px 195.266px 69.7344px",
+          "columns": "8px 40px 346.047px 58.9531px",
           "roleText": "Collector of missing categories",
           "roleClipped": false
         }
@@ -1213,28 +1125,28 @@
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 20px 226.047px 58.9531px",
+          "columns": "8px 20px 366.047px 58.9531px",
           "roleText": "Custodian of legal continuity",
           "roleClipped": false
         },
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 20px 258.797px 26.2031px",
+          "columns": "8px 20px 398.797px 26.2031px",
           "roleText": "Care-ward advocate",
           "roleClipped": false
         },
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 20px 226.047px 58.9531px",
+          "columns": "8px 20px 366.047px 58.9531px",
           "roleText": "Compromised systems guide",
           "roleClipped": false
         },
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 20px 215.266px 69.7344px",
+          "columns": "8px 20px 366.047px 58.9531px",
           "roleText": "Collector of missing categories",
           "roleClipped": false
         }
@@ -1326,7 +1238,7 @@
       },
       {
         "role": "InlineTextBox",
-        "name": "The Shepherd +2 · The Small Archivist "
+        "name": "The Shepherd +2 · The Small Archivist +1"
       },
       {
         "role": "StaticText",
@@ -1372,7 +1284,7 @@
       {
         "plated": false,
         "hasImg": false,
-        "markOpacity": "0.765493",
+        "markOpacity": "0.767028",
         "markAnimation": "ambience-breathe",
         "rowHeight": 58
       },
@@ -1417,7 +1329,7 @@
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 40px 191.266px 69.7344px",
+          "columns": "8px 40px 202.047px 58.9531px",
           "roleText": "Collector of missing categories",
           "roleClipped": false
         }
@@ -1447,7 +1359,7 @@
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 20px 211.266px 69.7344px",
+          "columns": "8px 20px 222.047px 58.9531px",
           "roleText": "Collector of missing categories",
           "roleClipped": false
         }
@@ -1585,7 +1497,7 @@
       {
         "plated": false,
         "hasImg": false,
-        "markOpacity": "0.768654",
+        "markOpacity": "0.767021",
         "markAnimation": "ambience-breathe",
         "rowHeight": 58
       },
@@ -1653,38 +1565,6 @@
       }
     },
     "axTree:debrief-1280x800": [
-      {
-        "role": "StaticText",
-        "name": "The Registrar"
-      },
-      {
-        "role": "StaticText",
-        "name": "The Shepherd"
-      },
-      {
-        "role": "StaticText",
-        "name": "The Defector"
-      },
-      {
-        "role": "StaticText",
-        "name": "The Small Archivist"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "The Registrar"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "The Shepherd"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "The Defector"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "The Small Archivist"
-      },
       {
         "role": "StaticText",
         "name": "The Registrar"

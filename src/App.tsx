@@ -1,8 +1,8 @@
 import { useEffect, useReducer, useRef, useState, useSyncExternalStore } from 'react'
 import { createAmbientAudio, type AmbientAudioHandle, type WeatherBedKind } from './ambience/audio'
 import { Briefing } from './components/Briefing'
+import { CaseFileDrawer, CaseFileSummon } from './components/CaseFileDrawer'
 import { CaseHeader } from './components/CaseHeader'
-import { CaseRail } from './components/CaseRail'
 import { Debrief } from './components/Debrief'
 import { Investigation } from './components/Investigation'
 import { Reconstruction } from './components/Reconstruction'
@@ -151,6 +151,20 @@ export default function App() {
   // deposition entry. Investigation reports authored audio data only; this never
   // enters the reducer, save payload, or event log.
   const [spatialTreatment, setSpatialTreatment] = useState<SceneAcousticTreatment | null>(null)
+  // Whether the summoned case file is open. Lifted here because the surface is
+  // shell-wide (every case phase can summon it) while its summon lives on the
+  // scene chrome during the investigation. View-local: never dispatched, never
+  // saved. Investigation owns the mutual exclusivity with the location-detail
+  // drawer, so at most one aria-modal dialog is ever over the plate.
+  const [caseFileOpen, setCaseFileOpen] = useState(false)
+  // A phase change retires the summoned file (its summon on the old surface has
+  // gone with it). Derived during render — the supported adjust-state-on-change
+  // pattern the rail already uses — rather than in an effect.
+  const [caseFilePhase, setCaseFilePhase] = useState(state.phase)
+  if (caseFilePhase !== state.phase) {
+    setCaseFilePhase(state.phase)
+    if (caseFileOpen) setCaseFileOpen(false)
+  }
 
   // The bed for this case, and the resolved scene state that drives its gain.
   // Only rain (Case 77) and dust (Case 81) are synthesized; a weatherless case
@@ -321,6 +335,8 @@ export default function App() {
           {state.phase === 'investigation' && (
             <Investigation
               state={state}
+              caseFileOpen={caseFileOpen}
+              onCaseFileOpenChange={setCaseFileOpen}
               depositionEntry={depositionEntry}
               onDepositionEntryChange={setDepositionEntry}
               onAcousticTreatmentChange={setSpatialTreatment}
@@ -357,9 +373,23 @@ export default function App() {
             />
           )}
         </section>
-
-        <CaseRail state={state} />
       </main>
+
+      {/* The summon has exactly one mount at any moment: the investigation puts
+          it on the scene chrome beside the location detail and the concourse
+          return; every other case surface — which no longer carries a rail
+          column of its own — gets it docked in the shell. */}
+      {state.phase !== 'investigation' && (
+        <CaseFileSummon
+          state={state}
+          onOpen={() => setCaseFileOpen(true)}
+          className="casefile-summon--shell"
+        />
+      )}
+
+      {caseFileOpen && (
+        <CaseFileDrawer state={state} onClose={() => setCaseFileOpen(false)} />
+      )}
 
       <p className="sr-only" aria-live="polite" aria-atomic="true">
         {state.announcement}

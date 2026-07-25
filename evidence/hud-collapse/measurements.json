@@ -1,0 +1,2608 @@
+{
+  "url": "http://127.0.0.1:3000/",
+  "capturedAt": "2026-07-25T19:20:07.484Z",
+  "node": "v24.18.0",
+  "checks": [
+    {
+      "step": "1280x800 · case-layout is a single scene-dominant column",
+      "pass": true,
+      "detail": {
+        "columns": "1280px",
+        "width": 1280
+      }
+    },
+    {
+      "step": "1280x800 · no rail column in the shell",
+      "pass": true,
+      "detail": {
+        "railsInShell": 0
+      }
+    },
+    {
+      "step": "1280x800 · the rail mobile toggle is retired",
+      "pass": true,
+      "detail": {
+        "toggles": 0
+      }
+    },
+    {
+      "step": "1280x800 · Field→Memory→Tribunal breadcrumb DROPPED",
+      "pass": true,
+      "detail": {
+        "breadcrumbs": 0
+      }
+    },
+    {
+      "step": "1280x800 · page-label copy DROPPED from view",
+      "pass": true,
+      "detail": {
+        "commandCopy": 0
+      }
+    },
+    {
+      "step": "1280x800 · filed-model block no longer in the dock",
+      "pass": true,
+      "detail": {
+        "inDock": 0
+      }
+    },
+    {
+      "step": "1280x800 · <h1 id=\"field-heading\"> survives as sr-only",
+      "pass": true,
+      "detail": {
+        "class": "sr-only",
+        "box": {
+          "w": 1,
+          "h": 1
+        }
+      }
+    },
+    {
+      "step": "1280x800 · site label KEPT (world caption)",
+      "pass": true,
+      "detail": {
+        "caption": "Civic Archive concourseSelect a thresholdDrag to look · sele"
+      }
+    },
+    {
+      "step": "1280x800 · objectives counter KEPT",
+      "pass": true,
+      "detail": {
+        "objectives": 1
+      }
+    },
+    {
+      "step": "1280x800 · threshold line KEPT before the first filing",
+      "pass": true,
+      "detail": {
+        "threshold": 1
+      }
+    },
+    {
+      "step": "1280x800 · alarm chip absent while alarm is 0",
+      "pass": true,
+      "detail": {
+        "chips": 0
+      }
+    },
+    {
+      "step": "1280x800 · fieldCta dock KEPT",
+      "pass": true,
+      "detail": {
+        "docks": 1
+      }
+    },
+    {
+      "step": "1280x800 · exactly one \"Case file\" summon, carrying its live counts",
+      "pass": true,
+      "detail": {
+        "summons": [
+          "Case file0 evidence · 1 events"
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · the collapsed page fits without a scrollbar",
+      "pass": true,
+      "detail": {
+        "scrollHeight": 800,
+        "innerHeight": 800
+      }
+    },
+    {
+      "step": "375x812 · case-layout is a single scene-dominant column",
+      "pass": true,
+      "detail": {
+        "columns": "375px",
+        "width": 375
+      }
+    },
+    {
+      "step": "375x812 · no rail column in the shell",
+      "pass": true,
+      "detail": {
+        "railsInShell": 0
+      }
+    },
+    {
+      "step": "375x812 · the rail mobile toggle is retired",
+      "pass": true,
+      "detail": {
+        "toggles": 0
+      }
+    },
+    {
+      "step": "375x812 · Field→Memory→Tribunal breadcrumb DROPPED",
+      "pass": true,
+      "detail": {
+        "breadcrumbs": 0
+      }
+    },
+    {
+      "step": "375x812 · page-label copy DROPPED from view",
+      "pass": true,
+      "detail": {
+        "commandCopy": 0
+      }
+    },
+    {
+      "step": "375x812 · filed-model block no longer in the dock",
+      "pass": true,
+      "detail": {
+        "inDock": 0
+      }
+    },
+    {
+      "step": "375x812 · <h1 id=\"field-heading\"> survives as sr-only",
+      "pass": true,
+      "detail": {
+        "class": "sr-only",
+        "box": {
+          "w": 1,
+          "h": 1
+        }
+      }
+    },
+    {
+      "step": "375x812 · site label KEPT (world caption)",
+      "pass": true,
+      "detail": {
+        "caption": "Civic Archive concourseSelect a thresholdDrag to look · sele"
+      }
+    },
+    {
+      "step": "375x812 · objectives counter KEPT",
+      "pass": true,
+      "detail": {
+        "objectives": 1
+      }
+    },
+    {
+      "step": "375x812 · threshold line KEPT before the first filing",
+      "pass": true,
+      "detail": {
+        "threshold": 1
+      }
+    },
+    {
+      "step": "375x812 · alarm chip absent while alarm is 0",
+      "pass": true,
+      "detail": {
+        "chips": 0
+      }
+    },
+    {
+      "step": "375x812 · fieldCta dock KEPT",
+      "pass": true,
+      "detail": {
+        "docks": 1
+      }
+    },
+    {
+      "step": "375x812 · exactly one \"Case file\" summon, carrying its live counts",
+      "pass": true,
+      "detail": {
+        "summons": [
+          "Case file0 evidence · 1 events"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · narrow layout scrolls as a document (recorded, not a gate)",
+      "pass": true,
+      "detail": {
+        "scrollHeight": 1231,
+        "innerHeight": 812
+      }
+    },
+    {
+      "step": "1280x800 · the \"Case file\" summon opens the drawer",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "step": "1280x800 · drawer is role=dialog + aria-modal, labelled by its own heading",
+      "pass": true,
+      "detail": {
+        "role": "dialog",
+        "ariaModal": "true",
+        "labelledBy": "casefile-heading",
+        "headingText": "Case file",
+        "box": {
+          "w": 520,
+          "h": 800,
+          "left": 760,
+          "right": 1280
+        },
+        "viewportWidth": 1280,
+        "dockedRight": true,
+        "fullSheet": false,
+        "opacity": "1",
+        "transform": "none",
+        "animationName": "none",
+        "animationFillMode": "none",
+        "portalBackground": "oklch(0 0 0 / 0.52)",
+        "tabs": [
+          {
+            "text": "case",
+            "pressed": "true",
+            "controls": "rail-panel-case",
+            "id": "rail-tab-case",
+            "h": 48
+          },
+          {
+            "text": "Evidence 0",
+            "pressed": "false",
+            "controls": "rail-panel-evidence",
+            "id": "rail-tab-evidence",
+            "h": 48
+          },
+          {
+            "text": "log",
+            "pressed": "false",
+            "controls": "rail-panel-log",
+            "id": "rail-tab-log",
+            "h": 48
+          },
+          {
+            "text": "people",
+            "pressed": "false",
+            "controls": "rail-panel-people",
+            "id": "rail-tab-people",
+            "h": 48
+          }
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · right-docked drawer (not a full sheet) at ≥900px",
+      "pass": true,
+      "detail": {
+        "w": 520,
+        "h": 800,
+        "left": 760,
+        "right": 1280
+      }
+    },
+    {
+      "step": "1280x800 · drawer rests visible (no opacity+fill:both reveal)",
+      "pass": true,
+      "detail": {
+        "opacity": "1",
+        "animationName": "none",
+        "fill": "none"
+      }
+    },
+    {
+      "step": "1280x800 · four tabs, aria-wired",
+      "pass": true,
+      "detail": {
+        "tabs": [
+          {
+            "text": "case",
+            "pressed": "true",
+            "controls": "rail-panel-case",
+            "id": "rail-tab-case",
+            "h": 48
+          },
+          {
+            "text": "Evidence 0",
+            "pressed": "false",
+            "controls": "rail-panel-evidence",
+            "id": "rail-tab-evidence",
+            "h": 48
+          },
+          {
+            "text": "log",
+            "pressed": "false",
+            "controls": "rail-panel-log",
+            "id": "rail-tab-log",
+            "h": 48
+          },
+          {
+            "text": "people",
+            "pressed": "false",
+            "controls": "rail-panel-people",
+            "id": "rail-tab-people",
+            "h": 48
+          }
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · every tab meets the 44px target",
+      "pass": true,
+      "detail": {
+        "heights": [
+          48,
+          48,
+          48,
+          48
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · tab \"evidence\" shows exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-evidence"
+        ],
+        "pressed": [
+          "rail-tab-evidence"
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · tab \"log\" shows exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-log"
+        ],
+        "pressed": [
+          "rail-tab-log"
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · tab \"people\" shows exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-people"
+        ],
+        "pressed": [
+          "rail-tab-people"
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · dossier heading is the diegetic line",
+      "pass": true,
+      "detail": {
+        "heading": "The people on this case"
+      }
+    },
+    {
+      "step": "1280x800 · one card per presence, with role, principle and stance",
+      "pass": true,
+      "detail": {
+        "cards": 4,
+        "names": [
+          "The Registrar",
+          "The Shepherd",
+          "The Defector",
+          "The Small Archivist"
+        ],
+        "stances": [
+          "uncertain",
+          "uncertain",
+          "uncertain",
+          "uncertain"
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · sheet portraits ~120px, and this is the one surface exposing their authored alt",
+      "pass": true,
+      "detail": {
+        "width": 120,
+        "alts": [
+          "Roster portrait of the Registrar, custodian of legal continuity.",
+          "Roster portrait of the Shepherd, care-ward advocate.",
+          "Roster portrait of the Defector, compromised systems guide.",
+          "Roster portrait of the Small Archivist, collector of missing categories."
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · empty record reads exactly \"Nothing said on the record yet.\"",
+      "pass": true,
+      "detail": {
+        "empties": [
+          "Nothing said on the record yet.",
+          "Nothing said on the record yet.",
+          "Nothing said on the record yet.",
+          "Nothing said on the record yet."
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · the dossier animates nothing (summoned = already happened)",
+      "pass": true,
+      "detail": {
+        "animatedNodes": 0
+      }
+    },
+    {
+      "step": "AT name counts · people-panel-1280x800 — every named persona appears exactly once",
+      "pass": true,
+      "detail": {
+        "selector": "#rail-panel-people",
+        "counts": {
+          "The Registrar": 1,
+          "The Shepherd": 1,
+          "The Defector": 1,
+          "The Small Archivist": 1
+        }
+      }
+    },
+    {
+      "step": "375x812 · the \"Case file\" summon opens the drawer",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "step": "375x812 · drawer is role=dialog + aria-modal, labelled by its own heading",
+      "pass": true,
+      "detail": {
+        "role": "dialog",
+        "ariaModal": "true",
+        "labelledBy": "casefile-heading",
+        "headingText": "Case file",
+        "box": {
+          "w": 375,
+          "h": 812,
+          "left": 0,
+          "right": 375
+        },
+        "viewportWidth": 375,
+        "dockedRight": true,
+        "fullSheet": true,
+        "opacity": "1",
+        "transform": "none",
+        "animationName": "none",
+        "animationFillMode": "none",
+        "portalBackground": "oklch(0 0 0 / 0.52)",
+        "tabs": [
+          {
+            "text": "case",
+            "pressed": "true",
+            "controls": "rail-panel-case",
+            "id": "rail-tab-case",
+            "h": 48
+          },
+          {
+            "text": "Evidence 0",
+            "pressed": "false",
+            "controls": "rail-panel-evidence",
+            "id": "rail-tab-evidence",
+            "h": 48
+          },
+          {
+            "text": "log",
+            "pressed": "false",
+            "controls": "rail-panel-log",
+            "id": "rail-tab-log",
+            "h": 48
+          },
+          {
+            "text": "people",
+            "pressed": "false",
+            "controls": "rail-panel-people",
+            "id": "rail-tab-people",
+            "h": 48
+          }
+        ]
+      }
+    },
+    {
+      "step": "375x812 · full-height sheet below 700px",
+      "pass": true,
+      "detail": {
+        "w": 375,
+        "h": 812,
+        "left": 0,
+        "right": 375
+      }
+    },
+    {
+      "step": "375x812 · drawer rests visible (no opacity+fill:both reveal)",
+      "pass": true,
+      "detail": {
+        "opacity": "1",
+        "animationName": "none",
+        "fill": "none"
+      }
+    },
+    {
+      "step": "375x812 · four tabs, aria-wired",
+      "pass": true,
+      "detail": {
+        "tabs": [
+          {
+            "text": "case",
+            "pressed": "true",
+            "controls": "rail-panel-case",
+            "id": "rail-tab-case",
+            "h": 48
+          },
+          {
+            "text": "Evidence 0",
+            "pressed": "false",
+            "controls": "rail-panel-evidence",
+            "id": "rail-tab-evidence",
+            "h": 48
+          },
+          {
+            "text": "log",
+            "pressed": "false",
+            "controls": "rail-panel-log",
+            "id": "rail-tab-log",
+            "h": 48
+          },
+          {
+            "text": "people",
+            "pressed": "false",
+            "controls": "rail-panel-people",
+            "id": "rail-tab-people",
+            "h": 48
+          }
+        ]
+      }
+    },
+    {
+      "step": "375x812 · every tab meets the 44px target",
+      "pass": true,
+      "detail": {
+        "heights": [
+          48,
+          48,
+          48,
+          48
+        ]
+      }
+    },
+    {
+      "step": "375x812 · tab \"evidence\" shows exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-evidence"
+        ],
+        "pressed": [
+          "rail-tab-evidence"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · tab \"log\" shows exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-log"
+        ],
+        "pressed": [
+          "rail-tab-log"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · tab \"people\" shows exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-people"
+        ],
+        "pressed": [
+          "rail-tab-people"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · dossier heading is the diegetic line",
+      "pass": true,
+      "detail": {
+        "heading": "The people on this case"
+      }
+    },
+    {
+      "step": "375x812 · one card per presence, with role, principle and stance",
+      "pass": true,
+      "detail": {
+        "cards": 4,
+        "names": [
+          "The Registrar",
+          "The Shepherd",
+          "The Defector",
+          "The Small Archivist"
+        ],
+        "stances": [
+          "uncertain",
+          "uncertain",
+          "uncertain",
+          "uncertain"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · sheet portraits ~120px, and this is the one surface exposing their authored alt",
+      "pass": true,
+      "detail": {
+        "width": 120,
+        "alts": [
+          "Roster portrait of the Registrar, custodian of legal continuity.",
+          "Roster portrait of the Shepherd, care-ward advocate.",
+          "Roster portrait of the Defector, compromised systems guide.",
+          "Roster portrait of the Small Archivist, collector of missing categories."
+        ]
+      }
+    },
+    {
+      "step": "375x812 · empty record reads exactly \"Nothing said on the record yet.\"",
+      "pass": true,
+      "detail": {
+        "empties": [
+          "Nothing said on the record yet.",
+          "Nothing said on the record yet.",
+          "Nothing said on the record yet.",
+          "Nothing said on the record yet."
+        ]
+      }
+    },
+    {
+      "step": "375x812 · the dossier animates nothing (summoned = already happened)",
+      "pass": true,
+      "detail": {
+        "animatedNodes": 0
+      }
+    },
+    {
+      "step": "AT name counts · people-panel-375x812 — every named persona appears exactly once",
+      "pass": true,
+      "detail": {
+        "selector": "#rail-panel-people",
+        "counts": {
+          "The Registrar": 1,
+          "The Shepherd": 1,
+          "The Defector": 1,
+          "The Small Archivist": 1
+        }
+      }
+    },
+    {
+      "step": "exclusivity · no dialog at rest",
+      "pass": true,
+      "detail": {
+        "count": 0,
+        "classes": []
+      }
+    },
+    {
+      "step": "exclusivity · location detail open → exactly one aria-modal",
+      "pass": true,
+      "detail": {
+        "count": 1,
+        "classes": [
+          "scene-detail-drawer"
+        ]
+      }
+    },
+    {
+      "step": "exclusivity · case file open → exactly one aria-modal",
+      "pass": true,
+      "detail": {
+        "count": 1,
+        "classes": [
+          "casefile-drawer"
+        ]
+      }
+    },
+    {
+      "step": "exclusivity · summoning the other drawer while one is open still leaves exactly one",
+      "pass": true,
+      "detail": {
+        "forced": {
+          "ok": true
+        },
+        "count": 1,
+        "classes": [
+          "scene-detail-drawer"
+        ]
+      }
+    },
+    {
+      "step": "exclusivity · Escape leaves no dialog behind",
+      "pass": true,
+      "detail": {
+        "count": 0,
+        "classes": []
+      }
+    },
+    {
+      "step": "casefile 1280x800 · focus lands inside the dialog",
+      "pass": true,
+      "detail": {
+        "active": {
+          "tag": "DIV",
+          "cls": "casefile-drawer",
+          "label": "Held on this caseCase fileClose ✕caseEvidence 0logpeopleActive d"
+        }
+      }
+    },
+    {
+      "step": "casefile 1280x800 · Tab cycles inside without escaping",
+      "pass": true,
+      "detail": {
+        "cycle": 7,
+        "focusableCount": 5,
+        "escaped": 0,
+        "toBody": 0
+      }
+    },
+    {
+      "step": "casefile 1280x800 · Shift+Tab cycles inside too",
+      "pass": true,
+      "detail": {
+        "backEscaped": 0
+      }
+    },
+    {
+      "step": "casefile 1280x800 · Escape returns focus to the summoning button, never <body>",
+      "pass": true,
+      "detail": {
+        "returned": {
+          "tag": "BUTTON",
+          "cls": "casefile-summon",
+          "label": "Case file0 evidence · 1 events"
+        },
+        "returnedOk": {
+          "ok": true,
+          "cls": "casefile-summon"
+        }
+      }
+    },
+    {
+      "step": "casefile 1280x800 · Escape closed the dialog",
+      "pass": true,
+      "detail": {
+        "count": 0,
+        "classes": []
+      }
+    },
+    {
+      "step": "detail 1280x800 · focus lands inside the dialog",
+      "pass": true,
+      "detail": {
+        "active": {
+          "tag": "DIV",
+          "cls": "scene-detail-drawer",
+          "label": "Location detailB · Care ward 12Close ✕77-A is awake, articulate,"
+        }
+      }
+    },
+    {
+      "step": "detail 1280x800 · Tab cycles inside without escaping",
+      "pass": true,
+      "detail": {
+        "cycle": 3,
+        "focusableCount": 1,
+        "escaped": 0,
+        "toBody": 0
+      }
+    },
+    {
+      "step": "detail 1280x800 · Shift+Tab cycles inside too",
+      "pass": true,
+      "detail": {
+        "backEscaped": 0
+      }
+    },
+    {
+      "step": "detail 1280x800 · Escape returns focus to the summoning button, never <body>",
+      "pass": true,
+      "detail": {
+        "returned": {
+          "tag": "BUTTON",
+          "cls": "scene-detail-summon",
+          "label": "Location detail"
+        },
+        "returnedOk": {
+          "ok": true,
+          "cls": "scene-detail-summon"
+        }
+      }
+    },
+    {
+      "step": "detail 1280x800 · Escape closed the dialog",
+      "pass": true,
+      "detail": {
+        "count": 0,
+        "classes": []
+      }
+    },
+    {
+      "step": "casefile 375x812 · focus lands inside the dialog",
+      "pass": true,
+      "detail": {
+        "active": {
+          "tag": "DIV",
+          "cls": "casefile-drawer",
+          "label": "Held on this caseCase fileClose ✕caseEvidence 0logpeopleActive d"
+        }
+      }
+    },
+    {
+      "step": "casefile 375x812 · Tab cycles inside without escaping",
+      "pass": true,
+      "detail": {
+        "cycle": 7,
+        "focusableCount": 5,
+        "escaped": 0,
+        "toBody": 0
+      }
+    },
+    {
+      "step": "casefile 375x812 · Shift+Tab cycles inside too",
+      "pass": true,
+      "detail": {
+        "backEscaped": 0
+      }
+    },
+    {
+      "step": "casefile 375x812 · Escape returns focus to the summoning button, never <body>",
+      "pass": true,
+      "detail": {
+        "returned": {
+          "tag": "BUTTON",
+          "cls": "casefile-summon",
+          "label": "Case file0 evidence · 1 events"
+        },
+        "returnedOk": {
+          "ok": true,
+          "cls": "casefile-summon"
+        }
+      }
+    },
+    {
+      "step": "casefile 375x812 · Escape closed the dialog",
+      "pass": true,
+      "detail": {
+        "count": 0,
+        "classes": []
+      }
+    },
+    {
+      "step": "1280x800 · plate chrome: each control's visual centre activates THAT control",
+      "pass": true,
+      "detail": [
+        {
+          "sel": ".world-return",
+          "present": true,
+          "box": {
+            "w": 174,
+            "h": 44,
+            "top": 162,
+            "left": 38,
+            "right": 212
+          },
+          "hitsIntended": true,
+          "hitClass": "world-return"
+        },
+        {
+          "sel": ".casefile-summon",
+          "present": true,
+          "box": {
+            "w": 153,
+            "h": 44,
+            "top": 162,
+            "left": 498,
+            "right": 651
+          },
+          "hitsIntended": true,
+          "hitClass": "casefile-summon"
+        },
+        {
+          "sel": ".scene-detail-summon",
+          "present": true,
+          "box": {
+            "w": 135,
+            "h": 40,
+            "top": 162,
+            "left": 659,
+            "right": 794
+          },
+          "hitsIntended": true,
+          "hitClass": "scene-detail-summon"
+        }
+      ]
+    },
+    {
+      "step": "1280x800 · no two plate-chrome controls overlap",
+      "pass": true,
+      "detail": {
+        "overlaps": []
+      }
+    },
+    {
+      "step": "1280x800 · clicking \"Case file\" opens the case file and nothing else",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "step": "1280x800 · clicking \"Location detail\" opens the location detail and nothing else",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "step": "1280x800 · drawer tab bar: each tab's centre hits that tab",
+      "pass": true,
+      "detail": [
+        {
+          "id": "rail-tab-case",
+          "hitsIntended": true,
+          "hitId": "rail-tab-case",
+          "box": {
+            "w": 130,
+            "h": 48
+          }
+        },
+        {
+          "id": "rail-tab-evidence",
+          "hitsIntended": true,
+          "hitId": "rail-tab-evidence",
+          "box": {
+            "w": 130,
+            "h": 48
+          }
+        },
+        {
+          "id": "rail-tab-log",
+          "hitsIntended": true,
+          "hitId": "rail-tab-log",
+          "box": {
+            "w": 130,
+            "h": 48
+          }
+        },
+        {
+          "id": "rail-tab-people",
+          "hitsIntended": true,
+          "hitId": "rail-tab-people",
+          "box": {
+            "w": 130,
+            "h": 48
+          }
+        }
+      ]
+    },
+    {
+      "step": "1280x800 · tab bar sweep: clicking \"case\" opens only \"case\"",
+      "pass": true,
+      "detail": {
+        "panels": 1,
+        "panelId": "rail-panel-case",
+        "pressed": [
+          "rail-tab-case"
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · tab bar sweep: clicking \"evidence\" opens only \"evidence\"",
+      "pass": true,
+      "detail": {
+        "panels": 1,
+        "panelId": "rail-panel-evidence",
+        "pressed": [
+          "rail-tab-evidence"
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · tab bar sweep: clicking \"log\" opens only \"log\"",
+      "pass": true,
+      "detail": {
+        "panels": 1,
+        "panelId": "rail-panel-log",
+        "pressed": [
+          "rail-tab-log"
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · tab bar sweep: clicking \"people\" opens only \"people\"",
+      "pass": true,
+      "detail": {
+        "panels": 1,
+        "panelId": "rail-panel-people",
+        "pressed": [
+          "rail-tab-people"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · plate chrome: each control's visual centre activates THAT control",
+      "pass": true,
+      "detail": [
+        {
+          "sel": ".world-return",
+          "present": true,
+          "box": {
+            "w": 157,
+            "h": 44,
+            "top": 171,
+            "left": 10,
+            "right": 167
+          },
+          "hitsIntended": true,
+          "hitClass": "world-return"
+        },
+        {
+          "sel": ".casefile-summon",
+          "present": true,
+          "box": {
+            "w": 139,
+            "h": 44,
+            "top": 223,
+            "left": 100,
+            "right": 239
+          },
+          "hitsIntended": true,
+          "hitClass": "casefile-summon"
+        },
+        {
+          "sel": ".scene-detail-summon",
+          "present": true,
+          "box": {
+            "w": 120,
+            "h": 40,
+            "top": 223,
+            "left": 245,
+            "right": 365
+          },
+          "hitsIntended": true,
+          "hitClass": "scene-detail-summon"
+        }
+      ]
+    },
+    {
+      "step": "375x812 · no two plate-chrome controls overlap",
+      "pass": true,
+      "detail": {
+        "overlaps": []
+      }
+    },
+    {
+      "step": "375x812 · clicking \"Case file\" opens the case file and nothing else",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "step": "375x812 · clicking \"Location detail\" opens the location detail and nothing else",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "step": "375x812 · drawer tab bar: each tab's centre hits that tab",
+      "pass": true,
+      "detail": [
+        {
+          "id": "rail-tab-case",
+          "hitsIntended": true,
+          "hitId": "rail-tab-case",
+          "box": {
+            "w": 94,
+            "h": 48
+          }
+        },
+        {
+          "id": "rail-tab-evidence",
+          "hitsIntended": true,
+          "hitId": "rail-tab-evidence",
+          "box": {
+            "w": 94,
+            "h": 48
+          }
+        },
+        {
+          "id": "rail-tab-log",
+          "hitsIntended": true,
+          "hitId": "rail-tab-log",
+          "box": {
+            "w": 94,
+            "h": 48
+          }
+        },
+        {
+          "id": "rail-tab-people",
+          "hitsIntended": true,
+          "hitId": "rail-tab-people",
+          "box": {
+            "w": 94,
+            "h": 48
+          }
+        }
+      ]
+    },
+    {
+      "step": "375x812 · tab bar sweep: clicking \"case\" opens only \"case\"",
+      "pass": true,
+      "detail": {
+        "panels": 1,
+        "panelId": "rail-panel-case",
+        "pressed": [
+          "rail-tab-case"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · tab bar sweep: clicking \"evidence\" opens only \"evidence\"",
+      "pass": true,
+      "detail": {
+        "panels": 1,
+        "panelId": "rail-panel-evidence",
+        "pressed": [
+          "rail-tab-evidence"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · tab bar sweep: clicking \"log\" opens only \"log\"",
+      "pass": true,
+      "detail": {
+        "panels": 1,
+        "panelId": "rail-panel-log",
+        "pressed": [
+          "rail-tab-log"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · tab bar sweep: clicking \"people\" opens only \"people\"",
+      "pass": true,
+      "detail": {
+        "panels": 1,
+        "panelId": "rail-panel-people",
+        "pressed": [
+          "rail-tab-people"
+        ]
+      }
+    },
+    {
+      "step": "alarm 0 · no chip on the chrome (a \"quiet\" chip would be the noise the collapse removes)",
+      "pass": true,
+      "detail": {
+        "present": false
+      }
+    },
+    {
+      "step": "alarm 1 · chip present, in the coral text-risk convention",
+      "pass": true,
+      "detail": {
+        "present": true,
+        "text": "1 tracecivic alarm",
+        "color": "oklch(0.66 0.17 30)",
+        "classes": "text-risk",
+        "box": {
+          "w": 78,
+          "h": 27
+        }
+      }
+    },
+    {
+      "step": "alarm 3 · chip present, in the coral text-risk convention",
+      "pass": true,
+      "detail": {
+        "present": true,
+        "text": "3 tracescivic alarm",
+        "color": "oklch(0.66 0.17 30)",
+        "classes": "text-risk",
+        "box": {
+          "w": 78,
+          "h": 27
+        }
+      }
+    },
+    {
+      "step": "threshold · present before the first site is filed",
+      "pass": true,
+      "detail": {
+        "count": 1
+      }
+    },
+    {
+      "step": "threshold · retires after the first site is filed; objectives carry the fact",
+      "pass": true,
+      "detail": {
+        "threshold": 0,
+        "objectives": "1 / 2sitesNeededmodel",
+        "summon": "Case file1 evidence · 2 events",
+        "filed": 1
+      }
+    },
+    {
+      "step": "summon counts update live after a filing",
+      "pass": true,
+      "detail": {
+        "summon": "Case file1 evidence · 2 events"
+      }
+    },
+    {
+      "step": "dossier · a filed method puts a cited line on the speaking persona’s record",
+      "pass": true,
+      "detail": {
+        "withLines": [
+          {
+            "name": "The Shepherd",
+            "cites": [
+              "77-A was heard before she was measured"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "step": "dossier · citations render mono in --fog-dim",
+      "pass": true,
+      "detail": {
+        "fonts": [
+          "ui-monospace, SFMono-Regular, Consolas, monospace"
+        ]
+      }
+    },
+    {
+      "step": "AT name counts · people-panel-after-filing — every named persona appears exactly once",
+      "pass": true,
+      "detail": {
+        "selector": "#rail-panel-people",
+        "counts": {
+          "The Registrar": 1,
+          "The Shepherd": 1,
+          "The Defector": 1,
+          "The Small Archivist": 1
+        }
+      }
+    },
+    {
+      "step": "reduced motion · drawer has no animation and no transition, and is fully legible",
+      "pass": true,
+      "detail": {
+        "portalClass": "casefile-portal reduce-motion",
+        "animationName": "none",
+        "transition": "none",
+        "opacity": "1",
+        "transform": "none",
+        "visibleText": 197,
+        "osReduced": true
+      }
+    },
+    {
+      "step": "reduced motion · portal repeats the preference class at the boundary",
+      "pass": true,
+      "detail": {
+        "portalClass": "casefile-portal reduce-motion"
+      }
+    },
+    {
+      "step": "high contrast · portal repeats the class and the summon drops its blur",
+      "pass": true,
+      "detail": {
+        "portalClass": "casefile-portal high-contrast",
+        "drawerBg": "oklch(0.12 0.006 240)",
+        "summonBg": "oklch(0.09 0 0)",
+        "summonFilter": "none",
+        "portraitFilter": null
+      }
+    },
+    {
+      "step": "forced colours · the plate stands down and the currentColor sigil takes over",
+      "pass": true,
+      "detail": {
+        "active": true,
+        "plateOpacity": "0",
+        "markOpacity": "1",
+        "altStillPresent": "Roster portrait of the Registrar, custodian of legal continuity.",
+        "drawerBg": "rgb(0, 0, 0)",
+        "summonBg": "rgb(0, 0, 0)",
+        "dossierText": 753
+      }
+    },
+    {
+      "step": "forced colours · the sheet portrait keeps its authored alt in the tree",
+      "pass": true,
+      "detail": {
+        "alt": "Roster portrait of the Registrar, custodian of legal continuity.",
+        "textLength": 753
+      }
+    },
+    {
+      "step": "console proportions · Registry intake",
+      "pass": true,
+      "detail": {
+        "plate": {
+          "w": 792,
+          "h": 464
+        },
+        "console": {
+          "w": 792,
+          "h": 191
+        },
+        "sceneAbovePx": 273,
+        "maxHeight": "76%",
+        "naturalHeight": 190,
+        "scrolls": false
+      }
+    },
+    {
+      "step": "console proportions · Maintenance spine",
+      "pass": true,
+      "detail": {
+        "plate": {
+          "w": 792,
+          "h": 464
+        },
+        "console": {
+          "w": 792,
+          "h": 250
+        },
+        "sceneAbovePx": 214,
+        "maxHeight": "76%",
+        "naturalHeight": 249,
+        "scrolls": false
+      }
+    },
+    {
+      "step": "console proportions · The Small Archive",
+      "pass": true,
+      "detail": {
+        "plate": {
+          "w": 792,
+          "h": 464
+        },
+        "console": {
+          "w": 792,
+          "h": 220
+        },
+        "sceneAbovePx": 244,
+        "maxHeight": "76%",
+        "naturalHeight": 219,
+        "scrolls": false
+      }
+    },
+    {
+      "step": "console proportions · every docked tableau still fits without scrolling",
+      "pass": true,
+      "detail": {
+        "scrolls": {
+          "Registry intake": false,
+          "Maintenance spine": false,
+          "The Small Archive": false
+        }
+      }
+    },
+    {
+      "step": "375 · the plate is full-bleed",
+      "pass": true,
+      "detail": {
+        "w": 375,
+        "h": 300,
+        "left": 0,
+        "right": 375
+      }
+    },
+    {
+      "step": "375 · every authored zone anchor sits fully on-plate (the pilot’s crop closed)",
+      "pass": true,
+      "detail": [
+        {
+          "label": "CareLet 77-A tell one memory u",
+          "l": -21,
+          "r": -310
+        },
+        {
+          "label": "Coercive procedurePressure-tes",
+          "l": -315,
+          "r": -16
+        }
+      ]
+    },
+    {
+      "step": "375 · zone tap targets still ≥44px",
+      "pass": true,
+      "detail": [
+        {
+          "left": 21,
+          "right": 65,
+          "w": 44,
+          "h": 44
+        },
+        {
+          "left": 315,
+          "right": 359,
+          "w": 44,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "step": "375 · anchors stay on-plate under the 1.026 action-focus camera too",
+      "pass": true,
+      "detail": [
+        {
+          "focused": "CareLet 77-A tell one memo",
+          "rings": [
+            {
+              "overflowLeftPx": -19,
+              "overflowRightPx": -307
+            },
+            {
+              "overflowLeftPx": -322,
+              "overflowRightPx": -8
+            }
+          ]
+        },
+        {
+          "focused": "Coercive procedurePressure",
+          "rings": [
+            {
+              "overflowLeftPx": -13,
+              "overflowRightPx": -317
+            },
+            {
+              "overflowLeftPx": -312,
+              "overflowRightPx": -14
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "step": "375 · the case file becomes a full-height sheet",
+      "pass": true,
+      "detail": {
+        "w": 375,
+        "h": 812,
+        "vw": 375,
+        "vh": 812
+      }
+    },
+    {
+      "step": "shell summon · briefing: present, reachable, and occludes no control at any scroll",
+      "pass": true,
+      "detail": {
+        "positions": [
+          {
+            "scrollY": 0,
+            "swept": 10,
+            "occluded": []
+          },
+          {
+            "scrollY": 205,
+            "swept": 12,
+            "occluded": []
+          },
+          {
+            "scrollY": 205,
+            "swept": 12,
+            "occluded": []
+          }
+        ],
+        "summonBox": {
+          "w": 153,
+          "h": 44
+        },
+        "summonHitsItself": true,
+        "summonText": "Case file0 evidence · 0 events"
+      }
+    },
+    {
+      "step": "shell summon · reconstruction: present, reachable, and occludes no control at any scroll",
+      "pass": true,
+      "detail": {
+        "positions": [
+          {
+            "scrollY": 0,
+            "swept": 10,
+            "occluded": []
+          },
+          {
+            "scrollY": 345,
+            "swept": 12,
+            "occluded": []
+          },
+          {
+            "scrollY": 345,
+            "swept": 12,
+            "occluded": []
+          }
+        ],
+        "summonBox": {
+          "w": 153,
+          "h": 44
+        },
+        "summonHitsItself": true,
+        "summonText": "Case file1 evidence · 0 events"
+      }
+    },
+    {
+      "step": "shell summon · tribunal: present, reachable, and occludes no control at any scroll",
+      "pass": true,
+      "detail": {
+        "positions": [
+          {
+            "scrollY": 0,
+            "swept": 9,
+            "occluded": []
+          },
+          {
+            "scrollY": 763,
+            "swept": 11,
+            "occluded": []
+          },
+          {
+            "scrollY": 763,
+            "swept": 11,
+            "occluded": []
+          }
+        ],
+        "summonBox": {
+          "w": 153,
+          "h": 44
+        },
+        "summonHitsItself": true,
+        "summonText": "Case file3 evidence · 0 events"
+      }
+    },
+    {
+      "step": "shell summon · debrief: present, reachable, and occludes no control at any scroll",
+      "pass": true,
+      "detail": {
+        "positions": [
+          {
+            "scrollY": 0,
+            "swept": 7,
+            "occluded": []
+          },
+          {
+            "scrollY": 806,
+            "swept": 11,
+            "occluded": []
+          },
+          {
+            "scrollY": 812,
+            "swept": 11,
+            "occluded": []
+          }
+        ],
+        "summonBox": {
+          "w": 153,
+          "h": 44
+        },
+        "summonHitsItself": true,
+        "summonText": "Case file3 evidence · 0 events"
+      }
+    }
+  ],
+  "shots": [
+    "01-concourse-collapsed-1280x800.png",
+    "01-concourse-collapsed-375x812.png",
+    "02-casefile-case-tab-1280x800.png",
+    "03-casefile-evidence-tab-1280x800.png",
+    "03-casefile-log-tab-1280x800.png",
+    "03-casefile-people-tab-1280x800.png",
+    "04-casefile-people-empty-1280x800.png",
+    "02-casefile-case-tab-375x812.png",
+    "03-casefile-evidence-tab-375x812.png",
+    "03-casefile-log-tab-375x812.png",
+    "03-casefile-people-tab-375x812.png",
+    "04-casefile-people-empty-375x812.png",
+    "05-detail-drawer-open-1280x800.png",
+    "06-casefile-over-plate-1280x800.png",
+    "07-alarm-0-1280x800.png",
+    "07-alarm-1-1280x800.png",
+    "07-alarm-3-1280x800.png",
+    "08-after-first-filing-1280x800.png",
+    "09-casefile-people-with-lines-1280x800.png",
+    "10-reduced-motion-people-1280x800.png",
+    "11-high-contrast-people-1280x800.png",
+    "12-forced-colors-people-1280x800.png",
+    "13-room-console-registry-intake-1280x800.png",
+    "13-room-console-maintenance-spine-1280x800.png",
+    "13-room-console-the-small-archive-1280x800.png",
+    "14-narrow-care-ward-375x812.png",
+    "14b-narrow-emphasis-0-375x812.png",
+    "14b-narrow-emphasis-1-375x812.png",
+    "15-narrow-casefile-sheet-375x812.png",
+    "16-narrow-casefile-people-375x812.png",
+    "17-shell-summon-briefing-1280x800.png",
+    "17-shell-summon-reconstruction-1280x800.png",
+    "17-shell-summon-tribunal-1280x800.png",
+    "17-shell-summon-debrief-1280x800.png"
+  ],
+  "measurements": {
+    "layout:1280x800": {
+      "caseLayoutColumns": "1280px",
+      "caseLayoutWidth": 1280,
+      "railsInShell": 0,
+      "railMobileToggles": 0,
+      "breadcrumbs": 0,
+      "commandCopy": 0,
+      "filedModelInDock": 0,
+      "h1Present": true,
+      "h1Class": "sr-only",
+      "h1Box": {
+        "w": 1,
+        "h": 1
+      },
+      "threshold": 1,
+      "objectives": 1,
+      "alarmChips": 0,
+      "worldCaption": "Civic Archive concourseSelect a thresholdDrag to look · sele",
+      "ctaDock": 1,
+      "summons": [
+        "Case file0 evidence · 1 events"
+      ],
+      "plate": {
+        "w": 792,
+        "h": 464
+      },
+      "pageScrolls": false,
+      "scrollHeight": 800,
+      "innerHeight": 800
+    },
+    "layout:375x812": {
+      "caseLayoutColumns": "375px",
+      "caseLayoutWidth": 375,
+      "railsInShell": 0,
+      "railMobileToggles": 0,
+      "breadcrumbs": 0,
+      "commandCopy": 0,
+      "filedModelInDock": 0,
+      "h1Present": true,
+      "h1Class": "sr-only",
+      "h1Box": {
+        "w": 1,
+        "h": 1
+      },
+      "threshold": 1,
+      "objectives": 1,
+      "alarmChips": 0,
+      "worldCaption": "Civic Archive concourseSelect a thresholdDrag to look · sele",
+      "ctaDock": 1,
+      "summons": [
+        "Case file0 evidence · 1 events"
+      ],
+      "plate": {
+        "w": 375,
+        "h": 300
+      },
+      "pageScrolls": true,
+      "scrollHeight": 1231,
+      "innerHeight": 812
+    },
+    "drawer:1280x800": {
+      "role": "dialog",
+      "ariaModal": "true",
+      "labelledBy": "casefile-heading",
+      "headingText": "Case file",
+      "box": {
+        "w": 520,
+        "h": 800,
+        "left": 760,
+        "right": 1280
+      },
+      "viewportWidth": 1280,
+      "dockedRight": true,
+      "fullSheet": false,
+      "opacity": "1",
+      "transform": "none",
+      "animationName": "none",
+      "animationFillMode": "none",
+      "portalBackground": "oklch(0 0 0 / 0.52)",
+      "tabs": [
+        {
+          "text": "case",
+          "pressed": "true",
+          "controls": "rail-panel-case",
+          "id": "rail-tab-case",
+          "h": 48
+        },
+        {
+          "text": "Evidence 0",
+          "pressed": "false",
+          "controls": "rail-panel-evidence",
+          "id": "rail-tab-evidence",
+          "h": 48
+        },
+        {
+          "text": "log",
+          "pressed": "false",
+          "controls": "rail-panel-log",
+          "id": "rail-tab-log",
+          "h": 48
+        },
+        {
+          "text": "people",
+          "pressed": "false",
+          "controls": "rail-panel-people",
+          "id": "rail-tab-people",
+          "h": 48
+        }
+      ]
+    },
+    "dossier:1280x800": {
+      "heading": "The people on this case",
+      "cards": 4,
+      "names": [
+        "The Registrar",
+        "The Shepherd",
+        "The Defector",
+        "The Small Archivist"
+      ],
+      "roles": [
+        "Custodian of legal continuity",
+        "Care-ward advocate",
+        "Compromised systems guide",
+        "Collector of missing categories"
+      ],
+      "principles": [
+        "A person is a chain the city can verify.",
+        "Care recognizes a self before procedure does.",
+        "Every clean record is hiding who paid for it.",
+        "What you refuse to name still becomes evidence."
+      ],
+      "stances": [
+        "uncertain",
+        "uncertain",
+        "uncertain",
+        "uncertain"
+      ],
+      "sheetPortraits": 4,
+      "exposedAlts": [
+        "Roster portrait of the Registrar, custodian of legal continuity.",
+        "Roster portrait of the Shepherd, care-ward advocate.",
+        "Roster portrait of the Defector, compromised systems guide.",
+        "Roster portrait of the Small Archivist, collector of missing categories."
+      ],
+      "empties": [
+        "Nothing said on the record yet.",
+        "Nothing said on the record yet.",
+        "Nothing said on the record yet.",
+        "Nothing said on the record yet."
+      ],
+      "lineBlocks": 0,
+      "animatedNodes": 0,
+      "portraitWidth": 120
+    },
+    "atText:people-panel-1280x800": {
+      "text": "The people on this case Roster portrait of the Registrar, custodian of legal continuity. Registrar · standing credential The Registrar Custodian of legal continuity uncertain A person is a chain the city can verify. On the record this run Nothing said on the record yet. Roster portrait of the Shepherd, care-ward advocate. Care ward · standing credential The Shepherd Care-ward advocate uncertain Care recognizes a self before procedure does. On the record this run Nothing said on the record yet. Roster portrait of the Defector, compromised systems guide. Systems office · credential withdrawn The Defector Compromised systems guide uncertain Every clean record is hiding who paid for it. On the record this run Nothing said on the record yet. Roster portrait of the Small Archivist, collector of missing categories. No credential issued · shelf zero, kept by hand The Small Archivist Collector of missing categories uncertain What you refuse to name still becomes evidence. On the record this run Nothing said on the record yet.",
+      "counts": {
+        "The Registrar": 1,
+        "The Shepherd": 1,
+        "The Defector": 1,
+        "The Small Archivist": 1
+      }
+    },
+    "drawer:375x812": {
+      "role": "dialog",
+      "ariaModal": "true",
+      "labelledBy": "casefile-heading",
+      "headingText": "Case file",
+      "box": {
+        "w": 375,
+        "h": 812,
+        "left": 0,
+        "right": 375
+      },
+      "viewportWidth": 375,
+      "dockedRight": true,
+      "fullSheet": true,
+      "opacity": "1",
+      "transform": "none",
+      "animationName": "none",
+      "animationFillMode": "none",
+      "portalBackground": "oklch(0 0 0 / 0.52)",
+      "tabs": [
+        {
+          "text": "case",
+          "pressed": "true",
+          "controls": "rail-panel-case",
+          "id": "rail-tab-case",
+          "h": 48
+        },
+        {
+          "text": "Evidence 0",
+          "pressed": "false",
+          "controls": "rail-panel-evidence",
+          "id": "rail-tab-evidence",
+          "h": 48
+        },
+        {
+          "text": "log",
+          "pressed": "false",
+          "controls": "rail-panel-log",
+          "id": "rail-tab-log",
+          "h": 48
+        },
+        {
+          "text": "people",
+          "pressed": "false",
+          "controls": "rail-panel-people",
+          "id": "rail-tab-people",
+          "h": 48
+        }
+      ]
+    },
+    "dossier:375x812": {
+      "heading": "The people on this case",
+      "cards": 4,
+      "names": [
+        "The Registrar",
+        "The Shepherd",
+        "The Defector",
+        "The Small Archivist"
+      ],
+      "roles": [
+        "Custodian of legal continuity",
+        "Care-ward advocate",
+        "Compromised systems guide",
+        "Collector of missing categories"
+      ],
+      "principles": [
+        "A person is a chain the city can verify.",
+        "Care recognizes a self before procedure does.",
+        "Every clean record is hiding who paid for it.",
+        "What you refuse to name still becomes evidence."
+      ],
+      "stances": [
+        "uncertain",
+        "uncertain",
+        "uncertain",
+        "uncertain"
+      ],
+      "sheetPortraits": 4,
+      "exposedAlts": [
+        "Roster portrait of the Registrar, custodian of legal continuity.",
+        "Roster portrait of the Shepherd, care-ward advocate.",
+        "Roster portrait of the Defector, compromised systems guide.",
+        "Roster portrait of the Small Archivist, collector of missing categories."
+      ],
+      "empties": [
+        "Nothing said on the record yet.",
+        "Nothing said on the record yet.",
+        "Nothing said on the record yet.",
+        "Nothing said on the record yet."
+      ],
+      "lineBlocks": 0,
+      "animatedNodes": 0,
+      "portraitWidth": 120
+    },
+    "atText:people-panel-375x812": {
+      "text": "The people on this case Roster portrait of the Registrar, custodian of legal continuity. Registrar · standing credential The Registrar Custodian of legal continuity uncertain A person is a chain the city can verify. On the record this run Nothing said on the record yet. Roster portrait of the Shepherd, care-ward advocate. Care ward · standing credential The Shepherd Care-ward advocate uncertain Care recognizes a self before procedure does. On the record this run Nothing said on the record yet. Roster portrait of the Defector, compromised systems guide. Systems office · credential withdrawn The Defector Compromised systems guide uncertain Every clean record is hiding who paid for it. On the record this run Nothing said on the record yet. Roster portrait of the Small Archivist, collector of missing categories. No credential issued · shelf zero, kept by hand The Small Archivist Collector of missing categories uncertain What you refuse to name still becomes evidence. On the record this run Nothing said on the record yet.",
+      "counts": {
+        "The Registrar": 1,
+        "The Shepherd": 1,
+        "The Defector": 1,
+        "The Small Archivist": 1
+      }
+    },
+    "plateSweep:1280x800": {
+      "controls": [
+        {
+          "sel": ".world-return",
+          "present": true,
+          "box": {
+            "w": 174,
+            "h": 44,
+            "top": 162,
+            "left": 38,
+            "right": 212
+          },
+          "hitsIntended": true,
+          "hitClass": "world-return"
+        },
+        {
+          "sel": ".casefile-summon",
+          "present": true,
+          "box": {
+            "w": 153,
+            "h": 44,
+            "top": 162,
+            "left": 498,
+            "right": 651
+          },
+          "hitsIntended": true,
+          "hitClass": "casefile-summon"
+        },
+        {
+          "sel": ".scene-detail-summon",
+          "present": true,
+          "box": {
+            "w": 135,
+            "h": 40,
+            "top": 162,
+            "left": 659,
+            "right": 794
+          },
+          "hitsIntended": true,
+          "hitClass": "scene-detail-summon"
+        }
+      ],
+      "overlaps": [],
+      "tapTargetsOk": true
+    },
+    "tabSweep:1280x800": [
+      {
+        "id": "rail-tab-case",
+        "hitsIntended": true,
+        "hitId": "rail-tab-case",
+        "box": {
+          "w": 130,
+          "h": 48
+        }
+      },
+      {
+        "id": "rail-tab-evidence",
+        "hitsIntended": true,
+        "hitId": "rail-tab-evidence",
+        "box": {
+          "w": 130,
+          "h": 48
+        }
+      },
+      {
+        "id": "rail-tab-log",
+        "hitsIntended": true,
+        "hitId": "rail-tab-log",
+        "box": {
+          "w": 130,
+          "h": 48
+        }
+      },
+      {
+        "id": "rail-tab-people",
+        "hitsIntended": true,
+        "hitId": "rail-tab-people",
+        "box": {
+          "w": 130,
+          "h": 48
+        }
+      }
+    ],
+    "plateSweep:375x812": {
+      "controls": [
+        {
+          "sel": ".world-return",
+          "present": true,
+          "box": {
+            "w": 157,
+            "h": 44,
+            "top": 171,
+            "left": 10,
+            "right": 167
+          },
+          "hitsIntended": true,
+          "hitClass": "world-return"
+        },
+        {
+          "sel": ".casefile-summon",
+          "present": true,
+          "box": {
+            "w": 139,
+            "h": 44,
+            "top": 223,
+            "left": 100,
+            "right": 239
+          },
+          "hitsIntended": true,
+          "hitClass": "casefile-summon"
+        },
+        {
+          "sel": ".scene-detail-summon",
+          "present": true,
+          "box": {
+            "w": 120,
+            "h": 40,
+            "top": 223,
+            "left": 245,
+            "right": 365
+          },
+          "hitsIntended": true,
+          "hitClass": "scene-detail-summon"
+        }
+      ],
+      "overlaps": [],
+      "tapTargetsOk": true
+    },
+    "tabSweep:375x812": [
+      {
+        "id": "rail-tab-case",
+        "hitsIntended": true,
+        "hitId": "rail-tab-case",
+        "box": {
+          "w": 94,
+          "h": 48
+        }
+      },
+      {
+        "id": "rail-tab-evidence",
+        "hitsIntended": true,
+        "hitId": "rail-tab-evidence",
+        "box": {
+          "w": 94,
+          "h": 48
+        }
+      },
+      {
+        "id": "rail-tab-log",
+        "hitsIntended": true,
+        "hitId": "rail-tab-log",
+        "box": {
+          "w": 94,
+          "h": 48
+        }
+      },
+      {
+        "id": "rail-tab-people",
+        "hitsIntended": true,
+        "hitId": "rail-tab-people",
+        "box": {
+          "w": 94,
+          "h": 48
+        }
+      }
+    ],
+    "alarm:0": {
+      "present": false
+    },
+    "alarm:1": {
+      "present": true,
+      "text": "1 tracecivic alarm",
+      "color": "oklch(0.66 0.17 30)",
+      "classes": "text-risk",
+      "box": {
+        "w": 78,
+        "h": 27
+      }
+    },
+    "alarm:3": {
+      "present": true,
+      "text": "3 tracescivic alarm",
+      "color": "oklch(0.66 0.17 30)",
+      "classes": "text-risk",
+      "box": {
+        "w": 78,
+        "h": 27
+      }
+    },
+    "thresholdAfterFiling": {
+      "threshold": 0,
+      "objectives": "1 / 2sitesNeededmodel",
+      "summon": "Case file1 evidence · 2 events",
+      "filed": 1
+    },
+    "dossierAfterFiling": [
+      {
+        "name": "The Registrar",
+        "lines": [],
+        "empty": "Nothing said on the record yet."
+      },
+      {
+        "name": "The Shepherd",
+        "lines": [
+          {
+            "line": "“You let her finish before you measured her. She was a person in that ",
+            "cite": "77-A was heard before she was measured",
+            "citeFont": "ui-monospace, SFMono-Regular, Consolas, monospace",
+            "citeColor": "oklch(0.59 0.018 215)"
+          }
+        ],
+        "empty": null
+      },
+      {
+        "name": "The Defector",
+        "lines": [],
+        "empty": "Nothing said on the record yet."
+      },
+      {
+        "name": "The Small Archivist",
+        "lines": [],
+        "empty": "Nothing said on the record yet."
+      }
+    ],
+    "atText:people-panel-after-filing": {
+      "text": "The people on this case Roster portrait of the Registrar, custodian of legal continuity. Registrar · standing credential The Registrar Custodian of legal continuity uncertain A person is a chain the city can verify. On the record this run Nothing said on the record yet. Roster portrait of the Shepherd, care-ward advocate. Care ward · standing credential The Shepherd Care-ward advocate open Care recognizes a self before procedure does. On the record this run “You let her finish before you measured her. She was a person in that room, not a file. I’ll remember the order you chose.” 77-A was heard before she was measured Roster portrait of the Defector, compromised systems guide. Systems office · credential withdrawn The Defector Compromised systems guide uncertain Every clean record is hiding who paid for it. On the record this run Nothing said on the record yet. Roster portrait of the Small Archivist, collector of missing categories. No credential issued · shelf zero, kept by hand The Small Archivist Collector of missing categories uncertain What you refuse to name still becomes evidence. On the record this run Nothing said on the record yet.",
+      "counts": {
+        "The Registrar": 1,
+        "The Shepherd": 1,
+        "The Defector": 1,
+        "The Small Archivist": 1
+      }
+    },
+    "reducedMotion": {
+      "portalClass": "casefile-portal reduce-motion",
+      "animationName": "none",
+      "transition": "none",
+      "opacity": "1",
+      "transform": "none",
+      "visibleText": 197,
+      "osReduced": true
+    },
+    "highContrast": {
+      "portalClass": "casefile-portal high-contrast",
+      "drawerBg": "oklch(0.12 0.006 240)",
+      "summonBg": "oklch(0.09 0 0)",
+      "summonFilter": "none",
+      "portraitFilter": null
+    },
+    "forcedColors": {
+      "active": true,
+      "plateOpacity": "0",
+      "markOpacity": "1",
+      "altStillPresent": "Roster portrait of the Registrar, custodian of legal continuity.",
+      "drawerBg": "rgb(0, 0, 0)",
+      "summonBg": "rgb(0, 0, 0)",
+      "dossierText": 753
+    },
+    "consoleProportions": {
+      "Registry intake": {
+        "plate": {
+          "w": 792,
+          "h": 464
+        },
+        "console": {
+          "w": 792,
+          "h": 191
+        },
+        "sceneAbovePx": 273,
+        "maxHeight": "76%",
+        "naturalHeight": 190,
+        "scrolls": false
+      },
+      "Maintenance spine": {
+        "plate": {
+          "w": 792,
+          "h": 464
+        },
+        "console": {
+          "w": 792,
+          "h": 250
+        },
+        "sceneAbovePx": 214,
+        "maxHeight": "76%",
+        "naturalHeight": 249,
+        "scrolls": false
+      },
+      "The Small Archive": {
+        "plate": {
+          "w": 792,
+          "h": 464
+        },
+        "console": {
+          "w": 792,
+          "h": 220
+        },
+        "sceneAbovePx": 244,
+        "maxHeight": "76%",
+        "naturalHeight": 219,
+        "scrolls": false
+      }
+    },
+    "narrowAnchors": {
+      "plate": {
+        "w": 375,
+        "h": 300,
+        "left": 0,
+        "right": 375
+      },
+      "viewportWidth": 375,
+      "fullBleed": true,
+      "zones": [
+        {
+          "label": "CareLet 77-A tell one memory u",
+          "ring": {
+            "left": 21,
+            "right": 65,
+            "w": 44,
+            "h": 44
+          },
+          "overflowLeftPx": -21,
+          "overflowRightPx": -310,
+          "buttonInside": true,
+          "tapTarget": {
+            "w": 300,
+            "h": 119
+          }
+        },
+        {
+          "label": "Coercive procedurePressure-tes",
+          "ring": {
+            "left": 315,
+            "right": 359,
+            "w": 44,
+            "h": 44
+          },
+          "overflowLeftPx": -315,
+          "overflowRightPx": -16,
+          "buttonInside": true,
+          "tapTarget": {
+            "w": 300,
+            "h": 106
+          }
+        }
+      ]
+    },
+    "narrowAnchorsEmphasised": [
+      {
+        "focused": "CareLet 77-A tell one memo",
+        "rings": [
+          {
+            "overflowLeftPx": -19,
+            "overflowRightPx": -307
+          },
+          {
+            "overflowLeftPx": -322,
+            "overflowRightPx": -8
+          }
+        ]
+      },
+      {
+        "focused": "Coercive procedurePressure",
+        "rings": [
+          {
+            "overflowLeftPx": -13,
+            "overflowRightPx": -317
+          },
+          {
+            "overflowLeftPx": -312,
+            "overflowRightPx": -14
+          }
+        ]
+      }
+    ],
+    "shellSummon": {
+      "briefing": {
+        "positions": [
+          {
+            "scrollY": 0,
+            "swept": 10,
+            "occluded": []
+          },
+          {
+            "scrollY": 205,
+            "swept": 12,
+            "occluded": []
+          },
+          {
+            "scrollY": 205,
+            "swept": 12,
+            "occluded": []
+          }
+        ],
+        "summonBox": {
+          "w": 153,
+          "h": 44
+        },
+        "summonHitsItself": true,
+        "summonText": "Case file0 evidence · 0 events"
+      },
+      "reconstruction": {
+        "positions": [
+          {
+            "scrollY": 0,
+            "swept": 10,
+            "occluded": []
+          },
+          {
+            "scrollY": 345,
+            "swept": 12,
+            "occluded": []
+          },
+          {
+            "scrollY": 345,
+            "swept": 12,
+            "occluded": []
+          }
+        ],
+        "summonBox": {
+          "w": 153,
+          "h": 44
+        },
+        "summonHitsItself": true,
+        "summonText": "Case file1 evidence · 0 events"
+      },
+      "tribunal": {
+        "positions": [
+          {
+            "scrollY": 0,
+            "swept": 9,
+            "occluded": []
+          },
+          {
+            "scrollY": 763,
+            "swept": 11,
+            "occluded": []
+          },
+          {
+            "scrollY": 763,
+            "swept": 11,
+            "occluded": []
+          }
+        ],
+        "summonBox": {
+          "w": 153,
+          "h": 44
+        },
+        "summonHitsItself": true,
+        "summonText": "Case file3 evidence · 0 events"
+      },
+      "debrief": {
+        "positions": [
+          {
+            "scrollY": 0,
+            "swept": 7,
+            "occluded": []
+          },
+          {
+            "scrollY": 806,
+            "swept": 11,
+            "occluded": []
+          },
+          {
+            "scrollY": 812,
+            "swept": 11,
+            "occluded": []
+          }
+        ],
+        "summonBox": {
+          "w": 153,
+          "h": 44
+        },
+        "summonHitsItself": true,
+        "summonText": "Case file3 evidence · 0 events"
+      }
+    }
+  },
+  "transcripts": {
+    "casefile-1280x800": [
+      {
+        "step": "focus the summon",
+        "tag": "BUTTON",
+        "cls": "casefile-summon",
+        "label": "Case file0 evidence · 1 events"
+      },
+      {
+        "step": "Enter opens the dialog",
+        "tag": "DIV",
+        "cls": "casefile-drawer",
+        "label": "Held on this caseCase fileClose ✕caseEvidence 0logpeopleActive d"
+      },
+      {
+        "step": "Tab ×1",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "Close ✕"
+      },
+      {
+        "step": "Tab ×2",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "case"
+      },
+      {
+        "step": "Tab ×3",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "Evidence 0"
+      },
+      {
+        "step": "Tab ×4",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "log"
+      },
+      {
+        "step": "Tab ×5",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "people"
+      },
+      {
+        "step": "Tab ×6",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "Close ✕"
+      },
+      {
+        "step": "Tab ×7",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "case"
+      },
+      {
+        "step": "Shift+Tab ×1",
+        "isBody": false,
+        "inside": true
+      },
+      {
+        "step": "Shift+Tab ×2",
+        "isBody": false,
+        "inside": true
+      },
+      {
+        "step": "Shift+Tab ×3",
+        "isBody": false,
+        "inside": true
+      },
+      {
+        "step": "Escape closes; focus returns",
+        "tag": "BUTTON",
+        "cls": "casefile-summon",
+        "label": "Case file0 evidence · 1 events"
+      }
+    ],
+    "detail-1280x800": [
+      {
+        "step": "focus the summon",
+        "tag": "BUTTON",
+        "cls": "scene-detail-summon",
+        "label": "Location detail"
+      },
+      {
+        "step": "Enter opens the dialog",
+        "tag": "DIV",
+        "cls": "scene-detail-drawer",
+        "label": "Location detailB · Care ward 12Close ✕77-A is awake, articulate,"
+      },
+      {
+        "step": "Tab ×1",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "Close ✕"
+      },
+      {
+        "step": "Tab ×2",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "Close ✕"
+      },
+      {
+        "step": "Tab ×3",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "Close ✕"
+      },
+      {
+        "step": "Shift+Tab ×1",
+        "isBody": false,
+        "inside": true
+      },
+      {
+        "step": "Shift+Tab ×2",
+        "isBody": false,
+        "inside": true
+      },
+      {
+        "step": "Shift+Tab ×3",
+        "isBody": false,
+        "inside": true
+      },
+      {
+        "step": "Escape closes; focus returns",
+        "tag": "BUTTON",
+        "cls": "scene-detail-summon",
+        "label": "Location detail"
+      }
+    ],
+    "casefile-375x812": [
+      {
+        "step": "focus the summon",
+        "tag": "BUTTON",
+        "cls": "casefile-summon",
+        "label": "Case file0 evidence · 1 events"
+      },
+      {
+        "step": "Enter opens the dialog",
+        "tag": "DIV",
+        "cls": "casefile-drawer",
+        "label": "Held on this caseCase fileClose ✕caseEvidence 0logpeopleActive d"
+      },
+      {
+        "step": "Tab ×1",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "Close ✕"
+      },
+      {
+        "step": "Tab ×2",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "case"
+      },
+      {
+        "step": "Tab ×3",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "Evidence 0"
+      },
+      {
+        "step": "Tab ×4",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "log"
+      },
+      {
+        "step": "Tab ×5",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "people"
+      },
+      {
+        "step": "Tab ×6",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "Close ✕"
+      },
+      {
+        "step": "Tab ×7",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "case"
+      },
+      {
+        "step": "Shift+Tab ×1",
+        "isBody": false,
+        "inside": true
+      },
+      {
+        "step": "Shift+Tab ×2",
+        "isBody": false,
+        "inside": true
+      },
+      {
+        "step": "Shift+Tab ×3",
+        "isBody": false,
+        "inside": true
+      },
+      {
+        "step": "Escape closes; focus returns",
+        "tag": "BUTTON",
+        "cls": "casefile-summon",
+        "label": "Case file0 evidence · 1 events"
+      }
+    ]
+  },
+  "summary": {
+    "total": 123,
+    "passed": 123,
+    "failed": 0
+  }
+}

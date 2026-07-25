@@ -671,20 +671,16 @@ p {
   font-size: 0.78rem;
 }
 
-/* F-11: once the case rail occupies the right column (the two-column desktop
-   layout begins at 1181px), the Access popover would drop straight over the rail's
-   Active dilemma. Anchor it clear of the rail — its right edge lands left of the
-   rail's 380px column, so it opens over the scene, never over the dilemma. */
-@media (min-width: 1181px) {
-  .preferences-popover {
-    right: calc(380px + 16px);
-  }
-}
+/* F-11 retired at the HUD collapse: the rail no longer occupies a right column,
+   so the Access popover has nothing to dodge and opens under its own control. */
 
+/* Scene-dominant, single column. The case rail used to be a permanent 380px
+   third column here; it now lives in the summoned case-file drawer, so the
+   scene gets the whole width at every breakpoint. */
 .case-layout {
   min-height: calc(100svh - var(--header-height));
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 380px;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .storage-warning {
@@ -3254,12 +3250,16 @@ p {
   min-width: 0;
 }
 
+/* The always-on strip, after the HUD collapse. The <h1> is sr-only (out of
+   flow), so the visible children are the objectives group and — until the first
+   site is filed — the threshold line. One column, left-aligned: these are facts,
+   not a page title. */
 .field-commandbar {
-  min-height: 54px;
+  min-height: 0;
   display: grid;
-  grid-template-columns: auto minmax(180px, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
-  gap: 22px;
+  gap: 7px;
 }
 
 .field-commandbar .section-context {
@@ -3295,14 +3295,16 @@ p {
 .field-objectives {
   display: flex;
   align-items: stretch;
-  border-left: 1px solid var(--line);
+  /* The group leads the strip now that the page-title cell is gone, so the
+     separator that used to divide it from the copy would be a stray edge. */
+  border-left: 0;
 }
 
 .field-objectives > span {
   min-width: 78px;
   display: grid;
   gap: 1px;
-  padding-left: 16px;
+  padding-left: 0;
   color: var(--fog-dim);
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
   font-size: 0.62rem;
@@ -3327,9 +3329,26 @@ p {
   color: var(--cyan);
 }
 
+/* The promoted civic alarm. Same cell grammar as the two objectives beside it,
+   coral only through the existing .text-risk convention on the value, and it is
+   never rendered at zero — a "quiet" chip would be exactly the always-on noise
+   the collapse removes. */
+.field-alarm {
+  min-width: 0;
+}
+
+.field-alarm strong {
+  white-space: nowrap;
+}
+
 .field-workspace {
   min-height: 0;
-  height: max(500px, calc(100svh - 260px));
+  /* The HUD collapse gave the workspace ~30px back (the page-title cell, the
+     command copy, the route breadcrumb and the filed-model block are all gone).
+     Measured at 1280x800: chrome above the workspace is 146px and below it 104px,
+     so 254 leaves ~6px of slack rather than the 29px of page overflow the old
+     260 produced. */
+  height: max(500px, calc(100svh - 254px));
   display: grid;
   grid-template-columns: minmax(0, 1.55fr) minmax(330px, 0.85fr);
   gap: 14px;
@@ -3649,10 +3668,12 @@ p {
   border-color: var(--amber);
 }
 
+/* Two cells since the route breadcrumb was dropped (it duplicated the CTA) and
+   the filed-model block moved into the case file. */
 .field-dock {
-  min-height: 76px;
+  min-height: 66px;
   display: grid;
-  grid-template-columns: auto minmax(180px, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 18px;
   padding: 11px 13px;
@@ -5300,20 +5321,12 @@ p {
   }
 }
 
-/* Case rail */
+/* Case rail — now the body of the summoned case-file drawer rather than a
+   permanent third column. It contributes no chrome of its own: the drawer owns
+   the surface, the backing, and the scroll. */
 
 .case-rail {
-  position: sticky;
-  top: var(--header-height);
-  height: calc(100svh - var(--header-height));
-  align-self: start;
-  overflow-y: auto;
-  background: var(--concrete);
-  border-left: 1px solid var(--line);
-}
-
-.rail-mobile-toggle {
-  display: none;
+  min-width: 0;
 }
 
 .rail-tabs {
@@ -5321,7 +5334,8 @@ p {
   z-index: 2;
   top: 0;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* Four tabs since the roster dossier joined: case · evidence · log · people. */
+  grid-template-columns: repeat(4, 1fr);
   background: var(--concrete);
   border-bottom: 1px solid var(--line);
 }
@@ -5716,12 +5730,136 @@ p {
   font-size: 0.62rem;
 }
 
+/* ── The roster dossier: "The people on this case" ──────────────────────────
+   The codex/character-sheet register — one full card per presence, read at
+   leisure, never interrupting. It is the ONE surface where a persona is a
+   record rather than a mark beside a line, so it is the one place the sheet
+   portrait's authored alt is exposed.
+
+   ZERO animation and zero transitions by construction: the surface is summoned,
+   so the change it reports already happened before it opened. There is no
+   opacity ramp anywhere in this family (the stranded-reveal scar), because
+   nothing here reveals at all — it mounts.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.persona-dossier {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.persona-dossier-card {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  align-items: start;
+  gap: 6px 14px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.persona-dossier-card:last-child {
+  border-bottom: 0;
+}
+
+/* The portrait holds the left column beside the identifying block; the run
+   record then spans the full width, where a quote has room to be read. */
+.persona-dossier-head {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 4px;
+}
+
+.persona-dossier-head h3 {
+  margin: 0;
+  color: var(--record);
+  font-size: 0.92rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.persona-dossier-role {
+  margin: 0;
+  color: var(--fog-dim);
+  font-size: 0.7rem;
+  line-height: 1.35;
+}
+
+.persona-dossier-stance {
+  margin: 2px 0 0;
+  color: var(--fog);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Cyan opens, coral guards — the same semantics the rail's pulse and marker
+   carry, as TEXT colour here (those `trust-*` classes are the dot's fill). */
+.persona-dossier-stance[data-stance='committed'],
+.persona-dossier-stance[data-stance='open'] {
+  color: var(--cyan);
+}
+
+.persona-dossier-stance[data-stance='guarded'],
+.persona-dossier-stance[data-stance='opposed'] {
+  color: var(--coral);
+}
+
+.persona-dossier-principle {
+  margin: 6px 0 0;
+  color: var(--fog);
+  font-size: 0.74rem;
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.persona-dossier-said {
+  grid-column: 1 / -1;
+  margin-top: 12px;
+}
+
+.persona-dossier-said .rail-label {
+  margin-bottom: 8px;
+}
+
+.persona-dossier-empty {
+  margin: 0;
+  color: var(--fog-dim);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.persona-dossier-lines {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  list-style: none;
+}
+
+.persona-dossier-line {
+  margin: 0;
+  color: var(--record);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+/* The citation, in the exact register the event log uses for a moment's name. */
+.persona-dossier-cite {
+  margin: 4px 0 0;
+  color: var(--fog-dim);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
+}
+
 /* Responsive behavior */
 
 @media (max-width: 1120px) {
-  .case-layout {
-    grid-template-columns: minmax(0, 1fr) 330px;
-  }
+  /* The .case-layout narrowing rule is retired with the rail column: there is no
+     second App-level column left to narrow. */
 
   .phase-page {
     padding-right: 26px;
@@ -5734,7 +5872,9 @@ p {
 
   .field-workspace {
     grid-template-columns: minmax(0, 1fr) 330px;
-    height: max(438px, calc(100svh - 362px));
+    /* The extra 100px this used to subtract paid for the rail's 54px sticky
+       mobile bar, which the collapse retired. */
+    height: max(438px, calc(100svh - 268px));
   }
 
   .field-command-copy {
@@ -5752,87 +5892,17 @@ p {
   }
 }
 
-@media (min-width: 1121px) and (max-width: 1180px) {
-  .field-workspace {
-    height: max(486px, calc(100svh - 314px));
-  }
-}
+/* The 1121-1180 workspace-height exception is retired with the rail's sticky
+   mobile bar: below 1181px there is no longer a 54px band above the workspace. */
 
+/* The rail's sticky 54px mobile bar and its expand/collapse toggle are retired
+   with the HUD collapse: below 1180px the case file is the same summoned drawer
+   it is on a desktop, so there is no second narrow presentation to maintain and
+   no 54px band eating the top of every case surface. */
 @media (max-width: 1180px) {
-  .case-layout {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .phase-page {
-    min-height: calc(100svh - var(--header-height) - 54px);
-  }
-
-  .case-rail {
-    position: sticky;
-    z-index: 12;
-    top: var(--header-height);
-    order: -1;
-    width: 100%;
-    height: 54px;
-    min-height: 0;
-    align-self: stretch;
-    overflow: hidden;
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    border-left: 0;
-  }
-
-  .case-rail-mobile-open {
-    height: min(70svh, 560px);
-    overflow-y: auto;
-  }
-
-  .rail-mobile-toggle {
-    position: sticky;
-    z-index: 3;
-    top: 0;
-    width: 100%;
-    min-height: 53px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 8px 18px;
-    color: var(--record);
-    text-align: left;
-    background: var(--concrete);
-    border: 0;
-  }
-
-  .rail-mobile-toggle > span:first-child {
-    display: grid;
-    gap: 2px;
-  }
-
-  .rail-mobile-toggle strong {
-    font-size: 0.76rem;
-  }
-
-  .rail-mobile-toggle small {
-    color: var(--fog-dim);
-    font-size: 0.62rem;
-  }
-
-  .case-rail:not(.case-rail-mobile-open) .rail-tabs,
-  .case-rail:not(.case-rail-mobile-open) .rail-panel {
-    display: none;
-  }
-
-  .rail-panel {
-    max-width: 760px;
-    margin: 0 auto;
-  }
-
   .debrief-section {
     gap: 32px;
   }
-
 }
 
 @media (max-width: 840px) {
@@ -5969,8 +6039,28 @@ p {
     flex-direction: column;
   }
 
+  /* FULL-BLEED PLATE. The narrow layout pads the page by 14px a side; the world
+     pane escapes that padding (as a stretched flex item, a negative inline
+     margin widens it by exactly the margin) so the scene owns the whole viewport
+     width, and the switcher below puts its own padding back.
+
+     This is also what closes the pilot's cropped pressure ring: the plate's
+     cover projection is `width: max(100cqw, 100cqh * 16 / 9)`, so at this aspect
+     the projection width is set by the plate's HEIGHT — widening the container
+     without changing its height slides both authored anchors inboard by half the
+     width gained. The min-height is deliberately left alone: a taller plate here
+     would widen the projection and re-open the crop. */
+  .world-pane {
+    margin-inline: -14px;
+  }
+
+  .world-pane .site-switcher {
+    margin-inline: 14px;
+  }
+
   .world-pane .world-view {
     min-height: 320px;
+    border-radius: 0;
   }
 
 
@@ -10048,7 +10138,167 @@ p {
   border-color: var(--cyan);
 }
 
+/* ── The plate's summon rail ──────────────────────────────────────────────────
+   The two summons share ONE positioned flex row anchored at the plate's top
+   right; the concourse return keeps its own top-LEFT anchor. Three controls,
+   three separate regions, and the pair that sits closest can never overlap
+   however the plate crops (the cross-zone rule from the rooms round).
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.scene-summons {
+  position: absolute;
+  z-index: 14;
+  top: 16px;
+  right: 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* The case file, summoned — with its two live counts as its own preview, which
+   is what keeps a hidden surface from feeling hidden. */
+.casefile-summon {
+  min-height: 44px;
+  display: grid;
+  gap: 1px;
+  padding: 6px 14px;
+  text-align: left;
+  background: oklch(0.09 0.01 235 / 0.88);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition:
+    color 180ms var(--ease-out),
+    border-color 180ms var(--ease-out);
+}
+
+.casefile-summon strong {
+  color: var(--fog);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.64rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.casefile-summon small {
+  color: var(--fog-dim);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.casefile-summon:hover strong {
+  color: var(--record-bright);
+}
+
+.casefile-summon:hover {
+  border-color: var(--record);
+}
+
+/* Every case surface that is not the investigation has no plate to carry the
+   summon, and no longer carries a rail column either — so it docks in the shell. */
+.casefile-summon--shell {
+  position: fixed;
+  z-index: 30;
+  right: 20px;
+  bottom: 20px;
+}
+
+/* ── The summoned case file ───────────────────────────────────────────────────
+   Right-docked focus-trapped drawer at ≥900px; a full-height sheet below 700px.
+   Same conventions as the location-detail drawer, and the SAME entry keyframe —
+   a transform slide whose resting style is the visible one, never an opacity
+   ramp that could strand at 0% (the recorded scene-opacity scar).
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.casefile-portal {
+  position: fixed;
+  z-index: 60;
+  inset: 0;
+  display: flex;
+  justify-content: flex-end;
+  color: var(--record);
+  background: oklch(0 0 0 / 0.52);
+}
+
+.casefile-drawer {
+  width: min(520px, 100%);
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--night-soft);
+  border-left: 1px solid var(--line);
+  animation: scene-detail-drawer-in 220ms var(--ease-out);
+}
+
+.casefile-header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px 14px;
+  background: var(--night-soft);
+  border-bottom: 1px solid var(--line);
+}
+
+.casefile-header h2 {
+  margin: 4px 0 0;
+  font-size: 1.1rem;
+}
+
+.casefile-close {
+  min-height: 44px;
+  padding: 8px 14px;
+  color: var(--fog);
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: 5px;
+  font-size: 0.7rem;
+  font-weight: 750;
+}
+
+.casefile-close:hover {
+  color: var(--record-bright);
+  border-color: var(--record);
+}
+
+/* The rail is the drawer's scrolling body; its tab bar pins to the top of that
+   scroll port, so all four tabs stay reachable however far the panel runs. */
+.casefile-drawer .case-rail {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.casefile-drawer .rail-tabs {
+  background: var(--night-soft);
+}
+
+@media (max-width: 899px) {
+  .casefile-drawer {
+    width: min(520px, 88vw);
+  }
+}
+
+@media (max-width: 699px) {
+  .casefile-drawer {
+    width: 100%;
+    border-left: 0;
+  }
+}
+
 /* ── The summonable location detail ───────────────────────────────────────── */
+
+.scene-summons .scene-detail-summon {
+  position: static;
+  top: auto;
+  right: auto;
+}
 
 .scene-detail-summon {
   position: absolute;
@@ -10359,11 +10609,29 @@ p {
     margin-left: 0;
   }
 
+  .scene-summons {
+    top: 10px;
+    right: 10px;
+    gap: 6px;
+  }
+
   .scene-detail-summon {
     top: 10px;
     right: 10px;
     padding-inline: 10px;
     font-size: 0.6rem;
+  }
+
+  .casefile-summon {
+    padding-inline: 10px;
+  }
+
+  .casefile-summon strong {
+    font-size: 0.6rem;
+  }
+
+  .casefile-summon small {
+    font-size: 0.55rem;
   }
 
   .scene-detail-drawer {
@@ -10568,6 +10836,7 @@ p {
 .reduce-motion .scene-beat *,
 .reduce-motion .scene-result,
 .reduce-motion .scene-detail-drawer,
+.reduce-motion .casefile-drawer,
 .reduce-motion .scene-preview-rain,
 .reduce-motion .scene-preview-rain-layer,
 .reduce-motion .scene-preview-wash,
@@ -10605,6 +10874,7 @@ p {
   .scene-beat *,
   .scene-result,
   .scene-detail-drawer,
+  .casefile-drawer,
   .scene-preview-rain,
   .scene-preview-rain-layer,
   .scene-preview-wash,
@@ -10661,6 +10931,7 @@ p {
 .high-contrast .scene-result,
 .high-contrast .deposition-result,
 .high-contrast .scene-beat-advance,
+.high-contrast .casefile-summon,
 .high-contrast .scene-detail-summon {
   background: var(--night);
   backdrop-filter: none;
@@ -10690,6 +10961,7 @@ p {
 
   .scene-beat-line,
   .scene-result-evidence,
+  .casefile-summon,
   .scene-detail-summon {
     text-shadow: none;
   }
@@ -10698,7 +10970,10 @@ p {
   .deposition-result,
   .scene-beat-advance,
   .scene-detail-summon,
-  .scene-detail-drawer {
+  .scene-detail-drawer,
+  .casefile-summon,
+  .casefile-drawer,
+  .casefile-portal {
     background: Canvas;
     backdrop-filter: none;
   }
@@ -10980,5 +11255,35 @@ p {
   .room-console {
     background: Canvas;
     backdrop-filter: none;
+  }
+}
+
+/* ── The narrow plate's two standing crops, closed with measured geometry ─────
+   The plate's cover projection is `width: max(100cqw, 100cqh * 16 / 9)`, so
+   below ~570px of plate width the projection is set by the plate's HEIGHT and
+   the authored zone anchors ride outboard of the visible plate. Solving the
+   worst case — the 1.026 action-focus camera pushing the FAR ring outward while
+   the near one is armed — gives, at a 375px full-bleed plate:
+
+     right edge of the x=0.78 ring = 209.5 + 0.2943 * (height * 16 / 9) ≤ 375
+       → projection ≤ 562px → plate height ≤ 316px
+
+   300px is that ceiling with ~8px to spare; measured live at 375x812 the worst
+   overflow goes from +2px (cropped) to −8px (clear). Applied only where the
+   projection actually outruns the plate — at 600px wide the projection is 533px
+   and nothing crops, so nothing above this width loses any scene. */
+@media (max-width: 600px) {
+  .world-pane .world-view {
+    min-height: 300px;
+  }
+}
+
+/* Below ~440px the concourse return (157px) and the two summons (265px) cannot
+   share one row of plate chrome. The summons drop to a second row rather than
+   sliding under the return — a control the player can see but not reach is the
+   exact class of latent bug the cross-zone sweep exists to catch. */
+@media (max-width: 460px) {
+  .scene-summons {
+    top: 62px;
   }
 }

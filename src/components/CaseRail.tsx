@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getCaseContent, getReactionsForSource, methodLabels, personas } from '../game/content'
 import { getTrustLabel } from '../game/engine'
+import { personaRunLines } from '../game/personaRecord'
 import type { EvidenceStatus, GameState, PersonaId } from '../game/types'
 import { DossierPhoto } from './DossierPhoto'
 import { PersonaPortrait } from './PersonaPortrait'
@@ -10,7 +11,9 @@ interface CaseRailProps {
   state: GameState
 }
 
-type RailTab = 'case' | 'evidence' | 'log'
+type RailTab = 'case' | 'evidence' | 'log' | 'people'
+
+const RAIL_TABS: readonly RailTab[] = ['case', 'evidence', 'log', 'people']
 
 const statusLabels: Record<EvidenceStatus, string> = {
   verified: 'Verified',
@@ -20,10 +23,12 @@ const statusLabels: Record<EvidenceStatus, string> = {
 }
 
 export function CaseRail({ state }: CaseRailProps) {
-  const { caseFile, evidenceDefinitions } = getCaseContent(state.caseId)
+  const { caseFile, evidenceDefinitions, reconstructionDefinitions } = getCaseContent(state.caseId)
   const [activeTab, setActiveTab] = useState<RailTab>('case')
-  const [mobileOpen, setMobileOpen] = useState(false)
   const evidence = evidenceDefinitions.filter((item) => state.evidence.includes(item.id))
+  // The filed memory model. It used to sit in the field dock; a filed record
+  // belongs in the file, so the Case tab is now its home.
+  const reconstruction = reconstructionDefinitions.find((item) => item.id === state.reconstruction)
   // Whether any persona's trust has moved off zero yet — gates the Social memory
   // block's progressive reveal (F-6).
   const anyTrust = personas.some((persona) => state.trust[persona.id] !== 0)
@@ -84,23 +89,12 @@ export function CaseRail({ state }: CaseRailProps) {
   }, [pulses])
 
   return (
-    <aside className={`case-rail ${mobileOpen ? 'case-rail-mobile-open' : ''}`} aria-label="Case file">
-      <button
-        className="rail-mobile-toggle"
-        type="button"
-        aria-expanded={mobileOpen}
-        onClick={() => setMobileOpen((open) => !open)}
-      >
-        <span>
-          <strong>Case file</strong>
-          <small>
-            {evidence.length} evidence · {state.events.length} events
-          </small>
-        </span>
-        <span aria-hidden="true">{mobileOpen ? '−' : '+'}</span>
-      </button>
+    // A plain container, not a landmark: the rail's one home is now the summoned
+    // case-file dialog, which names the surface itself. A second "Case file"
+    // complementary landmark inside that dialog would only announce it twice.
+    <div className="case-rail">
       <nav className="rail-tabs" aria-label="Case file views">
-        {(['case', 'evidence', 'log'] as RailTab[]).map((tab) => (
+        {RAIL_TABS.map((tab) => (
           <button
             type="button"
             aria-pressed={activeTab === tab}
@@ -152,6 +146,20 @@ export function CaseRail({ state }: CaseRailProps) {
               <strong>{state.runNumber}</strong>
             </div>
           </section>
+
+          {/* The filed memory model, moved here out of the field dock: it is a
+              filed record, and filed records live in the file. Same <details>
+              element, same authored copy and reactions as before. */}
+          {reconstruction && (
+            <section className="rail-block">
+              <p className="rail-label">Memory model</p>
+              <details className="filed-model">
+                <summary>{reconstruction.title} · model filed</summary>
+                <p>{reconstruction.thesis}</p>
+                <ReactionQuotes reactions={reconstruction.reactions} />
+              </details>
+            </section>
+          )}
 
           {/* Progressive disclosure (F-6): Social memory joins the flow the first
               time any trust reads nonzero, rather than sitting as four "uncertain"
@@ -286,6 +294,62 @@ export function CaseRail({ state }: CaseRailProps) {
           )}
         </div>
       )}
-    </aside>
+
+      {/* The roster dossier — "the people on this case". The one surface where a
+          persona is a full record rather than a mark beside a line: the sheet
+          portrait (the only size that exposes its authored alt), the authored
+          role and principle, the current stance word, and everything they have
+          said on the record this run.
+
+          It animates nothing on purpose. The surface is summoned, so by the time
+          it opens the change it reports has already happened; animating on open
+          would be a lie about when. */}
+      {activeTab === 'people' && (
+        <div className="rail-panel people-panel" id="rail-panel-people" aria-labelledby="rail-tab-people">
+          <section className="rail-block">
+            <h2>The people on this case</h2>
+          </section>
+          <ul className="persona-dossier">
+            {personas.map((persona) => {
+              const trust = state.trust[persona.id]
+              const lines = personaRunLines(state, persona.id)
+              return (
+                <li className="persona-dossier-card" key={persona.id} data-persona={persona.id}>
+                  <PersonaPortrait personaId={persona.id} size="sheet" />
+                  <div className="persona-dossier-head">
+                    <h3>{persona.name}</h3>
+                    <p className="persona-dossier-role">{persona.role}</p>
+                    {/* data-stance, NOT `trust-{label}`: those classes are the
+                        signal DOT's fill (background: var(--cyan)) and would
+                        paint a block behind this word — the recorded
+                        class-collision scar, which no text assertion can see. */}
+                    <p className="persona-dossier-stance" data-stance={getTrustLabel(trust)}>
+                      {getTrustLabel(trust)}
+                      {state.settings.showTrustNumbers ? ` ${trust >= 0 ? '+' : ''}${trust}` : ''}
+                    </p>
+                    <p className="persona-dossier-principle">{persona.principle}</p>
+                  </div>
+                  <div className="persona-dossier-said">
+                    <p className="rail-label">On the record this run</p>
+                    {lines.length === 0 ? (
+                      <p className="persona-dossier-empty">Nothing said on the record yet.</p>
+                    ) : (
+                      <ol className="persona-dossier-lines">
+                        {lines.map((entry) => (
+                          <li key={`${entry.order}-${entry.cite}`}>
+                            <p className="persona-dossier-line">{entry.line}</p>
+                            <p className="persona-dossier-cite">{entry.cite}</p>
+                          </li>
+                        ))}
+                      </ol>
+                    )}
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      )}
+    </div>
   )
 }

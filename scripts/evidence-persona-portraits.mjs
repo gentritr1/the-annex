@@ -373,6 +373,25 @@ async function fileCareWard() {
   await sleep(1500)
 }
 
+// HARNESS EDIT (HUD collapse): the case rail is no longer an always-on column
+// or a narrow sticky bar behind a mobile toggle — it is the body of the summoned
+// case-file drawer at every width. The checks below are unchanged; only the
+// route to the surface they measure is, so it is driven exactly as a player
+// would drive it: summon → Case tab.
+async function openCaseFileCaseTab() {
+  if (!(await evaluate(`!!document.querySelector('.casefile-drawer')`))) {
+    await click('.casefile-summon')
+    if (!(await waitFor(`!!document.querySelector('.casefile-drawer')`))) {
+      throw new Error('the case-file drawer did not open')
+    }
+    await sleep(420)
+  }
+  await click('#rail-tab-case')
+  await sleep(320)
+  return evaluate(`(document.querySelector('.persona-list')?.getBoundingClientRect().height ?? 0) > 0`)
+}
+
+
 // ── PASS 1: the beat, the result strip, the filed card ──────────────────────
 
 async function scenePass(width, height) {
@@ -525,17 +544,10 @@ async function railPass(width, height) {
   await click('.scene-result-dismiss')
   await sleep(600)
 
-  // The rail's Case tab holds Social memory; on the narrow layout it lives behind
-  // the mobile toggle.
-  // On the narrow layout the rail's tabs and panels are collapsed behind the
-  // mobile toggle: the nodes are IN the DOM but laid out at zero, so presence is
-  // not the test — a nonzero rect is.
-  if (!(await evaluate(`(document.querySelector('.persona-list')?.getBoundingClientRect().height ?? 0) > 0`))) {
-    await click('.rail-mobile-toggle')
-    await sleep(500)
-  }
-  await click('.rail-tabs button', 'case')
-  await sleep(300)
+  // The rail's Case tab holds Social memory. Since the HUD collapse the rail's
+  // one home is the summoned case-file drawer, at BOTH widths — so the surface
+  // is reached the way a player reaches it, through the summon.
+  await openCaseFileCaseTab()
   const railVisible = await evaluate(`(() => {
     const list = document.querySelector('.persona-list')
     if (!list) return false
@@ -789,15 +801,7 @@ async function forcedColorsPass(width, height) {
   }
   await click('.scene-result-dismiss')
   await sleep(600)
-  // On the narrow layout the rail's tabs and panels are collapsed behind the
-  // mobile toggle: the nodes are IN the DOM but laid out at zero, so presence is
-  // not the test — a nonzero rect is.
-  if (!(await evaluate(`(document.querySelector('.persona-list')?.getBoundingClientRect().height ?? 0) > 0`))) {
-    await click('.rail-mobile-toggle')
-    await sleep(500)
-  }
-  await click('.rail-tabs button', 'case')
-  await sleep(300)
+  await openCaseFileCaseTab()
   await evaluate(`(() => { document.querySelector('.persona-list')?.scrollIntoView({ block: 'center' }); return true })()`)
   await sleep(300)
   await freeze()
@@ -849,15 +853,7 @@ async function reducedMotionPass(width, height) {
   await sleep(500)
   await click('.scene-result-dismiss')
   await sleep(600)
-  // On the narrow layout the rail's tabs and panels are collapsed behind the
-  // mobile toggle: the nodes are IN the DOM but laid out at zero, so presence is
-  // not the test — a nonzero rect is.
-  if (!(await evaluate(`(document.querySelector('.persona-list')?.getBoundingClientRect().height ?? 0) > 0`))) {
-    await click('.rail-mobile-toggle')
-    await sleep(500)
-  }
-  await click('.rail-tabs button', 'case')
-  await sleep(300)
+  await openCaseFileCaseTab()
   await evaluate(`(() => { document.querySelector('.persona-list')?.scrollIntoView({ block: 'center' }); return true })()`)
   await sleep(300)
   const railUnderRm = await evaluate(`(() => [...document.querySelectorAll('.persona-list .persona-portrait-mark, .persona-list .persona-portrait')].map((e) => ({
