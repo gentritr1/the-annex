@@ -1,0 +1,1116 @@
+{
+  "url": "http://127.0.0.1:3000/",
+  "capturedAt": "2026-07-25T20:36:03.663Z",
+  "node": "v24.18.0",
+  "surfaces": {
+    "concourse@1280": [
+      {
+        "label": "on-plate caption",
+        "sel": ".world-caption",
+        "fontSize": "11.2px",
+        "fontWeight": "500",
+        "glyphBoxes": 2,
+        "sampledPx": 4532,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          0,
+          0,
+          0
+        ],
+        "brightestBg": [
+          9,
+          9,
+          8
+        ],
+        "ratioOnDarkest": 8.52,
+        "ratioOnBrightest": 8.09
+      },
+      {
+        "label": "inspector · surface heading",
+        "sel": ".site-header h2",
+        "fontSize": "22.4px",
+        "fontWeight": "700",
+        "glyphBoxes": 1,
+        "sampledPx": 3700,
+        "textColor": "oklch(0.99 0.004 190)",
+        "textRgb": [
+          249,
+          253,
+          252
+        ],
+        "darkestBg": [
+          7,
+          11,
+          14
+        ],
+        "brightestBg": [
+          7,
+          11,
+          14
+        ],
+        "ratioOnDarkest": 19.27,
+        "ratioOnBrightest": 19.27
+      },
+      {
+        "label": "dock · standing instruction",
+        "sel": ".field-dock-copy > p",
+        "fontSize": "12.16px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 3471,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          7,
+          12,
+          16
+        ],
+        "brightestBg": [
+          7,
+          12,
+          16
+        ],
+        "ratioOnDarkest": 7.97,
+        "ratioOnBrightest": 7.97
+      },
+      {
+        "label": "command bar · counter label",
+        "sel": ".field-objectives > span",
+        "fontSize": "10.24px",
+        "fontWeight": "500",
+        "glyphBoxes": 4,
+        "sampledPx": 580,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          3
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "command bar · threshold line",
+        "sel": ".field-threshold",
+        "fontSize": "12.16px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 6747,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          4
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      }
+    ],
+    "console-custody@1280": [
+      {
+        "label": "docked console · prompt",
+        "sel": ".room-console .room-prompt, .room-console .as-lead, .room-console .cr-lead",
+        "fontSize": "11.2px",
+        "fontWeight": "600",
+        "glyphBoxes": 1,
+        "sampledPx": 8052,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          1,
+          2
+        ],
+        "brightestBg": [
+          15,
+          21,
+          23
+        ],
+        "ratioOnDarkest": 5.1,
+        "ratioOnBrightest": 4.51
+      },
+      {
+        "label": "inspector · surface heading",
+        "sel": ".site-header h2",
+        "fontSize": "22.4px",
+        "fontWeight": "700",
+        "glyphBoxes": 1,
+        "sampledPx": 3700,
+        "textColor": "oklch(0.99 0.004 190)",
+        "textRgb": [
+          249,
+          253,
+          252
+        ],
+        "darkestBg": [
+          7,
+          11,
+          14
+        ],
+        "brightestBg": [
+          7,
+          11,
+          14
+        ],
+        "ratioOnDarkest": 19.27,
+        "ratioOnBrightest": 19.27
+      },
+      {
+        "label": "inspector · record body",
+        "sel": ".site-description",
+        "fontSize": "14.08px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 8430,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          7,
+          11,
+          14
+        ],
+        "brightestBg": [
+          7,
+          11,
+          15
+        ],
+        "ratioOnDarkest": 8.02,
+        "ratioOnBrightest": 8.01
+      },
+      {
+        "label": "dock · standing instruction",
+        "sel": ".field-dock-copy > p",
+        "fontSize": "12.16px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 3471,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          7,
+          12,
+          16
+        ],
+        "brightestBg": [
+          7,
+          12,
+          16
+        ],
+        "ratioOnDarkest": 7.97,
+        "ratioOnBrightest": 7.97
+      },
+      {
+        "label": "command bar · counter label",
+        "sel": ".field-objectives > span",
+        "fontSize": "10.24px",
+        "fontWeight": "500",
+        "glyphBoxes": 4,
+        "sampledPx": 580,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          3
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "command bar · threshold line",
+        "sel": ".field-threshold",
+        "fontSize": "12.16px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 6747,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          4
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      }
+    ],
+    "console-acoustic@1280": [
+      {
+        "label": "docked console · prompt",
+        "sel": ".room-console .room-prompt, .room-console .as-lead, .room-console .cr-lead",
+        "fontSize": "11.2px",
+        "fontWeight": "600",
+        "glyphBoxes": 2,
+        "sampledPx": 10461,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          0,
+          1,
+          2
+        ],
+        "brightestBg": [
+          28,
+          18,
+          10
+        ],
+        "ratioOnDarkest": 5.11,
+        "ratioOnBrightest": 4.5
+      },
+      {
+        "label": "inspector · surface heading",
+        "sel": ".site-header h2",
+        "fontSize": "22.4px",
+        "fontWeight": "700",
+        "glyphBoxes": 1,
+        "sampledPx": 4675,
+        "textColor": "oklch(0.99 0.004 190)",
+        "textRgb": [
+          249,
+          253,
+          252
+        ],
+        "darkestBg": [
+          7,
+          11,
+          14
+        ],
+        "brightestBg": [
+          7,
+          11,
+          14
+        ],
+        "ratioOnDarkest": 19.27,
+        "ratioOnBrightest": 19.27
+      },
+      {
+        "label": "inspector · record body",
+        "sel": ".site-description",
+        "fontSize": "14.08px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 8535,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          7,
+          11,
+          14
+        ],
+        "brightestBg": [
+          7,
+          11,
+          15
+        ],
+        "ratioOnDarkest": 8.02,
+        "ratioOnBrightest": 8.01
+      },
+      {
+        "label": "dock · standing instruction",
+        "sel": ".field-dock-copy > p",
+        "fontSize": "12.16px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 3471,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          7,
+          12,
+          16
+        ],
+        "brightestBg": [
+          7,
+          12,
+          16
+        ],
+        "ratioOnDarkest": 7.97,
+        "ratioOnBrightest": 7.97
+      },
+      {
+        "label": "command bar · counter label",
+        "sel": ".field-objectives > span",
+        "fontSize": "10.24px",
+        "fontWeight": "500",
+        "glyphBoxes": 4,
+        "sampledPx": 580,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          3
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "command bar · threshold line",
+        "sel": ".field-threshold",
+        "fontSize": "12.16px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 6747,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          4
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      }
+    ],
+    "zones-care-ward@1280": [
+      {
+        "label": "on-plate caption",
+        "sel": ".world-caption",
+        "fontSize": "11.2px",
+        "fontWeight": "500",
+        "glyphBoxes": 2,
+        "sampledPx": 4367,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          0,
+          0,
+          0
+        ],
+        "brightestBg": [
+          1,
+          1,
+          1
+        ],
+        "ratioOnDarkest": 8.52,
+        "ratioOnBrightest": 8.47
+      },
+      {
+        "label": "inspector · surface heading",
+        "sel": ".site-header h2",
+        "fontSize": "22.4px",
+        "fontWeight": "700",
+        "glyphBoxes": 1,
+        "sampledPx": 3200,
+        "textColor": "oklch(0.99 0.004 190)",
+        "textRgb": [
+          249,
+          253,
+          252
+        ],
+        "darkestBg": [
+          7,
+          11,
+          14
+        ],
+        "brightestBg": [
+          7,
+          11,
+          14
+        ],
+        "ratioOnDarkest": 19.27,
+        "ratioOnBrightest": 19.27
+      },
+      {
+        "label": "inspector · record body",
+        "sel": ".site-description",
+        "fontSize": "14.08px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 7050,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          7,
+          11,
+          14
+        ],
+        "brightestBg": [
+          7,
+          11,
+          15
+        ],
+        "ratioOnDarkest": 8.02,
+        "ratioOnBrightest": 8.01
+      },
+      {
+        "label": "dock · standing instruction",
+        "sel": ".field-dock-copy > p",
+        "fontSize": "12.16px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 3471,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          7,
+          12,
+          16
+        ],
+        "brightestBg": [
+          7,
+          12,
+          16
+        ],
+        "ratioOnDarkest": 7.97,
+        "ratioOnBrightest": 7.97
+      },
+      {
+        "label": "command bar · counter label",
+        "sel": ".field-objectives > span",
+        "fontSize": "10.24px",
+        "fontWeight": "500",
+        "glyphBoxes": 4,
+        "sampledPx": 580,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          3
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "command bar · threshold line",
+        "sel": ".field-threshold",
+        "fontSize": "12.16px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 6747,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          4
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      }
+    ],
+    "concourse@375": [
+      {
+        "label": "on-plate caption",
+        "sel": ".world-caption",
+        "fontSize": "10.72px",
+        "fontWeight": "500",
+        "glyphBoxes": 4,
+        "sampledPx": 4125,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          1,
+          0,
+          0
+        ],
+        "brightestBg": [
+          20,
+          15,
+          9
+        ],
+        "ratioOnDarkest": 8.51,
+        "ratioOnBrightest": 7.74
+      },
+      {
+        "label": "inspector · surface heading",
+        "sel": ".site-header h2",
+        "fontSize": "20.48px",
+        "fontWeight": "700",
+        "glyphBoxes": 1,
+        "sampledPx": 2992,
+        "textColor": "oklch(0.99 0.004 190)",
+        "textRgb": [
+          249,
+          253,
+          252
+        ],
+        "darkestBg": [
+          7,
+          12,
+          15
+        ],
+        "brightestBg": [
+          7,
+          12,
+          15
+        ],
+        "ratioOnDarkest": 19.17,
+        "ratioOnBrightest": 19.17
+      },
+      {
+        "label": "command bar · counter label",
+        "sel": ".field-objectives > span",
+        "fontSize": "9.92px",
+        "fontWeight": "500",
+        "glyphBoxes": 4,
+        "sampledPx": 499,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          3
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "command bar · threshold line",
+        "sel": ".field-threshold",
+        "fontSize": "11.68px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 5467,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          3
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      }
+    ],
+    "console-custody@375": [
+      {
+        "label": "docked console · prompt",
+        "sel": ".room-console .room-prompt, .room-console .as-lead, .room-console .cr-lead",
+        "fontSize": "10.72px",
+        "fontWeight": "600",
+        "glyphBoxes": 3,
+        "sampledPx": 6950,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          4,
+          5,
+          5
+        ],
+        "brightestBg": [
+          9,
+          17,
+          21
+        ],
+        "ratioOnDarkest": 4.99,
+        "ratioOnBrightest": 4.66
+      },
+      {
+        "label": "inspector · surface heading",
+        "sel": ".site-header h2",
+        "fontSize": "20.48px",
+        "fontWeight": "700",
+        "glyphBoxes": 1,
+        "sampledPx": 2992,
+        "textColor": "oklch(0.99 0.004 190)",
+        "textRgb": [
+          249,
+          253,
+          252
+        ],
+        "darkestBg": [
+          7,
+          12,
+          15
+        ],
+        "brightestBg": [
+          7,
+          12,
+          15
+        ],
+        "ratioOnDarkest": 19.17,
+        "ratioOnBrightest": 19.17
+      },
+      {
+        "label": "inspector · record body",
+        "sel": ".site-description",
+        "fontSize": "13.6px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 7630,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          7,
+          12,
+          16
+        ],
+        "brightestBg": [
+          7,
+          12,
+          16
+        ],
+        "ratioOnDarkest": 7.97,
+        "ratioOnBrightest": 7.97
+      },
+      {
+        "label": "command bar · counter label",
+        "sel": ".field-objectives > span",
+        "fontSize": "9.92px",
+        "fontWeight": "500",
+        "glyphBoxes": 4,
+        "sampledPx": 499,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          3
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "command bar · threshold line",
+        "sel": ".field-threshold",
+        "fontSize": "11.68px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 5467,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          4
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      }
+    ],
+    "console-acoustic@375": [
+      {
+        "label": "docked console · prompt",
+        "sel": ".room-console .room-prompt, .room-console .as-lead, .room-console .cr-lead",
+        "fontSize": "10.72px",
+        "fontWeight": "600",
+        "glyphBoxes": 3,
+        "sampledPx": 9110,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          1,
+          3,
+          4
+        ],
+        "brightestBg": [
+          19,
+          13,
+          9
+        ],
+        "ratioOnDarkest": 5.06,
+        "ratioOnBrightest": 4.72
+      },
+      {
+        "label": "inspector · surface heading",
+        "sel": ".site-header h2",
+        "fontSize": "20.48px",
+        "fontWeight": "700",
+        "glyphBoxes": 1,
+        "sampledPx": 3784,
+        "textColor": "oklch(0.99 0.004 190)",
+        "textRgb": [
+          249,
+          253,
+          252
+        ],
+        "darkestBg": [
+          7,
+          12,
+          15
+        ],
+        "brightestBg": [
+          7,
+          12,
+          15
+        ],
+        "ratioOnDarkest": 19.17,
+        "ratioOnBrightest": 19.17
+      },
+      {
+        "label": "inspector · record body",
+        "sel": ".site-description",
+        "fontSize": "13.6px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 7728,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          7,
+          12,
+          16
+        ],
+        "brightestBg": [
+          7,
+          12,
+          16
+        ],
+        "ratioOnDarkest": 7.97,
+        "ratioOnBrightest": 7.97
+      },
+      {
+        "label": "command bar · counter label",
+        "sel": ".field-objectives > span",
+        "fontSize": "9.92px",
+        "fontWeight": "500",
+        "glyphBoxes": 4,
+        "sampledPx": 499,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          3
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "command bar · threshold line",
+        "sel": ".field-threshold",
+        "fontSize": "11.68px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 5467,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          4
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      }
+    ],
+    "zones-care-ward@375": [
+      {
+        "label": "on-plate caption",
+        "sel": ".world-caption",
+        "fontSize": "10.72px",
+        "fontWeight": "500",
+        "glyphBoxes": 1,
+        "sampledPx": 1232,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          0,
+          0,
+          0
+        ],
+        "brightestBg": [
+          5,
+          5,
+          5
+        ],
+        "ratioOnDarkest": 8.52,
+        "ratioOnBrightest": 8.27
+      },
+      {
+        "label": "inspector · surface heading",
+        "sel": ".site-header h2",
+        "fontSize": "20.48px",
+        "fontWeight": "700",
+        "glyphBoxes": 1,
+        "sampledPx": 2596,
+        "textColor": "oklch(0.99 0.004 190)",
+        "textRgb": [
+          249,
+          253,
+          252
+        ],
+        "darkestBg": [
+          7,
+          12,
+          15
+        ],
+        "brightestBg": [
+          7,
+          12,
+          15
+        ],
+        "ratioOnDarkest": 19.17,
+        "ratioOnBrightest": 19.17
+      },
+      {
+        "label": "inspector · record body",
+        "sel": ".site-description",
+        "fontSize": "13.6px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 6384,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          7,
+          12,
+          16
+        ],
+        "brightestBg": [
+          7,
+          12,
+          16
+        ],
+        "ratioOnDarkest": 7.97,
+        "ratioOnBrightest": 7.97
+      },
+      {
+        "label": "command bar · counter label",
+        "sel": ".field-objectives > span",
+        "fontSize": "9.92px",
+        "fontWeight": "500",
+        "glyphBoxes": 4,
+        "sampledPx": 499,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          3
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "command bar · threshold line",
+        "sel": ".field-threshold",
+        "fontSize": "11.68px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 5467,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          3
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      }
+    ]
+  },
+  "failures": 0
+}
