@@ -1,6 +1,6 @@
 {
   "url": "http://127.0.0.1:3000/",
-  "capturedAt": "2026-07-25T19:20:07.484Z",
+  "capturedAt": "2026-07-25T22:26:54.913Z",
   "node": "v24.18.0",
   "checks": [
     {
@@ -211,7 +211,7 @@
       "step": "375x812 · narrow layout scrolls as a document (recorded, not a gate)",
       "pass": true,
       "detail": {
-        "scrollHeight": 1231,
+        "scrollHeight": 1216,
         "innerHeight": 812
       }
     },
@@ -891,11 +891,11 @@
           "sel": ".world-return",
           "present": true,
           "box": {
-            "w": 174,
+            "w": 178,
             "h": 44,
-            "top": 162,
-            "left": 38,
-            "right": 212
+            "top": 158,
+            "left": 36,
+            "right": 214
           },
           "hitsIntended": true,
           "hitClass": "world-return"
@@ -904,14 +904,14 @@
           "sel": ".casefile-summon",
           "present": true,
           "box": {
-            "w": 153,
+            "w": 166,
             "h": 44,
-            "top": 162,
-            "left": 498,
-            "right": 651
+            "top": 158,
+            "left": 581,
+            "right": 746
           },
           "hitsIntended": true,
-          "hitClass": "casefile-summon"
+          "hitClass": ""
         },
         {
           "sel": ".scene-detail-summon",
@@ -919,9 +919,9 @@
           "box": {
             "w": 135,
             "h": 40,
-            "top": 162,
-            "left": 659,
-            "right": 794
+            "top": 158,
+            "left": 754,
+            "right": 889
           },
           "hitsIntended": true,
           "hitClass": "scene-detail-summon"
@@ -1041,7 +1041,7 @@
           "box": {
             "w": 157,
             "h": 44,
-            "top": 171,
+            "top": 164,
             "left": 10,
             "right": 167
           },
@@ -1052,23 +1052,23 @@
           "sel": ".casefile-summon",
           "present": true,
           "box": {
-            "w": 139,
+            "w": 154,
             "h": 44,
-            "top": 223,
-            "left": 100,
-            "right": 239
+            "top": 216,
+            "left": 82,
+            "right": 236
           },
           "hitsIntended": true,
-          "hitClass": "casefile-summon"
+          "hitClass": ""
         },
         {
           "sel": ".scene-detail-summon",
           "present": true,
           "box": {
-            "w": 120,
+            "w": 124,
             "h": 40,
-            "top": 223,
-            "left": 245,
+            "top": 216,
+            "left": 242,
             "right": 365
           },
           "hitsIntended": true,
@@ -1196,7 +1196,7 @@
         "classes": "text-risk",
         "box": {
           "w": 78,
-          "h": 27
+          "h": 28
         }
       }
     },
@@ -1210,7 +1210,7 @@
         "classes": "text-risk",
         "box": {
           "w": 78,
-          "h": 27
+          "h": 28
         }
       }
     },
@@ -1278,7 +1278,7 @@
       "step": "reduced motion · drawer has no animation and no transition, and is fully legible",
       "pass": true,
       "detail": {
-        "portalClass": "casefile-portal reduce-motion",
+        "portalClass": "casefile-portal record-mode reduce-motion",
         "animationName": "none",
         "transition": "none",
         "opacity": "1",
@@ -1291,14 +1291,14 @@
       "step": "reduced motion · portal repeats the preference class at the boundary",
       "pass": true,
       "detail": {
-        "portalClass": "casefile-portal reduce-motion"
+        "portalClass": "casefile-portal record-mode reduce-motion"
       }
     },
     {
       "step": "high contrast · portal repeats the class and the summon drops its blur",
       "pass": true,
       "detail": {
-        "portalClass": "casefile-portal high-contrast",
+        "portalClass": "casefile-portal record-mode high-contrast",
         "drawerBg": "oklch(0.12 0.006 240)",
         "summonBg": "oklch(0.09 0 0)",
         "summonFilter": "none",
@@ -1331,16 +1331,16 @@
       "pass": true,
       "detail": {
         "plate": {
-          "w": 792,
-          "h": 464
+          "w": 889,
+          "h": 476
         },
         "console": {
-          "w": 792,
-          "h": 191
+          "w": 889,
+          "h": 190
         },
-        "sceneAbovePx": 273,
+        "sceneAbovePx": 286,
         "maxHeight": "76%",
-        "naturalHeight": 190,
+        "naturalHeight": 189,
         "scrolls": false
       }
     },
@@ -1349,16 +1349,16 @@
       "pass": true,
       "detail": {
         "plate": {
-          "w": 792,
-          "h": 464
+          "w": 889,
+          "h": 476
         },
         "console": {
-          "w": 792,
-          "h": 250
+          "w": 889,
+          "h": 249
         },
-        "sceneAbovePx": 214,
+        "sceneAbovePx": 227,
         "maxHeight": "76%",
-        "naturalHeight": 249,
+        "naturalHeight": 248,
         "scrolls": false
       }
     },
@@ -1367,14 +1367,14 @@
       "pass": true,
       "detail": {
         "plate": {
-          "w": 792,
-          "h": 464
+          "w": 889,
+          "h": 476
         },
         "console": {
-          "w": 792,
+          "w": 889,
           "h": 220
         },
-        "sceneAbovePx": 244,
+        "sceneAbovePx": 256,
         "maxHeight": "76%",
         "naturalHeight": 219,
         "scrolls": false
@@ -1484,22 +1484,22 @@
         "positions": [
           {
             "scrollY": 0,
-            "swept": 10,
-            "occluded": []
-          },
-          {
-            "scrollY": 205,
             "swept": 12,
             "occluded": []
           },
           {
-            "scrollY": 205,
-            "swept": 12,
+            "scrollY": 201,
+            "swept": 14,
+            "occluded": []
+          },
+          {
+            "scrollY": 201,
+            "swept": 14,
             "occluded": []
           }
         ],
         "summonBox": {
-          "w": 153,
+          "w": 166,
           "h": 44
         },
         "summonHitsItself": true,
@@ -1513,22 +1513,22 @@
         "positions": [
           {
             "scrollY": 0,
-            "swept": 10,
-            "occluded": []
-          },
-          {
-            "scrollY": 345,
             "swept": 12,
             "occluded": []
           },
           {
-            "scrollY": 345,
-            "swept": 12,
+            "scrollY": 343,
+            "swept": 14,
+            "occluded": []
+          },
+          {
+            "scrollY": 343,
+            "swept": 14,
             "occluded": []
           }
         ],
         "summonBox": {
-          "w": 153,
+          "w": 166,
           "h": 44
         },
         "summonHitsItself": true,
@@ -1542,22 +1542,22 @@
         "positions": [
           {
             "scrollY": 0,
-            "swept": 9,
-            "occluded": []
-          },
-          {
-            "scrollY": 763,
             "swept": 11,
             "occluded": []
           },
           {
-            "scrollY": 763,
-            "swept": 11,
+            "scrollY": 765,
+            "swept": 13,
+            "occluded": []
+          },
+          {
+            "scrollY": 765,
+            "swept": 13,
             "occluded": []
           }
         ],
         "summonBox": {
-          "w": 153,
+          "w": 166,
           "h": 44
         },
         "summonHitsItself": true,
@@ -1571,22 +1571,22 @@
         "positions": [
           {
             "scrollY": 0,
-            "swept": 7,
+            "swept": 9,
             "occluded": []
           },
           {
             "scrollY": 806,
-            "swept": 11,
+            "swept": 13,
             "occluded": []
           },
           {
-            "scrollY": 812,
-            "swept": 11,
+            "scrollY": 811,
+            "swept": 13,
             "occluded": []
           }
         ],
         "summonBox": {
-          "w": 153,
+          "w": 166,
           "h": 44
         },
         "summonHitsItself": true,
@@ -1654,8 +1654,8 @@
         "Case file0 evidence · 1 events"
       ],
       "plate": {
-        "w": 792,
-        "h": 464
+        "w": 889,
+        "h": 476
       },
       "pageScrolls": false,
       "scrollHeight": 800,
@@ -1688,7 +1688,7 @@
         "h": 300
       },
       "pageScrolls": true,
-      "scrollHeight": 1231,
+      "scrollHeight": 1216,
       "innerHeight": 812
     },
     "drawer:1280x800": {
@@ -1903,11 +1903,11 @@
           "sel": ".world-return",
           "present": true,
           "box": {
-            "w": 174,
+            "w": 178,
             "h": 44,
-            "top": 162,
-            "left": 38,
-            "right": 212
+            "top": 158,
+            "left": 36,
+            "right": 214
           },
           "hitsIntended": true,
           "hitClass": "world-return"
@@ -1916,14 +1916,14 @@
           "sel": ".casefile-summon",
           "present": true,
           "box": {
-            "w": 153,
+            "w": 166,
             "h": 44,
-            "top": 162,
-            "left": 498,
-            "right": 651
+            "top": 158,
+            "left": 581,
+            "right": 746
           },
           "hitsIntended": true,
-          "hitClass": "casefile-summon"
+          "hitClass": ""
         },
         {
           "sel": ".scene-detail-summon",
@@ -1931,9 +1931,9 @@
           "box": {
             "w": 135,
             "h": 40,
-            "top": 162,
-            "left": 659,
-            "right": 794
+            "top": 158,
+            "left": 754,
+            "right": 889
           },
           "hitsIntended": true,
           "hitClass": "scene-detail-summon"
@@ -1988,7 +1988,7 @@
           "box": {
             "w": 157,
             "h": 44,
-            "top": 171,
+            "top": 164,
             "left": 10,
             "right": 167
           },
@@ -1999,23 +1999,23 @@
           "sel": ".casefile-summon",
           "present": true,
           "box": {
-            "w": 139,
+            "w": 154,
             "h": 44,
-            "top": 223,
-            "left": 100,
-            "right": 239
+            "top": 216,
+            "left": 82,
+            "right": 236
           },
           "hitsIntended": true,
-          "hitClass": "casefile-summon"
+          "hitClass": ""
         },
         {
           "sel": ".scene-detail-summon",
           "present": true,
           "box": {
-            "w": 120,
+            "w": 124,
             "h": 40,
-            "top": 223,
-            "left": 245,
+            "top": 216,
+            "left": 242,
             "right": 365
           },
           "hitsIntended": true,
@@ -2073,7 +2073,7 @@
       "classes": "text-risk",
       "box": {
         "w": 78,
-        "h": 27
+        "h": 28
       }
     },
     "alarm:3": {
@@ -2083,7 +2083,7 @@
       "classes": "text-risk",
       "box": {
         "w": 78,
-        "h": 27
+        "h": 28
       }
     },
     "thresholdAfterFiling": {
@@ -2131,7 +2131,7 @@
       }
     },
     "reducedMotion": {
-      "portalClass": "casefile-portal reduce-motion",
+      "portalClass": "casefile-portal record-mode reduce-motion",
       "animationName": "none",
       "transition": "none",
       "opacity": "1",
@@ -2140,7 +2140,7 @@
       "osReduced": true
     },
     "highContrast": {
-      "portalClass": "casefile-portal high-contrast",
+      "portalClass": "casefile-portal record-mode high-contrast",
       "drawerBg": "oklch(0.12 0.006 240)",
       "summonBg": "oklch(0.09 0 0)",
       "summonFilter": "none",
@@ -2158,42 +2158,42 @@
     "consoleProportions": {
       "Registry intake": {
         "plate": {
-          "w": 792,
-          "h": 464
+          "w": 889,
+          "h": 476
         },
         "console": {
-          "w": 792,
-          "h": 191
+          "w": 889,
+          "h": 190
         },
-        "sceneAbovePx": 273,
+        "sceneAbovePx": 286,
         "maxHeight": "76%",
-        "naturalHeight": 190,
+        "naturalHeight": 189,
         "scrolls": false
       },
       "Maintenance spine": {
         "plate": {
-          "w": 792,
-          "h": 464
+          "w": 889,
+          "h": 476
         },
         "console": {
-          "w": 792,
-          "h": 250
+          "w": 889,
+          "h": 249
         },
-        "sceneAbovePx": 214,
+        "sceneAbovePx": 227,
         "maxHeight": "76%",
-        "naturalHeight": 249,
+        "naturalHeight": 248,
         "scrolls": false
       },
       "The Small Archive": {
         "plate": {
-          "w": 792,
-          "h": 464
+          "w": 889,
+          "h": 476
         },
         "console": {
-          "w": 792,
+          "w": 889,
           "h": 220
         },
-        "sceneAbovePx": 244,
+        "sceneAbovePx": 256,
         "maxHeight": "76%",
         "naturalHeight": 219,
         "scrolls": false
@@ -2222,7 +2222,7 @@
           "buttonInside": true,
           "tapTarget": {
             "w": 300,
-            "h": 119
+            "h": 122
           }
         },
         {
@@ -2238,7 +2238,7 @@
           "buttonInside": true,
           "tapTarget": {
             "w": 300,
-            "h": 106
+            "h": 108
           }
         }
       ]
@@ -2276,22 +2276,22 @@
         "positions": [
           {
             "scrollY": 0,
-            "swept": 10,
-            "occluded": []
-          },
-          {
-            "scrollY": 205,
             "swept": 12,
             "occluded": []
           },
           {
-            "scrollY": 205,
-            "swept": 12,
+            "scrollY": 201,
+            "swept": 14,
+            "occluded": []
+          },
+          {
+            "scrollY": 201,
+            "swept": 14,
             "occluded": []
           }
         ],
         "summonBox": {
-          "w": 153,
+          "w": 166,
           "h": 44
         },
         "summonHitsItself": true,
@@ -2301,22 +2301,22 @@
         "positions": [
           {
             "scrollY": 0,
-            "swept": 10,
-            "occluded": []
-          },
-          {
-            "scrollY": 345,
             "swept": 12,
             "occluded": []
           },
           {
-            "scrollY": 345,
-            "swept": 12,
+            "scrollY": 343,
+            "swept": 14,
+            "occluded": []
+          },
+          {
+            "scrollY": 343,
+            "swept": 14,
             "occluded": []
           }
         ],
         "summonBox": {
-          "w": 153,
+          "w": 166,
           "h": 44
         },
         "summonHitsItself": true,
@@ -2326,22 +2326,22 @@
         "positions": [
           {
             "scrollY": 0,
-            "swept": 9,
-            "occluded": []
-          },
-          {
-            "scrollY": 763,
             "swept": 11,
             "occluded": []
           },
           {
-            "scrollY": 763,
-            "swept": 11,
+            "scrollY": 765,
+            "swept": 13,
+            "occluded": []
+          },
+          {
+            "scrollY": 765,
+            "swept": 13,
             "occluded": []
           }
         ],
         "summonBox": {
-          "w": 153,
+          "w": 166,
           "h": 44
         },
         "summonHitsItself": true,
@@ -2351,22 +2351,22 @@
         "positions": [
           {
             "scrollY": 0,
-            "swept": 7,
+            "swept": 9,
             "occluded": []
           },
           {
             "scrollY": 806,
-            "swept": 11,
+            "swept": 13,
             "occluded": []
           },
           {
-            "scrollY": 812,
-            "swept": 11,
+            "scrollY": 811,
+            "swept": 13,
             "occluded": []
           }
         ],
         "summonBox": {
-          "w": 153,
+          "w": 166,
           "h": 44
         },
         "summonHitsItself": true,

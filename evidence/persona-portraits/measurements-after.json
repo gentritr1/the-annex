@@ -1,7 +1,7 @@
 {
   "mode": "after",
   "url": "http://127.0.0.1:3000/",
-  "capturedAt": "2026-07-25T19:21:40.938Z",
+  "capturedAt": "2026-07-25T22:25:09.825Z",
   "node": "v24.18.0",
   "checks": [
     {
@@ -268,7 +268,7 @@
           58
         ],
         "minHeight": "58px",
-        "columns": "8px 40px 346.047px 58.9531px"
+        "columns": "8px 40px 344.312px 60.6875px"
       }
     },
     {
@@ -382,7 +382,7 @@
         {
           "plated": false,
           "hasImg": false,
-          "markOpacity": "0.767028",
+          "markOpacity": "0.767086",
           "markAnimation": "ambience-breathe",
           "rowHeight": 58
         },
@@ -420,7 +420,7 @@
           58
         ],
         "minHeight": "58px",
-        "columns": "8px 40px 202.047px 58.9531px"
+        "columns": "8px 40px 202.906px 58.0938px"
       }
     },
     {
@@ -534,7 +534,7 @@
         {
           "plated": false,
           "hasImg": false,
-          "markOpacity": "0.767021",
+          "markOpacity": "0.768646",
           "markAnimation": "ambience-breathe",
           "rowHeight": 58
         },
@@ -1095,28 +1095,28 @@
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 40px 346.047px 58.9531px",
+          "columns": "8px 40px 344.312px 60.6875px",
           "roleText": "Custodian of legal continuity",
           "roleClipped": false
         },
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 40px 378.797px 26.2031px",
+          "columns": "8px 40px 378.016px 26.9844px",
           "roleText": "Care-ward advocate",
           "roleClipped": false
         },
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 40px 346.047px 58.9531px",
+          "columns": "8px 40px 344.312px 60.6875px",
           "roleText": "Compromised systems guide",
           "roleClipped": false
         },
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 40px 346.047px 58.9531px",
+          "columns": "8px 40px 344.312px 60.6875px",
           "roleText": "Collector of missing categories",
           "roleClipped": false
         }
@@ -1125,28 +1125,28 @@
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 20px 366.047px 58.9531px",
+          "columns": "8px 20px 364.312px 60.6875px",
           "roleText": "Custodian of legal continuity",
           "roleClipped": false
         },
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 20px 398.797px 26.2031px",
+          "columns": "8px 20px 398.016px 26.9844px",
           "roleText": "Care-ward advocate",
           "roleClipped": false
         },
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 20px 366.047px 58.9531px",
+          "columns": "8px 20px 364.312px 60.6875px",
           "roleText": "Compromised systems guide",
           "roleClipped": false
         },
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 20px 366.047px 58.9531px",
+          "columns": "8px 20px 364.312px 60.6875px",
           "roleText": "Collector of missing categories",
           "roleClipped": false
         }
@@ -1284,7 +1284,7 @@
       {
         "plated": false,
         "hasImg": false,
-        "markOpacity": "0.767028",
+        "markOpacity": "0.767086",
         "markAnimation": "ambience-breathe",
         "rowHeight": 58
       },
@@ -1308,28 +1308,28 @@
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 40px 202.047px 58.9531px",
+          "columns": "8px 40px 202.906px 58.0938px",
           "roleText": "Custodian of legal continuity",
           "roleClipped": false
         },
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 40px 234.797px 26.2031px",
+          "columns": "8px 40px 235.172px 25.8281px",
           "roleText": "Care-ward advocate",
           "roleClipped": false
         },
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 40px 202.047px 58.9531px",
+          "columns": "8px 40px 202.906px 58.0938px",
           "roleText": "Compromised systems guide",
           "roleClipped": false
         },
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 40px 202.047px 58.9531px",
+          "columns": "8px 40px 202.906px 58.0938px",
           "roleText": "Collector of missing categories",
           "roleClipped": false
         }
@@ -1338,28 +1338,28 @@
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 20px 222.047px 58.9531px",
+          "columns": "8px 20px 222.906px 58.0938px",
           "roleText": "Custodian of legal continuity",
           "roleClipped": false
         },
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 20px 254.797px 26.2031px",
+          "columns": "8px 20px 255.172px 25.8281px",
           "roleText": "Care-ward advocate",
           "roleClipped": false
         },
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 20px 222.047px 58.9531px",
+          "columns": "8px 20px 222.906px 58.0938px",
           "roleText": "Compromised systems guide",
           "roleClipped": false
         },
         {
           "height": 58,
           "minHeight": "58px",
-          "columns": "8px 20px 222.047px 58.9531px",
+          "columns": "8px 20px 222.906px 58.0938px",
           "roleText": "Collector of missing categories",
           "roleClipped": false
         }
@@ -1497,7 +1497,7 @@
       {
         "plated": false,
         "hasImg": false,
-        "markOpacity": "0.767021",
+        "markOpacity": "0.768646",
         "markAnimation": "ambience-breathe",
         "rowHeight": 58
       },
