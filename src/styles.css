@@ -11698,6 +11698,15 @@ p {
 .easy-read .rail-note,
 .easy-read .field-objectives > span,
 .easy-read .field-threshold,
+.easy-read .field-purpose,
+.easy-read .site-cost-note,
+.easy-read .lattice-purpose,
+/* Specificity again, and measured rather than assumed: the base rule for this
+   line is `.casefile-summon small.casefile-summon-why` (0,2,1), so the plain
+   `.easy-read .casefile-summon-why` (0,2,0) LOSES and the line stayed at
+   --fog-dim under Easy Read. Caught by reading the computed colour in the
+   harness, not by reading the sheet. */
+.easy-read .casefile-summon small.casefile-summon-why,
 .easy-read .room-console .room-prompt,
 .easy-read .room-console .as-lead,
 .easy-read .room-console .cr-lead {
@@ -11712,4 +11721,105 @@ p {
 .easy-read .deposition-header .case-code {
   letter-spacing: 0.02em;
   text-transform: none;
+}
+
+/* ── W1-4 · purpose copy (audit P2-F) ──────────────────────────────────────────
+   Five lines that name a PURPOSE where the chrome only named a state. Every one
+   of them retires — see components/purposeCopy.ts for the derived predicates —
+   so none of these rules is a standing label style.
+
+   Appended at the END of the sheet on purpose: R5 in the roadmap records that a
+   new rule dropped into a container the typography pass re-authored can lose to
+   source order. Nothing here touches a --type-* or --label-* token; every size
+   below is an existing role already on its own surface, so the audit's
+   distinct-font-size count cannot move. */
+
+/* Concourse. An inline continuation of `.field-threshold`, so it inherits that
+   line's role, colour and line-height and adds no grid row — see the measured
+   note at Investigation.tsx. Nothing is declared here that would create a new
+   type size or a new colour; the class exists so the contrast probe and the
+   evidence harness have something to name. */
+.field-purpose {
+  /* The role values are stated, NOT inherited, and that is a measurement fix
+     rather than a style preference: the contrast probe samples the background
+     behind the glyphs by making text transparent, then reads each target's
+     computed `color`. An element declaring `color: inherit` resolved to
+     `rgba(0, 0, 0, 0)` during that pass and the probe scored it 1.00 : 1 —
+     a fabricated failure on text that renders correctly. Same values as
+     `.field-threshold`, so nothing on screen moves. */
+  color: var(--fog-dim);
+  font-size: var(--type-meta);
+}
+
+/* The bounded-room location's cost line. Matches `.site-action-prompt`, the
+   equivalent line on a plain location, in every value. */
+.site-cost-note {
+  margin: 0;
+  padding: 10px 4px;
+  color: var(--fog-dim);
+  font-size: var(--type-label);
+  font-weight: 650;
+}
+
+/* The case-file summon, while the file is empty. `.casefile-summon small` is
+   nowrap so a single count line can never break; this line WANTS to wrap, and
+   is capped at the counts line's own measure so the pill never grows wider than
+   it already is — only taller. The pill's 999px radius reads as a lozenge at
+   three rows, so the oriented variant softens to a rounded rectangle. */
+.casefile-summon--oriented {
+  border-radius: 14px;
+}
+
+/* Specificity, not source order, is what decides here: `.casefile-summon small`
+   is (0,1,1) and pins `white-space: nowrap` so a count line can never break. A
+   bare `.casefile-summon-why` is (0,1,0) and loses — observed as a clipped line
+   in the pane before this selector was widened. The recorded R5 cascade hazard,
+   caught by an eyeball rather than by a passing build. */
+.casefile-summon small.casefile-summon-why {
+  max-width: 21ch;
+  margin-top: 3px;
+  padding-top: 4px;
+  border-top: 1px solid var(--line);
+  color: var(--fog-dim);
+  font-size: var(--type-micro);
+  line-height: 1.35;
+  white-space: normal;
+}
+
+/* MEASURED, not assumed. At 375x812 the plate is 375 wide and its four world
+   portals sit 98px below its top edge; the resting pill is 44px tall and clears
+   them. The oriented pill is 87px tall, and an elementFromPoint sweep at each
+   portal's visual centre showed portals C and D returning
+   `casefile-summon`/`casefile-summon-why` as the owner instead of
+   `annex-world-portal` — two of the four locations unclickable at their centre.
+   The recorded cross-zone scar, reproduced. There is no free band on the narrow
+   plate to grow into (the world caption owns the bottom edge), so the narrow
+   layout keeps the resting pill and loses this one line. Flagged for the writer
+   in docs/w1-4-purpose-copy-report.md — it is a gap, not a solution. */
+@media (max-width: 700px) {
+  .casefile-summon-why {
+    display: none;
+  }
+
+  .casefile-summon--oriented {
+    border-radius: 999px;
+  }
+}
+
+/* The memory lattice. A sibling of the header, carrying the header intro's own
+   measure and colour so the two read as one block. */
+.lattice-purpose {
+  max-width: 68ch;
+  margin: -14px 0 22px;
+  color: var(--fog);
+  line-height: 1.65;
+}
+
+/* The roster. Sits under the dossier heading inside a `.rail-block`, so Easy
+   Read's `.rail-panel p` rule already promotes its colour. */
+.people-purpose {
+  margin: 8px 0 0;
+  color: var(--fog);
+  font-size: var(--type-meta);
+  line-height: 1.5;
 }

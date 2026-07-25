@@ -1,0 +1,1337 @@
+{
+  "url": "http://127.0.0.1:3000/",
+  "capturedAt": "2026-07-25T23:36:47.614Z",
+  "node": "v24.18.0",
+  "checks": [
+    {
+      "name": "1280x800 · REAL RUN · the log already holds the approach event, and the copy still lands",
+      "ok": true,
+      "detail": {
+        "summonCounts": "0 evidence · 1 events",
+        "fieldPurpose": 1,
+        "fieldThreshold": 1,
+        "siteCost": 1,
+        "summonWhy": 1,
+        "summonWhyPainted": 1,
+        "latticePurpose": 0,
+        "peoplePurpose": 0,
+        "dialogs": 0,
+        "text": {
+          "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+          "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+          "summonWhy": "The tribunal reads only what is filed here.",
+          "latticePurpose": null,
+          "peoplePurpose": null
+        }
+      }
+    },
+    {
+      "name": "1280x800 · concourse · purpose line present on first arrival",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": 1,
+        "fieldThreshold": 1,
+        "siteCost": 1,
+        "summonWhy": 1,
+        "summonWhyPainted": 1,
+        "latticePurpose": 0,
+        "peoplePurpose": 0,
+        "dialogs": 0,
+        "text": {
+          "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+          "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+          "summonWhy": "The tribunal reads only what is filed here.",
+          "latticePurpose": null,
+          "peoplePurpose": null
+        }
+      }
+    },
+    {
+      "name": "1280x800 · concourse · the shipped threshold line is still exactly one node",
+      "ok": true,
+      "detail": {
+        "count": 1
+      }
+    },
+    {
+      "name": "1280x800 · concourse · no dialog was introduced",
+      "ok": true,
+      "detail": {
+        "dialogs": 0
+      }
+    },
+    {
+      "name": "1280x800 · summon · purpose line painted (desktop only, by measurement)",
+      "ok": true,
+      "detail": {
+        "painted": 1,
+        "expected": 1
+      }
+    },
+    {
+      "name": "1280x800 · cross-zone (world) · no plate control pair intersects, no centre stolen",
+      "ok": true,
+      "detail": {
+        "controls": 5,
+        "intersectingPairs": [],
+        "stolenCentres": [],
+        "stolenBySummon": [],
+        "summonBox": {
+          "w": 166,
+          "h": 89
+        }
+      }
+    },
+    {
+      "name": "1280x800 · cross-zone (world) · the taller summon steals nothing the resting one did not",
+      "ok": true,
+      "detail": {
+        "identical": true,
+        "stolenBySummon": [],
+        "box": {
+          "w": 166,
+          "h": 89
+        }
+      }
+    },
+    {
+      "name": "1280x800 · room site · cost line present before anything is filed",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+        "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": null,
+        "peoplePurpose": null
+      }
+    },
+    {
+      "name": "1280x800 · cross-zone (closeup) · the taller summon steals nothing the resting one did not",
+      "ok": true,
+      "detail": {
+        "identical": true,
+        "stolenBySummon": [],
+        "stolen": [
+          {
+            "txt": "ARegistry intake",
+            "cls": "annex-world-portal",
+            "ownerCls": "world-view world-view--spatial world-vie"
+          },
+          {
+            "txt": "BCare ward 12",
+            "cls": "annex-world-portal",
+            "ownerCls": "world-view world-view--spatial world-vie"
+          },
+          {
+            "txt": "CMaintenance spine",
+            "cls": "annex-world-portal",
+            "ownerCls": "world-view world-view--spatial world-vie"
+          },
+          {
+            "txt": "DThe Small Archive",
+            "cls": "annex-world-portal",
+            "ownerCls": "world-view world-view--spatial world-vie"
+          }
+        ],
+        "box": {
+          "w": 166,
+          "h": 89
+        }
+      }
+    },
+    {
+      "name": "1280x800 · roster · purpose line present before the first filing",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+        "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": null,
+        "peoplePurpose": "Their standing moves with your route, and what they will give you moves with it."
+      }
+    },
+    {
+      "name": "1280x800 · roster · the dossier heading is untouched",
+      "ok": true,
+      "detail": {}
+    },
+    {
+      "name": "1280x800 · roster · the purpose line names no persona",
+      "ok": true,
+      "detail": {}
+    },
+    {
+      "name": "1280x800 · lattice · purpose line present before a model exists",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": null,
+        "siteCost": null,
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": "The tribunal will not hear findings without a model of what happened — the pair you file is what speaks there.",
+        "peoplePurpose": null
+      }
+    },
+    {
+      "name": "1280x800 · lattice · the header intro keeps its own measure (\":last-child\" not stolen)",
+      "ok": true,
+      "detail": {}
+    },
+    {
+      "name": "1280x800 · RETIRED · concourse purpose line is gone after the first filing",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": 0,
+        "fieldThreshold": 0,
+        "siteCost": 0,
+        "summonWhy": 0,
+        "summonWhyPainted": 0,
+        "latticePurpose": 0,
+        "peoplePurpose": 0,
+        "dialogs": 0,
+        "text": {
+          "fieldPurpose": null,
+          "siteCost": null,
+          "summonWhy": null,
+          "latticePurpose": null,
+          "peoplePurpose": null
+        }
+      }
+    },
+    {
+      "name": "1280x800 · RETIRED · shipped threshold line retires with it (unchanged behaviour)",
+      "ok": true,
+      "detail": {
+        "count": 0
+      }
+    },
+    {
+      "name": "1280x800 · RETIRED · summon purpose line is gone once the file holds something",
+      "ok": true,
+      "detail": {
+        "count": 0
+      }
+    },
+    {
+      "name": "1280x800 · RETIRED · site cost line is gone once a location has closed",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": 0,
+        "fieldThreshold": 0,
+        "siteCost": 0,
+        "summonWhy": 0,
+        "summonWhyPainted": 0,
+        "latticePurpose": 0,
+        "peoplePurpose": 0,
+        "dialogs": 0,
+        "text": {
+          "fieldPurpose": null,
+          "siteCost": null,
+          "summonWhy": null,
+          "latticePurpose": null,
+          "peoplePurpose": null
+        }
+      }
+    },
+    {
+      "name": "1280x800 · RETIRED · roster purpose line is gone after the first filing",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": 0,
+        "fieldThreshold": 0,
+        "siteCost": 0,
+        "summonWhy": 0,
+        "summonWhyPainted": 0,
+        "latticePurpose": 0,
+        "peoplePurpose": 0,
+        "dialogs": 1,
+        "text": {
+          "fieldPurpose": null,
+          "siteCost": null,
+          "summonWhy": null,
+          "latticePurpose": null,
+          "peoplePurpose": null
+        }
+      }
+    },
+    {
+      "name": "1280x800 · RETIRED · lattice purpose line is gone once a model exists",
+      "ok": true,
+      "detail": {
+        "onLattice": true,
+        "count": 0
+      }
+    },
+    {
+      "name": "1280x800 · RETIRED · a second run gets no purpose copy at all",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": 0,
+        "fieldThreshold": 1,
+        "siteCost": 0,
+        "summonWhy": 0,
+        "summonWhyPainted": 0,
+        "latticePurpose": 0,
+        "peoplePurpose": 0,
+        "dialogs": 0,
+        "text": {
+          "fieldPurpose": null,
+          "siteCost": null,
+          "summonWhy": null,
+          "latticePurpose": null,
+          "peoplePurpose": null
+        }
+      }
+    },
+    {
+      "name": "1280x800 · RETIRED · but the shipped threshold line is NOT gated on run count",
+      "ok": true,
+      "detail": {
+        "count": 1
+      }
+    },
+    {
+      "name": "1280x800 · P3-C · chamber line reads \"0 admitted signals\" at 0",
+      "ok": true,
+      "detail": {
+        "line": "0 admitted signals"
+      }
+    },
+    {
+      "name": "1280x800 · P3-C · chamber line reads \"1 admitted signal\" at 1",
+      "ok": true,
+      "detail": {
+        "line": "1 admitted signal"
+      }
+    },
+    {
+      "name": "1280x800 · P3-C · the OTHER admitted-items line (Tribunal.tsx) still agrees at 1",
+      "ok": true,
+      "detail": {
+        "other": "1 admitted item remain contested."
+      }
+    },
+    {
+      "name": "1280x800 · P3-C · chamber line reads \"2 admitted signals\" at 2",
+      "ok": true,
+      "detail": {
+        "line": "2 admitted signals"
+      }
+    },
+    {
+      "name": "1280x800 · Easy Read · every purpose line still renders",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": 1,
+        "fieldThreshold": 1,
+        "siteCost": 1,
+        "summonWhy": 1,
+        "summonWhyPainted": 1,
+        "latticePurpose": 0,
+        "peoplePurpose": 0,
+        "dialogs": 0,
+        "text": {
+          "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+          "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+          "summonWhy": "The tribunal reads only what is filed here.",
+          "latticePurpose": null,
+          "peoplePurpose": null
+        }
+      }
+    },
+    {
+      "name": "1280x800 · Easy Read · the purpose line is promoted with the threshold line, not left behind",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": "oklch(0.94 0.012 190)",
+        "fieldThreshold": "oklch(0.94 0.012 190)",
+        "summonWhy": "oklch(0.94 0.012 190)"
+      }
+    },
+    {
+      "name": "1280x800 · reduced motion · nothing in the purpose copy animates",
+      "ok": true,
+      "detail": {}
+    },
+    {
+      "name": "375x812 · REAL RUN · the log already holds the approach event, and the copy still lands",
+      "ok": true,
+      "detail": {
+        "summonCounts": "0 evidence · 1 events",
+        "fieldPurpose": 1,
+        "fieldThreshold": 1,
+        "siteCost": 1,
+        "summonWhy": 1,
+        "summonWhyPainted": 0,
+        "latticePurpose": 0,
+        "peoplePurpose": 0,
+        "dialogs": 0,
+        "text": {
+          "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+          "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+          "summonWhy": "The tribunal reads only what is filed here.",
+          "latticePurpose": null,
+          "peoplePurpose": null
+        }
+      }
+    },
+    {
+      "name": "375x812 · concourse · purpose line present on first arrival",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": 1,
+        "fieldThreshold": 1,
+        "siteCost": 1,
+        "summonWhy": 1,
+        "summonWhyPainted": 0,
+        "latticePurpose": 0,
+        "peoplePurpose": 0,
+        "dialogs": 0,
+        "text": {
+          "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+          "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+          "summonWhy": "The tribunal reads only what is filed here.",
+          "latticePurpose": null,
+          "peoplePurpose": null
+        }
+      }
+    },
+    {
+      "name": "375x812 · concourse · the shipped threshold line is still exactly one node",
+      "ok": true,
+      "detail": {
+        "count": 1
+      }
+    },
+    {
+      "name": "375x812 · concourse · no dialog was introduced",
+      "ok": true,
+      "detail": {
+        "dialogs": 0
+      }
+    },
+    {
+      "name": "375x812 · summon · purpose line painted (desktop only, by measurement)",
+      "ok": true,
+      "detail": {
+        "painted": 0,
+        "expected": 0
+      }
+    },
+    {
+      "name": "375x812 · cross-zone (world) · no plate control pair intersects, no centre stolen",
+      "ok": true,
+      "detail": {
+        "controls": 5,
+        "intersectingPairs": [],
+        "stolenCentres": [],
+        "stolenBySummon": [],
+        "summonBox": {
+          "w": 154,
+          "h": 44
+        }
+      }
+    },
+    {
+      "name": "375x812 · cross-zone (world) · the taller summon steals nothing the resting one did not",
+      "ok": true,
+      "detail": {
+        "identical": true,
+        "stolenBySummon": [],
+        "box": {
+          "w": 154,
+          "h": 44
+        }
+      }
+    },
+    {
+      "name": "375x812 · room site · cost line present before anything is filed",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+        "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": null,
+        "peoplePurpose": null
+      }
+    },
+    {
+      "name": "375x812 · cross-zone (closeup) · the taller summon steals nothing the resting one did not",
+      "ok": true,
+      "detail": {
+        "identical": true,
+        "stolenBySummon": [],
+        "stolen": [
+          {
+            "txt": "ARegistry intake",
+            "cls": "annex-world-portal",
+            "ownerCls": "cr-lead"
+          },
+          {
+            "txt": "BCare ward 12",
+            "cls": "annex-world-portal",
+            "ownerCls": "custody-rail-room"
+          },
+          {
+            "txt": "CMaintenance spine",
+            "cls": "annex-world-portal",
+            "ownerCls": "cr-lead"
+          },
+          {
+            "txt": "DThe Small Archive",
+            "cls": "annex-world-portal",
+            "ownerCls": "custody-rail-room"
+          }
+        ],
+        "box": {
+          "w": 154,
+          "h": 44
+        }
+      }
+    },
+    {
+      "name": "375x812 · roster · purpose line present before the first filing",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+        "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": null,
+        "peoplePurpose": "Their standing moves with your route, and what they will give you moves with it."
+      }
+    },
+    {
+      "name": "375x812 · roster · the dossier heading is untouched",
+      "ok": true,
+      "detail": {}
+    },
+    {
+      "name": "375x812 · roster · the purpose line names no persona",
+      "ok": true,
+      "detail": {}
+    },
+    {
+      "name": "375x812 · lattice · purpose line present before a model exists",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": null,
+        "siteCost": null,
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": "The tribunal will not hear findings without a model of what happened — the pair you file is what speaks there.",
+        "peoplePurpose": null
+      }
+    },
+    {
+      "name": "375x812 · lattice · the header intro keeps its own measure (\":last-child\" not stolen)",
+      "ok": true,
+      "detail": {}
+    },
+    {
+      "name": "375x812 · RETIRED · concourse purpose line is gone after the first filing",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": 0,
+        "fieldThreshold": 0,
+        "siteCost": 0,
+        "summonWhy": 0,
+        "summonWhyPainted": 0,
+        "latticePurpose": 0,
+        "peoplePurpose": 0,
+        "dialogs": 0,
+        "text": {
+          "fieldPurpose": null,
+          "siteCost": null,
+          "summonWhy": null,
+          "latticePurpose": null,
+          "peoplePurpose": null
+        }
+      }
+    },
+    {
+      "name": "375x812 · RETIRED · shipped threshold line retires with it (unchanged behaviour)",
+      "ok": true,
+      "detail": {
+        "count": 0
+      }
+    },
+    {
+      "name": "375x812 · RETIRED · summon purpose line is gone once the file holds something",
+      "ok": true,
+      "detail": {
+        "count": 0
+      }
+    },
+    {
+      "name": "375x812 · RETIRED · site cost line is gone once a location has closed",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": 0,
+        "fieldThreshold": 0,
+        "siteCost": 0,
+        "summonWhy": 0,
+        "summonWhyPainted": 0,
+        "latticePurpose": 0,
+        "peoplePurpose": 0,
+        "dialogs": 0,
+        "text": {
+          "fieldPurpose": null,
+          "siteCost": null,
+          "summonWhy": null,
+          "latticePurpose": null,
+          "peoplePurpose": null
+        }
+      }
+    },
+    {
+      "name": "375x812 · RETIRED · roster purpose line is gone after the first filing",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": 0,
+        "fieldThreshold": 0,
+        "siteCost": 0,
+        "summonWhy": 0,
+        "summonWhyPainted": 0,
+        "latticePurpose": 0,
+        "peoplePurpose": 0,
+        "dialogs": 1,
+        "text": {
+          "fieldPurpose": null,
+          "siteCost": null,
+          "summonWhy": null,
+          "latticePurpose": null,
+          "peoplePurpose": null
+        }
+      }
+    },
+    {
+      "name": "375x812 · RETIRED · lattice purpose line is gone once a model exists",
+      "ok": true,
+      "detail": {
+        "onLattice": true,
+        "count": 0
+      }
+    },
+    {
+      "name": "375x812 · RETIRED · a second run gets no purpose copy at all",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": 0,
+        "fieldThreshold": 1,
+        "siteCost": 0,
+        "summonWhy": 0,
+        "summonWhyPainted": 0,
+        "latticePurpose": 0,
+        "peoplePurpose": 0,
+        "dialogs": 0,
+        "text": {
+          "fieldPurpose": null,
+          "siteCost": null,
+          "summonWhy": null,
+          "latticePurpose": null,
+          "peoplePurpose": null
+        }
+      }
+    },
+    {
+      "name": "375x812 · RETIRED · but the shipped threshold line is NOT gated on run count",
+      "ok": true,
+      "detail": {
+        "count": 1
+      }
+    },
+    {
+      "name": "375x812 · P3-C · chamber line reads \"0 admitted signals\" at 0",
+      "ok": true,
+      "detail": {
+        "line": "0 admitted signals"
+      }
+    },
+    {
+      "name": "375x812 · P3-C · chamber line reads \"1 admitted signal\" at 1",
+      "ok": true,
+      "detail": {
+        "line": "1 admitted signal"
+      }
+    },
+    {
+      "name": "375x812 · P3-C · the OTHER admitted-items line (Tribunal.tsx) still agrees at 1",
+      "ok": true,
+      "detail": {
+        "other": "1 admitted item remain contested."
+      }
+    },
+    {
+      "name": "375x812 · P3-C · chamber line reads \"2 admitted signals\" at 2",
+      "ok": true,
+      "detail": {
+        "line": "2 admitted signals"
+      }
+    },
+    {
+      "name": "375x812 · Easy Read · every purpose line still renders",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": 1,
+        "fieldThreshold": 1,
+        "siteCost": 1,
+        "summonWhy": 1,
+        "summonWhyPainted": 0,
+        "latticePurpose": 0,
+        "peoplePurpose": 0,
+        "dialogs": 0,
+        "text": {
+          "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+          "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+          "summonWhy": "The tribunal reads only what is filed here.",
+          "latticePurpose": null,
+          "peoplePurpose": null
+        }
+      }
+    },
+    {
+      "name": "375x812 · Easy Read · the purpose line is promoted with the threshold line, not left behind",
+      "ok": true,
+      "detail": {
+        "fieldPurpose": "oklch(0.94 0.012 190)",
+        "fieldThreshold": "oklch(0.94 0.012 190)",
+        "summonWhy": "oklch(0.94 0.012 190)"
+      }
+    },
+    {
+      "name": "375x812 · reduced motion · nothing in the purpose copy animates",
+      "ok": true,
+      "detail": {}
+    }
+  ],
+  "measurements": {
+    "realrun-concourse:1280x800": {
+      "fieldPurpose": 1,
+      "fieldThreshold": 1,
+      "siteCost": 1,
+      "summonWhy": 1,
+      "summonWhyPainted": 1,
+      "latticePurpose": 0,
+      "peoplePurpose": 0,
+      "dialogs": 0,
+      "text": {
+        "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+        "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": null,
+        "peoplePurpose": null
+      },
+      "summonCounts": "0 evidence · 1 events"
+    },
+    "concourse-first:1280x800": {
+      "fieldPurpose": 1,
+      "fieldThreshold": 1,
+      "siteCost": 1,
+      "summonWhy": 1,
+      "summonWhyPainted": 1,
+      "latticePurpose": 0,
+      "peoplePurpose": 0,
+      "dialogs": 0,
+      "text": {
+        "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+        "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": null,
+        "peoplePurpose": null
+      }
+    },
+    "crosszone-concourse:1280x800": {
+      "before": {
+        "controls": 5,
+        "intersectingPairs": [],
+        "stolenCentres": [],
+        "stolenBySummon": [],
+        "summonBox": {
+          "w": 166,
+          "h": 44
+        }
+      },
+      "after": {
+        "controls": 5,
+        "intersectingPairs": [],
+        "stolenCentres": [],
+        "stolenBySummon": [],
+        "summonBox": {
+          "w": 166,
+          "h": 89
+        }
+      },
+      "identical": true
+    },
+    "room-first:1280x800": {
+      "fieldPurpose": 1,
+      "fieldThreshold": 1,
+      "siteCost": 1,
+      "summonWhy": 1,
+      "summonWhyPainted": 1,
+      "latticePurpose": 0,
+      "peoplePurpose": 0,
+      "dialogs": 0,
+      "text": {
+        "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+        "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": null,
+        "peoplePurpose": null
+      }
+    },
+    "crosszone-closeup:1280x800": {
+      "before": {
+        "controls": 9,
+        "intersectingPairs": [],
+        "stolenCentres": [
+          {
+            "txt": "ARegistry intake",
+            "cls": "annex-world-portal",
+            "ownerCls": "world-view world-view--spatial world-vie"
+          },
+          {
+            "txt": "BCare ward 12",
+            "cls": "annex-world-portal",
+            "ownerCls": "world-view world-view--spatial world-vie"
+          },
+          {
+            "txt": "CMaintenance spine",
+            "cls": "annex-world-portal",
+            "ownerCls": "world-view world-view--spatial world-vie"
+          },
+          {
+            "txt": "DThe Small Archive",
+            "cls": "annex-world-portal",
+            "ownerCls": "world-view world-view--spatial world-vie"
+          }
+        ],
+        "stolenBySummon": [],
+        "summonBox": {
+          "w": 166,
+          "h": 44
+        }
+      },
+      "after": {
+        "controls": 9,
+        "intersectingPairs": [],
+        "stolenCentres": [
+          {
+            "txt": "ARegistry intake",
+            "cls": "annex-world-portal",
+            "ownerCls": "world-view world-view--spatial world-vie"
+          },
+          {
+            "txt": "BCare ward 12",
+            "cls": "annex-world-portal",
+            "ownerCls": "world-view world-view--spatial world-vie"
+          },
+          {
+            "txt": "CMaintenance spine",
+            "cls": "annex-world-portal",
+            "ownerCls": "world-view world-view--spatial world-vie"
+          },
+          {
+            "txt": "DThe Small Archive",
+            "cls": "annex-world-portal",
+            "ownerCls": "world-view world-view--spatial world-vie"
+          }
+        ],
+        "stolenBySummon": [],
+        "summonBox": {
+          "w": 166,
+          "h": 89
+        }
+      },
+      "identical": true
+    },
+    "people-first:1280x800": {
+      "fieldPurpose": 1,
+      "fieldThreshold": 1,
+      "siteCost": 1,
+      "summonWhy": 1,
+      "summonWhyPainted": 1,
+      "latticePurpose": 0,
+      "peoplePurpose": 1,
+      "dialogs": 1,
+      "text": {
+        "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+        "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": null,
+        "peoplePurpose": "Their standing moves with your route, and what they will give you moves with it."
+      }
+    },
+    "lattice-first:1280x800": {
+      "fieldPurpose": 0,
+      "fieldThreshold": 0,
+      "siteCost": 0,
+      "summonWhy": 1,
+      "summonWhyPainted": 1,
+      "latticePurpose": 1,
+      "peoplePurpose": 0,
+      "dialogs": 0,
+      "text": {
+        "fieldPurpose": null,
+        "siteCost": null,
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": "The tribunal will not hear findings without a model of what happened — the pair you file is what speaks there.",
+        "peoplePurpose": null
+      }
+    },
+    "concourse-retired:1280x800": {
+      "fieldPurpose": 0,
+      "fieldThreshold": 0,
+      "siteCost": 0,
+      "summonWhy": 0,
+      "summonWhyPainted": 0,
+      "latticePurpose": 0,
+      "peoplePurpose": 0,
+      "dialogs": 0,
+      "text": {
+        "fieldPurpose": null,
+        "siteCost": null,
+        "summonWhy": null,
+        "latticePurpose": null,
+        "peoplePurpose": null
+      }
+    },
+    "room-retired:1280x800": {
+      "fieldPurpose": 0,
+      "fieldThreshold": 0,
+      "siteCost": 0,
+      "summonWhy": 0,
+      "summonWhyPainted": 0,
+      "latticePurpose": 0,
+      "peoplePurpose": 0,
+      "dialogs": 0,
+      "text": {
+        "fieldPurpose": null,
+        "siteCost": null,
+        "summonWhy": null,
+        "latticePurpose": null,
+        "peoplePurpose": null
+      }
+    },
+    "people-retired:1280x800": {
+      "fieldPurpose": 0,
+      "fieldThreshold": 0,
+      "siteCost": 0,
+      "summonWhy": 0,
+      "summonWhyPainted": 0,
+      "latticePurpose": 0,
+      "peoplePurpose": 0,
+      "dialogs": 1,
+      "text": {
+        "fieldPurpose": null,
+        "siteCost": null,
+        "summonWhy": null,
+        "latticePurpose": null,
+        "peoplePurpose": null
+      }
+    },
+    "lattice-retired:1280x800": {
+      "onLattice": true,
+      "fieldPurpose": 0,
+      "fieldThreshold": 0,
+      "siteCost": 0,
+      "summonWhy": 1,
+      "summonWhyPainted": 1,
+      "latticePurpose": 0,
+      "peoplePurpose": 0,
+      "dialogs": 0,
+      "text": {
+        "fieldPurpose": null,
+        "siteCost": null,
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": null,
+        "peoplePurpose": null
+      }
+    },
+    "veteran-concourse:1280x800": {
+      "fieldPurpose": 0,
+      "fieldThreshold": 1,
+      "siteCost": 0,
+      "summonWhy": 0,
+      "summonWhyPainted": 0,
+      "latticePurpose": 0,
+      "peoplePurpose": 0,
+      "dialogs": 0,
+      "text": {
+        "fieldPurpose": null,
+        "siteCost": null,
+        "summonWhy": null,
+        "latticePurpose": null,
+        "peoplePurpose": null
+      }
+    },
+    "tribunal-signals-0:1280x800": {
+      "line": "0 admitted signals",
+      "other": "The record is silent, not complete."
+    },
+    "tribunal-signals-1:1280x800": {
+      "line": "1 admitted signal",
+      "other": "1 admitted item remain contested."
+    },
+    "tribunal-signals-2:1280x800": {
+      "line": "2 admitted signals",
+      "other": "2 admitted items remain contested."
+    },
+    "easyread-concourse:1280x800": {
+      "fieldPurpose": 1,
+      "fieldThreshold": 1,
+      "siteCost": 1,
+      "summonWhy": 1,
+      "summonWhyPainted": 1,
+      "latticePurpose": 0,
+      "peoplePurpose": 0,
+      "dialogs": 0,
+      "text": {
+        "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+        "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": null,
+        "peoplePurpose": null
+      },
+      "easyColours": {
+        "fieldPurpose": "oklch(0.94 0.012 190)",
+        "fieldThreshold": "oklch(0.94 0.012 190)",
+        "summonWhy": "oklch(0.94 0.012 190)"
+      }
+    },
+    "realrun-concourse:375x812": {
+      "fieldPurpose": 1,
+      "fieldThreshold": 1,
+      "siteCost": 1,
+      "summonWhy": 1,
+      "summonWhyPainted": 0,
+      "latticePurpose": 0,
+      "peoplePurpose": 0,
+      "dialogs": 0,
+      "text": {
+        "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+        "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": null,
+        "peoplePurpose": null
+      },
+      "summonCounts": "0 evidence · 1 events"
+    },
+    "concourse-first:375x812": {
+      "fieldPurpose": 1,
+      "fieldThreshold": 1,
+      "siteCost": 1,
+      "summonWhy": 1,
+      "summonWhyPainted": 0,
+      "latticePurpose": 0,
+      "peoplePurpose": 0,
+      "dialogs": 0,
+      "text": {
+        "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+        "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": null,
+        "peoplePurpose": null
+      }
+    },
+    "crosszone-concourse:375x812": {
+      "before": {
+        "controls": 5,
+        "intersectingPairs": [],
+        "stolenCentres": [],
+        "stolenBySummon": [],
+        "summonBox": {
+          "w": 154,
+          "h": 44
+        }
+      },
+      "after": {
+        "controls": 5,
+        "intersectingPairs": [],
+        "stolenCentres": [],
+        "stolenBySummon": [],
+        "summonBox": {
+          "w": 154,
+          "h": 44
+        }
+      },
+      "identical": true
+    },
+    "room-first:375x812": {
+      "fieldPurpose": 1,
+      "fieldThreshold": 1,
+      "siteCost": 1,
+      "summonWhy": 1,
+      "summonWhyPainted": 0,
+      "latticePurpose": 0,
+      "peoplePurpose": 0,
+      "dialogs": 0,
+      "text": {
+        "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+        "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": null,
+        "peoplePurpose": null
+      }
+    },
+    "crosszone-closeup:375x812": {
+      "before": {
+        "controls": 9,
+        "intersectingPairs": [
+          [
+            "DThe Small Archive",
+            "Case file0 evidence · 0 events"
+          ]
+        ],
+        "stolenCentres": [
+          {
+            "txt": "ARegistry intake",
+            "cls": "annex-world-portal",
+            "ownerCls": "cr-lead"
+          },
+          {
+            "txt": "BCare ward 12",
+            "cls": "annex-world-portal",
+            "ownerCls": "custody-rail-room"
+          },
+          {
+            "txt": "CMaintenance spine",
+            "cls": "annex-world-portal",
+            "ownerCls": "cr-lead"
+          },
+          {
+            "txt": "DThe Small Archive",
+            "cls": "annex-world-portal",
+            "ownerCls": "custody-rail-room"
+          }
+        ],
+        "stolenBySummon": [],
+        "summonBox": {
+          "w": 154,
+          "h": 44
+        }
+      },
+      "after": {
+        "controls": 9,
+        "intersectingPairs": [
+          [
+            "DThe Small Archive",
+            "Case file0 evidence · 0 events"
+          ]
+        ],
+        "stolenCentres": [
+          {
+            "txt": "ARegistry intake",
+            "cls": "annex-world-portal",
+            "ownerCls": "cr-lead"
+          },
+          {
+            "txt": "BCare ward 12",
+            "cls": "annex-world-portal",
+            "ownerCls": "custody-rail-room"
+          },
+          {
+            "txt": "CMaintenance spine",
+            "cls": "annex-world-portal",
+            "ownerCls": "cr-lead"
+          },
+          {
+            "txt": "DThe Small Archive",
+            "cls": "annex-world-portal",
+            "ownerCls": "custody-rail-room"
+          }
+        ],
+        "stolenBySummon": [],
+        "summonBox": {
+          "w": 154,
+          "h": 44
+        }
+      },
+      "identical": true
+    },
+    "people-first:375x812": {
+      "fieldPurpose": 1,
+      "fieldThreshold": 1,
+      "siteCost": 1,
+      "summonWhy": 1,
+      "summonWhyPainted": 0,
+      "latticePurpose": 0,
+      "peoplePurpose": 1,
+      "dialogs": 1,
+      "text": {
+        "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+        "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": null,
+        "peoplePurpose": "Their standing moves with your route, and what they will give you moves with it."
+      }
+    },
+    "lattice-first:375x812": {
+      "fieldPurpose": 0,
+      "fieldThreshold": 0,
+      "siteCost": 0,
+      "summonWhy": 1,
+      "summonWhyPainted": 0,
+      "latticePurpose": 1,
+      "peoplePurpose": 0,
+      "dialogs": 0,
+      "text": {
+        "fieldPurpose": null,
+        "siteCost": null,
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": "The tribunal will not hear findings without a model of what happened — the pair you file is what speaks there.",
+        "peoplePurpose": null
+      }
+    },
+    "concourse-retired:375x812": {
+      "fieldPurpose": 0,
+      "fieldThreshold": 0,
+      "siteCost": 0,
+      "summonWhy": 0,
+      "summonWhyPainted": 0,
+      "latticePurpose": 0,
+      "peoplePurpose": 0,
+      "dialogs": 0,
+      "text": {
+        "fieldPurpose": null,
+        "siteCost": null,
+        "summonWhy": null,
+        "latticePurpose": null,
+        "peoplePurpose": null
+      }
+    },
+    "room-retired:375x812": {
+      "fieldPurpose": 0,
+      "fieldThreshold": 0,
+      "siteCost": 0,
+      "summonWhy": 0,
+      "summonWhyPainted": 0,
+      "latticePurpose": 0,
+      "peoplePurpose": 0,
+      "dialogs": 0,
+      "text": {
+        "fieldPurpose": null,
+        "siteCost": null,
+        "summonWhy": null,
+        "latticePurpose": null,
+        "peoplePurpose": null
+      }
+    },
+    "people-retired:375x812": {
+      "fieldPurpose": 0,
+      "fieldThreshold": 0,
+      "siteCost": 0,
+      "summonWhy": 0,
+      "summonWhyPainted": 0,
+      "latticePurpose": 0,
+      "peoplePurpose": 0,
+      "dialogs": 1,
+      "text": {
+        "fieldPurpose": null,
+        "siteCost": null,
+        "summonWhy": null,
+        "latticePurpose": null,
+        "peoplePurpose": null
+      }
+    },
+    "lattice-retired:375x812": {
+      "onLattice": true,
+      "fieldPurpose": 0,
+      "fieldThreshold": 0,
+      "siteCost": 0,
+      "summonWhy": 1,
+      "summonWhyPainted": 0,
+      "latticePurpose": 0,
+      "peoplePurpose": 0,
+      "dialogs": 0,
+      "text": {
+        "fieldPurpose": null,
+        "siteCost": null,
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": null,
+        "peoplePurpose": null
+      }
+    },
+    "veteran-concourse:375x812": {
+      "fieldPurpose": 0,
+      "fieldThreshold": 1,
+      "siteCost": 0,
+      "summonWhy": 0,
+      "summonWhyPainted": 0,
+      "latticePurpose": 0,
+      "peoplePurpose": 0,
+      "dialogs": 0,
+      "text": {
+        "fieldPurpose": null,
+        "siteCost": null,
+        "summonWhy": null,
+        "latticePurpose": null,
+        "peoplePurpose": null
+      }
+    },
+    "tribunal-signals-0:375x812": {
+      "line": "0 admitted signals",
+      "other": "The record is silent, not complete."
+    },
+    "tribunal-signals-1:375x812": {
+      "line": "1 admitted signal",
+      "other": "1 admitted item remain contested."
+    },
+    "tribunal-signals-2:375x812": {
+      "line": "2 admitted signals",
+      "other": "2 admitted items remain contested."
+    },
+    "easyread-concourse:375x812": {
+      "fieldPurpose": 1,
+      "fieldThreshold": 1,
+      "siteCost": 1,
+      "summonWhy": 1,
+      "summonWhyPainted": 0,
+      "latticePurpose": 0,
+      "peoplePurpose": 0,
+      "dialogs": 0,
+      "text": {
+        "fieldPurpose": "Those two become a model, the model becomes a ruling, and the next case inherits the ruling.",
+        "siteCost": "One method files this location — the other stays unread for the rest of the run.",
+        "summonWhy": "The tribunal reads only what is filed here.",
+        "latticePurpose": null,
+        "peoplePurpose": null
+      },
+      "easyColours": {
+        "fieldPurpose": "oklch(0.94 0.012 190)",
+        "fieldThreshold": "oklch(0.94 0.012 190)",
+        "summonWhy": "oklch(0.94 0.012 190)"
+      }
+    }
+  },
+  "shots": [
+    "00-concourse-real-run-1280x800.png",
+    "01-concourse-first-1280x800.png",
+    "02-room-cost-first-1280x800.png",
+    "03-people-first-1280x800.png",
+    "04-lattice-first-1280x800.png",
+    "05-concourse-retired-1280x800.png",
+    "06-room-retired-1280x800.png",
+    "07-people-retired-1280x800.png",
+    "08-lattice-retired-1280x800.png",
+    "09-concourse-veteran-1280x800.png",
+    "10-tribunal-signals-0-1280x800.png",
+    "10-tribunal-signals-1-1280x800.png",
+    "10-tribunal-signals-2-1280x800.png",
+    "11-concourse-easyread-1280x800.png",
+    "00-concourse-real-run-375x812.png",
+    "01-concourse-first-375x812.png",
+    "02-room-cost-first-375x812.png",
+    "03-people-first-375x812.png",
+    "04-lattice-first-375x812.png",
+    "05-concourse-retired-375x812.png",
+    "06-room-retired-375x812.png",
+    "07-people-retired-375x812.png",
+    "08-lattice-retired-375x812.png",
+    "09-concourse-veteran-375x812.png",
+    "10-tribunal-signals-0-375x812.png",
+    "10-tribunal-signals-1-375x812.png",
+    "10-tribunal-signals-2-375x812.png",
+    "11-concourse-easyread-375x812.png"
+  ],
+  "pass": 58,
+  "fail": 0
+}

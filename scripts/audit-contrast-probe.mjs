@@ -235,6 +235,15 @@ const TARGETS = JSON.stringify([
   ['.scene-detail-method p', 'record mode · method prose'],
   ['.rail-panel p', 'record mode · case-file prose'],
   ['.rail-note', 'record mode · case-file note'],
+  // W1-4 purpose copy. ADDED targets, never a relaxed one: five new lines land
+  // on four different backgrounds (the command bar, the inspector panel, the
+  // summon pill over the plate, the lattice page), and copy that a first-timer
+  // is meant to read is exactly the copy that may not be measured by inference.
+  ['.field-purpose', 'command bar · purpose line'],
+  ['.site-cost-note', 'inspector · site cost line'],
+  ['.casefile-summon-why', 'summon pill · purpose line'],
+  ['.lattice-purpose', 'lattice · purpose line'],
+  ['.people-purpose', 'roster · purpose line'],
 ])
 
 const PREPARE = `(() => {
@@ -298,12 +307,25 @@ const PREPARE = `(() => {
   // Transparent text plus no text-shadow leaves every fill painted and removes
   // the glyphs and their halo: conservative, because the halo only ever helps.
   window.__hidden = []
+  window.__hiddenSet = new Set()
   for (const f of found) {
     // Descendants too: a child with its own colour (the counter's white
     // <strong> inside a dim caps label) does not inherit transparent, and its
     // surviving glyphs would then be sampled as if they were background.
+    // DEDUPE, and it is load-bearing. An element reachable from two targets —
+    // one target nested inside another, which W1-4's .field-purpose inside
+    // .field-threshold is the first case of — was pushed onto __hidden twice:
+    // first with its real inline colour, then with the 'transparent' the first
+    // push had just written. RESTORE replays in order, so the LAST write won and
+    // the element stayed inline-transparent for the whole rest of the run. Every
+    // later surface then read its computed colour as rgba(0, 0, 0, 0) and scored
+    // it 1.00 : 1 — a fabricated failure on text that renders correctly, and one
+    // that would have been read as a real contrast defect. Latent since the
+    // probe was written; only nesting fires it.
     for (const root of document.querySelectorAll(f.sel)) {
       for (const el of [root, ...root.querySelectorAll('*')]) {
+        if (window.__hiddenSet.has(el)) continue
+        window.__hiddenSet.add(el)
         window.__hidden.push([el, el.style.color, el.style.textShadow])
         el.style.color = 'transparent'
         el.style.textShadow = 'none'
@@ -329,6 +351,7 @@ const RESTORE = `(() => {
   document.getElementById('__swatches')?.remove()
   for (const [el, c, t] of (window.__hidden || [])) { el.style.color = c; el.style.textShadow = t }
   window.__hidden = []
+  window.__hiddenSet = new Set()
   return true })()`
 
 const SAMPLE = (dataUrl, found) => `(async () => {
@@ -409,6 +432,18 @@ for (const [w, h] of [[1280, 800], [375, 812]]) {
   await setViewport(w, h)
   await boot()
   await probe('concourse', w, h)
+  // W1-4. Two of the five purpose lines only exist BEFORE anything is filed, so
+  // the existing walk — which reaches the case file after a filing and never
+  // reaches the lattice at all — could not see them. Two added surfaces, taken
+  // on the same fresh run, before the walk continues unchanged.
+  if (await click('.casefile-summon')) {
+    await sleep(700)
+    await click('#rail-tab-people')
+    await sleep(400)
+    await probe('casefile-people-fresh', w, h)
+    await click('.casefile-close')
+    await sleep(400)
+  }
   await enterSite('Registry intake')
   await probe('console-custody', w, h)
   await enterSite('Maintenance spine')
@@ -441,6 +476,14 @@ for (const [w, h] of [[1280, 800], [375, 812]]) {
     await probe('record-casefile', w, h)
     await click('.casefile-close')
     await sleep(400)
+  }
+  // W1-4. The lattice, reached the way a player reaches it — one site filed, no
+  // model yet, which is exactly the state its purpose line exists for.
+  if (await click('.field-dock-actions button')) {
+    await sleep(1000)
+    if (await evaluate(`!!document.querySelector('.lattice-page')`)) {
+      await probe('lattice-fresh', w, h)
+    }
   }
 }
 

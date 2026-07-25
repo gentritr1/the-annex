@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { getCaseContent } from '../game/content'
 import { MemoryLatticeStage } from '../scene/MemoryLatticeStage'
 import type { FragmentId, GameState } from '../game/types'
+import { purposeCopy, showsLatticePurpose } from './purposeCopy'
 
 interface ReconstructionProps {
   state: GameState
@@ -66,6 +67,13 @@ export function Reconstruction({
         <h1>Build one account from two anchors</h1>
         <p>Pair two fragments. The filing preserves the contradiction between them.</p>
       </header>
+
+      {/* W1-4 · P2-F. The lattice states its rule and its cost and never its
+          purpose. Deliberately a SIBLING of the header, not a child of it:
+          `.lattice-header > p:last-child` carries the intro paragraph's width
+          and colour, and a new last child would silently steal them. Retires
+          the moment a model exists. */}
+      {showsLatticePurpose(state) && <p className="lattice-purpose">{purposeCopy.lattice}</p>}
 
       <div className="lattice-rule" role="note">
         <span>Rule</span>

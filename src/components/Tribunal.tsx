@@ -46,7 +46,7 @@ export function Tribunal({ state, onDecide, onBack }: TribunalProps) {
         <dl>
           <div>
             <dt>Evidence</dt>
-            <dd>{discoveredEvidence.length} items</dd>
+            <dd>{discoveredEvidence.length} item{discoveredEvidence.length === 1 ? '' : 's'}</dd>
           </div>
           <div>
             <dt>Reconstruction</dt>
@@ -116,7 +116,7 @@ export function Tribunal({ state, onDecide, onBack }: TribunalProps) {
             <strong>Review unresolved contradictions</strong>
             <small>
               {discoveredEvidence.length > 0
-                ? `${discoveredEvidence.length} admitted item${discoveredEvidence.length === 1 ? '' : 's'} remain contested.`
+                ? `${discoveredEvidence.length} admitted item${discoveredEvidence.length === 1 ? '' : 's'} remain${discoveredEvidence.length === 1 ? 's' : ''} contested.`
                 : 'The record is silent, not complete.'}
             </small>
           </span>

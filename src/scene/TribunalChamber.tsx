@@ -55,7 +55,13 @@ export function TribunalChamber({
         </div>
         <div className="tribunal-filing-aperture" />
         <div className="tribunal-chamber-status">
-          <span>{evidenceCount} admitted signals</span>
+          {/* W1-4 · audit P3-C. This line had no singular branch and rendered
+              `1 admitted signals`. Tribunal.tsx composes a DIFFERENT
+              admitted-items line that already agrees at 1 — that one is correct
+              and is left alone. */}
+          <span>
+            {evidenceCount} admitted signal{evidenceCount === 1 ? '' : 's'}
+          </span>
           <span>{reconstructionTitle}</span>
         </div>
       </div>

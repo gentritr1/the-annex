@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { getCaseContent } from '../game/content'
 import type { AccessibilitySettings, GameState } from '../game/types'
 import { CaseRail } from './CaseRail'
+import { purposeCopy, showsCaseFilePurpose } from './purposeCopy'
 import { recordPortalClass } from './recordMode'
 
 interface CaseFileDrawerProps {
@@ -30,9 +31,17 @@ export function CaseFileSummon({ state, onOpen, className }: CaseFileSummonProps
     evidence: evidenceDefinitions.filter((item) => state.evidence.includes(item.id)).length,
     events: state.events.length,
   }
+  // W1-4 · P2-F. While nothing is admitted, the counts state a fact with no
+  // content behind it — the one moment a first-timer cannot tell why this button
+  // is worth pressing. The purpose line joins them (it does NOT replace them:
+  // three harness assertions read the live counts out of this button's text) and
+  // leaves permanently the moment the first evidence is admitted.
+  const orientPurpose = showsCaseFilePurpose(state, counts.evidence)
   return (
     <button
-      className={['casefile-summon', className].filter(Boolean).join(' ')}
+      className={['casefile-summon', orientPurpose ? 'casefile-summon--oriented' : null, className]
+        .filter(Boolean)
+        .join(' ')}
       type="button"
       onClick={onOpen}
     >
@@ -40,6 +49,7 @@ export function CaseFileSummon({ state, onOpen, className }: CaseFileSummonProps
       <small>
         {counts.evidence} evidence · {counts.events} events
       </small>
+      {orientPurpose && <small className="casefile-summon-why">{purposeCopy.caseFile}</small>}
     </button>
   )
 }

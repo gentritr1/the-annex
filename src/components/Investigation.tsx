@@ -40,6 +40,7 @@ import { ClassificationRoom } from './ClassificationRoom'
 import { CustodyRailRoom } from './CustodyRailRoom'
 import { Deposition } from './Deposition'
 import { PersonaPortrait } from './PersonaPortrait'
+import { purposeCopy, showsFieldPurpose, showsSiteCost } from './purposeCopy'
 import { ReactionQuotes } from './ReactionQuotes'
 import { SceneDetailDrawer } from './SceneDetailDrawer'
 import { SceneZone } from './SceneZone'
@@ -1058,7 +1059,28 @@ export function Investigation({
         {state.completedSites.length === 0 && (
           <p className="field-threshold">
             The tribunal will hear a record of two sites. The other two are yours to
-            leave read or unread.
+            leave read or unread.{' '}
+            {/* W1-4 · P2-F. The threshold sentence states the RULE; the campaign
+                model — route becomes a model, model becomes a ruling, ruling
+                outlives the run — was nowhere on this surface, which is the whole
+                of the critique's heuristic-#10 finding.
+
+                An INLINE continuation of the same paragraph, not a sibling
+                block, and that is a measured decision rather than a stylistic
+                one: as its own row it added 24px to the command bar and pushed
+                the 1280x800 concourse to scrollHeight 823 against an 800px
+                viewport, failing `1280x800 · the collapsed page fits without a
+                scrollbar` in evidence-hud-collapse.mjs. Inline, the two
+                sentences share one 1095px line inside a 1244px bar and the page
+                fits again. Headroom is ~12%: a redline that lengthens this
+                sentence past roughly 115 characters wraps it and re-opens that
+                assertion — re-run the harness after any edit.
+
+                Its own class, never `.field-threshold`: three assertions require
+                exactly one node of that name. */}
+            {showsFieldPurpose(state) && (
+              <span className="field-purpose">{purposeCopy.field}</span>
+            )}
           </p>
         )}
       </header>
@@ -1417,6 +1439,15 @@ export function Investigation({
             // gated behind entering a view — and is moved (never remounted) into the
             // dock over the plate while the close read is up.
             <>
+              {/* W1-4 · P2-F. A plain location says its cost in the method
+                  prompt below ("Choose one method. This location then closes.").
+                  A bounded-room location never does: its ritual replaces that
+                  prompt entirely, so the one irreversible thing about a site was
+                  stated on two of the four locations and not the other two.
+                  Retires at the first filing, when the cost has been paid once. */}
+              {showsSiteCost(state) && (
+                <p className="site-cost-note">{purposeCopy.siteCost}</p>
+              )}
               {roomConsoleDocked ? (
                 <p className="scene-first-note">
                   The station stands in the room above. Work it there; this record

@@ -5,6 +5,7 @@ import { personaRunLines } from '../game/personaRecord'
 import type { EvidenceStatus, GameState, PersonaId } from '../game/types'
 import { DossierPhoto } from './DossierPhoto'
 import { PersonaPortrait } from './PersonaPortrait'
+import { purposeCopy, showsRosterPurpose } from './purposeCopy'
 import { ReactionQuotes } from './ReactionQuotes'
 
 interface CaseRailProps {
@@ -308,6 +309,14 @@ export function CaseRail({ state }: CaseRailProps) {
         <div className="rail-panel people-panel" id="rail-panel-people" aria-labelledby="rail-tab-people">
           <section className="rail-block">
             <h2>The people on this case</h2>
+            {/* W1-4 · P2-F. The heading names the tab; nothing named what the
+                tab is FOR — that a stance word here is a live consequence of
+                the route, not a decoration. Carries no persona name, so the
+                harness's "every named persona appears exactly once" count over
+                this panel is untouched. Retires at the first filing. */}
+            {showsRosterPurpose(state) && (
+              <p className="people-purpose">{purposeCopy.roster}</p>
+            )}
           </section>
           <ul className="persona-dossier">
             {personas.map((persona) => {
