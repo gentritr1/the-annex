@@ -7535,13 +7535,11 @@ p {
   gap: 6px;
 }
 
+/* The route label on the deposition's close read. Its VOICE is the shared
+   attribution family (see "Staged text: ONE family, two stages"); the monospace
+   face is this stage's own register. */
 .deposition-visual-caption span {
-  color: var(--fog);
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-  font-size: 0.63rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .deposition-visual-caption strong {
@@ -7705,13 +7703,13 @@ p {
   margin-top: 12px;
 }
 
+/* The transcript's staged line. Its VOICE is the shared staged-text family (see
+   "Staged text: ONE family, two stages"); everything here is the card it is
+   delivered on inside the tray. */
 .deposition-statement {
   max-width: 74ch;
   margin: 0 0 11px;
   padding: 10px 12px;
-  color: var(--record-bright);
-  font-size: 0.88rem;
-  line-height: 1.48;
   background: var(--concrete);
   box-shadow: inset 0 0 0 1px var(--cyan-deep);
   border-radius: 7px;
@@ -7803,14 +7801,27 @@ p {
   align-self: flex-end;
 }
 
+/* The transcript's own result strip: what the record will hold, and the one
+   control that files it. The base grammar is shared with the scene's strip; this
+   is only its docking inside the tray. */
+.deposition-result {
+  margin-top: 14px;
+  /* The tray's inner gutter is 24px (.deposition-tray-inner), so the strip runs
+     to the tray's edges the way the scene's strip runs to the plate's. */
+  margin-inline: -24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.deposition-result .button-primary {
+  margin-left: auto;
+}
+
 .deposition-consent-summary {
-  margin: 0 0 12px;
-  padding: 10px 14px;
+  margin: 0;
+  padding: 0;
   color: var(--fog);
   font-size: 0.8rem;
   line-height: 1.45;
-  background: var(--concrete);
-  border-radius: 6px;
 }
 
 .deposition-footer {
@@ -7871,6 +7882,11 @@ p {
   .deposition-tray-inner {
     padding-right: 18px;
     padding-left: 18px;
+  }
+
+  /* Track the narrower gutter so the strip still runs to the tray's edges. */
+  .deposition-result {
+    margin-inline: -18px;
   }
 
   .deposition-close-figure {
@@ -9479,10 +9495,19 @@ p {
 }
 
 /* The wrapped canonical button. Its semantics, arm/confirm two-step, disarm
-   gestures and commit path are untouched; only its box is restyled. */
+   gestures and commit path are untouched; only its box is restyled.
+
+   POINTER SURFACE: the button's caption box is wide enough that two anchors on
+   the same plate can overlap — and the later zone in DOM order then wins the hit
+   test, so a click on ONE ring's centre could arm the OTHER method. The box is
+   therefore pointer-transparent and a ring-sized region is re-enabled below, so
+   a zone's pointer surface is exactly the mark it draws. Keyboard is untouched
+   (pointer-events has no bearing on it), and hovering the region still matches
+   `.choice-row:hover`, since a pseudo-element's hits belong to its element. */
 .scene-zone .choice-row {
   position: absolute;
   z-index: 2;
+  pointer-events: none;
   /* Top edge 45px above the anchor, so the 62px ring (centred on the anchor)
      sits inside the button's own hit area with 14px of padding above it. */
   top: -36px;
@@ -9500,6 +9525,49 @@ p {
   background: transparent;
   text-align: center;
   transform: translateX(-50%);
+}
+
+/* The re-enabled pointer region, laid exactly over the ring. The offsets are the
+   inverse of the box's own placement: the button sits `top:-36px` from the
+   anchor and is translated by the edge percentage, so the anchor is 36px down
+   and that same percentage across. 62px square — above the 44px minimum. */
+.scene-zone .choice-row::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 36px;
+  left: 50%;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.scene-zone[data-edge='start'] .choice-row::before {
+  left: 28%;
+}
+
+.scene-zone[data-edge='end'] .choice-row::before {
+  left: 72%;
+}
+
+.scene-zone[data-vertical='low'] .choice-row::before {
+  top: auto;
+  bottom: 36px;
+  transform: translate(-50%, 50%);
+}
+
+/* A low anchor captions UPWARD. Same box, same paddings, mirrored: the ring
+   stays exactly on its prop and the pre-commit cost stays on the plate at the
+   one moment it has to be readable. Declared at (0,2,0), matching the rule it
+   overrides, and after it, so source order settles it. */
+.scene-zone[data-vertical='low'] .choice-row {
+  top: auto;
+  bottom: -36px;
+  align-items: end;
+  padding: 6px 8px 71px;
 }
 
 /* At the plate's edges the caption slides inboard instead of being cropped. The
@@ -9555,6 +9623,28 @@ p {
 .scene-zone:has(.choice-row-armed) .choice-body {
   clip-path: inset(-40% -60% -40% -60%);
   transform: translateY(0);
+}
+
+/* EXACTLY ONE caption is ever open. Two zones can be in a revealing state at the
+   same time — the workspace hands focus to one zone at unlock, and the player
+   then hovers the other — and on a narrow plate the two captions print over each
+   other, which no text assertion can see. Precedence: armed beats hover beats
+   focus. Declared at (0,5,0), above the (0,4,0) reveal it overrides, so source
+   order cannot decide it. */
+.scene-zones-live:has(.choice-row-armed)
+  .scene-zone:not(:has(.choice-row-armed))
+  .choice-method,
+.scene-zones-live:has(.choice-row-armed)
+  .scene-zone:not(:has(.choice-row-armed))
+  .choice-body,
+.scene-zones-live:has(.choice-row:hover)
+  .scene-zone:not(:has(.choice-row:hover))
+  .choice-method,
+.scene-zones-live:has(.choice-row:hover)
+  .scene-zone:not(:has(.choice-row:hover))
+  .choice-body {
+  clip-path: inset(0 0 100% 0);
+  transform: translateY(4px);
 }
 
 .scene-zone .choice-method {
@@ -9744,11 +9834,33 @@ p {
   }
 }
 
-.scene-beat-line--subject {
+/* ══ Staged text: ONE family, two stages ═════════════════════════════════════
+   The scene beat performing over a plate and the deposition transcript's sworn
+   statement are the same act — a line delivered a beat at a time, with the
+   player deciding when the next one lands. They therefore share one voice, and
+   one voice only lives in one place. What each stage keeps for itself below is a
+   property of the STAGE, never of the voice: the plate needs a shadow to sit on
+   a photograph, the tray needs a card to sit on a document.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* The staged line itself. */
+.scene-beat-line--subject,
+.deposition-statement {
   color: var(--record);
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 300;
-  line-height: 1.4;
+  line-height: 1.45;
+}
+
+/* Its attribution: who is speaking, or what is being performed. Small, spaced,
+   upper — the same label in the stanza and on the deposition's close read. */
+.scene-beat-line--speaker,
+.deposition-visual-caption span {
+  color: var(--fog);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 /* The speaker line carries the speaker's face. The stanza is centred, so the row
@@ -9759,11 +9871,6 @@ p {
   align-items: center;
   justify-content: center;
   gap: 9px;
-  color: var(--fog);
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
 }
 
 /* Over a lit plate the frame needs a hair more separation than --line gives it. */
@@ -9840,12 +9947,13 @@ p {
 
 /* ── The result strip ─────────────────────────────────────────────────────── */
 
-.scene-result {
-  position: absolute;
-  z-index: 13;
-  right: 0;
-  bottom: 0;
-  left: 0;
+/* The strip grammar, shared with the deposition's commit (see "Staged text: ONE
+   family, two stages" — the same reasoning, for the moment AFTER the staging):
+   a docked band that states what the record now holds and offers the one control
+   that closes it. Only the docking differs — the scene's strip is pinned to the
+   plate it performed over, the transcript's sits at the foot of its tray. */
+.scene-result,
+.deposition-result {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -9857,8 +9965,16 @@ p {
     oklch(0.1 0.008 240 / 0.74)
   );
   border-top: 1px solid var(--line);
-  pointer-events: auto;
   backdrop-filter: blur(6px);
+}
+
+.scene-result {
+  position: absolute;
+  z-index: 13;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: auto;
   /* Slides up from below. No fill mode: the resting style IS the docked one. */
   animation: scene-result-in 460ms var(--ease-out);
 }
@@ -10126,6 +10242,32 @@ p {
     padding: 54px 6px 6px;
   }
 
+  .scene-zone[data-vertical='low'] .choice-row {
+    top: auto;
+    bottom: -28px;
+    padding: 6px 6px 54px;
+  }
+
+  /* The narrow ring is 44px and the box is offset by 28px / 8% / 92%. */
+  .scene-zone .choice-row::before {
+    top: 28px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .scene-zone[data-edge='start'] .choice-row::before {
+    left: 8%;
+  }
+
+  .scene-zone[data-edge='end'] .choice-row::before {
+    left: 92%;
+  }
+
+  .scene-zone[data-vertical='low'] .choice-row::before {
+    top: auto;
+    bottom: 28px;
+  }
+
   .scene-zone .choice-row.choice-row-armed {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -10205,13 +10347,15 @@ p {
     font-size: 0.84rem;
   }
 
-  .scene-result {
+  .scene-result,
+  .deposition-result {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
 
-  .scene-result-dismiss {
+  .scene-result-dismiss,
+  .deposition-result .button-primary {
     margin-left: 0;
   }
 
@@ -10515,6 +10659,7 @@ p {
 }
 
 .high-contrast .scene-result,
+.high-contrast .deposition-result,
 .high-contrast .scene-beat-advance,
 .high-contrast .scene-detail-summon {
   background: var(--night);
@@ -10550,9 +10695,289 @@ p {
   }
 
   .scene-result,
+  .deposition-result,
   .scene-beat-advance,
   .scene-detail-summon,
   .scene-detail-drawer {
+    background: Canvas;
+    backdrop-filter: none;
+  }
+}
+
+/* ══ The bounded room's console, docked over its own plate ═══════════════════
+   A room ritual is multi-control and sequential — it cannot become two ring
+   zones — so it keeps its DOM console and the console moves onto the plate,
+   docked at the bottom exactly as the deposition tray docks (Deposition.tsx).
+   The plate's stagecraft rides underneath, unchanged and decorative.
+
+   The console is NOT modal: the concourse return, the site switcher, and the
+   case rail all stay reachable, so nothing here traps focus. The host node is
+   re-parented rather than re-rendered (see Investigation), which is what lets a
+   trip back to the concourse mid-ritual keep the work.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.room-console {
+  position: absolute;
+  z-index: 11;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  /* The console is a console, not a lid: the plate it is docked over has to stay
+     readable above it. Every docked tableau below is laid out across the plate's
+     width to come in under this cap; the scroll is the safety net, not the plan.
+     76% is the tallest tableau (the acoustic crossing) at 1280x800, where the
+     pre-step-8 workspace gives the plate ~390px. */
+  max-height: 76%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* The top edge stays translucent so the room the console is standing in
+     carries through it rather than being sealed off by it. */
+  background: linear-gradient(
+    to top,
+    oklch(0.1 0.008 240 / 0.97) 40%,
+    oklch(0.1 0.008 240 / 0.82)
+  );
+  border-top: 1px solid var(--line);
+  backdrop-filter: blur(6px);
+  /* Slides up from below. No fill mode: the resting style IS the docked one, so
+     a suppressed or stranded animation still leaves the console on screen. */
+  animation: room-console-in 340ms var(--ease-out);
+}
+
+@keyframes room-console-in {
+  from {
+    transform: translateY(102%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Docked, the room drops the inspector's fixed-height budget and sizes to its
+   own tableau; the console (not the tableau) owns the scroll safety net. */
+.room-console .classification-room,
+.room-console .acoustic-shadow-room,
+.room-console .custody-rail-room {
+  height: auto;
+  min-height: 0;
+  padding: 12px 16px 14px;
+  border-top: 0;
+}
+
+.room-console .room-stage,
+.room-console .as-stage,
+.room-console .cr-stage {
+  overflow: visible;
+}
+
+/* Docked, the ONE live region keeps its reserved band but at two lines: the
+   console's whole height budget is what the plate is not using. */
+.room-console .room-announce,
+.room-console .as-announce,
+.room-console .cr-announce {
+  height: 2.3em;
+}
+
+/* ── Docked tableaus: the same controls, laid across instead of down ─────────
+   Each room's tableau keeps every element, in the same DOM order, and simply
+   uses the plate's width. Nothing is hidden, nothing is dropped: this is the
+   one change that lets a console dock over a photograph and leave it legible.
+   Below 700px there is no width to trade, so the sheet stays vertical. */
+
+@media (min-width: 701px) {
+  .room-console .room-worktop {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-areas:
+      'prompt prompt'
+      'card targets';
+    align-items: start;
+    gap: 6px 14px;
+  }
+
+  .room-console .room-prompt {
+    grid-area: prompt;
+  }
+
+  .room-console .room-active-card {
+    grid-area: card;
+  }
+
+  .room-console .room-targets {
+    grid-area: targets;
+  }
+
+  .room-console .room-log {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    grid-template-areas:
+      'lead lead'
+      'tabs reading'
+      'proceed reading';
+    align-content: start;
+    gap: 6px 14px;
+  }
+
+  .room-console .room-log-lead {
+    grid-area: lead;
+  }
+
+  .room-console .room-slip-tabs {
+    grid-area: tabs;
+  }
+
+  .room-console .room-reading {
+    grid-area: reading;
+  }
+
+  .room-console .room-proceed-slot {
+    grid-area: proceed;
+  }
+
+  .room-console .as-crossing {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    grid-template-areas:
+      'lead lead'
+      'head reading'
+      'listen reading'
+      'bands bands';
+    align-content: start;
+    gap: 6px 14px;
+  }
+
+  .room-console .as-lead {
+    grid-area: lead;
+  }
+
+  .room-console .as-checkpoint-head {
+    grid-area: head;
+  }
+
+  .room-console .as-reading {
+    grid-area: reading;
+  }
+
+  .room-console .as-listen {
+    grid-area: listen;
+  }
+
+  .room-console .as-bands {
+    grid-area: bands;
+  }
+
+  .room-console .cr-intake {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    grid-template-areas:
+      'lead lead'
+      'carriers readout'
+      'carriers late';
+    align-content: start;
+    gap: 6px 14px;
+  }
+
+  .room-console .cr-lead {
+    grid-area: lead;
+  }
+
+  .room-console .cr-carriers {
+    grid-area: carriers;
+  }
+
+  .room-console .cr-rail-readout {
+    grid-area: readout;
+  }
+
+  .room-console .cr-late-slot {
+    grid-area: late;
+  }
+
+  .room-console .cr-mirror-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      'lead lead'
+      'refused mirror';
+    align-items: center;
+    gap: 6px 14px;
+  }
+
+  .room-console .cr-refused-carrier {
+    grid-area: refused;
+  }
+
+  .room-console .cr-mirror {
+    grid-area: mirror;
+  }
+
+  .room-console .cr-reading-beat {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 6px 14px;
+  }
+}
+
+/* The empty half of the pair. When the console is docked the inspector slot has
+   no children at all, so it must not print a gap under the description. */
+.room-console-slot:empty {
+  display: none;
+}
+
+.room-console-host {
+  display: contents;
+}
+
+/* The unlock line's stand-in once the two methods are the marked points on the
+   plate. Same register as the plain scene-first note. */
+.room-methods-in-scene,
+.as-methods-in-scene,
+.cr-methods-in-scene {
+  margin: 0;
+  color: var(--fog);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 1180px) {
+  /* The narrow layout gives the plate 320px; a docked console needs the room to
+     hold the ritual AND leave the plate legible above it. Absolute, and scoped
+     to the docked state so an ordinary plate is untouched. */
+  .world-pane .world-view--room-console {
+    min-height: 500px;
+  }
+}
+
+@media (max-width: 700px) {
+  .room-console {
+    max-height: 72%;
+  }
+
+  .room-console .classification-room,
+  .room-console .acoustic-shadow-room,
+  .room-console .custody-rail-room {
+    padding: 10px 12px 12px;
+  }
+}
+
+.reduce-motion .room-console {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .room-console {
+    animation: none !important;
+  }
+}
+
+.high-contrast .room-console {
+  background: var(--night);
+  backdrop-filter: none;
+}
+
+@media (forced-colors: active) {
+  .room-console {
     background: Canvas;
     backdrop-filter: none;
   }

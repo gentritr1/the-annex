@@ -815,6 +815,12 @@ const sites: readonly SiteDefinition[] = [
         { actionId: 'authenticate-chain', x: 0.39, y: 0.62 },
         { actionId: 'trace-checksum', x: 0.64, y: 0.43 },
       ],
+      // The carriers are handled in a console docked over this plate; once the
+      // two readings are set side by side, the methods stand on the rail — the
+      // official press, and the audit mirror behind the closed gate. The chain /
+      // return traces this site already authors are what a hovered method
+      // previews (custodyRail.actionTreatments), so no new ambient art is added.
+      sceneFirst: true,
       atmosphere: 'checksum-echo',
     },
     unvisitedNote:
@@ -872,6 +878,10 @@ const sites: readonly SiteDefinition[] = [
         { actionId: 'walk-acoustic-shadow', x: 0.47, y: 0.56 },
         { actionId: 'forge-authority', x: 0.85, y: 0.56 },
       ],
+      // The crossing is planned in a console docked over this plate; once the
+      // route is plotted the two methods stand on the span itself — the blind
+      // interval mid-corridor, and the sealed amber door to the right.
+      sceneFirst: true,
     },
     unvisitedNote:
       'You never walked the maintenance spine. The cameras kept their omissions, and no one asked what the rain was covering.',
@@ -891,6 +901,10 @@ const sites: readonly SiteDefinition[] = [
         { actionId: 'answer-archivist', x: 0.37, y: 0.7 },
         { actionId: 'seal-index', x: 0.65, y: 0.45 },
       ],
+      // The filing ritual is worked in a console docked over this plate; when the
+      // Archivist finally asks for an answer, the two methods stand at the anchors
+      // above — the drawer she is holding open, and the index she would seal.
+      sceneFirst: true,
       atmosphere: 'category-register',
     },
     unvisitedNote:

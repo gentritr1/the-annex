@@ -31,6 +31,11 @@ interface ClassificationRoomProps {
   // Reports the derived plate presentation (phase + progress counters) so the
   // close-read plate can reflect the room's stagecraft as decorative emphasis.
   onRoomPresentationChange: (presentation: RoomPlateState) => void
+  // The terminal method choice is being hosted by the scene itself (real
+  // ChoiceButtons at the plate's authored anchors). The room then prints its
+  // unlock line and stands down: exactly one control per method exists at any
+  // moment, here or there — never both.
+  methodsInScene?: boolean
 }
 
 // The pending-focus fallback chain: when the control that held focus unmounts (an
@@ -62,6 +67,7 @@ export function ClassificationRoom({
   onCommitAction,
   onPreviewChange,
   onRoomPresentationChange,
+  methodsInScene = false,
 }: ClassificationRoomProps) {
   const [state, dispatch] = useReducer(
     (current: RoomState, event: RoomEvent) => roomReducer(current, event, room),
@@ -133,7 +139,10 @@ export function ClassificationRoom({
   function proceedToMethods() {
     dispatch({ type: 'PROCEED_TO_METHODS' })
     // Acknowledging the beat swaps the tableau to methods; focus the first method.
-    requestFocus(['.classification-room .choice-row'])
+    // When the scene hosts the methods there is no in-room control to land on —
+    // the workspace hands the keyboard route to the first plate zone instead, so
+    // requesting an in-room landing here would only fight it.
+    if (!methodsInScene) requestFocus(['.classification-room .choice-row'])
   }
 
   return (
@@ -255,7 +264,13 @@ export function ClassificationRoom({
         {phase === 'unlocked' && (
           <div className="room-methods">
             <p className="room-unlock">{room.unlockLine}</p>
-            {actions.map((action) => (
+            {methodsInScene ? (
+              <p className="room-methods-in-scene">
+                The two methods stand in the room itself. Choose one there, or open the
+                location detail for the full text of each.
+              </p>
+            ) : null}
+            {methodsInScene ? null : actions.map((action) => (
               <ChoiceButton
                 key={action.id}
                 title={action.title}

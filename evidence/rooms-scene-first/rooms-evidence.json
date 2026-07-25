@@ -1,0 +1,1899 @@
+{
+  "url": "http://127.0.0.1:3000/",
+  "capturedAt": "2026-07-25T16:34:30.922Z",
+  "checks": [
+    {
+      "step": "[small-archive 1280x800] the console docks OVER the plate, one instance only",
+      "pass": true,
+      "detail": {
+        "entered": true,
+        "stageInFold": true,
+        "roomInstances": 1,
+        "dockPresent": true,
+        "roomInsideDock": true,
+        "roomInsideInspector": false,
+        "dockRect": {
+          "top": 347,
+          "bottom": 566,
+          "left": 20,
+          "right": 536
+        },
+        "plateRect": {
+          "top": 179,
+          "bottom": 566,
+          "left": 20,
+          "right": 536
+        },
+        "consoleWithinPlate": true,
+        "consoleScrolls": false,
+        "inspectorSlotEmpty": true,
+        "ritualControls": 3,
+        "sceneZoneButtons": 0,
+        "inspectorChoiceRows": 0,
+        "decorativeZoneMirrors": 2,
+        "anyChoiceRows": 0,
+        "detailSummon": false,
+        "liveOutsideAriaHiddenFigure": null
+      }
+    },
+    {
+      "step": "[small-archive 1280x800] off the close read the console is back in the inspector, still one",
+      "pass": true,
+      "detail": {
+        "roomInstances": 1,
+        "dockPresent": false,
+        "roomInsideDock": false,
+        "roomInsideInspector": true,
+        "dockRect": null,
+        "plateRect": null,
+        "consoleWithinPlate": false,
+        "consoleScrolls": false,
+        "inspectorSlotEmpty": false,
+        "progressAtConcourse": "routine"
+      }
+    },
+    {
+      "step": "[small-archive 1280x800] re-entering re-docks it WITHOUT resetting the ritual",
+      "pass": true,
+      "detail": {
+        "progressBefore": "routine",
+        "progressAfter": "routine",
+        "dockPresent": true
+      }
+    },
+    {
+      "step": "[small-archive 1280x800] at unlock the console yields; the methods are the plate's zones",
+      "pass": true,
+      "detail": {
+        "ritualControls": 0,
+        "sceneZoneButtons": 2,
+        "inspectorChoiceRows": 0,
+        "decorativeZoneMirrors": 0,
+        "anyChoiceRows": 2,
+        "detailSummon": true,
+        "liveOutsideAriaHiddenFigure": true,
+        "dockPresent": false,
+        "focusAtUnlock": {
+          "tag": "BUTTON",
+          "cls": "choice-row choice-row-default  ",
+          "text": "InquiryAnswer the question the statute avoidsTell the Small Archivist "
+        }
+      }
+    },
+    {
+      "step": "[small-archive 1280x800] the unlock hands the keyboard route to a plate zone",
+      "pass": true,
+      "detail": {
+        "tag": "BUTTON",
+        "cls": "choice-row choice-row-default  ",
+        "text": "InquiryAnswer the question the statute avoidsTell the Small Archivist "
+      }
+    },
+    {
+      "step": "[small-archive 1280x800] hovering a zone drives the plate's own preview vocabulary",
+      "pass": true,
+      "detail": {
+        "previewA": {
+          "emphasis": "true",
+          "liveEmphasis": "true",
+          "custodyOutcome": null,
+          "treatment": null
+        },
+        "previewB": {
+          "custodyOutcome": null,
+          "liveEmphasis": "true",
+          "focusedZone": 0,
+          "openCaptions": 1
+        }
+      }
+    },
+    {
+      "step": "[small-archive 1280x800] exactly one caption is open, even with focus on the other zone",
+      "pass": true,
+      "detail": {
+        "custodyOutcome": null,
+        "liveEmphasis": "true",
+        "focusedZone": 0,
+        "openCaptions": 1
+      }
+    },
+    {
+      "step": "[small-archive 1280x800] the live zone layer shares the plate's projection box",
+      "pass": true,
+      "detail": {
+        "dx": 0,
+        "dy": 0,
+        "dw": 0,
+        "dh": 0
+      }
+    },
+    {
+      "step": "[small-archive 1280x800] arm reads on the ring and un-clips the pre-commit cost",
+      "pass": true,
+      "detail": {
+        "ariaPressed": [
+          "true",
+          "false"
+        ],
+        "ringAnimation": "scene-zone-arm-pulse",
+        "siblingOpacity": [
+          "1",
+          "0.28"
+        ],
+        "costClip": "inset(-40% -60%)"
+      }
+    },
+    {
+      "step": "[small-archive 1280x800] the record is written BEFORE the beat exists",
+      "pass": true,
+      "detail": {
+        "filedCardInInspector": true,
+        "beatMounted": false,
+        "zonesGone": 0
+      }
+    },
+    {
+      "step": "[small-archive 1280x800] the beat stages the action's own authored lines",
+      "pass": true,
+      "detail": {
+        "phase": "playing",
+        "lineCount": 1,
+        "first": "The Archivist filed the person between “continuation” and “property.”",
+        "focus": "scene-beat-advance"
+      }
+    },
+    {
+      "step": "[small-archive 1280x800] the result strip docks with the admitted evidence",
+      "pass": true,
+      "detail": {
+        "result": true,
+        "evidence": "Evidence admitted: Question filed under no category",
+        "standing": "Standing: The Small Archivist +2The Shepherd +1",
+        "focus": "scene-result-dismiss"
+      }
+    },
+    {
+      "step": "[small-archive 1280x800] re-entering twice leaves nothing stranded invisible",
+      "pass": true,
+      "detail": [
+        {
+          "plateOpacity": "1",
+          "plateClip": "none",
+          "projectionOpacity": "1",
+          "imgOpacity": "1",
+          "consoleOpacity": null,
+          "consoleTransform": null,
+          "consoleAnimation": null
+        },
+        {
+          "plateOpacity": "1",
+          "plateClip": "none",
+          "projectionOpacity": "1",
+          "imgOpacity": "1",
+          "consoleOpacity": null,
+          "consoleTransform": null,
+          "consoleAnimation": null
+        }
+      ]
+    },
+    {
+      "step": "[small-archive 375x812] the console docks OVER the plate, one instance only",
+      "pass": true,
+      "detail": {
+        "entered": true,
+        "stageInFold": true,
+        "roomInstances": 1,
+        "dockPresent": true,
+        "roomInsideDock": true,
+        "roomInsideInspector": false,
+        "dockRect": {
+          "top": 386,
+          "bottom": 746,
+          "left": 14,
+          "right": 361
+        },
+        "plateRect": {
+          "top": 246,
+          "bottom": 746,
+          "left": 14,
+          "right": 361
+        },
+        "consoleWithinPlate": true,
+        "consoleScrolls": true,
+        "inspectorSlotEmpty": true,
+        "ritualControls": 3,
+        "sceneZoneButtons": 0,
+        "inspectorChoiceRows": 0,
+        "decorativeZoneMirrors": 2,
+        "anyChoiceRows": 0,
+        "detailSummon": false,
+        "liveOutsideAriaHiddenFigure": null
+      }
+    },
+    {
+      "step": "[small-archive 375x812] off the close read the console is back in the inspector, still one",
+      "pass": true,
+      "detail": {
+        "roomInstances": 1,
+        "dockPresent": false,
+        "roomInsideDock": false,
+        "roomInsideInspector": true,
+        "dockRect": null,
+        "plateRect": null,
+        "consoleWithinPlate": false,
+        "consoleScrolls": false,
+        "inspectorSlotEmpty": false,
+        "progressAtConcourse": "routine"
+      }
+    },
+    {
+      "step": "[small-archive 375x812] re-entering re-docks it WITHOUT resetting the ritual",
+      "pass": true,
+      "detail": {
+        "progressBefore": "routine",
+        "progressAfter": "routine",
+        "dockPresent": true
+      }
+    },
+    {
+      "step": "[small-archive 375x812] at unlock the console yields; the methods are the plate's zones",
+      "pass": true,
+      "detail": {
+        "ritualControls": 0,
+        "sceneZoneButtons": 2,
+        "inspectorChoiceRows": 0,
+        "decorativeZoneMirrors": 0,
+        "anyChoiceRows": 2,
+        "detailSummon": true,
+        "liveOutsideAriaHiddenFigure": true,
+        "dockPresent": false,
+        "focusAtUnlock": {
+          "tag": "BUTTON",
+          "cls": "choice-row choice-row-default  ",
+          "text": "InquiryAnswer the question the statute avoidsTell the Small Archivist "
+        }
+      }
+    },
+    {
+      "step": "[small-archive 375x812] the unlock hands the keyboard route to a plate zone",
+      "pass": true,
+      "detail": {
+        "tag": "BUTTON",
+        "cls": "choice-row choice-row-default  ",
+        "text": "InquiryAnswer the question the statute avoidsTell the Small Archivist "
+      }
+    },
+    {
+      "step": "[small-archive 375x812] hovering a zone drives the plate's own preview vocabulary",
+      "pass": true,
+      "detail": {
+        "previewA": {
+          "emphasis": "true",
+          "liveEmphasis": "true",
+          "custodyOutcome": null,
+          "treatment": null
+        },
+        "previewB": {
+          "custodyOutcome": null,
+          "liveEmphasis": "true",
+          "focusedZone": 0,
+          "openCaptions": 1
+        }
+      }
+    },
+    {
+      "step": "[small-archive 375x812] exactly one caption is open, even with focus on the other zone",
+      "pass": true,
+      "detail": {
+        "custodyOutcome": null,
+        "liveEmphasis": "true",
+        "focusedZone": 0,
+        "openCaptions": 1
+      }
+    },
+    {
+      "step": "[small-archive 375x812] the live zone layer shares the plate's projection box",
+      "pass": true,
+      "detail": {
+        "dx": 0,
+        "dy": 0,
+        "dw": 0,
+        "dh": 0
+      }
+    },
+    {
+      "step": "[small-archive 375x812] arm reads on the ring and un-clips the pre-commit cost",
+      "pass": true,
+      "detail": {
+        "ariaPressed": [
+          "true",
+          "false"
+        ],
+        "ringAnimation": "scene-zone-arm-pulse",
+        "siblingOpacity": [
+          "1",
+          "0.28"
+        ],
+        "costClip": "inset(-40% -60%)"
+      }
+    },
+    {
+      "step": "[small-archive 375x812] the record is written BEFORE the beat exists",
+      "pass": true,
+      "detail": {
+        "filedCardInInspector": true,
+        "beatMounted": false,
+        "zonesGone": 0
+      }
+    },
+    {
+      "step": "[small-archive 375x812] the beat stages the action's own authored lines",
+      "pass": true,
+      "detail": {
+        "phase": "playing",
+        "lineCount": 1,
+        "first": "The Archivist filed the person between “continuation” and “property.”",
+        "focus": "scene-beat-advance"
+      }
+    },
+    {
+      "step": "[small-archive 375x812] the result strip docks with the admitted evidence",
+      "pass": true,
+      "detail": {
+        "result": true,
+        "evidence": "Evidence admitted: Question filed under no category",
+        "standing": "Standing: The Small Archivist +2The Shepherd +1",
+        "focus": "scene-result-dismiss"
+      }
+    },
+    {
+      "step": "[small-archive 375x812] re-entering twice leaves nothing stranded invisible",
+      "pass": true,
+      "detail": [
+        {
+          "plateOpacity": "1",
+          "plateClip": "none",
+          "projectionOpacity": "1",
+          "imgOpacity": "1",
+          "consoleOpacity": null,
+          "consoleTransform": null,
+          "consoleAnimation": null
+        },
+        {
+          "plateOpacity": "1",
+          "plateClip": "none",
+          "projectionOpacity": "1",
+          "imgOpacity": "1",
+          "consoleOpacity": null,
+          "consoleTransform": null,
+          "consoleAnimation": null
+        }
+      ]
+    },
+    {
+      "step": "[small-archive keyboard 1280x800] Tab alone reaches the docked console",
+      "pass": true,
+      "detail": {
+        "step": "Tab 13",
+        "tag": "BUTTON",
+        "cls": "room-category",
+        "text": "Continuation"
+      }
+    },
+    {
+      "step": "[small-archive keyboard 1280x800] keyboard alone completes the ritual and lands on a zone",
+      "pass": true,
+      "detail": {
+        "steps": 9,
+        "zones": 2,
+        "focusOnZone": true,
+        "focusNotBody": true
+      }
+    },
+    {
+      "step": "[small-archive keyboard 1280x800] Enter arms, Enter commits, the beat takes focus",
+      "pass": true,
+      "detail": {
+        "armedInfo": "true",
+        "filed": true,
+        "beat": true,
+        "focusNotBody": true
+      }
+    },
+    {
+      "step": "[small-archive keyboard 1280x800] closing the record hands focus back, never to <body>",
+      "pass": true,
+      "detail": {
+        "tag": "SECTION",
+        "cls": "site-record site-inspector site-record-complete",
+        "text": "DLocation in viewThe Small ArchiveFiledQuestions, omitted categories, "
+      }
+    },
+    {
+      "step": "[small-archive reduced-motion 1280x800] the docked console does not animate and is fully visible",
+      "pass": true,
+      "detail": {
+        "plateOpacity": "1",
+        "plateClip": "none",
+        "projectionOpacity": "1",
+        "imgOpacity": "1",
+        "consoleOpacity": "1",
+        "consoleTransform": "none",
+        "consoleAnimation": "none"
+      }
+    },
+    {
+      "step": "[small-archive reduced-motion 1280x800] the staged text is advance-paced, never auto-timed",
+      "pass": true,
+      "detail": {
+        "lines": 4,
+        "result": false,
+        "hint": false,
+        "lineAnimation": "none",
+        "stillWaitingAfter5s": true
+      }
+    },
+    {
+      "step": "[small-archive reduced-motion 1280x800] the explicit control completes it",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "step": "[small-archive resume 1280x800] a reload mid-ritual writes NOTHING to the record",
+      "pass": true,
+      "detail": {
+        "objectives": "0 / 2sitesNeededmodel",
+        "filedCards": 0,
+        "events": [
+          "1 events",
+          "1 events"
+        ]
+      }
+    },
+    {
+      "step": "[maintenance 1280x800] the console docks OVER the plate, one instance only",
+      "pass": true,
+      "detail": {
+        "entered": true,
+        "stageInFold": true,
+        "roomInstances": 1,
+        "dockPresent": true,
+        "roomInsideDock": true,
+        "roomInsideInspector": false,
+        "dockRect": {
+          "top": 276,
+          "bottom": 566,
+          "left": 20,
+          "right": 536
+        },
+        "plateRect": {
+          "top": 179,
+          "bottom": 566,
+          "left": 20,
+          "right": 536
+        },
+        "consoleWithinPlate": true,
+        "consoleScrolls": false,
+        "inspectorSlotEmpty": true,
+        "ritualControls": 2,
+        "sceneZoneButtons": 0,
+        "inspectorChoiceRows": 0,
+        "decorativeZoneMirrors": 2,
+        "anyChoiceRows": 0,
+        "detailSummon": false,
+        "liveOutsideAriaHiddenFigure": null
+      }
+    },
+    {
+      "step": "[maintenance 1280x800] off the close read the console is back in the inspector, still one",
+      "pass": true,
+      "detail": {
+        "roomInstances": 1,
+        "dockPresent": false,
+        "roomInsideDock": false,
+        "roomInsideInspector": true,
+        "dockRect": null,
+        "plateRect": null,
+        "consoleWithinPlate": false,
+        "consoleScrolls": false,
+        "inspectorSlotEmpty": false,
+        "progressAtConcourse": "crossing"
+      }
+    },
+    {
+      "step": "[maintenance 1280x800] re-entering re-docks it WITHOUT resetting the ritual",
+      "pass": true,
+      "detail": {
+        "progressBefore": "pulse 2 / 3",
+        "progressAfter": "pulse 2 / 3",
+        "dockPresent": true
+      }
+    },
+    {
+      "step": "[maintenance 1280x800] at unlock the console yields; the methods are the plate's zones",
+      "pass": true,
+      "detail": {
+        "ritualControls": 0,
+        "sceneZoneButtons": 2,
+        "inspectorChoiceRows": 0,
+        "decorativeZoneMirrors": 0,
+        "anyChoiceRows": 2,
+        "detailSummon": true,
+        "liveOutsideAriaHiddenFigure": true,
+        "dockPresent": false,
+        "focusAtUnlock": {
+          "tag": "BUTTON",
+          "cls": "choice-row choice-row-default  ",
+          "text": "StealthWalk the acoustic shadowCross the service spine while the rain "
+        }
+      }
+    },
+    {
+      "step": "[maintenance 1280x800] the unlock hands the keyboard route to a plate zone",
+      "pass": true,
+      "detail": {
+        "tag": "BUTTON",
+        "cls": "choice-row choice-row-default  ",
+        "text": "StealthWalk the acoustic shadowCross the service spine while the rain "
+      }
+    },
+    {
+      "step": "[maintenance 1280x800] hovering a zone drives the plate's own preview vocabulary",
+      "pass": true,
+      "detail": {
+        "previewA": {
+          "emphasis": "true",
+          "liveEmphasis": "true",
+          "custodyOutcome": null,
+          "treatment": null
+        },
+        "previewB": {
+          "custodyOutcome": null,
+          "liveEmphasis": "true",
+          "focusedZone": 0,
+          "openCaptions": 1
+        }
+      }
+    },
+    {
+      "step": "[maintenance 1280x800] exactly one caption is open, even with focus on the other zone",
+      "pass": true,
+      "detail": {
+        "custodyOutcome": null,
+        "liveEmphasis": "true",
+        "focusedZone": 0,
+        "openCaptions": 1
+      }
+    },
+    {
+      "step": "[maintenance 1280x800] the live zone layer shares the plate's projection box",
+      "pass": true,
+      "detail": {
+        "dx": 0,
+        "dy": 0,
+        "dw": 0,
+        "dh": 0
+      }
+    },
+    {
+      "step": "[maintenance 1280x800] arm reads on the ring and un-clips the pre-commit cost",
+      "pass": true,
+      "detail": {
+        "ariaPressed": [
+          "true",
+          "false"
+        ],
+        "ringAnimation": "scene-zone-arm-pulse",
+        "siblingOpacity": [
+          "1",
+          "0.28"
+        ],
+        "costClip": "inset(-40% -60%)"
+      }
+    },
+    {
+      "step": "[maintenance 1280x800] the record is written BEFORE the beat exists",
+      "pass": true,
+      "detail": {
+        "filedCardInInspector": true,
+        "beatMounted": false,
+        "zonesGone": 0
+      }
+    },
+    {
+      "step": "[maintenance 1280x800] the beat stages the action's own authored lines",
+      "pass": true,
+      "detail": {
+        "phase": "playing",
+        "lineCount": 1,
+        "first": "The fourth minute was excluded by policy, not lost to the rain the sensors blame.",
+        "focus": "scene-beat-advance"
+      }
+    },
+    {
+      "step": "[maintenance 1280x800] the result strip docks with the admitted evidence",
+      "pass": true,
+      "detail": {
+        "result": true,
+        "evidence": "Evidence admitted: The absent corridor",
+        "standing": "Standing: The Defector +2",
+        "focus": "scene-result-dismiss"
+      }
+    },
+    {
+      "step": "[maintenance 1280x800] re-entering twice leaves nothing stranded invisible",
+      "pass": true,
+      "detail": [
+        {
+          "plateOpacity": "1",
+          "plateClip": "none",
+          "projectionOpacity": "1",
+          "imgOpacity": "1",
+          "consoleOpacity": null,
+          "consoleTransform": null,
+          "consoleAnimation": null
+        },
+        {
+          "plateOpacity": "1",
+          "plateClip": "none",
+          "projectionOpacity": "1",
+          "imgOpacity": "1",
+          "consoleOpacity": null,
+          "consoleTransform": null,
+          "consoleAnimation": null
+        }
+      ]
+    },
+    {
+      "step": "[maintenance 375x812] the console docks OVER the plate, one instance only",
+      "pass": true,
+      "detail": {
+        "entered": true,
+        "stageInFold": true,
+        "roomInstances": 1,
+        "dockPresent": true,
+        "roomInsideDock": true,
+        "roomInsideInspector": false,
+        "dockRect": {
+          "top": 386,
+          "bottom": 746,
+          "left": 14,
+          "right": 361
+        },
+        "plateRect": {
+          "top": 246,
+          "bottom": 746,
+          "left": 14,
+          "right": 361
+        },
+        "consoleWithinPlate": true,
+        "consoleScrolls": true,
+        "inspectorSlotEmpty": true,
+        "ritualControls": 2,
+        "sceneZoneButtons": 0,
+        "inspectorChoiceRows": 0,
+        "decorativeZoneMirrors": 2,
+        "anyChoiceRows": 0,
+        "detailSummon": false,
+        "liveOutsideAriaHiddenFigure": null
+      }
+    },
+    {
+      "step": "[maintenance 375x812] off the close read the console is back in the inspector, still one",
+      "pass": true,
+      "detail": {
+        "roomInstances": 1,
+        "dockPresent": false,
+        "roomInsideDock": false,
+        "roomInsideInspector": true,
+        "dockRect": null,
+        "plateRect": null,
+        "consoleWithinPlate": false,
+        "consoleScrolls": false,
+        "inspectorSlotEmpty": false,
+        "progressAtConcourse": "crossing"
+      }
+    },
+    {
+      "step": "[maintenance 375x812] re-entering re-docks it WITHOUT resetting the ritual",
+      "pass": true,
+      "detail": {
+        "progressBefore": "pulse 2 / 3",
+        "progressAfter": "pulse 2 / 3",
+        "dockPresent": true
+      }
+    },
+    {
+      "step": "[maintenance 375x812] at unlock the console yields; the methods are the plate's zones",
+      "pass": true,
+      "detail": {
+        "ritualControls": 0,
+        "sceneZoneButtons": 2,
+        "inspectorChoiceRows": 0,
+        "decorativeZoneMirrors": 0,
+        "anyChoiceRows": 2,
+        "detailSummon": true,
+        "liveOutsideAriaHiddenFigure": true,
+        "dockPresent": false,
+        "focusAtUnlock": {
+          "tag": "BUTTON",
+          "cls": "choice-row choice-row-default  ",
+          "text": "StealthWalk the acoustic shadowCross the service spine while the rain "
+        }
+      }
+    },
+    {
+      "step": "[maintenance 375x812] the unlock hands the keyboard route to a plate zone",
+      "pass": true,
+      "detail": {
+        "tag": "BUTTON",
+        "cls": "choice-row choice-row-default  ",
+        "text": "StealthWalk the acoustic shadowCross the service spine while the rain "
+      }
+    },
+    {
+      "step": "[maintenance 375x812] hovering a zone drives the plate's own preview vocabulary",
+      "pass": true,
+      "detail": {
+        "previewA": {
+          "emphasis": "true",
+          "liveEmphasis": "true",
+          "custodyOutcome": null,
+          "treatment": null
+        },
+        "previewB": {
+          "custodyOutcome": null,
+          "liveEmphasis": "true",
+          "focusedZone": 0,
+          "openCaptions": 1
+        }
+      }
+    },
+    {
+      "step": "[maintenance 375x812] exactly one caption is open, even with focus on the other zone",
+      "pass": true,
+      "detail": {
+        "custodyOutcome": null,
+        "liveEmphasis": "true",
+        "focusedZone": 0,
+        "openCaptions": 1
+      }
+    },
+    {
+      "step": "[maintenance 375x812] the live zone layer shares the plate's projection box",
+      "pass": true,
+      "detail": {
+        "dx": 0,
+        "dy": 0,
+        "dw": 0,
+        "dh": 0
+      }
+    },
+    {
+      "step": "[maintenance 375x812] arm reads on the ring and un-clips the pre-commit cost",
+      "pass": true,
+      "detail": {
+        "ariaPressed": [
+          "true",
+          "false"
+        ],
+        "ringAnimation": "scene-zone-arm-pulse",
+        "siblingOpacity": [
+          "1",
+          "0.28"
+        ],
+        "costClip": "inset(-40% -60%)"
+      }
+    },
+    {
+      "step": "[maintenance 375x812] the record is written BEFORE the beat exists",
+      "pass": true,
+      "detail": {
+        "filedCardInInspector": true,
+        "beatMounted": false,
+        "zonesGone": 0
+      }
+    },
+    {
+      "step": "[maintenance 375x812] the beat stages the action's own authored lines",
+      "pass": true,
+      "detail": {
+        "phase": "playing",
+        "lineCount": 1,
+        "first": "The fourth minute was excluded by policy, not lost to the rain the sensors blame.",
+        "focus": "scene-beat-advance"
+      }
+    },
+    {
+      "step": "[maintenance 375x812] the result strip docks with the admitted evidence",
+      "pass": true,
+      "detail": {
+        "result": true,
+        "evidence": "Evidence admitted: The absent corridor",
+        "standing": "Standing: The Defector +2",
+        "focus": "scene-result-dismiss"
+      }
+    },
+    {
+      "step": "[maintenance 375x812] re-entering twice leaves nothing stranded invisible",
+      "pass": true,
+      "detail": [
+        {
+          "plateOpacity": "1",
+          "plateClip": "none",
+          "projectionOpacity": "1",
+          "imgOpacity": "1",
+          "consoleOpacity": null,
+          "consoleTransform": null,
+          "consoleAnimation": null
+        },
+        {
+          "plateOpacity": "1",
+          "plateClip": "none",
+          "projectionOpacity": "1",
+          "imgOpacity": "1",
+          "consoleOpacity": null,
+          "consoleTransform": null,
+          "consoleAnimation": null
+        }
+      ]
+    },
+    {
+      "step": "[maintenance keyboard 1280x800] Tab alone reaches the docked console",
+      "pass": true,
+      "detail": {
+        "step": "Tab 12",
+        "tag": "BUTTON",
+        "cls": "as-listen",
+        "text": "Listen for the next pulsepulse 1 / 3"
+      }
+    },
+    {
+      "step": "[maintenance keyboard 1280x800] keyboard alone completes the ritual and lands on a zone",
+      "pass": true,
+      "detail": {
+        "steps": 7,
+        "zones": 2,
+        "focusOnZone": true,
+        "focusNotBody": true
+      }
+    },
+    {
+      "step": "[maintenance keyboard 1280x800] Enter arms, Enter commits, the beat takes focus",
+      "pass": true,
+      "detail": {
+        "armedInfo": "true",
+        "filed": true,
+        "beat": true,
+        "focusNotBody": true
+      }
+    },
+    {
+      "step": "[maintenance keyboard 1280x800] closing the record hands focus back, never to <body>",
+      "pass": true,
+      "detail": {
+        "tag": "SECTION",
+        "cls": "site-record site-inspector site-record-complete",
+        "text": "CLocation in viewMaintenance spineFiledA rain-slicked sensor ecology b"
+      }
+    },
+    {
+      "step": "[maintenance reduced-motion 1280x800] the docked console does not animate and is fully visible",
+      "pass": true,
+      "detail": {
+        "plateOpacity": "1",
+        "plateClip": "none",
+        "projectionOpacity": "1",
+        "imgOpacity": "1",
+        "consoleOpacity": "1",
+        "consoleTransform": "none",
+        "consoleAnimation": "none"
+      }
+    },
+    {
+      "step": "[maintenance reduced-motion 1280x800] the staged text is advance-paced, never auto-timed",
+      "pass": true,
+      "detail": {
+        "lines": 4,
+        "result": false,
+        "hint": false,
+        "lineAnimation": "none",
+        "stillWaitingAfter5s": true
+      }
+    },
+    {
+      "step": "[maintenance reduced-motion 1280x800] the explicit control completes it",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "step": "[maintenance resume 1280x800] a reload mid-ritual writes NOTHING to the record",
+      "pass": true,
+      "detail": {
+        "objectives": "0 / 2sitesNeededmodel",
+        "filedCards": 0,
+        "events": [
+          "1 events",
+          "1 events"
+        ]
+      }
+    },
+    {
+      "step": "[registry 1280x800] the console docks OVER the plate, one instance only",
+      "pass": true,
+      "detail": {
+        "entered": true,
+        "stageInFold": true,
+        "roomInstances": 1,
+        "dockPresent": true,
+        "roomInsideDock": true,
+        "roomInsideInspector": false,
+        "dockRect": {
+          "top": 360,
+          "bottom": 566,
+          "left": 20,
+          "right": 536
+        },
+        "plateRect": {
+          "top": 179,
+          "bottom": 566,
+          "left": 20,
+          "right": 536
+        },
+        "consoleWithinPlate": true,
+        "consoleScrolls": false,
+        "inspectorSlotEmpty": true,
+        "ritualControls": 3,
+        "sceneZoneButtons": 0,
+        "inspectorChoiceRows": 0,
+        "decorativeZoneMirrors": 2,
+        "anyChoiceRows": 0,
+        "detailSummon": false,
+        "liveOutsideAriaHiddenFigure": null
+      }
+    },
+    {
+      "step": "[registry 1280x800] off the close read the console is back in the inspector, still one",
+      "pass": true,
+      "detail": {
+        "roomInstances": 1,
+        "dockPresent": false,
+        "roomInsideDock": false,
+        "roomInsideInspector": true,
+        "dockRect": null,
+        "plateRect": null,
+        "consoleWithinPlate": false,
+        "consoleScrolls": false,
+        "inspectorSlotEmpty": false,
+        "progressAtConcourse": "intake"
+      }
+    },
+    {
+      "step": "[registry 1280x800] re-entering re-docks it WITHOUT resetting the ritual",
+      "pass": true,
+      "detail": {
+        "progressBefore": "1 / 3 seated",
+        "progressAfter": "1 / 3 seated",
+        "dockPresent": true
+      }
+    },
+    {
+      "step": "[registry 1280x800] at unlock the console yields; the methods are the plate's zones",
+      "pass": true,
+      "detail": {
+        "ritualControls": 0,
+        "sceneZoneButtons": 2,
+        "inspectorChoiceRows": 0,
+        "decorativeZoneMirrors": 0,
+        "anyChoiceRows": 2,
+        "detailSummon": true,
+        "liveOutsideAriaHiddenFigure": true,
+        "dockPresent": false,
+        "focusAtUnlock": {
+          "tag": "BUTTON",
+          "cls": "choice-row choice-row-default  ",
+          "text": "ProcedureAuthenticate the custody chainVerify each admitted fragment a"
+        }
+      }
+    },
+    {
+      "step": "[registry 1280x800] the unlock hands the keyboard route to a plate zone",
+      "pass": true,
+      "detail": {
+        "tag": "BUTTON",
+        "cls": "choice-row choice-row-default  ",
+        "text": "ProcedureAuthenticate the custody chainVerify each admitted fragment a"
+      }
+    },
+    {
+      "step": "[registry 1280x800] hovering a zone drives the plate's own preview vocabulary",
+      "pass": true,
+      "detail": {
+        "previewA": {
+          "emphasis": "true",
+          "liveEmphasis": "true",
+          "custodyOutcome": "chain",
+          "treatment": null
+        },
+        "previewB": {
+          "custodyOutcome": "return",
+          "liveEmphasis": "true",
+          "focusedZone": 0,
+          "openCaptions": 1
+        }
+      }
+    },
+    {
+      "step": "[registry 1280x800] exactly one caption is open, even with focus on the other zone",
+      "pass": true,
+      "detail": {
+        "custodyOutcome": "return",
+        "liveEmphasis": "true",
+        "focusedZone": 0,
+        "openCaptions": 1
+      }
+    },
+    {
+      "step": "[registry 1280x800] the live zone layer shares the plate's projection box",
+      "pass": true,
+      "detail": {
+        "dx": 0,
+        "dy": 0,
+        "dw": 0,
+        "dh": 0
+      }
+    },
+    {
+      "step": "[registry 1280x800] arm reads on the ring and un-clips the pre-commit cost",
+      "pass": true,
+      "detail": {
+        "ariaPressed": [
+          "true",
+          "false"
+        ],
+        "ringAnimation": "scene-zone-arm-pulse",
+        "siblingOpacity": [
+          "1",
+          "0.28"
+        ],
+        "costClip": "inset(-40% -60%)"
+      }
+    },
+    {
+      "step": "[registry 1280x800] the record is written BEFORE the beat exists",
+      "pass": true,
+      "detail": {
+        "filedCardInInspector": true,
+        "beatMounted": false,
+        "zonesGone": 0
+      }
+    },
+    {
+      "step": "[registry 1280x800] the beat stages the action's own authored lines",
+      "pass": true,
+      "detail": {
+        "phase": "playing",
+        "lineCount": 1,
+        "first": "You proved where every admitted memory came from.",
+        "focus": "scene-beat-advance"
+      }
+    },
+    {
+      "step": "[registry 1280x800] the result strip docks with the admitted evidence",
+      "pass": true,
+      "detail": {
+        "result": true,
+        "evidence": "Evidence admitted: Custody chain 77-A",
+        "standing": "Standing: The Registrar +2",
+        "focus": "scene-result-dismiss"
+      }
+    },
+    {
+      "step": "[registry 1280x800] re-entering twice leaves nothing stranded invisible",
+      "pass": true,
+      "detail": [
+        {
+          "plateOpacity": "1",
+          "plateClip": "none",
+          "projectionOpacity": "1",
+          "imgOpacity": "1",
+          "consoleOpacity": null,
+          "consoleTransform": null,
+          "consoleAnimation": null
+        },
+        {
+          "plateOpacity": "1",
+          "plateClip": "none",
+          "projectionOpacity": "1",
+          "imgOpacity": "1",
+          "consoleOpacity": null,
+          "consoleTransform": null,
+          "consoleAnimation": null
+        }
+      ]
+    },
+    {
+      "step": "[registry 375x812] the console docks OVER the plate, one instance only",
+      "pass": true,
+      "detail": {
+        "entered": true,
+        "stageInFold": true,
+        "roomInstances": 1,
+        "dockPresent": true,
+        "roomInsideDock": true,
+        "roomInsideInspector": false,
+        "dockRect": {
+          "top": 427,
+          "bottom": 746,
+          "left": 14,
+          "right": 361
+        },
+        "plateRect": {
+          "top": 246,
+          "bottom": 746,
+          "left": 14,
+          "right": 361
+        },
+        "consoleWithinPlate": true,
+        "consoleScrolls": false,
+        "inspectorSlotEmpty": true,
+        "ritualControls": 3,
+        "sceneZoneButtons": 0,
+        "inspectorChoiceRows": 0,
+        "decorativeZoneMirrors": 2,
+        "anyChoiceRows": 0,
+        "detailSummon": false,
+        "liveOutsideAriaHiddenFigure": null
+      }
+    },
+    {
+      "step": "[registry 375x812] off the close read the console is back in the inspector, still one",
+      "pass": true,
+      "detail": {
+        "roomInstances": 1,
+        "dockPresent": false,
+        "roomInsideDock": false,
+        "roomInsideInspector": true,
+        "dockRect": null,
+        "plateRect": null,
+        "consoleWithinPlate": false,
+        "consoleScrolls": false,
+        "inspectorSlotEmpty": false,
+        "progressAtConcourse": "intake"
+      }
+    },
+    {
+      "step": "[registry 375x812] re-entering re-docks it WITHOUT resetting the ritual",
+      "pass": true,
+      "detail": {
+        "progressBefore": "1 / 3 seated",
+        "progressAfter": "1 / 3 seated",
+        "dockPresent": true
+      }
+    },
+    {
+      "step": "[registry 375x812] at unlock the console yields; the methods are the plate's zones",
+      "pass": true,
+      "detail": {
+        "ritualControls": 0,
+        "sceneZoneButtons": 2,
+        "inspectorChoiceRows": 0,
+        "decorativeZoneMirrors": 0,
+        "anyChoiceRows": 2,
+        "detailSummon": true,
+        "liveOutsideAriaHiddenFigure": true,
+        "dockPresent": false,
+        "focusAtUnlock": {
+          "tag": "BUTTON",
+          "cls": "choice-row choice-row-default  ",
+          "text": "ProcedureAuthenticate the custody chainVerify each admitted fragment a"
+        }
+      }
+    },
+    {
+      "step": "[registry 375x812] the unlock hands the keyboard route to a plate zone",
+      "pass": true,
+      "detail": {
+        "tag": "BUTTON",
+        "cls": "choice-row choice-row-default  ",
+        "text": "ProcedureAuthenticate the custody chainVerify each admitted fragment a"
+      }
+    },
+    {
+      "step": "[registry 375x812] hovering a zone drives the plate's own preview vocabulary",
+      "pass": true,
+      "detail": {
+        "previewA": {
+          "emphasis": "true",
+          "liveEmphasis": "true",
+          "custodyOutcome": "chain",
+          "treatment": null
+        },
+        "previewB": {
+          "custodyOutcome": "return",
+          "liveEmphasis": "true",
+          "focusedZone": 0,
+          "openCaptions": 1
+        }
+      }
+    },
+    {
+      "step": "[registry 375x812] exactly one caption is open, even with focus on the other zone",
+      "pass": true,
+      "detail": {
+        "custodyOutcome": "return",
+        "liveEmphasis": "true",
+        "focusedZone": 0,
+        "openCaptions": 1
+      }
+    },
+    {
+      "step": "[registry 375x812] the live zone layer shares the plate's projection box",
+      "pass": true,
+      "detail": {
+        "dx": 0,
+        "dy": 0,
+        "dw": 0,
+        "dh": 0
+      }
+    },
+    {
+      "step": "[registry 375x812] arm reads on the ring and un-clips the pre-commit cost",
+      "pass": true,
+      "detail": {
+        "ariaPressed": [
+          "true",
+          "false"
+        ],
+        "ringAnimation": "scene-zone-arm-pulse",
+        "siblingOpacity": [
+          "1",
+          "0.28"
+        ],
+        "costClip": "inset(-40% -60%)"
+      }
+    },
+    {
+      "step": "[registry 375x812] the record is written BEFORE the beat exists",
+      "pass": true,
+      "detail": {
+        "filedCardInInspector": true,
+        "beatMounted": false,
+        "zonesGone": 0
+      }
+    },
+    {
+      "step": "[registry 375x812] the beat stages the action's own authored lines",
+      "pass": true,
+      "detail": {
+        "phase": "playing",
+        "lineCount": 1,
+        "first": "You proved where every admitted memory came from.",
+        "focus": "scene-beat-advance"
+      }
+    },
+    {
+      "step": "[registry 375x812] the result strip docks with the admitted evidence",
+      "pass": true,
+      "detail": {
+        "result": true,
+        "evidence": "Evidence admitted: Custody chain 77-A",
+        "standing": "Standing: The Registrar +2",
+        "focus": "scene-result-dismiss"
+      }
+    },
+    {
+      "step": "[registry 375x812] re-entering twice leaves nothing stranded invisible",
+      "pass": true,
+      "detail": [
+        {
+          "plateOpacity": "1",
+          "plateClip": "none",
+          "projectionOpacity": "1",
+          "imgOpacity": "1",
+          "consoleOpacity": null,
+          "consoleTransform": null,
+          "consoleAnimation": null
+        },
+        {
+          "plateOpacity": "1",
+          "plateClip": "none",
+          "projectionOpacity": "1",
+          "imgOpacity": "1",
+          "consoleOpacity": null,
+          "consoleTransform": null,
+          "consoleAnimation": null
+        }
+      ]
+    },
+    {
+      "step": "[registry keyboard 1280x800] Tab alone reaches the docked console",
+      "pass": true,
+      "detail": {
+        "step": "Tab 13",
+        "tag": "BUTTON",
+        "cls": "cr-carrier",
+        "text": "Carrier 01Civic backup bundleAvailable"
+      }
+    },
+    {
+      "step": "[registry keyboard 1280x800] keyboard alone completes the ritual and lands on a zone",
+      "pass": true,
+      "detail": {
+        "steps": 6,
+        "zones": 2,
+        "focusOnZone": true,
+        "focusNotBody": true
+      }
+    },
+    {
+      "step": "[registry keyboard 1280x800] Enter arms, Enter commits, the beat takes focus",
+      "pass": true,
+      "detail": {
+        "armedInfo": "true",
+        "filed": true,
+        "beat": true,
+        "focusNotBody": true
+      }
+    },
+    {
+      "step": "[registry keyboard 1280x800] closing the record hands focus back, never to <body>",
+      "pass": true,
+      "detail": {
+        "tag": "SECTION",
+        "cls": "site-record site-inspector site-record-complete",
+        "text": "ALocation in viewRegistry intakeFiledAdmitted memory carriers enter on"
+      }
+    },
+    {
+      "step": "[registry reduced-motion 1280x800] the docked console does not animate and is fully visible",
+      "pass": true,
+      "detail": {
+        "plateOpacity": "1",
+        "plateClip": "none",
+        "projectionOpacity": "1",
+        "imgOpacity": "1",
+        "consoleOpacity": "1",
+        "consoleTransform": "none",
+        "consoleAnimation": "none"
+      }
+    },
+    {
+      "step": "[registry reduced-motion 1280x800] the staged text is advance-paced, never auto-timed",
+      "pass": true,
+      "detail": {
+        "lines": 4,
+        "result": false,
+        "hint": false,
+        "lineAnimation": "none",
+        "stillWaitingAfter5s": true
+      }
+    },
+    {
+      "step": "[registry reduced-motion 1280x800] the explicit control completes it",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "step": "[registry resume 1280x800] a reload mid-ritual writes NOTHING to the record",
+      "pass": true,
+      "detail": {
+        "objectives": "0 / 2sitesNeededmodel",
+        "filedCards": 0,
+        "events": [
+          "1 events",
+          "1 events"
+        ]
+      }
+    },
+    {
+      "step": "[case-81 deposition 1280x800] Case 81 opens untouched by the rooms work",
+      "pass": true,
+      "detail": {
+        "title": "Case 81 · investigation",
+        "sceneFirstLayer": false,
+        "roomConsole": false,
+        "inspectorChoiceRows": 2
+      }
+    },
+    {
+      "step": "[case-81 deposition 1280x800] the transcript tray opens with its modal semantics intact",
+      "pass": true,
+      "detail": {
+        "modal": "true",
+        "statementFont": "16px",
+        "statementWeight": "300",
+        "statementLineHeight": "23.2px",
+        "statementColor": "oklch(0.94 0.012 190)",
+        "focusInsideTray": true
+      }
+    },
+    {
+      "step": "[case-81 deposition 1280x800] the commit sits in the shared result-strip grammar",
+      "pass": true,
+      "detail": {
+        "resultStrip": true,
+        "summary": "You asked. Ellis answered yes.",
+        "commitLabel": "Commit the transcript →"
+      }
+    },
+    {
+      "step": "[case-81 deposition 1280x800] the transcript commits and the site files",
+      "pass": true,
+      "detail": {
+        "trayGone": true,
+        "filed": true,
+        "objectives": "1 / 2sitesNeededmodel",
+        "focusNotBody": true
+      }
+    },
+    {
+      "step": "[case-81 deposition 375x812] Case 81 opens untouched by the rooms work",
+      "pass": true,
+      "detail": {
+        "title": "Case 81 · investigation",
+        "sceneFirstLayer": false,
+        "roomConsole": false,
+        "inspectorChoiceRows": 2
+      }
+    },
+    {
+      "step": "[case-81 deposition 375x812] the transcript tray opens with its modal semantics intact",
+      "pass": true,
+      "detail": {
+        "modal": "true",
+        "statementFont": "16px",
+        "statementWeight": "300",
+        "statementLineHeight": "23.2px",
+        "statementColor": "oklch(0.94 0.012 190)",
+        "focusInsideTray": true
+      }
+    },
+    {
+      "step": "[case-81 deposition 375x812] the commit sits in the shared result-strip grammar",
+      "pass": true,
+      "detail": {
+        "resultStrip": true,
+        "summary": "You asked. Ellis answered yes.",
+        "commitLabel": "Commit the transcript →"
+      }
+    },
+    {
+      "step": "[case-81 deposition 375x812] the transcript commits and the site files",
+      "pass": true,
+      "detail": {
+        "trayGone": true,
+        "filed": true,
+        "objectives": "1 / 2sitesNeededmodel",
+        "focusNotBody": true
+      }
+    }
+  ],
+  "shots": [
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-01-console-docked-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-02-console-in-inspector-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-03-terminal-zones-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-04-zone-preview-a-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-05-zone-preview-b-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-06-armed-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-07-beat-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-08-result-strip-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-09-filed-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-10-reentry-1-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-10-reentry-2-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-01-console-docked-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-02-console-in-inspector-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-03-terminal-zones-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-04-zone-preview-a-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-05-zone-preview-b-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-06-armed-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-07-beat-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-08-result-strip-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-09-filed-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-10-reentry-1-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-10-reentry-2-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-11-keyboard-unlocked-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-12-reduced-motion-console-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-13-reduced-motion-beat-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/small-archive-14-resume-mid-ritual-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-01-console-docked-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-02-console-in-inspector-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-03-terminal-zones-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-04-zone-preview-a-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-05-zone-preview-b-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-06-armed-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-07-beat-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-08-result-strip-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-09-filed-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-10-reentry-1-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-10-reentry-2-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-01-console-docked-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-02-console-in-inspector-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-03-terminal-zones-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-04-zone-preview-a-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-05-zone-preview-b-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-06-armed-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-07-beat-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-08-result-strip-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-09-filed-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-10-reentry-1-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-10-reentry-2-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-11-keyboard-unlocked-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-12-reduced-motion-console-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-13-reduced-motion-beat-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/maintenance-14-resume-mid-ritual-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-01-console-docked-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-02-console-in-inspector-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-03-terminal-zones-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-04-zone-preview-a-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-05-zone-preview-b-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-06-armed-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-07-beat-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-08-result-strip-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-09-filed-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-10-reentry-1-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-10-reentry-2-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-01-console-docked-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-02-console-in-inspector-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-03-terminal-zones-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-04-zone-preview-a-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-05-zone-preview-b-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-06-armed-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-07-beat-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-08-result-strip-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-09-filed-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-10-reentry-1-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-10-reentry-2-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-11-keyboard-unlocked-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-12-reduced-motion-console-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-13-reduced-motion-beat-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/registry-14-resume-mid-ritual-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/deposition-01-tray-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/deposition-02-consent-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/deposition-03-closing-strip-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/deposition-04-committed-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/deposition-01-tray-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/deposition-02-consent-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/deposition-03-closing-strip-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/rooms-scene-first/deposition-04-committed-375x812.png"
+  ],
+  "small-archiveBeatLines": [
+    "The Archivist filed the person between “continuation” and “property.”"
+  ],
+  "small-archiveKeyboardTranscript": [
+    {
+      "step": "Tab 1",
+      "tag": "BUTTON",
+      "cls": "button button-primary",
+      "text": "File the routine records →"
+    },
+    {
+      "step": "Tab 2",
+      "tag": "BUTTON",
+      "cls": "",
+      "text": "case"
+    },
+    {
+      "step": "Tab 3",
+      "tag": "BUTTON",
+      "cls": "",
+      "text": "Evidence 0"
+    },
+    {
+      "step": "Tab 4",
+      "tag": "BUTTON",
+      "cls": "",
+      "text": "log"
+    },
+    {
+      "step": "Tab 5",
+      "tag": "BODY",
+      "cls": "",
+      "text": "Skip to current sceneAThe AnnexCMA–77–AField record/Run 1AccessAccess "
+    },
+    {
+      "step": "Tab 6",
+      "tag": "A",
+      "cls": "skip-link",
+      "text": "Skip to current scene"
+    },
+    {
+      "step": "Tab 7",
+      "tag": "BUTTON",
+      "cls": "brand-button",
+      "text": "AThe AnnexCMA–77–A"
+    },
+    {
+      "step": "Tab 8",
+      "tag": "SUMMARY",
+      "cls": "",
+      "text": "Access"
+    },
+    {
+      "step": "Tab 9",
+      "tag": "BUTTON",
+      "cls": "annex-world-portal",
+      "text": "ARegistry intake"
+    },
+    {
+      "step": "Tab 10",
+      "tag": "BUTTON",
+      "cls": "annex-world-portal",
+      "text": "BCare ward 12"
+    },
+    {
+      "step": "Tab 11",
+      "tag": "BUTTON",
+      "cls": "annex-world-portal",
+      "text": "CMaintenance spine"
+    },
+    {
+      "step": "Tab 12",
+      "tag": "BUTTON",
+      "cls": "annex-world-portal",
+      "text": "DThe Small Archive"
+    },
+    {
+      "step": "Tab 13",
+      "tag": "BUTTON",
+      "cls": "room-category",
+      "text": "Continuation"
+    },
+    {
+      "step": "ritual 2",
+      "tag": "BUTTON",
+      "cls": "room-category",
+      "text": "Continuation"
+    },
+    {
+      "step": "ritual 5",
+      "tag": "BUTTON",
+      "cls": "room-category room-shelf-zero",
+      "text": "▁▁shelf zero"
+    },
+    {
+      "step": "ritual 9",
+      "tag": "BUTTON",
+      "cls": "choice-row choice-row-default  ",
+      "text": "InquiryAnswer the question the statute avoidsTell the Small Archivist "
+    },
+    {
+      "step": "Enter (close the record)",
+      "tag": "SECTION",
+      "cls": "site-record site-inspector site-record-complete",
+      "text": "DLocation in viewThe Small ArchiveFiledQuestions, omitted categories, "
+    }
+  ],
+  "maintenanceBeatLines": [
+    "The fourth minute was excluded by policy, not lost to the rain the sensors blame."
+  ],
+  "maintenanceKeyboardTranscript": [
+    {
+      "step": "Tab 1",
+      "tag": "BUTTON",
+      "cls": "button button-primary",
+      "text": "Read the sensor cadence →"
+    },
+    {
+      "step": "Tab 2",
+      "tag": "BUTTON",
+      "cls": "",
+      "text": "case"
+    },
+    {
+      "step": "Tab 3",
+      "tag": "BUTTON",
+      "cls": "",
+      "text": "Evidence 0"
+    },
+    {
+      "step": "Tab 4",
+      "tag": "BUTTON",
+      "cls": "",
+      "text": "log"
+    },
+    {
+      "step": "Tab 5",
+      "tag": "A",
+      "cls": "skip-link",
+      "text": "Skip to current scene"
+    },
+    {
+      "step": "Tab 6",
+      "tag": "BUTTON",
+      "cls": "brand-button",
+      "text": "AThe AnnexCMA–77–A"
+    },
+    {
+      "step": "Tab 7",
+      "tag": "SUMMARY",
+      "cls": "",
+      "text": "Access"
+    },
+    {
+      "step": "Tab 8",
+      "tag": "BUTTON",
+      "cls": "annex-world-portal",
+      "text": "ARegistry intake"
+    },
+    {
+      "step": "Tab 9",
+      "tag": "BUTTON",
+      "cls": "annex-world-portal",
+      "text": "BCare ward 12"
+    },
+    {
+      "step": "Tab 10",
+      "tag": "BUTTON",
+      "cls": "annex-world-portal",
+      "text": "CMaintenance spine"
+    },
+    {
+      "step": "Tab 11",
+      "tag": "BUTTON",
+      "cls": "annex-world-portal",
+      "text": "DThe Small Archive"
+    },
+    {
+      "step": "Tab 12",
+      "tag": "BUTTON",
+      "cls": "as-listen",
+      "text": "Listen for the next pulsepulse 1 / 3"
+    },
+    {
+      "step": "ritual 2",
+      "tag": "BUTTON",
+      "cls": "as-listen",
+      "text": "Listen for the next pulsepulse 2 / 3"
+    },
+    {
+      "step": "ritual 5",
+      "tag": "BUTTON",
+      "cls": "as-listen",
+      "text": "Listen for the next pulsepulse 2 / 3"
+    },
+    {
+      "step": "Enter (close the record)",
+      "tag": "SECTION",
+      "cls": "site-record site-inspector site-record-complete",
+      "text": "CLocation in viewMaintenance spineFiledA rain-slicked sensor ecology b"
+    }
+  ],
+  "registryBeatLines": [
+    "You proved where every admitted memory came from."
+  ],
+  "registryKeyboardTranscript": [
+    {
+      "step": "Tab 1",
+      "tag": "BUTTON",
+      "cls": "button button-primary",
+      "text": "Seat the carriers on the rail →"
+    },
+    {
+      "step": "Tab 2",
+      "tag": "BUTTON",
+      "cls": "",
+      "text": "case"
+    },
+    {
+      "step": "Tab 3",
+      "tag": "BUTTON",
+      "cls": "",
+      "text": "Evidence 0"
+    },
+    {
+      "step": "Tab 4",
+      "tag": "BUTTON",
+      "cls": "",
+      "text": "log"
+    },
+    {
+      "step": "Tab 5",
+      "tag": "BODY",
+      "cls": "",
+      "text": "Skip to current sceneAThe AnnexCMA–77–AField record/Run 1AccessAccess "
+    },
+    {
+      "step": "Tab 6",
+      "tag": "A",
+      "cls": "skip-link",
+      "text": "Skip to current scene"
+    },
+    {
+      "step": "Tab 7",
+      "tag": "BUTTON",
+      "cls": "brand-button",
+      "text": "AThe AnnexCMA–77–A"
+    },
+    {
+      "step": "Tab 8",
+      "tag": "SUMMARY",
+      "cls": "",
+      "text": "Access"
+    },
+    {
+      "step": "Tab 9",
+      "tag": "BUTTON",
+      "cls": "annex-world-portal",
+      "text": "ARegistry intake"
+    },
+    {
+      "step": "Tab 10",
+      "tag": "BUTTON",
+      "cls": "annex-world-portal",
+      "text": "BCare ward 12"
+    },
+    {
+      "step": "Tab 11",
+      "tag": "BUTTON",
+      "cls": "annex-world-portal",
+      "text": "CMaintenance spine"
+    },
+    {
+      "step": "Tab 12",
+      "tag": "BUTTON",
+      "cls": "annex-world-portal",
+      "text": "DThe Small Archive"
+    },
+    {
+      "step": "Tab 13",
+      "tag": "BUTTON",
+      "cls": "cr-carrier",
+      "text": "Carrier 01Civic backup bundleAvailable"
+    },
+    {
+      "step": "ritual 2",
+      "tag": "BUTTON",
+      "cls": "cr-late-carrier",
+      "text": "Unassigned carrierBlank custody sealTest the unassigned carrier at the"
+    },
+    {
+      "step": "ritual 6",
+      "tag": "BUTTON",
+      "cls": "choice-row choice-row-default  ",
+      "text": "ProcedureAuthenticate the custody chainVerify each admitted fragment a"
+    },
+    {
+      "step": "Enter (close the record)",
+      "tag": "SECTION",
+      "cls": "site-record site-inspector site-record-complete",
+      "text": "ALocation in viewRegistry intakeFiledAdmitted memory carriers enter on"
+    }
+  ],
+  "depositionStagedText": {
+    "modal": "true",
+    "statementFont": "16px",
+    "statementWeight": "300",
+    "statementLineHeight": "23.2px",
+    "statementColor": "oklch(0.94 0.012 190)",
+    "focusInsideTray": true
+  },
+  "depositionResultStrip": {
+    "background": "linear-gradient(to top, oklch(0.1 0.008 240 / 0.96), oklch(0.1 0.008 240 / 0.74))",
+    "borderTop": "1px",
+    "padding": "12px",
+    "display": "flex"
+  },
+  "passed": 110,
+  "failed": 0
+}

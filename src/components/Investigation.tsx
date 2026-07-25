@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { assembleBeats } from '../game/beats'
 import { getCaseContent, personaName, resolveFieldAction } from '../game/content'
 import { canEnterTribunal } from '../game/engine'
@@ -16,6 +17,7 @@ import {
   SITE_CLOSEUP_ENTRY_MS,
   closeupFocusPoint,
   closeupStageStyle,
+  derivedStageFocus,
 } from '../scene/closeupGeometry'
 import { SiteCloseupStage } from '../scene/SiteCloseupStage'
 import { resolveCommitConsent, sceneStateFor, witnessesRefusalOnCommit } from '../scene/sceneState'
@@ -183,6 +185,19 @@ export function Investigation({
   const [sceneBeat, setSceneBeat] = useState<SceneBeatState | null>(null)
   const sceneResultRef = useRef<HTMLButtonElement>(null)
   const [detailDrawerOpen, setDetailDrawerOpen] = useState(false)
+  // The bounded room's console lives in ONE stable React position and is portalled
+  // into a host node this component owns. The host is then physically moved between
+  // the inspector slot and the dock over the plate, so the ritual can change WHERE
+  // it renders without the room's view-local reducer ever remounting (returning to
+  // the concourse mid-ritual must not silently reset the work).
+  const [roomConsoleHost] = useState<HTMLDivElement | null>(() => {
+    if (typeof document === 'undefined') return null
+    const host = document.createElement('div')
+    host.className = 'room-console-host'
+    return host
+  })
+  const roomDockRef = useRef<HTMLDivElement>(null)
+  const roomSlotRef = useRef<HTMLDivElement>(null)
   // One-shot return-to-concourse emphasis: the site just left, held for a beat so
   // its altered portal is unmissable, then cleared to restore ordinary navigation.
   const [returnEmphasisSiteId, setReturnEmphasisSiteId] = useState<SiteId | null>(null)
@@ -565,28 +580,6 @@ export function Investigation({
       ? selectedSite.id
       : undefined
   const sceneActive = presentationForRender.kind !== 'closeup'
-  // True while an in-scene caption or the staged reveal is speaking for the plate.
-  const sceneQuietCaption = Boolean(
-    sceneBeat ||
-      (previewActionId &&
-        selectedSite.closeup?.sceneFirst &&
-        presentationForRender.kind === 'closeup'),
-  )
-  const worldViewClass = [
-    'world-view',
-    scene.world ? 'world-view--spatial' : '',
-    presentationForRender.kind === 'concourse' ? 'world-view--concourse' : '',
-    shownCloseup ? 'world-view--closeup' : '',
-    presentationForRender.kind === 'travel' ? 'world-view--traveling' : '',
-    presentationForRender.kind === 'arriving' ? 'world-view--arriving' : '',
-    // While a zone caption or a staged reveal owns the plate, the standing plate
-    // caption stands down — as the approved prototype's rest caption does. On a
-    // short plate the two otherwise print over each other.
-    sceneBeat ? 'world-view--scene-beat' : '',
-    sceneQuietCaption ? 'world-view--scene-quiet' : '',
-  ]
-    .filter(Boolean)
-    .join(' ')
   const selectedCompletedBase = fieldActions.find(
     (action) =>
       action.siteId === selectedSite.id && state.completedActions.includes(action.id),
@@ -625,37 +618,16 @@ export function Investigation({
     : undefined
   const openSites = sites.filter((site) => !state.completedSites.includes(site.id))
 
-  // ── The scene-first seam ────────────────────────────────────────────────────
-  // A location opts in through content (`closeup.sceneFirst`), and only qualifies
-  // if it is a plain method site with authored plate anchors. No component names
-  // a site or an action id; a site that does not opt in renders exactly as before.
-  const sceneFirstSite = Boolean(
-    selectedSite.closeup?.sceneFirst &&
-      (selectedSite.closeup?.zones?.length ?? 0) > 0 &&
-      !selectedSite.room &&
-      !selectedSite.acousticShadow &&
-      !selectedSite.custodyRail,
-  )
-  // The close read is up (entering or settled): the inspector hands its method
-  // list to the scene, and the scene owns the detail summon, beat, and result.
-  const sceneFirstPlate = sceneFirstSite && Boolean(shownCloseup)
-  // The live buttons only mount on the SETTLED plate, so nothing is clickable over
-  // an opening aperture and the two controls never overlap during the entry.
-  const sceneFirstZonesLive =
-    sceneFirstPlate && presentationForRender.kind === 'closeup' && !selectedCompletedAction
-  const sceneFirstEmphasisId = selectedCompletedAction?.id ?? previewActionId
-  const sceneFirstFocus = shownCloseup
-    ? closeupFocusPoint(shownCloseup, sceneFirstEmphasisId)
-    : { x: 0.5, y: 0.5 }
-  // Assembled fresh each render on purpose: BeatStage's reveal clock keys off
-  // primitive line data, so a new array identity can never reset a line mid-hold.
-  const sceneBeatAction = sceneBeat
-    ? resolveFieldAction(content, sceneBeat.actionId, state.precedents)
+  // The close-read plate's room inputs, hoisted so the decorative figure and the
+  // live zone layer are driven from ONE set of values (see derivedStageFocus).
+  const plateRoomStage = selectedSite.room ? (roomPresentation ?? undefined) : undefined
+  const plateAcousticStage = selectedSite.acousticShadow
+    ? (acousticPresentation ?? undefined)
     : undefined
-  const sceneBeatLines = sceneBeatAction ? assembleBeats(sceneBeatAction) : []
-  const sceneStandingEntries = Object.entries(selectedCompletedAction?.trust ?? {}).filter(
-    ([, delta]) => delta !== 0,
-  )
+  const plateCustodyStage =
+    selectedSite.custodyRail && !selectedCompletedAction
+      ? (custodyPresentation ?? undefined)
+      : undefined
 
   // The site inspector is always mounted, so the methods aren't gated behind a
   // separate "enter the site" step — they're gated behind the close-read ritual, or
@@ -669,6 +641,89 @@ export function Investigation({
       : selectedSite.acousticShadow
         ? acousticPresentation?.phase === 'route-ready'
         : true
+  // This location authors a bounded room ritual that runs before its methods.
+  const roomSite = Boolean(
+    selectedSite.room || selectedSite.acousticShadow || selectedSite.custodyRail,
+  )
+
+  // ── The scene-first seam ────────────────────────────────────────────────────
+  // A location opts in through content (`closeup.sceneFirst`) and qualifies once it
+  // is offering its methods: immediately on a plain site, and on a room site only
+  // after the ritual has reached its terminal phase (or is already filed, which is
+  // past the ritual entirely). No component names a site or an action id; a site
+  // that does not opt in renders exactly as before.
+  const sceneFirstSite = Boolean(
+    selectedSite.closeup?.sceneFirst &&
+      (selectedSite.closeup?.zones?.length ?? 0) > 0 &&
+      (roomMethodsRevealed || selectedCompletedAction),
+  )
+  // The close read is up (entering or settled): the inspector hands its method
+  // list to the scene, and the scene owns the detail summon, beat, and result.
+  const sceneFirstPlate = sceneFirstSite && Boolean(shownCloseup)
+  // The live buttons only mount on the SETTLED plate, so nothing is clickable over
+  // an opening aperture and the two controls never overlap during the entry.
+  const sceneFirstZonesLive =
+    sceneFirstPlate && presentationForRender.kind === 'closeup' && !selectedCompletedAction
+  // The room's console docks OVER the plate while the settled close read is on
+  // screen and the ritual is still running. The moment the methods unlock the
+  // console yields the plate to the two zones and returns to the inspector, and
+  // whenever the close read is not on screen it is in the inspector as before —
+  // the canonical controls are never gated behind entering a view.
+  const roomConsoleDocked =
+    roomSite &&
+    !selectedCompletedAction &&
+    !roomMethodsRevealed &&
+    presentationForRender.kind === 'closeup' &&
+    presentationMatchesSelection
+  const sceneFirstEmphasisId = selectedCompletedAction?.id ?? previewActionId
+  const sceneFirstDerivedFocus = derivedStageFocus({
+    roomStage: plateRoomStage,
+    roomZones: selectedSite.room?.zones,
+    acousticStage: plateAcousticStage,
+    acousticZones: selectedSite.acousticShadow?.zones,
+    custodyStage: plateCustodyStage,
+    custodyDefinition: selectedSite.custodyRail,
+  })
+  const sceneFirstEmphasisZone = sceneFirstEmphasisId
+    ? shownCloseup?.zones?.find((zone) => zone.actionId === sceneFirstEmphasisId)
+    : undefined
+  const sceneFirstFocus = shownCloseup
+    ? closeupFocusPoint(shownCloseup, sceneFirstEmphasisId, sceneFirstDerivedFocus)
+    : { x: 0.5, y: 0.5 }
+  // True while an in-scene caption or the staged reveal is speaking for the plate.
+  const sceneQuietCaption = Boolean(
+    sceneBeat ||
+      (previewActionId &&
+        selectedSite.closeup?.sceneFirst &&
+        presentationForRender.kind === 'closeup'),
+  )
+  const worldViewClass = [
+    'world-view',
+    scene.world ? 'world-view--spatial' : '',
+    presentationForRender.kind === 'concourse' ? 'world-view--concourse' : '',
+    shownCloseup ? 'world-view--closeup' : '',
+    presentationForRender.kind === 'travel' ? 'world-view--traveling' : '',
+    presentationForRender.kind === 'arriving' ? 'world-view--arriving' : '',
+    // While a zone caption or a staged reveal owns the plate, the standing plate
+    // caption stands down — as the approved prototype's rest caption does. On a
+    // short plate the two otherwise print over each other.
+    sceneBeat ? 'world-view--scene-beat' : '',
+    sceneQuietCaption ? 'world-view--scene-quiet' : '',
+    // The docked room console needs a taller plate box on the narrow layout.
+    roomConsoleDocked ? 'world-view--room-console' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+  // Assembled fresh each render on purpose: BeatStage's reveal clock keys off
+  // primitive line data, so a new array identity can never reset a line mid-hold.
+  const sceneBeatAction = sceneBeat
+    ? resolveFieldAction(content, sceneBeat.actionId, state.precedents)
+    : undefined
+  const sceneBeatLines = sceneBeatAction ? assembleBeats(sceneBeatAction) : []
+  const sceneStandingEntries = Object.entries(selectedCompletedAction?.trust ?? {}).filter(
+    ([, delta]) => delta !== 0,
+  )
+
   const methodsVisible = !selectedCompletedAction && roomMethodsRevealed
   // The in-voice name of the room's current step while mid-ritual, so the footer
   // CTA can point at what the room is actually asking for (never "Choose a method"
@@ -686,6 +741,35 @@ export function Investigation({
           ? acousticStepLabel(acousticPresentation.phase)
           : null
         : null
+
+  // Move the room console's host node between the inspector slot and the dock over
+  // the plate. This is a DOM re-parent, never a React remount: the portal's
+  // container is the same node throughout, so the room's view-local reducer (the
+  // whole ritual so far) survives the move. Focus is carried across explicitly —
+  // re-parenting a subtree drops the active element to <body> otherwise.
+  useLayoutEffect(() => {
+    if (!roomConsoleHost) return
+    const target = roomConsoleDocked ? roomDockRef.current : roomSlotRef.current
+    if (!target || roomConsoleHost.parentElement === target) return
+    const active = document.activeElement as HTMLElement | null
+    const carried = active && roomConsoleHost.contains(active) ? active : null
+    target.appendChild(roomConsoleHost)
+    carried?.focus({ preventScroll: true })
+  })
+
+  // When the ritual unlocks WHILE the console is docked, the terminal choice moves
+  // from the console to the plate zones in the same commit. The room's own focus
+  // chain cannot reach those zones (they live outside it), so the workspace hands
+  // the keyboard route to the first zone here. Only on the unlock transition: an
+  // ordinary arrival at an already-terminal site keeps landing on the site card.
+  const previousRoomRevealedRef = useRef(roomMethodsRevealed)
+  useLayoutEffect(() => {
+    const wasRevealed = previousRoomRevealedRef.current
+    previousRoomRevealedRef.current = roomMethodsRevealed
+    if (!roomSite || wasRevealed || !roomMethodsRevealed || !sceneFirstZonesLive) return
+    const zone = document.querySelector<HTMLElement>('.scene-zones-live .choice-row')
+    zone?.focus({ preventScroll: true })
+  }, [roomMethodsRevealed, roomSite, sceneFirstZonesLive])
 
   const cta = fieldCta({
     tribunalReady,
@@ -711,7 +795,21 @@ export function Investigation({
       case 'ritual-step':
         // Bring the live room control into view and hand it focus — the honest
         // delivery of "do the step named," not a promise the click can't keep.
+        // While the console is docked over the plate that control is IN the scene,
+        // so the CTA follows it there instead of pointing at an inspector that no
+        // longer holds it.
         window.requestAnimationFrame(() => {
+          const dock = roomDockRef.current
+          if (dock) {
+            worldViewRef.current?.scrollIntoView({
+              behavior: reducedMotion ? 'auto' : 'smooth',
+              block: 'center',
+            })
+            dock.querySelector<HTMLElement>('button:not([disabled])')?.focus({
+              preventScroll: true,
+            })
+            return
+          }
           siteInspectorRef.current?.scrollIntoView({
             behavior: reducedMotion ? 'auto' : 'smooth',
             block: 'center',
@@ -761,12 +859,12 @@ export function Investigation({
       worldPresentation.kind !== 'concourse' &&
       worldPresentation.siteId === siteId
     const target = sites.find((site) => site.id === siteId)
+    // Does this location perform IN the close read — either its methods as plate
+    // zones, or (on a room site) its ritual console docked over the plate? Both
+    // want the STAGE brought into view rather than the inspector card, which on a
+    // narrow viewport would push the only controls off the top.
     const targetIsSceneFirst = Boolean(
-      target?.closeup?.sceneFirst &&
-        (target.closeup.zones?.length ?? 0) > 0 &&
-        !target.room &&
-        !target.acousticShadow &&
-        !target.custodyRail,
+      target?.closeup?.sceneFirst && (target.closeup.zones?.length ?? 0) > 0,
     )
     if (selectedSiteId === siteId && alreadyPresentingSite) {
       if (moveFocus) {
@@ -847,8 +945,47 @@ export function Investigation({
     })
   }
 
+  // ONE React position for whichever bounded room this location authors. Rendered
+  // through a portal into a host node the workspace owns, so docking the console
+  // over the plate is a DOM move rather than a remount. Keyed by site: switching
+  // location still resets the view-local ritual exactly as before.
+  const roomConsoleNode = selectedCompletedAction ? null : selectedSite.room ? (
+    <ClassificationRoom
+      key={selectedSite.id}
+      room={selectedSite.room}
+      actions={selectedActions}
+      onCommitAction={handleCommitAction}
+      onPreviewChange={setPreviewActionId}
+      onRoomPresentationChange={setRoomPresentation}
+      methodsInScene={sceneFirstZonesLive}
+    />
+  ) : selectedSite.acousticShadow ? (
+    <AcousticShadowRoom
+      key={selectedSite.id}
+      room={selectedSite.acousticShadow}
+      actions={selectedActions}
+      onCommitAction={handleCommitAction}
+      onPreviewChange={setPreviewActionId}
+      onRoomPresentationChange={setAcousticPresentation}
+      methodsInScene={sceneFirstZonesLive}
+    />
+  ) : selectedSite.custodyRail ? (
+    <CustodyRailRoom
+      key={selectedSite.id}
+      room={selectedSite.custodyRail}
+      actions={selectedActions}
+      onCommitAction={handleCommitAction}
+      onPreviewChange={setPreviewActionId}
+      onRoomPresentationChange={setCustodyPresentation}
+      methodsInScene={sceneFirstZonesLive}
+    />
+  ) : null
+
   return (
     <article className="phase-page investigation-page">
+      {roomConsoleNode && roomConsoleHost
+        ? createPortal(roomConsoleNode, roomConsoleHost)
+        : roomConsoleNode}
       <p className="sr-only" role="status" aria-live="polite">
         {refusalLine}
       </p>
@@ -931,19 +1068,13 @@ export function Investigation({
                 actions={selectedActions}
                 activeActionId={previewActionId}
                 resolvedActionId={selectedCompletedAction?.id}
-                roomStage={selectedSite.room ? (roomPresentation ?? undefined) : undefined}
+                roomStage={plateRoomStage}
                 roomZones={selectedSite.room?.zones}
-                acousticStage={
-                  selectedSite.acousticShadow ? (acousticPresentation ?? undefined) : undefined
-                }
+                acousticStage={plateAcousticStage}
                 acousticZones={selectedSite.acousticShadow?.zones}
                 acousticResolvedVariant={acousticResolvedVariant}
                 acousticDepthAssets={selectedSite.acousticShadow?.depthAssets}
-                custodyStage={
-                  selectedSite.custodyRail && !selectedCompletedAction
-                    ? (custodyPresentation ?? undefined)
-                    : undefined
-                }
+                custodyStage={plateCustodyStage}
                 custodyDefinition={selectedSite.custodyRail}
                 custodyPreviewVariant={custodyPreviewVariant}
                 custodyResolvedVariant={custodyResolvedVariant}
@@ -971,7 +1102,9 @@ export function Investigation({
             {sceneFirstZonesLive && shownCloseup && (
               <div
                 className="scene-zones-live"
-                data-emphasis={sceneFirstEmphasisId ? 'true' : undefined}
+                data-emphasis={
+                  sceneFirstEmphasisZone || sceneFirstDerivedFocus ? 'true' : undefined
+                }
                 style={closeupStageStyle(shownCloseup, closeupEntryOrigin, sceneFirstFocus)}
               >
                 <div className="scene-zones-live-cover">
@@ -1004,6 +1137,14 @@ export function Investigation({
                   </div>
                 </div>
               </div>
+            )}
+
+            {/* The bounded room's console, docked over the plate exactly where the
+                deposition tray docks: the ritual is performed in the room it is
+                about, not in a column beside it. The host node (and with it the
+                room's whole view-local state) is moved in, not re-rendered. */}
+            {roomConsoleDocked && (
+              <div className="room-console" ref={roomDockRef} />
             )}
 
             {sceneFirstPlate && sceneBeat && sceneBeat.phase !== 'settling' && (
@@ -1220,43 +1361,20 @@ export function Investigation({
                 </div>
               )}
             </>
-          ) : selectedSite.room ? (
-            // A site that authors a classification room presents it before the two
-            // canonical methods unlock. Keyed by site so switching location resets
-            // the view-local room. The methods still commit through the same path.
-            <ClassificationRoom
-              key={selectedSite.id}
-              room={selectedSite.room}
-              actions={selectedActions}
-              onCommitAction={handleCommitAction}
-              onPreviewChange={setPreviewActionId}
-              onRoomPresentationChange={setRoomPresentation}
-            />
-          ) : selectedSite.acousticShadow ? (
-            // A site that authors an acoustic-shadow room presents its route-planning
-            // crossing before the two canonical methods unlock. Keyed by site so
-            // switching location resets the view-local room. The methods still commit
-            // through the same path.
-            <AcousticShadowRoom
-              key={selectedSite.id}
-              room={selectedSite.acousticShadow}
-              actions={selectedActions}
-              onCommitAction={handleCommitAction}
-              onPreviewChange={setPreviewActionId}
-              onRoomPresentationChange={setAcousticPresentation}
-            />
-          ) : selectedSite.custodyRail ? (
-            // Registry Intake presents a physical custody-rail handling ritual
-            // before its two canonical methods unlock. Keying it by site makes
-            // location switches reset the view-local work silently.
-            <CustodyRailRoom
-              key={selectedSite.id}
-              room={selectedSite.custodyRail}
-              actions={selectedActions}
-              onCommitAction={handleCommitAction}
-              onPreviewChange={setPreviewActionId}
-              onRoomPresentationChange={setCustodyPresentation}
-            />
+          ) : roomSite ? (
+            // The bounded room's console. It renders HERE whenever the settled close
+            // read is not on screen — the always-mounted rule: the ritual is never
+            // gated behind entering a view — and is moved (never remounted) into the
+            // dock over the plate while the close read is up.
+            <>
+              {roomConsoleDocked ? (
+                <p className="scene-first-note">
+                  The station stands in the room above. Work it there; this record
+                  keeps the location’s text.
+                </p>
+              ) : null}
+              <div className="room-console-slot" ref={roomSlotRef} />
+            </>
           ) : (
             // Keyed by site: switching location remounts the method list, so any
             // armed commit resets silently with it (one of the three disarms).

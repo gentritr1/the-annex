@@ -321,21 +321,27 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
             <blockquote className="deposition-statement" aria-live="polite">
               {deposition.closing[entryActionId]}
             </blockquote>
-            <div className="deposition-consent-summary">
-              {askedConsent
-                ? `You asked. Ellis answered ${consentAnswer?.consent === 'yes' ? 'yes' : 'no'}.`
-                : 'You did not ask whether Ellis wanted to give this.'}
+            {/* The commit strip. Same grammar as the scene's result strip: what
+                the record will hold, docked beside the one control that files
+                it. The flow, the beats, and the two-step confirm are unchanged —
+                this only gives the moment its shared shape. */}
+            <div className="deposition-result">
+              <div className="deposition-consent-summary">
+                {askedConsent
+                  ? `You asked. Ellis answered ${consentAnswer?.consent === 'yes' ? 'yes' : 'no'}.`
+                  : 'You did not ask whether Ellis wanted to give this.'}
+              </div>
+              <button
+                className={`button button-primary ${commitArmed ? 'button-armed' : ''}`}
+                type="button"
+                aria-pressed={commitArmed}
+                onClick={commit}
+                onBlur={() => setCommitArmed(false)}
+              >
+                {commitArmed ? 'Confirm — file this deposition' : 'Commit the transcript'}{' '}
+                <span aria-hidden="true">{commitArmed ? '✓' : '→'}</span>
+              </button>
             </div>
-            <button
-              className={`button button-primary ${commitArmed ? 'button-armed' : ''}`}
-              type="button"
-              aria-pressed={commitArmed}
-              onClick={commit}
-              onBlur={() => setCommitArmed(false)}
-            >
-              {commitArmed ? 'Confirm — file this deposition' : 'Commit the transcript'}{' '}
-              <span aria-hidden="true">{commitArmed ? '✓' : '→'}</span>
-            </button>
           </div>
         )}
 

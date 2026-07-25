@@ -795,27 +795,45 @@ describe('persona roster portraits', () => {
 // early when a site does not author one, so each concrete Case 77 room below proves
 // that its content exists and is reached by the recursive no-placeholder walk.
 // The scene-first grammar is a per-site content opt-in with a deliberately small
-// blast radius: exactly one location across every registered case hosts it today.
-// This test is the guard on that radius — if a second site opts in, the pilot's
-// verification (and its screenshots) no longer cover the shipped surface.
-describe('scene-first opt-in stays scoped to the pilot', () => {
+// blast radius. This test is the guard on that radius — if a site opts in that the
+// live verification (and its screenshots) never covered, this fails first.
+describe('scene-first opt-in stays scoped to the verified locations', () => {
   const sceneFirstSites = registeredCases.flatMap(([caseId, content]) =>
     content.sites
       .filter((site) => site.closeup?.sceneFirst)
       .map((site) => `${caseId}/${site.id}`),
   )
 
-  it('is authored on exactly one location, in Case 77', () => {
-    expect(sceneFirstSites).toEqual(['case-77/care-ward'])
+  it('is authored on exactly the verified Case 77 locations', () => {
+    expect([...sceneFirstSites].sort()).toEqual([
+      'case-77/care-ward',
+      'case-77/maintenance',
+      'case-77/registry',
+      'case-77/small-archive',
+    ])
   })
 
-  it('only opts in a plain method site that authors an anchor per method', () => {
-    const site = getCaseContent('case-77').sites.find((item) => item.id === 'care-ward')!
-    expect(site.room).toBeUndefined()
-    expect(site.acousticShadow).toBeUndefined()
-    expect(site.custodyRail).toBeUndefined()
-    const anchored = (site.closeup?.zones ?? []).map((zone) => zone.actionId)
-    expect([...anchored].sort()).toEqual([...site.actionIds].sort())
+  it('only opts in a site that authors one plate anchor per method', () => {
+    registeredCases.forEach(([, content]) => {
+      content.sites.forEach((site) => {
+        if (!site.closeup?.sceneFirst) return
+        const anchored = (site.closeup.zones ?? []).map((zone) => zone.actionId)
+        expect([...anchored].sort()).toEqual([...site.actionIds].sort())
+      })
+    })
+  })
+
+  // A room site reaches its methods through a bounded ritual, so its zones only
+  // go live at the terminal phase; the ritual itself keeps its DOM console. Every
+  // scene-first site is therefore either plain OR authors exactly one room.
+  it('opts in either a plain method site or a site with exactly one bounded room', () => {
+    registeredCases.forEach(([, content]) => {
+      content.sites.forEach((site) => {
+        if (!site.closeup?.sceneFirst) return
+        const rooms = [site.room, site.acousticShadow, site.custodyRail].filter(Boolean)
+        expect(rooms.length).toBeLessThanOrEqual(1)
+      })
+    })
   })
 
   it('binds every anchored method to exactly one ambient treatment token', () => {
@@ -826,13 +844,15 @@ describe('scene-first opt-in stays scoped to the pilot', () => {
     expect(new Set(Object.values(treatments)).size).toBe(site.actionIds.length)
   })
 
-  it('leaves every other site — and all of Case 81 — on the ordinary path', () => {
-    registeredCases.forEach(([, content]) => {
-      content.sites.forEach((site) => {
-        if (site.closeup?.sceneFirst) return
-        expect(site.closeup?.previewTreatment).toBeUndefined()
-      })
-    })
+  // The generalized ambient state-sets are authored atmosphere art, not a default:
+  // only the location whose art was authored for them carries the map.
+  it('authors previewTreatment on exactly the one location whose atmosphere drives it', () => {
+    const withTreatment = registeredCases.flatMap(([caseId, content]) =>
+      content.sites
+        .filter((site) => site.closeup?.previewTreatment)
+        .map((site) => `${caseId}/${site.id}`),
+    )
+    expect(withTreatment).toEqual(['case-77/care-ward'])
   })
 })
 

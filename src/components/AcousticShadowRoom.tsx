@@ -31,6 +31,11 @@ interface AcousticShadowRoomProps {
   // close-read plate reflects the crossing as decorative emphasis, and so
   // Investigation can look up this phase's acoustic treatment.
   onRoomPresentationChange: (presentation: AcousticShadowPlateState) => void
+  // The terminal method choice is being hosted by the scene itself (real
+  // ChoiceButtons at the plate's authored anchors). The room then prints its
+  // route-ready lines and stands down: exactly one control per method exists at
+  // any moment, here or there — never both.
+  methodsInScene?: boolean
 }
 
 // The pending-focus fallback chain: when a transition unmounts the control that
@@ -58,6 +63,7 @@ export function AcousticShadowRoom({
   onCommitAction,
   onPreviewChange,
   onRoomPresentationChange,
+  methodsInScene = false,
 }: AcousticShadowRoomProps) {
   const [state, dispatch] = useReducer(
     (current: AcousticShadowState, event: AcousticShadowEvent) =>
@@ -119,7 +125,12 @@ export function AcousticShadowRoom({
     const exposure = pulse?.exposure[bandId]
     if (exposure === 'masked') {
       const isLast = checkpointIndex >= room.checkpoints.length - 1
-      requestFocus(isLast ? ['.acoustic-shadow-room .choice-row'] : ['.as-reading', '.as-listen'])
+      // The last crossing opens the methods. When the scene hosts them there is
+      // no in-room control to land on — the workspace hands the keyboard route to
+      // the first plate zone instead, so asking for one here would only fight it.
+      // The dispatch below always runs either way.
+      if (!isLast) requestFocus(['.as-reading', '.as-listen'])
+      else if (!methodsInScene) requestFocus(['.acoustic-shadow-room .choice-row'])
     }
     dispatch({ type: 'CHOOSE_BAND', bandId })
   }
@@ -197,7 +208,13 @@ export function AcousticShadowRoom({
           <div className="as-methods">
             <p className="as-route-ready">{room.routeReadyLine}</p>
             <p className="as-credential">{room.credentialLine}</p>
-            {actions.map((action) => (
+            {methodsInScene ? (
+              <p className="as-methods-in-scene">
+                The two methods stand on the span itself. Choose one there, or open the
+                location detail for the full text of each.
+              </p>
+            ) : null}
+            {methodsInScene ? null : actions.map((action) => (
               <ChoiceButton
                 key={action.id}
                 title={action.title}

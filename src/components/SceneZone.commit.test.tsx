@@ -15,8 +15,15 @@ declare global {
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
 
 const content = getCaseContent('case-77')
-const site = content.sites.find((item) => item.closeup?.sceneFirst)!
+// Every location that hosts its methods in the scene — the plain pilot site and
+// each bounded room whose TERMINAL choice adopts the same grammar. The identity
+// claim has to hold for all of them, not just the first one authored.
+const sceneFirstSites = content.sites.filter((item) => item.closeup?.sceneFirst)
+const site = sceneFirstSites[0]!
 const zones = site.closeup!.zones!
+const everyAnchor = sceneFirstSites.flatMap((item) =>
+  (item.closeup?.zones ?? []).map((zone) => ({ siteId: item.id, actionId: zone.actionId })),
+)
 
 // The base state the two commit paths are compared from: a fresh run, taken to
 // the investigation phase exactly as the game takes it there.
@@ -103,9 +110,9 @@ describe('SceneZone commits through the canonical path', () => {
   // clicks, and the action each hands upward is fed to the real reducer from an
   // identical base state. Any divergence in the event log, admitted evidence,
   // trust, alarm, or completion bookkeeping fails here.
-  describe.each(zones.map((zone) => zone.actionId))(
-    'event log identity for %s',
-    (actionId) => {
+  describe.each(everyAnchor)(
+    'event log identity for $siteId / $actionId',
+    ({ actionId }) => {
       it('produces a reducer result identical to the inspector method list', () => {
         const action = content.fieldActions.find((item) => item.id === actionId)!
 

@@ -32,6 +32,12 @@ export function SceneZone({
       className="scene-zone"
       data-treatment={treatment}
       data-edge={x <= 0.32 ? 'start' : x >= 0.68 ? 'end' : undefined}
+      // A low anchor has no room beneath it for a caption that grows downward —
+      // on a letterboxed plate the pre-commit cost runs off the bottom edge
+      // exactly when the player arms. Those zones caption UPWARD instead; the
+      // ring never moves either way. 0.60 is above every anchor the pilot
+      // verified, so the shipped pilot plate is untouched by this.
+      data-vertical={y >= 0.6 ? 'low' : undefined}
       style={{ left: `${x * 100}%`, top: `${y * 100}%` }}
     >
       <ChoiceButton

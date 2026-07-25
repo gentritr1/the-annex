@@ -21,6 +21,11 @@ interface CustodyRailRoomProps {
   onCommitAction: (actionId: FieldActionId) => void
   onPreviewChange: (actionId: FieldActionId | null) => void
   onRoomPresentationChange: (presentation: CustodyRailPlateState) => void
+  // The terminal method choice is being hosted by the scene itself (real
+  // ChoiceButtons at the plate's authored anchors). The room then prints its
+  // unlock line and stands down: exactly one control per method exists at any
+  // moment, here or there — never both.
+  methodsInScene?: boolean
 }
 
 // Effect-driven focus handoff copied from the two proven bounded rooms. Each
@@ -41,6 +46,7 @@ export function CustodyRailRoom({
   onCommitAction,
   onPreviewChange,
   onRoomPresentationChange,
+  methodsInScene = false,
 }: CustodyRailRoomProps) {
   const [state, dispatch] = useReducer(
     (current: CustodyRailState, event: CustodyRailEvent) =>
@@ -102,7 +108,9 @@ export function CustodyRailRoom({
 
   function proceedToMethods() {
     dispatch({ type: 'PROCEED_TO_METHODS' })
-    requestFocus(['.custody-rail-room .choice-row'])
+    // When the scene hosts the methods there is no in-room control to land on —
+    // the workspace hands the keyboard route to the first plate zone instead.
+    if (!methodsInScene) requestFocus(['.custody-rail-room .choice-row'])
   }
 
   return (
@@ -235,7 +243,13 @@ export function CustodyRailRoom({
         {phase === 'methods' ? (
           <div className="cr-methods">
             <p className="cr-unlock">{room.unlockLine}</p>
-            {actions.map((action) => (
+            {methodsInScene ? (
+              <p className="cr-methods-in-scene">
+                The two readings stand on the rail itself. Choose one there, or open the
+                location detail for the full text of each.
+              </p>
+            ) : null}
+            {methodsInScene ? null : actions.map((action) => (
               <ChoiceButton
                 key={action.id}
                 title={action.title}

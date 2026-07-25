@@ -1,6 +1,6 @@
 {
   "url": "http://127.0.0.1:3000/",
-  "capturedAt": "2026-07-25T13:31:21.018Z",
+  "capturedAt": "2026-07-25T16:29:44.204Z",
   "checks": [
     {
       "step": "[1280x800] care ward close read settles fully inside the fold",
@@ -508,7 +508,7 @@
       "detail": {
         "custodyRoom": true,
         "carrierControls": 3,
-        "inspectorControls": 3,
+        "inspectorControls": 0,
         "decorativeZones": 2,
         "sceneFirstLayer": false,
         "detailSummon": false,
@@ -552,10 +552,16 @@
       }
     },
     {
-      "step": "[1280x800 case-81] case 81 live flow",
-      "pass": false,
+      "step": "[1280x800 case-81] Case 81 opens on the ordinary inspector path",
+      "pass": true,
       "detail": {
-        "skipped": "no seed save supplied; case 81 is gated behind a completed case-77 verdict"
+        "caseLabel": "AThe AnnexCMA–81–C",
+        "title": "Case 81 · investigation",
+        "inspectorMethodButtons": 2,
+        "sceneFirstLayer": false,
+        "detailSummon": false,
+        "previewTreatment": null,
+        "decorativeZones": 0
       }
     },
     {
@@ -714,7 +720,8 @@
     "/Users/gentlegen/Desktop/the-annex-mvp/evidence/pilot-care-ward/15-non-pilot-registry-1280x800.png",
     "/Users/gentlegen/Desktop/the-annex-mvp/evidence/pilot-care-ward/16-non-pilot-registry-advanced-1280x800.png",
     "/Users/gentlegen/Desktop/the-annex-mvp/evidence/pilot-care-ward/18-resume-mid-beat-1280x800.png",
-    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/pilot-care-ward/19-resume-after-beat-1280x800.png"
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/pilot-care-ward/19-resume-after-beat-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/pilot-care-ward/17-case-81-1280x800.png"
   ],
   "ambient": {
     "rest": {
@@ -899,6 +906,6 @@
       "label": "BLocation in viewCare ward 12Filed77-A is awake, articulate, and aware"
     }
   ],
-  "passed": 52,
-  "failed": 1
+  "passed": 53,
+  "failed": 0
 }

@@ -1,8 +1,6 @@
 import { useState, type CSSProperties } from 'react'
 import { acousticShadowStageFor } from '../game/acousticShadow'
-import { custodyRailStageFor } from '../game/custodyRail'
-import { roomStageFor } from '../game/room'
-import { closeupStageStyle } from './closeupGeometry'
+import { closeupFocusPoint, closeupStageStyle, derivedStageFocus } from './closeupGeometry'
 import { resolvePreviewTreatment } from './previewTreatment'
 import {
   resolveRainPresenceState,
@@ -95,26 +93,19 @@ export function SiteCloseupStage({
   const emphasizedActionId = resolvedActionId ?? activeActionId
   const emphasizedZone = closeup.zones?.find((zone) => zone.actionId === emphasizedActionId)
   // The room's current stagecraft anchor, resolved from its phase → authored zone.
-  const roomFocus =
-    roomStage && roomZones ? roomZones[roomStageFor(roomStage.phase)] : undefined
-  // The acoustic-shadow room's current anchor, resolved from its plate → authored
-  // zone (near/mid/far as checkpoints cross, credential once the route is ready).
-  const acousticFocus =
-    acousticStage && acousticZones
-      ? acousticZones[acousticShadowStageFor(acousticStage)]
-      : undefined
-  const custodyFocus =
-    custodyStage && custodyDefinition
-      ? custodyDefinition.zones[custodyRailStageFor(custodyStage.phase)]
-      : undefined
-  const derivedFocus = roomFocus ?? acousticFocus ?? custodyFocus
   // A room stage takes precedence for the focus point while a room is active and no
   // method is being previewed/resolved, so the plate drifts along its own vocabulary
   // (the classification drawer/aperture/log, or the corridor's near/mid/far/door).
-  const focusPoint =
-    derivedFocus && !emphasizedZone
-      ? derivedFocus
-      : { x: emphasizedZone?.x ?? closeup.focalPoint?.x ?? 0.5, y: emphasizedZone?.y ?? closeup.focalPoint?.y ?? 0.5 }
+  // Both this and the live scene-first zone layer read the SAME two helpers.
+  const derivedFocus = derivedStageFocus({
+    roomStage,
+    roomZones,
+    acousticStage,
+    acousticZones,
+    custodyStage,
+    custodyDefinition,
+  })
+  const focusPoint = closeupFocusPoint(closeup, emphasizedActionId, derivedFocus)
   const stageStyle = closeupStageStyle(closeup, entryOrigin, focusPoint)
 
   const phase = roomStage?.phase
