@@ -604,3 +604,36 @@ focus-dropped-when-the-stanza-settled scar at `:296`–`298`).
    cheap variant is a persistent four-portrait strip on the chrome that summons
    the People tab directly; I do **not** recommend it, as it re-adds always-on
    density the redesign exists to remove.
+
+---
+
+## Amendment 2026-07-25 — art-direction pivot (user-ratified)
+
+The user rejected the photoreal direction after seeing candidates ("too real...
+should be an animated style distinct to this game") and selected, from three
+style probes of the Registrar, **Style B: painterly noir** — expressive painterly
+illustration, visible brushwork, dark gouache/dry-brush, graphic-novel noir
+register, faces built from planes of muted value, edges dissolving into a
+near-black ground. §1.4's generation spec is superseded as follows; everything
+else in this plan (§2–§6, all sequencing, all budgets-by-role) stands, since the
+sigil-fallback architecture never depended on the art style.
+
+| property | was (§1.4) | now |
+|---|---|---|
+| generator | Higgsfield Soul Cast, 3-panel sheet 2048×1152 | **nano_banana_pro (Nano Banana Pro), single portrait, 2:3, 2k** |
+| style block | monochrome civic registry *photograph* | **the Style B painterly-noir block, verbatim from the winning probe** |
+| crop | near-frontal panel → 360×418 | **center-crop the 2:3 render → 360×418 (same delivery geometry)** |
+| filter treatment | registry grayscale filter | **none needed at rest — the palette is authored into the paint; the registry filter values remain available as the high-contrast fallback** |
+| candidates | 2 per persona, Soul Cast | 2 per persona, same ritual; the winning Registrar probe may stand as a candidate |
+
+**The Ellis question (two mediums):** default adopted per review recommendation —
+**the living cast is painted; Ellis's registry dossier remains photographic**,
+because a photograph is what a file holds of its *subject*: the medium difference
+carries the fiction's subject/staff distinction ratified with the duty-roster
+frame. Revisit only if the user asks for one medium everywhere (would re-generate
+`ellis-marne-dossier.webp` + scene figure in Style B).
+
+Byte budget unchanged (≤12 KB delivered / ≤48 KB set). Archivist staging and
+safeguards carried over verbatim into the painterly prompts. The eight photoreal
+Soul Cast candidates are retired unused (provenance: generated 2026-07-25,
+rejected at the style gate before any entered the repo).
