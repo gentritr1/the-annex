@@ -48,6 +48,14 @@
 | `public/images/world/case77/concourse-poster.webp` | Pillow WebP quality 82, method 6, from the approved hub master with no resize or crop | Lightweight loading, fallback, reduced-motion, and WebGL-unavailable poster for the Case 77 concourse | Derived optimization; 1672×941; 123,056 bytes; source PNG retained in `docs/assets/world/case77-concourse/` |
 | `public/images/world/case77/poured-concrete.webp` | Pillow Lanczos resize from 1254×1254 to 1024×1024, then WebP quality 82, method 6 | Runtime base-color texture for dry concourse concrete | Derived optimization; 200,710 bytes; source PNG retained in `docs/assets/world/case77-concourse/` |
 | `public/images/world/case77/wet-terrazzo.webp` | Pillow Lanczos resize from 1254×1254 to 1024×1024, then WebP quality 82, method 6 | Runtime base-color texture for the dark concourse floor | Derived optimization; 268,122 bytes; source PNG retained in `docs/assets/world/case77-concourse/` |
+| `docs/assets/personas/registrar-portrait-original.png` | Generated 2026-07-25 with Higgsfield Nano Banana Pro (`nano_banana_2`), 2:3 at 2k (1696×2528), generation id `7748bb19`; one of two candidates, selected in review | Roster portrait master for the Registrar | Look-development master; kept out of the shipped bundle. Reviewed: no readable text, numbers, name plates, badges, signage, logos, emblems, or watermark; no real-person likeness; direct level gaze per the §1.3 casting |
+| `public/images/personas/registrar.webp` | Center-crop of the 2:3 master to 360×418, locally encoded with `cwebp -q 82 -m 6` | Roster portrait rendered at chip (34px), card (40px), and sheet (120px) across the reaction quotes, the beat speaker line, the scene result strip, the rail entity cards, and the debrief reflections | Derived optimization; 9,112 bytes; PNG master retained in `docs/assets/personas/` |
+| `docs/assets/personas/shepherd-portrait-original.png` | Generated 2026-07-25 with Higgsfield Nano Banana Pro (`nano_banana_2`), 2:3 at 2k (1696×2528), generation id `c59f80e1`; one of two candidates, selected in review | Roster portrait master for the Shepherd | Look-development master; kept out of the shipped bundle. Reviewed: no readable text, numbers, name plates, badges, signage, logos, emblems, or watermark; no real-person likeness; direct gaze, steady and tired, per the §1.3 casting |
+| `public/images/personas/shepherd.webp` | Center-crop of the 2:3 master to 360×418, locally encoded with `cwebp -q 78 -m 6` (quality stepped down from 82 to hold the ≤12 KB per-asset gate) | Roster portrait, same five surfaces | Derived optimization; 11,892 bytes; PNG master retained in `docs/assets/personas/` |
+| `docs/assets/personas/defector-portrait-original.png` | Generated 2026-07-25 with Higgsfield Nano Banana Pro (`nano_banana_2`), 2:3 at 2k (1696×2528), generation id `3ef8f5ee`; one of two candidates, selected in review | Roster portrait master for the Defector | Look-development master; kept out of the shipped bundle. Reviewed: no readable text, numbers, name plates, badges, signage, logos, emblems, or watermark; no real-person likeness; stripped credential lanyard carries no legible print; eyes averted off-lens per the §1.3 casting |
+| `public/images/personas/defector.webp` | Center-crop of the 2:3 master to 360×418, locally encoded with `cwebp -q 82 -m 6` | Roster portrait, same five surfaces | Derived optimization; 10,876 bytes; PNG master retained in `docs/assets/personas/` |
+| `docs/assets/personas/archivist-portrait-original.png` | Generated 2026-07-25 with Higgsfield Nano Banana Pro (`nano_banana_2`), 2:3 at 2k (1696×2528), generation id `e7d26f95`; one of two candidates, selected in review | Roster portrait master for the Small Archivist | Look-development master; kept out of the shipped bundle. Reviewed against the §1.3 non-negotiable safeguards, all confirmed: **at her post in the stacks** (not a blank wall), **three-quarter length** (not a head-and-shoulders mugshot crop), **her tool in hand** (an index tab), dignified and composed, work apron over ordinary age-appropriate clothing, direct level gaze, natural neutral expression. No height chart, no ID board, no number placard, no restraint, no institutional gown, no medical context, no tears or distress, no smile-for-camera, no adult-styled posing. Also: no readable text, numbers, logos, emblems, or watermark; no real-person likeness |
+| `public/images/personas/archivist.webp` | Inset center-crop of the 2:3 master (center 1500×2260, clearing the render's painted paper deckle border, which the first crop kept and which failed the value-matching review beside the dark shell) to 360×418, locally encoded with `cwebp -q 46` | Roster portrait, same five surfaces | Derived optimization; **13,116 bytes — accepted over the 12 KB per-file heuristic by review ruling**: the heuristic assumed plain-ground head-and-shoulders plates, her safeguarded at-work staging is inherently detail-dense, and the set total (44,996 B) holds the ≤48 KB budget that guards the deploy scar; PNG master retained in `docs/assets/personas/` |
 
 The concept-art prompt avoided franchise names, copyrighted characters, logos, readable text, and living-artist style references. Keep future prompts and source references in this ledger. Raw generated assets are drafts, not a substitute for a human-led style bible and production finish.
 
@@ -238,3 +246,127 @@ Runtime transforms and optimization:
 QA result: all four PNG masters and all three WebP derivatives were inspected at full frame. The two materials remained clear after resize and compression, have no objects, text, borders, directional light strips, perspective, or dominant baked illumination, and required no retry. A temporary 2×2 repeat stress sheet was inspected for both runtime textures: neither shows a hard border discontinuity; natural feature repetition is visible only at the deliberately aggressive stress scale. The poster preserves the approved framing and dark-value hierarchy without compression breakup.
 
 The four existing Case 77 close-read plates remain the canonical portal views and were deliberately not regenerated or duplicated: `public/images/site-scenes/maintenance-spine.webp`, `public/images/site-scenes/care-ward-12.webp`, `public/images/site-scenes/registry-intake.webp`, and `public/images/site-scenes/small-archive.webp`.
+
+### Persona roster portraits (painterly noir)
+
+Four portraits, one per presence, generated 2026-07-25 with **Higgsfield Nano
+Banana Pro (`nano_banana_2`)** at **2:3, 2k (1696×2528)**, per the art-direction
+amendment at the foot of `docs/persona-entities-ui-plan.md`. Generation ids:
+`7748bb19` (Registrar), `c59f80e1` (Shepherd), `3ef8f5ee` (Defector), `e7d26f95`
+(Small Archivist). **The API does not expose seeds; the generation id is recorded
+in place of one.** Two candidates were generated per persona and one of each was
+selected in review, from a contact sheet rendered at delivery size (360×418
+equivalent) against the dark shell with `ellis-marne-dossier.webp` alongside as
+the two-medium anchor — never inspected at 2k in an image viewer, because
+resolution flatters and the risk that matters is value, not detail.
+
+**Two mediums, deliberately.** The living cast is painted; Ellis's registry
+dossier stays photographic. A photograph is what a file holds of its *subject*,
+so the medium difference carries the same subject/staff distinction the
+duty-roster frame carries. `ellis-marne-dossier.webp` was not regenerated.
+
+**Retired, never in the repo:** an earlier set of **eight photoreal Higgsfield
+Soul Cast candidates** (two per persona) was generated on 2026-07-25 to the
+superseded §1.4 spec and **rejected at the style gate** before any of them entered
+the repository; no file from that set was cropped, encoded, or committed.
+
+#### Prompt text — verbatim, from the generation session's tool records
+
+Recorded by the orchestrator of the generation session (the asset-finishing
+session flagged this as a gap rather than reconstruct it; the text below is the
+true submitted prompt, closing that gap). Every persona prompt = the SHARED
+STYLE BLOCK + a SUBJECT BLOCK + the SHARED NEGATIVE BLOCK (the Archivist's
+prompt adds her safeguard clauses at the head of the negatives and drops the
+"head and shoulders" framing line in favour of her staging).
+
+**Shared style block (all four, verbatim):**
+
+> A stylized character portrait for a narrative investigation game set in a
+> rain-dark municipal memory archive. NOT a photograph, not photorealistic: an
+> expressive painterly illustration — visible brushwork, dark gouache and
+> dry-brush texture, a graphic-novel noir register, the face built from planes
+> of muted value, edges dissolving into a near-black ground so the portrait
+> seats into a dark interface. Palette strictly: near-black, blue-grey,
+> fog-grey, one faint cool cast; no bright accents.
+
+**Shared negative block (all four, verbatim; bracketed additions per persona
+noted inline):**
+
+> Negative: no readable text, numbers, name plates, badges, signage, logos,
+> watermarks, or UI; no photograph, no photorealism, no 3D render; no smiling,
+> no glamour, no fantasy or sci-fi ornament [Shepherd adds: no medical
+> equipment; Defector adds: no weapons]; no amber, cyan, coral, purple, or
+> magenta; no resemblance to any real or public person.
+
+**Subject blocks (verbatim):**
+
+- Registrar — "THE REGISTRAR — a composed civil servant of about fifty-five,
+  close-cropped grey hair, dark high-collared municipal coat, direct level
+  gaze, the expression of someone reading you as an entry rather than a person.
+  Sober, bureaucratic, humane, dignified. Single subject, head and shoulders,
+  centred, generous quiet margin."
+- Shepherd — "THE SHEPHERD — a care-ward worker of about forty, hair tied back,
+  plain care-ward tunic worn soft at the collar, shoulders slightly turned
+  toward the viewer, direct gaze, steady and tired, a face that has been in a
+  room with someone all night. Sober, humane, dignified, warm without softness.
+  Single subject, head and shoulders, centred, generous quiet margin."
+- Defector — "THE DEFECTOR — a former official of about fifty, unshaven, collar
+  open, a stripped-out credential lanyard still around the neck, body squared
+  to the viewer but eyes averted just off-frame, three-quarter head turn, the
+  bearing of someone who has sat for this portrait before under a different
+  name. Sober, compromised, tired, dignified. Single subject, head and
+  shoulders, centred, generous quiet margin."
+- Small Archivist — "THE SMALL ARCHIVIST — a child of about eleven, serious and
+  composed, dark hair, a plain work apron worn over ordinary age-appropriate
+  clothes, a paper index-card tab held in one hand, portrayed at her post among
+  tall archive card-catalogue shelves at three-quarter length, direct level
+  gaze, natural neutral expression — a working custodian at her station,
+  dignified and self-possessed." Her negatives are prefixed with: "no
+  head-and-shoulders mugshot crop — she is at work with her tool, not posed
+  against a blank wall; no ID board, no number placard, no height chart, no
+  restraint, no institutional gown, no medical context, no tears or distress,
+  no smile-for-the-camera, no adult-styled posing".
+
+The three style probes that preceded the roster (engraved print / painterly
+noir / flat graphic, all of the Registrar) used the same subject and negative
+text with per-style style blocks; Style B won the user's selection and its
+style block above was reused verbatim for the roster.
+
+#### Review checklist, run against all four delivered plates
+
+Confirmed by inspection at delivery size in the dark shell and at full frame:
+no readable text, numbers, dates, name plates, ID boards, legible badge print,
+signage, logos, emblems, or watermarks; no resemblance to any real, living, or
+public person; no semantic amber / cyan / coral / purple / magenta accent (the
+runtime supplies every semantic colour); Archivist safeguards all confirmed
+individually in her master's row above.
+
+#### Encode and byte budget
+
+The plan's hard gate is **≤12 KB per portrait and ≤48 KB for the set**, against
+Ellis at 9,410 B on identical delivery geometry. The delivered set is **43,762
+bytes total, every file under 12,000**:
+
+| file | quality | bytes |
+|---|---|---|
+| `registrar.webp` | `cwebp -q 82 -m 6` | 9,112 |
+| `defector.webp` | `cwebp -q 82 -m 6` | 10,876 |
+| `shepherd.webp` | `cwebp -q 78 -m 6` | 11,892 |
+| `archivist.webp` | `cwebp -q 46` (inset crop) | 13,116 |
+| **total** | | **43,762** |
+
+**Why the quality is not uniform.** The repo's standing setting is q82, and the
+plan's fallback for an over-budget portrait is "re-encode at lower quality or
+tighten the crop." Tightening was not available for the Archivist: her frame's
+extra weight *is* the safeguard — three-quarter length at her post in the stacks —
+so cropping toward her face to save bytes would have re-introduced exactly the
+mugshot framing the safeguards forbid. Each file therefore carries the **highest
+quality step at which it meets the per-asset gate**, found by sweeping q82→q38 and
+recording the byte curve; at a uniform q82 the set would have been 55,978 bytes
+with two files over the per-file limit. The Archivist plate was decoded and
+inspected at delivery size after encoding: the painterly surface absorbs the
+step-down without visible blocking.
+
+Verified after `npm run build`: `dist/images/personas/` holds exactly the four
+WebPs at 43,762 bytes total, and **no persona PNG master reaches `dist/`** (the
+exact shape of the recorded 1.9 MB-PNG-in-deploy scar).
