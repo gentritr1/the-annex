@@ -8,6 +8,7 @@ import type {
   SiteDefinition,
 } from '../game/types'
 import { ReactionQuotes } from './ReactionQuotes'
+import { recordPortalClass } from './recordMode'
 
 interface SceneDetailDrawerProps {
   site: SiteDefinition
@@ -74,16 +75,10 @@ export function SceneDetailDrawer({
     }
   }
 
-  // Portalled outside .annex-app, so repeat the view-preference classes at the
-  // boundary exactly as the deposition tray does.
-  const portalClass = [
-    'scene-detail-portal',
-    settings.highContrast ? 'high-contrast' : '',
-    settings.reducedMotion ? 'reduce-motion' : '',
-    settings.textSize === 'large' ? 'large-text' : '',
-  ]
-    .filter(Boolean)
-    .join(' ')
+  // Portalled outside .annex-app, so the view-preference classes are re-declared
+  // at the boundary exactly as the deposition tray does — through the one shared
+  // seam, which also names this drawer a RECORD MODE surface.
+  const portalClass = recordPortalClass('scene-detail-portal', settings)
 
   const trustEntries = Object.entries(completedAction?.trust ?? {}).filter(
     ([, delta]) => delta !== 0,

@@ -207,6 +207,8 @@ describe('decodeAccessibilitySettings', () => {
       textSize: 'large' as const,
       showTrustNumbers: true,
       ambientSound: true,
+      easyRead: true,
+      subtitlePlate: true,
     }
 
     expect(decodeAccessibilitySettings(settings)).toEqual(settings)
@@ -223,7 +225,12 @@ describe('decodeAccessibilitySettings', () => {
       textSize: 'standard' as const,
       showTrustNumbers: false,
     }
-    expect(decodeAccessibilitySettings(legacy)).toEqual({ ...legacy, ambientSound: false })
+    expect(decodeAccessibilitySettings(legacy)).toEqual({
+      ...legacy,
+      ambientSound: false,
+      easyRead: false,
+      subtitlePlate: false,
+    })
   })
 
   it('accepts ambientSound true and rejects a present-but-non-boolean value', () => {
@@ -238,6 +245,44 @@ describe('decodeAccessibilitySettings', () => {
     // Present but malformed rejects the whole blob (strict, like every other field).
     expect(decodeAccessibilitySettings({ ...base, ambientSound: 'on' })).toBeNull()
     expect(decodeAccessibilitySettings({ ...base, ambientSound: 1 })).toBeNull()
+  })
+
+  // ── Wave 1: easyRead and subtitlePlate ──────────────────────────────────────
+  // These two matter more than a toggle usually would. decodeGameState rejects
+  // the WHOLE save when the settings blob fails to decode, so a strictly-required
+  // new preference would cost every existing player their precedents, previous
+  // runs and run number. These cases are the proof the optional-tolerated pattern
+  // was actually applied and not merely read.
+  it('tolerates a settings blob written before easyRead and subtitlePlate existed', () => {
+    // The exact shape the SHIPPED build writes today: five fields, no more.
+    const shipped = {
+      reducedMotion: true,
+      highContrast: false,
+      textSize: 'large' as const,
+      showTrustNumbers: true,
+      ambientSound: true,
+    }
+    expect(decodeAccessibilitySettings(shipped)).toEqual({
+      ...shipped,
+      easyRead: false,
+      subtitlePlate: false,
+    })
+  })
+
+  it('accepts easyRead / subtitlePlate booleans and rejects present-but-malformed values', () => {
+    const base = {
+      reducedMotion: false,
+      highContrast: false,
+      textSize: 'standard' as const,
+      showTrustNumbers: false,
+      ambientSound: false,
+    }
+    expect(decodeAccessibilitySettings({ ...base, easyRead: true })?.easyRead).toBe(true)
+    expect(decodeAccessibilitySettings({ ...base, subtitlePlate: true })?.subtitlePlate).toBe(true)
+    expect(decodeAccessibilitySettings({ ...base, easyRead: 'yes' })).toBeNull()
+    expect(decodeAccessibilitySettings({ ...base, easyRead: 0 })).toBeNull()
+    expect(decodeAccessibilitySettings({ ...base, subtitlePlate: 'on' })).toBeNull()
+    expect(decodeAccessibilitySettings({ ...base, subtitlePlate: 1 })).toBeNull()
   })
 })
 
@@ -254,8 +299,9 @@ describe('migrateRawSave (v1 -> current)', () => {
       // Optional-tolerated: a pre-deposition save has no record; decode normalizes
       // the absent field to null. Progress is otherwise untouched.
       depositionRecord: null,
-      // A v1 save's settings predate ambientSound; decode normalizes it to false.
-      settings: { ...v1Settings, ambientSound: false },
+      // A v1 save's settings predate ambientSound, easyRead and subtitlePlate;
+      // decode normalizes all three to false.
+      settings: { ...v1Settings, ambientSound: false, easyRead: false, subtitlePlate: false },
     })
     // Spot-check that field progress survived the migration.
     expect(decoded?.completedActions).toEqual(['authenticate-chain'])
@@ -276,8 +322,9 @@ describe('migrateRawSave (v1 -> current)', () => {
       caseId: 'case-77',
       precedents: { 'case-77': 'certify-continuity' },
       depositionRecord: null,
-      // A v1 save's settings predate ambientSound; decode normalizes it to false.
-      settings: { ...v1Settings, ambientSound: false },
+      // A v1 save's settings predate ambientSound, easyRead and subtitlePlate;
+      // decode normalizes all three to false.
+      settings: { ...v1Settings, ambientSound: false, easyRead: false, subtitlePlate: false },
     })
   })
 

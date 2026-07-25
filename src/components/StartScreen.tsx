@@ -253,6 +253,28 @@ export function StartScreen({
                 <small>Quiet, synthesized room tone. Off by default.</small>
               </span>
             </label>
+            <label className="preference-toggle">
+              <input
+                type="checkbox"
+                checked={settings.easyRead}
+                onChange={(event) => onUpdateSetting('easyRead', event.target.checked)}
+              />
+              <span>
+                <strong>Easy read</strong>
+                <small>Plain lettering, whole stanzas, nothing styled for effect.</small>
+              </span>
+            </label>
+            <label className="preference-toggle">
+              <input
+                type="checkbox"
+                checked={settings.subtitlePlate}
+                onChange={(event) => onUpdateSetting('subtitlePlate', event.target.checked)}
+              />
+              <span>
+                <strong>Subtitle plate</strong>
+                <small>Seat staged lines on a solid card over the scene.</small>
+              </span>
+            </label>
           </div>
         </details>
 

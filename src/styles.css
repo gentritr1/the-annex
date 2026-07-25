@@ -9939,23 +9939,152 @@ p {
   opacity: 0;
 }
 
-.scene-beat-lines {
+.scene-beat-lines,
+.subtitle-preview-stanza {
   position: absolute;
   left: 50%;
   /* Clears the advance control below it at every plate height. */
   bottom: 26%;
   width: min(86%, 620px);
-  max-height: 62%;
+  /* ── The two-line window (Xbox XAG-104) ───────────────────────────────────
+     No more than two lines of live scene text at once. This is a VISUAL window
+     and nothing else: every revealed line stays MOUNTED, because assistive tech
+     already reads the whole stanza through the live region above it and three
+     shipped harness assertions count these nodes. The flex column is
+     justify-content: flex-end, so a shorter box pushes the older lines off the
+     TOP, where the mask below already fades them.
+     The cap is two subject line boxes (var(--type-title) x 1.45) plus their gap
+     plus the plate's own padding, written in the same rem token the line uses —
+     so Larger text moves the window WITH the face instead of squeezing a third
+     line into a fixed box. `min()` keeps the shipped 62% ceiling as the upper
+     bound on a short plate.
+     LIFTED under reduced motion and Easy Read: neither auto-advances, so a
+     window there would strand lines a player has no way to scroll to. */
+  --stanza-line: var(--type-title);
+  --stanza-gap: 10px;
+  --stanza-window: calc(var(--stanza-line) * 2.9 + var(--stanza-gap) + 24px);
+  max-height: min(62%, var(--stanza-window));
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  gap: 10px;
+  gap: var(--stanza-gap);
+  /* ── The plate (W1-1) ──────────────────────────────────────────────────────
+     Measured, not assumed: on the unmodified build the staged subject line read
+     1.80 : 1 and the persona line 1.23 : 1 against the brightest pixel of the
+     rain behind them (evidence/enrichment-wave1/contrast-probe-BEFORE.json).
+     A text-shadow is a halo, not a scrim — the same defect the plate caption was
+     fixed for one layer down (.world-caption::before). So the stanza now sits on
+     a real gradient scrim at ALL times; the `subtitle-plate` preference below
+     upgrades that scrim to an opaque card for a player who wants one.
+     The top stop is the shallowest, and it is still 0.80 — solved against the
+     brightest measured pixel (251) so the top line of the window clears 4.5 : 1
+     rather than merely averaging above it. */
+  padding: 12px 16px;
+  background: linear-gradient(
+    to top,
+    oklch(0.03 0 0 / 0.92),
+    oklch(0.03 0 0 / 0.88) 55%,
+    oklch(0.03 0 0 / 0.8)
+  );
+  border-radius: 10px;
   overflow: hidden;
   text-align: center;
   transform: translateX(-50%);
   pointer-events: none;
-  /* Older clauses fade off the top so the newest one is always the clearest. */
-  mask-image: linear-gradient(to bottom, transparent 0%, black 22%, black 100%);
+  /* NO mask. The shipped stanza faded its older clauses off the top with a
+     gradient mask, and that was right when the only background was the text's
+     own halo. It is wrong now, and it was MEASURED wrong: a mask fades the
+     element's background as well as its glyphs, so the top band of the plate
+     went translucent exactly where a partially-clipped line still paints — at
+     375x812 the persona line's clipped remnant read 2.70 : 1 against the rain
+     through the faded band. The plate's hard clip at its own padding box is the
+     honest edge: an older clause is cut off by the card, the way a subtitle
+     card cuts one off, and every glyph that is painted is painted on scrim.
+     The fade the mask used to give is now a VEIL painted OVER the cut instead —
+     see .scene-beat-lines::before. Over, not through: an overlay only ever adds
+     opacity where the text is, where a mask only ever removed it. */
+}
+
+/* The veil over the cut. A fixed-height window and variable line heights mean a
+   third clause can always peek a few pixels above the two that are in the
+   window; this covers that remnant in the plate's own colour, fading down to
+   nothing before it reaches the first full line. It sits ABOVE the text (a
+   positioned child of a flex container, out of flow), so it darkens the remnant
+   rather than thinning the scrim — the composited background behind any glyph it
+   touches gets MORE opaque, never less, which is why it cannot repeat the defect
+   the mask caused. */
+.scene-beat-lines::before,
+.subtitle-preview-stanza::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  left: 0;
+  /* Scaled to the stanza's own line, so the veil covers a remnant of that line
+     and no more — a fixed height would swallow the first FULL line on the narrow
+     plate, where the face is a rung smaller. */
+  height: calc(var(--stanza-line) * 1.5);
+  background: linear-gradient(
+    to bottom,
+    oklch(0.03 0 0 / 0.95),
+    oklch(0.03 0 0 / 0.6) 58%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+.subtitle-plate .scene-beat-lines::before,
+.subtitle-plate .subtitle-preview-stanza::before {
+  background: linear-gradient(
+    to bottom,
+    oklch(0.05 0.004 240 / 0.98),
+    oklch(0.05 0.004 240 / 0.7) 58%,
+    transparent
+  );
+}
+
+/* No window, no cut, nothing to veil — and a veil there would dim the FIRST line
+   of a stanza the player is being shown in full. */
+.reduce-motion .scene-beat-lines::before,
+.easy-read .scene-beat-lines::before,
+.easy-read .subtitle-preview-stanza::before {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-beat-lines::before {
+    display: none;
+  }
+}
+
+/* The player's opaque card. Solid, not a gradient, on purpose: an opaque plate
+   is the one subtitle background whose alpha can be read straight off the
+   computed style instead of inferred from a gradient string. */
+.subtitle-plate .scene-beat-lines,
+.subtitle-plate .subtitle-preview-stanza {
+  background: oklch(0.05 0.004 240 / 0.96);
+  box-shadow: inset 0 0 0 1px oklch(0.82 0.01 210 / 0.18);
+}
+
+/* Reduced motion and Easy Read: window lifted, mask lifted. Under both, every
+   revealed line is already on screen and nothing auto-advances, so clipping or
+   fading any of them removes text the player cannot get back. */
+/* The preview lifts with them, because a preview that does not show what the
+   preference does is decoration. */
+.reduce-motion .scene-beat-lines,
+.easy-read .scene-beat-lines,
+.easy-read .subtitle-preview-stanza {
+  max-height: none;
+}
+
+/* Easy Read forces the opaque card whatever `subtitlePlate` says: flattening the
+   text is only half the contract if the thing it is read against stays a
+   translucent wash. Solid, so its alpha is readable off the computed style. */
+.easy-read .scene-beat-lines,
+.easy-read .subtitle-preview-stanza {
+  background: oklch(0.05 0.004 240 / 0.96);
+  box-shadow: inset 0 0 0 1px oklch(0.82 0.01 210 / 0.18);
 }
 
 .scene-beat[data-phase='held'] .scene-beat-lines {
@@ -9968,6 +10097,13 @@ p {
     0 2px 18px oklch(0 0 0 / 0.98),
     0 0 40px oklch(0 0 0 / 0.9);
   animation: scene-beat-line-in 420ms var(--ease-out);
+}
+
+/* Easy Read: the halo goes, because the plate above is now doing that job
+   properly and a shadow on flattened text is decoration pretending to be
+   contrast. High contrast already removes it for the same reason. */
+.easy-read .scene-beat-line {
+  text-shadow: none;
 }
 
 @keyframes scene-beat-line-in {
@@ -9990,12 +10126,18 @@ p {
    a photograph, the tray needs a card to sit on a document.
    ════════════════════════════════════════════════════════════════════════════ */
 
-/* The staged line itself. */
+/* The staged line itself. Weight 400, not 300: the typography pass moved this
+   face UP to var(--type-title) and left it hairline, and a larger thin face on a
+   photograph is more swallowed, not less. 400 is the lightest weight that still
+   holds an edge over the rain; the size, colour and line-height are untouched,
+   so the voice is the same voice. This is the SHARED rule, so the deposition
+   statement moves with it and is re-measured alongside the stanza. */
 .scene-beat-line--subject,
-.deposition-statement {
+.deposition-statement,
+.subtitle-preview-line {
   color: var(--record);
   font-size: var(--type-title);
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.45;
 }
 
@@ -10034,10 +10176,11 @@ p {
   color: var(--cyan);
 }
 
-.scene-beat-line--persona {
+.scene-beat-line--persona,
+.subtitle-preview-line--persona {
   color: oklch(0.88 0.012 210 / 0.94);
   font-size: var(--type-read);
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.5;
 }
 
@@ -10618,9 +10761,10 @@ p {
 
   .scene-beat-lines {
     width: 88%;
-    gap: 6px;
+    --stanza-line: var(--type-read);
+    --stanza-gap: 6px;
     bottom: 32%;
-    max-height: 58%;
+    max-height: min(58%, var(--stanza-window));
   }
 
   .scene-beat[data-phase='held'] .scene-beat-lines {
@@ -11336,4 +11480,236 @@ p {
   .scene-summons {
     top: 62px;
   }
+}
+
+/* ══ WAVE 1 · SUBTITLE PREVIEW · RECORD MODE · EASY READ ══════════════════════
+   Appended as one block, at the end of the sheet, on purpose: every rule here
+   lands inside a container the typography pass re-authored, and a new rule in an
+   existing container that is not last in source order loses to the shipped one
+   at equal specificity. Nothing here retunes a --type-* or --label-* token —
+   232 declarations hang off those seven values and moving one would move
+   surfaces nobody in this wave is looking at.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* ── The subtitle preview (XAG-104) ───────────────────────────────────────────
+   A sample line inside the Access popover, styled by the live subtitle settings,
+   so the presentation is set by looking at it. The stanza carries the beat's own
+   plate rules (it is joined to their selectors above); only the geometry is
+   re-stated here, because a popover is not a plate. The backdrop is a code-drawn
+   stand-in for the photograph — a bright band across a dark field, which is
+   exactly the condition the plate exists for — and never a download in the
+   header at every phase. */
+.subtitle-preview {
+  display: grid;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.subtitle-preview-label {
+  margin: 0;
+  color: var(--fog-dim);
+  font-size: var(--type-micro);
+  font-weight: var(--label-weight);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.subtitle-preview-stage {
+  position: relative;
+  height: 104px;
+  overflow: hidden;
+  background:
+    linear-gradient(115deg, transparent 34%, oklch(0.92 0.01 230 / 0.85) 46%, transparent 58%),
+    linear-gradient(to bottom, oklch(0.24 0.02 240), oklch(0.1 0.012 240));
+  border: 1px solid var(--line);
+  border-radius: 7px;
+}
+
+.subtitle-preview-stanza {
+  position: absolute;
+  right: 8px;
+  bottom: 10px;
+  left: 8px;
+  width: auto;
+  transform: none;
+}
+
+/* The sample is a MINIATURE. A 250px popover cannot show a 620px stanza at its
+   true size, so the preview steps one rung down the same scale the narrow plate
+   already steps down to — tokens, never literals. What it previews truthfully is
+   the presentation: the plate, the window, the halo, the flattening. */
+.subtitle-preview-stanza {
+  --stanza-line: var(--type-read);
+}
+
+/* The sample's own veil is shorter than the stage's: both its lines are single
+   rows, so the only thing above them is the plate's padding. */
+.subtitle-preview-stanza::before {
+  height: 14px;
+}
+
+.subtitle-preview-line {
+  margin: 0;
+  font-size: var(--type-read);
+  text-shadow:
+    0 2px 18px oklch(0 0 0 / 0.98),
+    0 0 40px oklch(0 0 0 / 0.9);
+}
+
+.subtitle-preview-line--persona {
+  font-size: var(--type-body);
+}
+
+.easy-read .subtitle-preview-line {
+  text-shadow: none;
+}
+
+/* ══ RECORD MODE — the reading stage ══════════════════════════════════════════
+   The stylesheet has argued since the staged-text block that the scene beat and
+   the sworn statement are ONE family in TWO stages. Only the scene stage was
+   ever authored; the three record surfaces — the deposition tray, the location
+   detail drawer, the case file — borrowed Scene Mode's typography because there
+   was nothing else to borrow. `.record-mode` is that second stage, declared once
+   at each portal boundary by components/recordMode.ts.
+
+   What Scene Mode optimizes for is PERFORMANCE: a line at a time, centred, on a
+   plate, read while something else is happening. What Record Mode optimizes for
+   is READING: a measure the eye can return to, and leading that lets it. So this
+   block sets exactly two things — measure and leading — and no sizes at all.
+   Every size on these surfaces is already a --type-* token and stays one; a new
+   font-size literal here would re-open the finding the typography pass closed.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* Measure. 52ch, not 68: `ch` is the advance of a ZERO, and in this proportional
+   face a zero is ~1.3x the mean glyph. Capping at 68ch measured 88 real
+   characters in the case file and 95 in the deposition tray — outside the 45–80
+   band the cap exists to hold. 52ch lands every record surface at 68–74 real
+   characters at 1280x800, and `min()` means it never widens a narrow drawer,
+   where the screen is the binding constraint anyway. */
+.record-mode .deposition-statement,
+.record-mode .scene-detail-description,
+.record-mode .scene-detail-filed > p,
+.record-mode .scene-detail-method p,
+.record-mode .rail-panel p,
+.record-mode .rail-note {
+  max-width: min(100%, 52ch);
+}
+
+/* Leading. Scene Mode's stanza stays at 1.45 — a performed line is read once,
+   moving, and tighter leading holds it together as one utterance. A filed
+   statement is read back, so it opens up. This is the whole difference between
+   the two stages and it is deliberately the only typographic difference. */
+.record-mode .deposition-statement,
+.record-mode .scene-detail-description,
+.record-mode .scene-detail-filed > p,
+.record-mode .scene-detail-method p,
+.record-mode .rail-panel p,
+.record-mode .rail-note {
+  line-height: 1.6;
+}
+
+/* ══ EASY READ — the escape hatch ═════════════════════════════════════════════
+   The flattening path, shipped BEFORE the stylistic meaning it is the fallback
+   for. It removes styling and never content: no rule below hides, collapses or
+   replaces anything, so the readable text of the app is identical with it on and
+   off. Modelled exactly on the shipped high-contrast family — a boolean, a class
+   on the shell and on all three portal roots, one override set — and it composes
+   with high contrast, reduced motion and large text without a single
+   `!important` to win, because every rule here is simply later in the sheet.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* Narrative attribution and headings stop being tracked-out capitals. System
+   codes — case codes, timecodes, state stamps, method labels — KEEP their caps:
+   they are identifiers, and flattening an identifier makes it harder to read,
+   not easier. The line is drawn at prose. */
+.easy-read .scene-beat-line--speaker,
+.easy-read .deposition-visual-caption span,
+.easy-read .scene-detail-filed h3,
+.easy-read .scene-detail-methods h3,
+.easy-read .casefile-header .section-context,
+.easy-read .rail-label,
+.easy-read .popover-title,
+.easy-read .subtitle-preview-label,
+.easy-read .section-context,
+.easy-read .rail-tabs button,
+.easy-read .deposition-lead,
+.easy-read .scene-result-evidence {
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+/* Every remaining decorative track on narrative prose returns to normal. */
+.easy-read .scene-beat-line,
+.easy-read .deposition-statement,
+.easy-read .scene-detail-description,
+.easy-read .scene-detail-filed > p,
+.easy-read .scene-detail-method p,
+.easy-read .rail-panel p,
+.easy-read .rail-note,
+.easy-read .subtitle-preview-line {
+  letter-spacing: normal;
+  font-style: normal;
+}
+
+/* Multi-line prose set in italics is the other half of the same problem. */
+.easy-read .rail-note em,
+.easy-read .rail-panel p em,
+.easy-read .scene-detail-description em,
+.easy-read .deposition-statement em {
+  font-style: normal;
+}
+
+/* The advance hint's infinite fade is motion, and Easy Read joins the rule that
+   already suppresses it under reduced motion. */
+.easy-read .scene-beat-hint {
+  animation: none;
+}
+
+/* The OS reduced-motion signal. BeatStage folds it into the same advance-paced
+   path as the in-game preference, but it never becomes a class on the shell, so
+   the window has to be lifted from a media query — and it lands HERE, at the end
+   of the sheet, because at equal specificity the narrow-plate rule above would
+   otherwise win and clip two lines a player has no way to reach. Measured, not
+   assumed: at 375x812 it clipped exactly 2 of 7 before this moved. */
+@media (prefers-reduced-motion: reduce) {
+  .scene-beat-lines {
+    max-height: none;
+  }
+}
+
+/* The plate caption is narrative, not a system code: "Impossible rain ·
+   listening / pressure" is a sentence set in tracked-out capitals, which is the
+   exact Pentiment failure Easy Read exists to undo. Its spans carry no class of
+   their own, so the whole subtree is flattened. */
+.easy-read .world-caption,
+.easy-read .world-caption *,
+.easy-read .site-closeup-zone-label {
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+/* Easy Read is a STRICTER read, so its prose is held to 7 : 1 rather than 4.5.
+   Measured on the shipped palette, the dimmed roles land at 4.97 : 1 (the case
+   file's notes and labels) and 4.50–5.04 : 1 (the room prompt and the command
+   bar): correct for a scene that leads, wrong for a mode whose whole purpose is
+   that the text does. Under Easy Read they step up one rung on the SAME palette
+   — no new colour is invented, and nothing outside this mode moves. */
+.easy-read .rail-panel p,
+.easy-read .rail-note,
+.easy-read .field-objectives > span,
+.easy-read .field-threshold,
+.easy-read .room-console .room-prompt,
+.easy-read .room-console .as-lead,
+.easy-read .room-console .cr-lead {
+  color: var(--record);
+}
+
+/* The deposition tray's header line is not a system code even though it wears
+   the code's class: `Deposition suite · Take the sworn statement` is a sentence
+   in tracked-out capitals, seven words long. Measured by the Easy Read sweep at
+   1280x800, where it was the last element failing the four-word rule. The
+   shell's real code (CMA—77—A) keeps its caps — it is an identifier. */
+.easy-read .deposition-header .case-code {
+  letter-spacing: 0.02em;
+  text-transform: none;
 }

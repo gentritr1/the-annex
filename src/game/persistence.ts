@@ -150,6 +150,13 @@ export function decodeAccessibilitySettings(value: unknown): AccessibilitySettin
   // present it must be a boolean — a malformed value rejects the whole blob,
   // matching the strict treatment every other field gets.
   if (value.ambientSound !== undefined && typeof value.ambientSound !== 'boolean') return null
+  // easyRead and subtitlePlate follow ambientSound exactly. This matters more
+  // than it looks: decodeGameState rejects the WHOLE save when the settings blob
+  // fails, so a strictly-required field here would cost every existing player
+  // their precedents, previous runs and run number. Absent → default; present
+  // but malformed → reject, like every other field.
+  if (value.easyRead !== undefined && typeof value.easyRead !== 'boolean') return null
+  if (value.subtitlePlate !== undefined && typeof value.subtitlePlate !== 'boolean') return null
 
   return {
     reducedMotion: value.reducedMotion,
@@ -157,6 +164,8 @@ export function decodeAccessibilitySettings(value: unknown): AccessibilitySettin
     textSize: value.textSize,
     showTrustNumbers: value.showTrustNumbers,
     ambientSound: value.ambientSound ?? false,
+    easyRead: value.easyRead ?? false,
+    subtitlePlate: value.subtitlePlate ?? false,
   }
 }
 

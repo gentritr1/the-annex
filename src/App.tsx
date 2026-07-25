@@ -6,6 +6,7 @@ import { CaseHeader } from './components/CaseHeader'
 import { Debrief } from './components/Debrief'
 import { Investigation } from './components/Investigation'
 import { Reconstruction } from './components/Reconstruction'
+import { appShellClass } from './components/recordMode'
 import { StartScreen } from './components/StartScreen'
 import { Tribunal } from './components/Tribunal'
 import { getCaseContent, getSwitchableCaseIds } from './game/content'
@@ -273,14 +274,7 @@ export default function App() {
     state.precedents,
   ).map((id) => describeSwitchTarget(id, state.precedents))
 
-  const appClassName = [
-    'annex-app',
-    state.settings.reducedMotion ? 'reduce-motion' : '',
-    state.settings.highContrast ? 'high-contrast' : '',
-    state.settings.textSize === 'large' ? 'large-text' : '',
-  ]
-    .filter(Boolean)
-    .join(' ')
+  const appClassName = appShellClass(state.settings)
 
   if (state.phase === 'landing') {
     return (

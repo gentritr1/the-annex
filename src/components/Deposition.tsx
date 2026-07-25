@@ -9,6 +9,7 @@ import type {
 } from '../game/types'
 import { DepositionBeatStage } from '../scene/DepositionBeatStage'
 import { ChoiceButton } from './ChoiceButton'
+import { recordPortalClass } from './recordMode'
 
 interface DepositionProps {
   state: GameState
@@ -199,17 +200,11 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
     .filter(Boolean)
     .join(' ')
 
-  // The transcript is portalled outside .annex-app. Repeat the view preference
-  // classes at that boundary so high contrast and reduced motion reach both the
-  // dialog and its supplemental close-read stage.
-  const portalClass = [
-    'deposition-portal',
-    state.settings.highContrast ? 'high-contrast' : '',
-    state.settings.reducedMotion ? 'reduce-motion' : '',
-    state.settings.textSize === 'large' ? 'large-text' : '',
-  ]
-    .filter(Boolean)
-    .join(' ')
+  // The transcript is portalled outside .annex-app. The view-preference classes
+  // are re-declared at that boundary — once, in components/recordMode.ts, which
+  // also names this tray for what it is: a RECORD MODE surface, the same stage
+  // as the detail drawer and the case file.
+  const portalClass = recordPortalClass('deposition-portal', state.settings)
 
   // Portalled to <body> so it sits OUTSIDE the shell App marks `inert` while a
   // transcript is open: the room, header, and rail behind go inert to pointer and

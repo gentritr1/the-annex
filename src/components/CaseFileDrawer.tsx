@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { getCaseContent } from '../game/content'
 import type { AccessibilitySettings, GameState } from '../game/types'
 import { CaseRail } from './CaseRail'
+import { recordPortalClass } from './recordMode'
 
 interface CaseFileDrawerProps {
   state: GameState
@@ -103,14 +104,9 @@ export function CaseFileDrawer({ state, onClose }: CaseFileDrawerProps) {
     }
   }
 
-  const portalClass = [
-    'casefile-portal',
-    settings.highContrast ? 'high-contrast' : '',
-    settings.reducedMotion ? 'reduce-motion' : '',
-    settings.textSize === 'large' ? 'large-text' : '',
-  ]
-    .filter(Boolean)
-    .join(' ')
+  // One shared seam for the preference classes and the RECORD MODE name; see
+  // components/recordMode.ts.
+  const portalClass = recordPortalClass('casefile-portal', settings)
 
   return createPortal(
     <div className={portalClass}>

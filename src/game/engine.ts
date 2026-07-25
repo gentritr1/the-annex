@@ -29,6 +29,8 @@ export const defaultAccessibilitySettings: AccessibilitySettings = {
   textSize: 'standard',
   showTrustNumbers: false,
   ambientSound: false,
+  easyRead: false,
+  subtitlePlate: false,
 }
 
 const emptyTrust: Record<PersonaId, number> = {

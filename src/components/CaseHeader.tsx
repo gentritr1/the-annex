@@ -89,6 +89,49 @@ export function CaseHeader({ state, onReturnToTitle, onUpdateSetting }: CaseHead
             />
             Ambient sound
           </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={state.settings.easyRead}
+              onChange={(event) => onUpdateSetting('easyRead', event.target.checked)}
+            />
+            Easy read
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={state.settings.subtitlePlate}
+              onChange={(event) => onUpdateSetting('subtitlePlate', event.target.checked)}
+            />
+            Subtitle plate
+          </label>
+          {/* The preview the subtitle controls are for: a sample line under the
+              live rules — the same voice, the same plate, the same two-line
+              window — so a player sets the presentation by looking at it instead
+              of committing a method and finding out.
+
+              It deliberately does NOT reuse `.scene-beat-line` /
+              `.scene-beat-lines`. Those class names are counted by three shipped
+              harness assertions and read by the contrast probe with
+              querySelector(); a second copy sitting earlier in document order
+              would make every one of them measure the header instead of the
+              scene. The preview classes are joined to the beat's rules in the
+              stylesheet instead, so the two share declarations without sharing a
+              selector. Decorative: the checkboxes above are the semantics. */}
+          <div className="subtitle-preview" aria-hidden="true">
+            <p className="subtitle-preview-label">Sample</p>
+            <div className="subtitle-preview-stage">
+              <div className="subtitle-preview-stanza">
+                {/* Short on purpose: the popover is 250px wide, and a sample
+                    that wraps is a sample of wrapping rather than of the
+                    subtitle presentation the player is setting. */}
+                <p className="subtitle-preview-line">She answers too quickly.</p>
+                <p className="subtitle-preview-line subtitle-preview-line--persona">
+                  “The rain was inside.”
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </details>
     </header>

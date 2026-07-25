@@ -1,0 +1,251 @@
+{
+  "url": "http://127.0.0.1:3000/",
+  "capturedAt": "2026-07-25T22:17:50.892Z",
+  "node": "v24.18.0",
+  "shots": [
+    "10-concourse-baseline-1280x800.png",
+    "11-care-ward-rest-baseline-1280x800.png",
+    "12-beat-mid-baseline-1280x800.png",
+    "13-beat-flushed-baseline-1280x800.png",
+    "14-detail-drawer-baseline-1280x800.png",
+    "15-casefile-case-tab-baseline-1280x800.png",
+    "16-casefile-evidence-tab-baseline-1280x800.png",
+    "17-casefile-people-tab-baseline-1280x800.png",
+    "18-document-register-baseline-1280x800.png",
+    "19-case-81-site-baseline-1280x800.png",
+    "20-deposition-tray-baseline-1280x800.png",
+    "10-concourse-subtitle-plate-1280x800.png",
+    "11-care-ward-rest-subtitle-plate-1280x800.png",
+    "12-beat-mid-subtitle-plate-1280x800.png",
+    "13-beat-flushed-subtitle-plate-1280x800.png",
+    "14-detail-drawer-subtitle-plate-1280x800.png",
+    "15-casefile-case-tab-subtitle-plate-1280x800.png",
+    "16-casefile-evidence-tab-subtitle-plate-1280x800.png",
+    "17-casefile-people-tab-subtitle-plate-1280x800.png",
+    "18-document-register-subtitle-plate-1280x800.png",
+    "19-case-81-site-subtitle-plate-1280x800.png",
+    "20-deposition-tray-subtitle-plate-1280x800.png",
+    "10-concourse-easy-read-1280x800.png",
+    "11-care-ward-rest-easy-read-1280x800.png",
+    "12-beat-mid-easy-read-1280x800.png",
+    "13-beat-flushed-easy-read-1280x800.png",
+    "14-detail-drawer-easy-read-1280x800.png",
+    "15-casefile-case-tab-easy-read-1280x800.png",
+    "16-casefile-evidence-tab-easy-read-1280x800.png",
+    "17-casefile-people-tab-easy-read-1280x800.png",
+    "18-document-register-easy-read-1280x800.png",
+    "19-case-81-site-easy-read-1280x800.png",
+    "20-deposition-tray-easy-read-1280x800.png",
+    "10-concourse-baseline-375x812.png",
+    "11-care-ward-rest-baseline-375x812.png",
+    "12-beat-mid-baseline-375x812.png",
+    "13-beat-flushed-baseline-375x812.png",
+    "14-detail-drawer-baseline-375x812.png",
+    "15-casefile-case-tab-baseline-375x812.png",
+    "16-casefile-evidence-tab-baseline-375x812.png",
+    "17-casefile-people-tab-baseline-375x812.png",
+    "18-document-register-baseline-375x812.png",
+    "19-case-81-site-baseline-375x812.png",
+    "20-deposition-tray-baseline-375x812.png",
+    "10-concourse-subtitle-plate-375x812.png",
+    "11-care-ward-rest-subtitle-plate-375x812.png",
+    "12-beat-mid-subtitle-plate-375x812.png",
+    "13-beat-flushed-subtitle-plate-375x812.png",
+    "14-detail-drawer-subtitle-plate-375x812.png",
+    "15-casefile-case-tab-subtitle-plate-375x812.png",
+    "16-casefile-evidence-tab-subtitle-plate-375x812.png",
+    "17-casefile-people-tab-subtitle-plate-375x812.png",
+    "18-document-register-subtitle-plate-375x812.png",
+    "19-case-81-site-subtitle-plate-375x812.png",
+    "20-deposition-tray-subtitle-plate-375x812.png",
+    "10-concourse-easy-read-375x812.png",
+    "11-care-ward-rest-easy-read-375x812.png",
+    "12-beat-mid-easy-read-375x812.png",
+    "13-beat-flushed-easy-read-375x812.png",
+    "14-detail-drawer-easy-read-375x812.png",
+    "15-casefile-case-tab-easy-read-375x812.png",
+    "16-casefile-evidence-tab-easy-read-375x812.png",
+    "17-casefile-people-tab-easy-read-375x812.png",
+    "18-document-register-easy-read-375x812.png",
+    "19-case-81-site-easy-read-375x812.png",
+    "20-deposition-tray-easy-read-375x812.png"
+  ],
+  "stanza": {
+    "baseline@1280x800": {
+      "mid": {
+        "mountedNodes": 2,
+        "paintedInsideWindow": 2,
+        "liveRegionLines": 2,
+        "maxHeight": "min(62%, 82.72px)",
+        "plateBg": "rgba(0, 0, 0, 0)",
+        "plateGradient": "linear-gradient(to top, oklch(0.03 0 0 / 0.92), oklch(0.03 0"
+      },
+      "flushed": {
+        "mountedNodes": 7,
+        "paintedInsideWindow": 2,
+        "liveRegionLines": 7,
+        "maxHeight": "min(62%, 82.72px)",
+        "plateBg": "rgba(0, 0, 0, 0)",
+        "plateGradient": "linear-gradient(to top, oklch(0.03 0 0 / 0.92), oklch(0.03 0"
+      }
+    },
+    "subtitle-plate@1280x800": {
+      "mid": {
+        "mountedNodes": 2,
+        "paintedInsideWindow": 2,
+        "liveRegionLines": 2,
+        "maxHeight": "min(62%, 82.72px)",
+        "plateBg": "oklch(0.05 0.004 240 / 0.96)",
+        "plateGradient": "none"
+      },
+      "flushed": {
+        "mountedNodes": 7,
+        "paintedInsideWindow": 2,
+        "liveRegionLines": 7,
+        "maxHeight": "min(62%, 82.72px)",
+        "plateBg": "oklch(0.05 0.004 240 / 0.96)",
+        "plateGradient": "none"
+      }
+    },
+    "easy-read@1280x800": {
+      "mid": {
+        "mountedNodes": 2,
+        "paintedInsideWindow": 2,
+        "liveRegionLines": 2,
+        "maxHeight": "none",
+        "plateBg": "oklch(0.05 0.004 240 / 0.96)",
+        "plateGradient": "none"
+      },
+      "flushed": {
+        "mountedNodes": 7,
+        "paintedInsideWindow": 7,
+        "liveRegionLines": 7,
+        "maxHeight": "none",
+        "plateBg": "oklch(0.05 0.004 240 / 0.96)",
+        "plateGradient": "none"
+      }
+    },
+    "baseline@375x812": {
+      "mid": {
+        "mountedNodes": 2,
+        "paintedInsideWindow": 1,
+        "liveRegionLines": 2,
+        "maxHeight": "min(58%, 69.44px)",
+        "plateBg": "rgba(0, 0, 0, 0)",
+        "plateGradient": "linear-gradient(to top, oklch(0.03 0 0 / 0.92), oklch(0.03 0"
+      },
+      "flushed": {
+        "mountedNodes": 7,
+        "paintedInsideWindow": 2,
+        "liveRegionLines": 7,
+        "maxHeight": "min(58%, 69.44px)",
+        "plateBg": "rgba(0, 0, 0, 0)",
+        "plateGradient": "linear-gradient(to top, oklch(0.03 0 0 / 0.92), oklch(0.03 0"
+      }
+    },
+    "subtitle-plate@375x812": {
+      "mid": {
+        "mountedNodes": 2,
+        "paintedInsideWindow": 1,
+        "liveRegionLines": 2,
+        "maxHeight": "min(58%, 69.44px)",
+        "plateBg": "oklch(0.05 0.004 240 / 0.96)",
+        "plateGradient": "none"
+      },
+      "flushed": {
+        "mountedNodes": 7,
+        "paintedInsideWindow": 2,
+        "liveRegionLines": 7,
+        "maxHeight": "min(58%, 69.44px)",
+        "plateBg": "oklch(0.05 0.004 240 / 0.96)",
+        "plateGradient": "none"
+      }
+    },
+    "easy-read@375x812": {
+      "mid": {
+        "mountedNodes": 2,
+        "paintedInsideWindow": 2,
+        "liveRegionLines": 2,
+        "maxHeight": "none",
+        "plateBg": "oklch(0.05 0.004 240 / 0.96)",
+        "plateGradient": "none"
+      },
+      "flushed": {
+        "mountedNodes": 7,
+        "paintedInsideWindow": 7,
+        "liveRegionLines": 7,
+        "maxHeight": "none",
+        "plateBg": "oklch(0.05 0.004 240 / 0.96)",
+        "plateGradient": "none"
+      }
+    }
+  },
+  "sweeps": {
+    "beat@1280x800": [],
+    "detail-drawer@1280x800": [],
+    "casefile@1280x800": [],
+    "document-register@1280x800": [],
+    "deposition-tray@1280x800": [],
+    "beat@375x812": [],
+    "detail-drawer@375x812": [],
+    "casefile@375x812": [],
+    "document-register@375x812": [],
+    "deposition-tray@375x812": []
+  },
+  "deposition": {
+    "baseline@1280x800": {
+      "inRecordMode": true,
+      "fontSize": "16.8px",
+      "fontWeight": "400",
+      "lineHeight": 1.6,
+      "measureCh": 72,
+      "color": "oklch(0.94 0.012 190)",
+      "cardBg": "oklch(0.16 0.012 240)"
+    },
+    "subtitle-plate@1280x800": {
+      "inRecordMode": true,
+      "fontSize": "16.8px",
+      "fontWeight": "400",
+      "lineHeight": 1.6,
+      "measureCh": 72,
+      "color": "oklch(0.94 0.012 190)",
+      "cardBg": "oklch(0.16 0.012 240)"
+    },
+    "easy-read@1280x800": {
+      "inRecordMode": true,
+      "fontSize": "16.8px",
+      "fontWeight": "400",
+      "lineHeight": 1.6,
+      "measureCh": 72,
+      "color": "oklch(0.94 0.012 190)",
+      "cardBg": "oklch(0.16 0.012 240)"
+    },
+    "baseline@375x812": {
+      "inRecordMode": true,
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "lineHeight": 1.6,
+      "measureCh": 45,
+      "color": "oklch(0.94 0.012 190)",
+      "cardBg": "oklch(0.16 0.012 240)"
+    },
+    "subtitle-plate@375x812": {
+      "inRecordMode": true,
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "lineHeight": 1.6,
+      "measureCh": 45,
+      "color": "oklch(0.94 0.012 190)",
+      "cardBg": "oklch(0.16 0.012 240)"
+    },
+    "easy-read@375x812": {
+      "inRecordMode": true,
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "lineHeight": 1.6,
+      "measureCh": 45,
+      "color": "oklch(0.94 0.012 190)",
+      "cardBg": "oklch(0.16 0.012 240)"
+    }
+  }
+}

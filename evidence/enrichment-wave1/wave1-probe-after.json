@@ -1,0 +1,1385 @@
+{
+  "url": "http://127.0.0.1:3000/",
+  "label": "after",
+  "capturedAt": "2026-07-25T22:15:53.599Z",
+  "node": "v24.18.0",
+  "checks": [
+    {
+      "name": "[1280x800] Access popover shows exactly 7 checkboxes, the two new ones last",
+      "ok": true,
+      "detail": [
+        {
+          "text": "Reduce motion",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "High contrast",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Larger text",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Show trust values",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Ambient sound",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Easy read",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Subtitle plate",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        }
+      ]
+    },
+    {
+      "name": "[1280x800] every preference row is a >= 44px hit target",
+      "ok": true,
+      "detail": [
+        {
+          "text": "Reduce motion",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "High contrast",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Larger text",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Show trust values",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Ambient sound",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Easy read",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Subtitle plate",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        }
+      ]
+    },
+    {
+      "name": "[1280x800] the subtitle preview is in the DOM and does not reuse the beat's classes",
+      "ok": true,
+      "detail": {
+        "count": 7,
+        "rows": [
+          {
+            "text": "Reduce motion",
+            "w": 218,
+            "h": 44,
+            "type": "checkbox"
+          },
+          {
+            "text": "High contrast",
+            "w": 218,
+            "h": 44,
+            "type": "checkbox"
+          },
+          {
+            "text": "Larger text",
+            "w": 218,
+            "h": 44,
+            "type": "checkbox"
+          },
+          {
+            "text": "Show trust values",
+            "w": 218,
+            "h": 44,
+            "type": "checkbox"
+          },
+          {
+            "text": "Ambient sound",
+            "w": 218,
+            "h": 44,
+            "type": "checkbox"
+          },
+          {
+            "text": "Easy read",
+            "w": 218,
+            "h": 44,
+            "type": "checkbox"
+          },
+          {
+            "text": "Subtitle plate",
+            "w": 218,
+            "h": 44,
+            "type": "checkbox"
+          }
+        ],
+        "preview": true,
+        "previewLines": 2,
+        "previewLeaksBeatClass": 0,
+        "overlaps": [],
+        "unreachable": []
+      }
+    },
+    {
+      "name": "[1280x800] header cross-zone sweep: no control pair overlaps, none unreachable",
+      "ok": true,
+      "detail": {
+        "overlaps": [],
+        "unreachable": []
+      }
+    },
+    {
+      "name": "[1280x800] at every advance step at most 2 beat lines are painted inside the window",
+      "ok": true,
+      "detail": {
+        "perStep": [
+          1,
+          1,
+          1,
+          2,
+          2,
+          2,
+          2,
+          1
+        ],
+        "flushed": 2
+      }
+    },
+    {
+      "name": "[1280x800] the flushed stanza still mounts >= 6 line nodes (harness contract)",
+      "ok": true,
+      "detail": {
+        "nodes": 7
+      }
+    },
+    {
+      "name": "[1280x800] the stanza is painted on a real plate, not a halo",
+      "ok": true,
+      "detail": {
+        "bgColor": "rgba(0, 0, 0, 0)",
+        "bgImage": "gradient"
+      }
+    },
+    {
+      "name": "[1280x800] subject and persona lines compute font-weight >= 400",
+      "ok": true,
+      "detail": {
+        "subject": "400",
+        "persona": "400"
+      }
+    },
+    {
+      "name": "[1280x800] subtitlePlate ON adds .subtitle-plate and swaps the scrim for an opaque card",
+      "ok": true,
+      "detail": {
+        "off": "rgba(0, 0, 0, 0)",
+        "on": "oklch(0.05 0.004 240 / 0.96)",
+        "appClass": "annex-app subtitle-plate"
+      }
+    },
+    {
+      "name": "[1280x800] toggling it OFF returns the stanza to its pre-toggle painting",
+      "ok": true,
+      "detail": {
+        "before": "rgba(0, 0, 0, 0)",
+        "after": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "name": "[1280x800] Larger text scales the staged subject line by >= 112.5%",
+      "ok": true,
+      "detail": {
+        "standard": 16.8,
+        "large": "18.9px"
+      }
+    },
+    {
+      "name": "[1280x800] a larger face does not push a third line into the window",
+      "ok": true,
+      "detail": {
+        "fullyInside": 2,
+        "nodes": 7
+      }
+    },
+    {
+      "name": "[1280x800] Easy Read reaches the shell and lifts the stanza window",
+      "ok": true,
+      "detail": {
+        "onShell": 1,
+        "appClass": "annex-app easy-read",
+        "fullyInside": 7,
+        "nodes": 7,
+        "mask": "none"
+      }
+    },
+    {
+      "name": "[1280x800] Easy Read drops the beat halo and forces an opaque plate (alpha >= 0.80)",
+      "ok": true,
+      "detail": {
+        "shadow": "none",
+        "bg": "oklch(0.05 0.004 240 / 0.96)"
+      }
+    },
+    {
+      "name": "[1280x800] Easy Read: no tracked-out uppercase run longer than 4 words",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "[1280x800] Easy Read removes no content — every visible line survives",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "[1280x800] one open record surface = exactly one .record-mode root",
+      "ok": true,
+      "detail": {
+        "recordModeNodes": 1,
+        "portalClass": "scene-detail-portal record-mode reduce-motion high-contrast large-text easy-read subtitle-plate"
+      }
+    },
+    {
+      "name": "[1280x800] all five preference classes compose on the portal root",
+      "ok": true,
+      "detail": "scene-detail-portal record-mode reduce-motion high-contrast large-text easy-read subtitle-plate"
+    },
+    {
+      "name": "[1280x800] Record Mode detail prose: measure 45-80ch and line-height >= 1.5",
+      "ok": true,
+      "detail": [
+        {
+          "sel": ".scene-detail-description",
+          "measureCh": 72,
+          "lineHeight": 1.6,
+          "fontSize": "14.08px"
+        },
+        {
+          "sel": ".scene-detail-method p",
+          "measureCh": 74,
+          "lineHeight": 1.6,
+          "fontSize": "13.12px"
+        }
+      ]
+    },
+    {
+      "name": "[1280x800] the case file is one .record-mode root",
+      "ok": true,
+      "detail": "casefile-portal record-mode"
+    },
+    {
+      "name": "[1280x800] Record Mode case-file prose: measure 45-80ch and line-height >= 1.5",
+      "ok": true,
+      "detail": [
+        {
+          "sel": ".rail-panel p",
+          "measureCh": 68,
+          "lineHeight": 1.6,
+          "fontSize": "11.2px"
+        },
+        {
+          "sel": ".rail-note",
+          "measureCh": 68,
+          "lineHeight": 1.6,
+          "fontSize": "11.2px"
+        }
+      ]
+    },
+    {
+      "name": "[1280x800] both new preferences survive a reload, in storage and on the shell",
+      "ok": true,
+      "detail": {
+        "stored": {
+          "reducedMotion": false,
+          "highContrast": false,
+          "textSize": "standard",
+          "showTrustNumbers": false,
+          "ambientSound": false,
+          "easyRead": true,
+          "subtitlePlate": true
+        },
+        "shell": "annex-app easy-read subtitle-plate"
+      }
+    },
+    {
+      "name": "[1280x800] reduced motion: every mounted line lies fully inside — nothing clipped",
+      "ok": true,
+      "detail": {
+        "nodes": 7,
+        "fullyInside": 7,
+        "clipped": 0,
+        "maxHeight": "none",
+        "boxHeight": 263.5,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "16.8px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": "14.08px",
+        "personaWeight": "400"
+      }
+    },
+    {
+      "name": "[375x812] Access popover shows exactly 7 checkboxes, the two new ones last",
+      "ok": true,
+      "detail": [
+        {
+          "text": "Reduce motion",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "High contrast",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Larger text",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Show trust values",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Ambient sound",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Easy read",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Subtitle plate",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        }
+      ]
+    },
+    {
+      "name": "[375x812] every preference row is a >= 44px hit target",
+      "ok": true,
+      "detail": [
+        {
+          "text": "Reduce motion",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "High contrast",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Larger text",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Show trust values",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Ambient sound",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Easy read",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Subtitle plate",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        }
+      ]
+    },
+    {
+      "name": "[375x812] the subtitle preview is in the DOM and does not reuse the beat's classes",
+      "ok": true,
+      "detail": {
+        "count": 7,
+        "rows": [
+          {
+            "text": "Reduce motion",
+            "w": 218,
+            "h": 44,
+            "type": "checkbox"
+          },
+          {
+            "text": "High contrast",
+            "w": 218,
+            "h": 44,
+            "type": "checkbox"
+          },
+          {
+            "text": "Larger text",
+            "w": 218,
+            "h": 44,
+            "type": "checkbox"
+          },
+          {
+            "text": "Show trust values",
+            "w": 218,
+            "h": 44,
+            "type": "checkbox"
+          },
+          {
+            "text": "Ambient sound",
+            "w": 218,
+            "h": 44,
+            "type": "checkbox"
+          },
+          {
+            "text": "Easy read",
+            "w": 218,
+            "h": 44,
+            "type": "checkbox"
+          },
+          {
+            "text": "Subtitle plate",
+            "w": 218,
+            "h": 44,
+            "type": "checkbox"
+          }
+        ],
+        "preview": true,
+        "previewLines": 2,
+        "previewLeaksBeatClass": 0,
+        "overlaps": [],
+        "unreachable": []
+      }
+    },
+    {
+      "name": "[375x812] header cross-zone sweep: no control pair overlaps, none unreachable",
+      "ok": true,
+      "detail": {
+        "overlaps": [],
+        "unreachable": []
+      }
+    },
+    {
+      "name": "[375x812] at every advance step at most 2 beat lines are painted inside the window",
+      "ok": true,
+      "detail": {
+        "perStep": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          2,
+          2,
+          1
+        ],
+        "flushed": 2
+      }
+    },
+    {
+      "name": "[375x812] the flushed stanza still mounts >= 6 line nodes (harness contract)",
+      "ok": true,
+      "detail": {
+        "nodes": 7
+      }
+    },
+    {
+      "name": "[375x812] the stanza is painted on a real plate, not a halo",
+      "ok": true,
+      "detail": {
+        "bgColor": "rgba(0, 0, 0, 0)",
+        "bgImage": "gradient"
+      }
+    },
+    {
+      "name": "[375x812] subject and persona lines compute font-weight >= 400",
+      "ok": true,
+      "detail": {
+        "subject": "400",
+        "persona": "400"
+      }
+    },
+    {
+      "name": "[375x812] subtitlePlate ON adds .subtitle-plate and swaps the scrim for an opaque card",
+      "ok": true,
+      "detail": {
+        "off": "rgba(0, 0, 0, 0)",
+        "on": "oklch(0.05 0.004 240 / 0.96)",
+        "appClass": "annex-app subtitle-plate"
+      }
+    },
+    {
+      "name": "[375x812] toggling it OFF returns the stanza to its pre-toggle painting",
+      "ok": true,
+      "detail": {
+        "before": "rgba(0, 0, 0, 0)",
+        "after": "rgba(0, 0, 0, 0)"
+      }
+    },
+    {
+      "name": "[375x812] Larger text scales the staged subject line by >= 112.5%",
+      "ok": true,
+      "detail": {
+        "standard": 13.6,
+        "large": "15.3px"
+      }
+    },
+    {
+      "name": "[375x812] a larger face does not push a third line into the window",
+      "ok": true,
+      "detail": {
+        "fullyInside": 2,
+        "nodes": 7
+      }
+    },
+    {
+      "name": "[375x812] Easy Read reaches the shell and lifts the stanza window",
+      "ok": true,
+      "detail": {
+        "onShell": 1,
+        "appClass": "annex-app easy-read",
+        "fullyInside": 7,
+        "nodes": 7,
+        "mask": "none"
+      }
+    },
+    {
+      "name": "[375x812] Easy Read drops the beat halo and forces an opaque plate (alpha >= 0.80)",
+      "ok": true,
+      "detail": {
+        "shadow": "none",
+        "bg": "oklch(0.05 0.004 240 / 0.96)"
+      }
+    },
+    {
+      "name": "[375x812] Easy Read: no tracked-out uppercase run longer than 4 words",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "[375x812] Easy Read removes no content — every visible line survives",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "[375x812] one open record surface = exactly one .record-mode root",
+      "ok": true,
+      "detail": {
+        "recordModeNodes": 1,
+        "portalClass": "scene-detail-portal record-mode reduce-motion high-contrast large-text easy-read subtitle-plate"
+      }
+    },
+    {
+      "name": "[375x812] all five preference classes compose on the portal root",
+      "ok": true,
+      "detail": "scene-detail-portal record-mode reduce-motion high-contrast large-text easy-read subtitle-plate"
+    },
+    {
+      "name": "[375x812] Record Mode detail prose: measure 45-80ch and line-height >= 1.5",
+      "ok": true,
+      "detail": [
+        {
+          "sel": ".scene-detail-description",
+          "measureCh": 54,
+          "lineHeight": 1.6,
+          "fontSize": "13.6px"
+        },
+        {
+          "sel": ".scene-detail-method p",
+          "measureCh": 54,
+          "lineHeight": 1.6,
+          "fontSize": "12.64px"
+        }
+      ]
+    },
+    {
+      "name": "[375x812] the case file is one .record-mode root",
+      "ok": true,
+      "detail": "casefile-portal record-mode"
+    },
+    {
+      "name": "[375x812] Record Mode case-file prose: measure 45-80ch and line-height >= 1.5",
+      "ok": true,
+      "detail": [
+        {
+          "sel": ".rail-panel p",
+          "measureCh": 65,
+          "lineHeight": 1.6,
+          "fontSize": "10.72px"
+        },
+        {
+          "sel": ".rail-note",
+          "measureCh": 65,
+          "lineHeight": 1.6,
+          "fontSize": "10.72px"
+        }
+      ]
+    },
+    {
+      "name": "[375x812] both new preferences survive a reload, in storage and on the shell",
+      "ok": true,
+      "detail": {
+        "stored": {
+          "reducedMotion": false,
+          "highContrast": false,
+          "textSize": "standard",
+          "showTrustNumbers": false,
+          "ambientSound": false,
+          "easyRead": true,
+          "subtitlePlate": true
+        },
+        "shell": "annex-app easy-read subtitle-plate"
+      }
+    },
+    {
+      "name": "[375x812] reduced motion: every mounted line lies fully inside — nothing clipped",
+      "ok": true,
+      "detail": {
+        "nodes": 7,
+        "fullyInside": 7,
+        "clipped": 0,
+        "maxHeight": "none",
+        "boxHeight": 238.8,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "13.6px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": "12.64px",
+        "personaWeight": "400"
+      }
+    }
+  ],
+  "data": {
+    "popover@1280x800": {
+      "count": 7,
+      "rows": [
+        {
+          "text": "Reduce motion",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "High contrast",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Larger text",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Show trust values",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Ambient sound",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Easy read",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Subtitle plate",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        }
+      ],
+      "preview": true,
+      "previewLines": 2,
+      "previewLeaksBeatClass": 0,
+      "overlaps": [],
+      "unreachable": []
+    },
+    "window-steps@1280x800": [
+      {
+        "nodes": 1,
+        "fullyInside": 1,
+        "clipped": 0,
+        "maxHeight": "min(62%, 82.72px)",
+        "boxHeight": 48.3,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "16.8px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": null,
+        "personaWeight": null
+      },
+      {
+        "nodes": 1,
+        "fullyInside": 1,
+        "clipped": 0,
+        "maxHeight": "min(62%, 82.72px)",
+        "boxHeight": 48.3,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "16.8px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": null,
+        "personaWeight": null
+      },
+      {
+        "nodes": 1,
+        "fullyInside": 1,
+        "clipped": 0,
+        "maxHeight": "min(62%, 82.72px)",
+        "boxHeight": 48.3,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "16.8px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": null,
+        "personaWeight": null
+      },
+      {
+        "nodes": 2,
+        "fullyInside": 2,
+        "clipped": 0,
+        "maxHeight": "min(62%, 82.72px)",
+        "boxHeight": 82.7,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "16.8px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": null,
+        "personaWeight": null
+      },
+      {
+        "nodes": 2,
+        "fullyInside": 2,
+        "clipped": 0,
+        "maxHeight": "min(62%, 82.72px)",
+        "boxHeight": 82.7,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "16.8px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": null,
+        "personaWeight": null
+      },
+      {
+        "nodes": 3,
+        "fullyInside": 2,
+        "clipped": 1,
+        "maxHeight": "min(62%, 82.72px)",
+        "boxHeight": 82.7,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "16.8px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": null,
+        "personaWeight": null
+      },
+      {
+        "nodes": 3,
+        "fullyInside": 2,
+        "clipped": 1,
+        "maxHeight": "min(62%, 82.72px)",
+        "boxHeight": 82.7,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "16.8px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": null,
+        "personaWeight": null
+      },
+      {
+        "nodes": 4,
+        "fullyInside": 1,
+        "clipped": 3,
+        "maxHeight": "min(62%, 82.72px)",
+        "boxHeight": 82.7,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "16.8px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": null,
+        "personaWeight": null
+      }
+    ],
+    "window-flushed@1280x800": {
+      "nodes": 7,
+      "fullyInside": 2,
+      "clipped": 5,
+      "maxHeight": "min(62%, 82.72px)",
+      "boxHeight": 82.7,
+      "maskImage": "none",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "gradient",
+      "subjectSize": "16.8px",
+      "subjectWeight": "400",
+      "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+      "personaSize": "14.08px",
+      "personaWeight": "400"
+    },
+    "plate@1280x800": {
+      "off": {
+        "nodes": 7,
+        "fullyInside": 2,
+        "clipped": 5,
+        "maxHeight": "min(62%, 82.72px)",
+        "boxHeight": 82.7,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "16.8px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": "14.08px",
+        "personaWeight": "400"
+      },
+      "on": {
+        "nodes": 7,
+        "fullyInside": 2,
+        "clipped": 5,
+        "maxHeight": "min(62%, 82.72px)",
+        "boxHeight": 82.7,
+        "maskImage": "none",
+        "backgroundColor": "oklch(0.05 0.004 240 / 0.96)",
+        "backgroundImage": "none",
+        "subjectSize": "16.8px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": "14.08px",
+        "personaWeight": "400"
+      },
+      "appClass": "annex-app subtitle-plate"
+    },
+    "large-text@1280x800": {
+      "standardSize": 16.8,
+      "large": {
+        "nodes": 7,
+        "fullyInside": 2,
+        "clipped": 5,
+        "maxHeight": "min(62%, 88.81px)",
+        "boxHeight": 88.8,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "18.9px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": "15.84px",
+        "personaWeight": "400"
+      }
+    },
+    "easy-read-beat@1280x800": {
+      "nodes": 7,
+      "fullyInside": 7,
+      "clipped": 0,
+      "maxHeight": "none",
+      "boxHeight": 263.5,
+      "maskImage": "none",
+      "backgroundColor": "oklch(0.05 0.004 240 / 0.96)",
+      "backgroundImage": "none",
+      "subjectSize": "16.8px",
+      "subjectWeight": "400",
+      "subjectShadow": "none",
+      "personaSize": "14.08px",
+      "personaWeight": "400",
+      "onShell": 1,
+      "appClass": "annex-app easy-read"
+    },
+    "easy-read-sweep@1280x800": [],
+    "easy-read-textdiff@1280x800": {
+      "lost": []
+    },
+    "record-detail@1280x800": [
+      {
+        "sel": ".scene-detail-description",
+        "measureCh": 72,
+        "lineHeight": 1.6,
+        "fontSize": "14.08px"
+      },
+      {
+        "sel": ".scene-detail-method p",
+        "measureCh": 74,
+        "lineHeight": 1.6,
+        "fontSize": "13.12px"
+      }
+    ],
+    "record-casefile@1280x800": {
+      "recordModeNodes": 1,
+      "distinctFontSizes": [
+        "10.24px",
+        "11.2px",
+        "12.16px",
+        "16.8px"
+      ],
+      "portalClass": "casefile-portal record-mode",
+      "measure": [
+        {
+          "sel": ".rail-panel p",
+          "measureCh": 68,
+          "lineHeight": 1.6,
+          "fontSize": "11.2px"
+        },
+        {
+          "sel": ".rail-note",
+          "measureCh": 68,
+          "lineHeight": 1.6,
+          "fontSize": "11.2px"
+        }
+      ]
+    },
+    "reload@1280x800": {
+      "stored": {
+        "reducedMotion": false,
+        "highContrast": false,
+        "textSize": "standard",
+        "showTrustNumbers": false,
+        "ambientSound": false,
+        "easyRead": true,
+        "subtitlePlate": true
+      },
+      "shell": "annex-app easy-read subtitle-plate"
+    },
+    "reduced-motion@1280x800": {
+      "nodes": 7,
+      "fullyInside": 7,
+      "clipped": 0,
+      "maxHeight": "none",
+      "boxHeight": 263.5,
+      "maskImage": "none",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "gradient",
+      "subjectSize": "16.8px",
+      "subjectWeight": "400",
+      "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+      "personaSize": "14.08px",
+      "personaWeight": "400"
+    },
+    "popover@375x812": {
+      "count": 7,
+      "rows": [
+        {
+          "text": "Reduce motion",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "High contrast",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Larger text",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Show trust values",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Ambient sound",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Easy read",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        },
+        {
+          "text": "Subtitle plate",
+          "w": 218,
+          "h": 44,
+          "type": "checkbox"
+        }
+      ],
+      "preview": true,
+      "previewLines": 2,
+      "previewLeaksBeatClass": 0,
+      "overlaps": [],
+      "unreachable": []
+    },
+    "window-steps@375x812": [
+      {
+        "nodes": 1,
+        "fullyInside": 1,
+        "clipped": 0,
+        "maxHeight": "min(58%, 69.44px)",
+        "boxHeight": 63.4,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "13.6px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": null,
+        "personaWeight": null
+      },
+      {
+        "nodes": 1,
+        "fullyInside": 1,
+        "clipped": 0,
+        "maxHeight": "min(58%, 69.44px)",
+        "boxHeight": 63.4,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "13.6px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": null,
+        "personaWeight": null
+      },
+      {
+        "nodes": 1,
+        "fullyInside": 1,
+        "clipped": 0,
+        "maxHeight": "min(58%, 69.44px)",
+        "boxHeight": 63.4,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "13.6px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": null,
+        "personaWeight": null
+      },
+      {
+        "nodes": 2,
+        "fullyInside": 1,
+        "clipped": 1,
+        "maxHeight": "min(58%, 69.44px)",
+        "boxHeight": 69.4,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "13.6px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": null,
+        "personaWeight": null
+      },
+      {
+        "nodes": 2,
+        "fullyInside": 1,
+        "clipped": 1,
+        "maxHeight": "min(58%, 69.44px)",
+        "boxHeight": 69.4,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "13.6px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": null,
+        "personaWeight": null
+      },
+      {
+        "nodes": 3,
+        "fullyInside": 2,
+        "clipped": 1,
+        "maxHeight": "min(58%, 69.44px)",
+        "boxHeight": 69.4,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "13.6px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": null,
+        "personaWeight": null
+      },
+      {
+        "nodes": 3,
+        "fullyInside": 2,
+        "clipped": 1,
+        "maxHeight": "min(58%, 69.44px)",
+        "boxHeight": 69.4,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "13.6px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": null,
+        "personaWeight": null
+      },
+      {
+        "nodes": 4,
+        "fullyInside": 1,
+        "clipped": 3,
+        "maxHeight": "min(58%, 69.44px)",
+        "boxHeight": 69.4,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "13.6px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": null,
+        "personaWeight": null
+      }
+    ],
+    "window-flushed@375x812": {
+      "nodes": 7,
+      "fullyInside": 2,
+      "clipped": 5,
+      "maxHeight": "min(58%, 69.44px)",
+      "boxHeight": 69.4,
+      "maskImage": "none",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "gradient",
+      "subjectSize": "13.6px",
+      "subjectWeight": "400",
+      "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+      "personaSize": "12.64px",
+      "personaWeight": "400"
+    },
+    "plate@375x812": {
+      "off": {
+        "nodes": 7,
+        "fullyInside": 2,
+        "clipped": 5,
+        "maxHeight": "min(58%, 69.44px)",
+        "boxHeight": 69.4,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "13.6px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": "12.64px",
+        "personaWeight": "400"
+      },
+      "on": {
+        "nodes": 7,
+        "fullyInside": 2,
+        "clipped": 5,
+        "maxHeight": "min(58%, 69.44px)",
+        "boxHeight": 69.4,
+        "maskImage": "none",
+        "backgroundColor": "oklch(0.05 0.004 240 / 0.96)",
+        "backgroundImage": "none",
+        "subjectSize": "13.6px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": "12.64px",
+        "personaWeight": "400"
+      },
+      "appClass": "annex-app subtitle-plate"
+    },
+    "large-text@375x812": {
+      "standardSize": 13.6,
+      "large": {
+        "nodes": 7,
+        "fullyInside": 2,
+        "clipped": 5,
+        "maxHeight": "min(58%, 74.37px)",
+        "boxHeight": 74.4,
+        "maskImage": "none",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "gradient",
+        "subjectSize": "15.3px",
+        "subjectWeight": "400",
+        "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+        "personaSize": "14.22px",
+        "personaWeight": "400"
+      }
+    },
+    "easy-read-beat@375x812": {
+      "nodes": 7,
+      "fullyInside": 7,
+      "clipped": 0,
+      "maxHeight": "none",
+      "boxHeight": 238.8,
+      "maskImage": "none",
+      "backgroundColor": "oklch(0.05 0.004 240 / 0.96)",
+      "backgroundImage": "none",
+      "subjectSize": "13.6px",
+      "subjectWeight": "400",
+      "subjectShadow": "none",
+      "personaSize": "12.64px",
+      "personaWeight": "400",
+      "onShell": 1,
+      "appClass": "annex-app easy-read"
+    },
+    "easy-read-sweep@375x812": [],
+    "easy-read-textdiff@375x812": {
+      "lost": []
+    },
+    "record-detail@375x812": [
+      {
+        "sel": ".scene-detail-description",
+        "measureCh": 54,
+        "lineHeight": 1.6,
+        "fontSize": "13.6px"
+      },
+      {
+        "sel": ".scene-detail-method p",
+        "measureCh": 54,
+        "lineHeight": 1.6,
+        "fontSize": "12.64px"
+      }
+    ],
+    "record-casefile@375x812": {
+      "recordModeNodes": 1,
+      "distinctFontSizes": [
+        "10.72px",
+        "11.68px",
+        "16px",
+        "9.92px"
+      ],
+      "portalClass": "casefile-portal record-mode",
+      "measure": [
+        {
+          "sel": ".rail-panel p",
+          "measureCh": 65,
+          "lineHeight": 1.6,
+          "fontSize": "10.72px"
+        },
+        {
+          "sel": ".rail-note",
+          "measureCh": 65,
+          "lineHeight": 1.6,
+          "fontSize": "10.72px"
+        }
+      ]
+    },
+    "reload@375x812": {
+      "stored": {
+        "reducedMotion": false,
+        "highContrast": false,
+        "textSize": "standard",
+        "showTrustNumbers": false,
+        "ambientSound": false,
+        "easyRead": true,
+        "subtitlePlate": true
+      },
+      "shell": "annex-app easy-read subtitle-plate"
+    },
+    "reduced-motion@375x812": {
+      "nodes": 7,
+      "fullyInside": 7,
+      "clipped": 0,
+      "maxHeight": "none",
+      "boxHeight": 238.8,
+      "maskImage": "none",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "gradient",
+      "subjectSize": "13.6px",
+      "subjectWeight": "400",
+      "subjectShadow": "oklch(0 0 0 / 0.98) 0px 2px 18px, oklch(0 0 0 / 0.9) 0px 0px 40px",
+      "personaSize": "12.64px",
+      "personaWeight": "400"
+    }
+  },
+  "shots": [
+    "01-access-popover-after-1280x800.png",
+    "02-beat-mid-window-after-1280x800.png",
+    "03-beat-flushed-window-after-1280x800.png",
+    "04-subtitle-plate-on-after-1280x800.png",
+    "05-easy-read-beat-after-1280x800.png",
+    "06-easy-read-detail-drawer-after-1280x800.png",
+    "07-record-mode-detail-after-1280x800.png",
+    "08-record-mode-casefile-after-1280x800.png",
+    "09-reduced-motion-beat-after-1280x800.png",
+    "01-access-popover-after-375x812.png",
+    "02-beat-mid-window-after-375x812.png",
+    "03-beat-flushed-window-after-375x812.png",
+    "04-subtitle-plate-on-after-375x812.png",
+    "05-easy-read-beat-after-375x812.png",
+    "06-easy-read-detail-drawer-after-375x812.png",
+    "07-record-mode-detail-after-375x812.png",
+    "08-record-mode-casefile-after-375x812.png",
+    "09-reduced-motion-beat-after-375x812.png"
+  ],
+  "failures": 0
+}

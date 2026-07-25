@@ -28,13 +28,24 @@ mkdirSync(OUT_DIR, { recursive: true })
 
 const SAVE_KEY = 'the-annex.case-77.save.v1'
 const SETTINGS_KEY = 'the-annex.accessibility.v1'
+// Seeded into the standalone settings key at boot, so the probe can measure a
+// preference mode (Easy Read's stricter 7:1 floor) through the real load path
+// rather than by poking a class onto the shell.
+//   PROBE_SETTINGS='{"easyRead":true}' node scripts/audit-contrast-probe.mjs
 const SETTINGS = {
   reducedMotion: false,
   highContrast: false,
   textSize: 'standard',
   showTrustNumbers: false,
   ambientSound: false,
+  easyRead: false,
+  subtitlePlate: false,
+  ...JSON.parse(process.env.PROBE_SETTINGS ?? '{}'),
 }
+// Easy Read exists to be a STRICTER read, so it is held to AAA on prose.
+const AA = 4.5
+const FLOOR_NORMAL = SETTINGS.easyRead ? 7 : AA
+const SUFFIX = process.env.PROBE_LABEL ? `-${process.env.PROBE_LABEL}` : ''
 
 const chromeProcess = spawn(CHROME, [
   '--headless=new',
@@ -135,7 +146,12 @@ async function boot() {
   await sleep(180)
   await send('Page.navigate', { url: APP_URL })
   await waitFor(`document.readyState === 'complete'`)
-  await evaluate(`(() => { try { localStorage.clear() } catch {} ; window.__stale = true; return true })()`)
+  await evaluate(`(() => {
+    try {
+      localStorage.clear()
+      localStorage.setItem(${JSON.stringify(SETTINGS_KEY)}, ${JSON.stringify(JSON.stringify(SETTINGS))})
+    } catch {}
+    window.__stale = true; return true })()`)
   await send('Page.navigate', { url: `${APP_URL}?boot=${bootCounter}` })
   await waitFor(`window.__stale === undefined && document.readyState === 'complete'`)
   if (!(await waitForText('button', 'Open a new audit'))) throw new Error('landing did not render')
@@ -155,6 +171,34 @@ async function enterSite(name) {
   await sleep(900)
 }
 
+// Arm and file the method at plate-zone `index`, then flush the whole stanza so
+// the staged beat is a STILL frame before anything is measured. Both clicks are
+// el.click() (never dispatchEvent — recorded preview-pane scar), and the arm is
+// not disarmed between them because el.click() fires no pointerdown and moves no
+// focus away. The plate's data-preview-treatment follows the FILED action
+// (resolved-wins-over-preview, src/scene/previewTreatment.ts:20), so filing zone
+// 0 of Care ward 12 measures the beat under 'listen' and zone 1 under 'pressure'.
+async function stageBeat(index) {
+  const armed = await evaluate(`(() => {
+    const b = document.querySelectorAll('.scene-zone button')[${index}]
+    if (!b) return false
+    b.click(); return true })()`)
+  if (!armed) throw new Error(`scene zone ${index} absent`)
+  await sleep(320)
+  await evaluate(`(() => { document.querySelectorAll('.scene-zone button')[${index}].click(); return true })()`)
+  await waitFor(`!!document.querySelector('.scene-beat')`, 9000)
+  // Flush: one press of the canonical advance control reveals every remaining
+  // line without completing the stanza, so the frame stops moving.
+  await sleep(400)
+  await click('.scene-beat-advance')
+  await sleep(600)
+  return evaluate(`(() => ({
+    phase: document.querySelector('.scene-beat')?.dataset.phase ?? null,
+    lineNodes: document.querySelectorAll('.scene-beat-line').length,
+    treatment: document.querySelector('.site-closeup-stage')?.dataset.previewTreatment ?? null,
+  }))()`)
+}
+
 const FREEZE = `(async () => {
   document.getElementById('cf')?.remove()
   const s = document.createElement('style'); s.id='cf'
@@ -172,20 +216,37 @@ const TARGETS = JSON.stringify([
   ['.room-console .room-prompt, .room-console .as-lead, .room-console .cr-lead', 'docked console · prompt'],
   ['.site-closeup-zone-label', 'on-plate zone label'],
   ['.world-caption', 'on-plate caption'],
+  // The largest narrative text in the game, staged over the photograph. Added in
+  // Wave 1 (W1-1): before this it was the only on-plate text never measured, and
+  // the roadmap's premise — that a text-shadow halo is not a scrim — is only a
+  // premise until these two rows exist.
+  ['.scene-beat-line--subject', 'staged beat · subject line'],
+  ['.scene-beat-line--persona', 'staged beat · persona line'],
   // The text that now reads against a translucent panel over the page gradient.
   ['.site-header h2', 'inspector · surface heading'],
   ['.site-description', 'inspector · record body'],
   ['.field-dock-copy > p', 'dock · standing instruction'],
   ['.field-objectives > span', 'command bar · counter label'],
   ['.field-threshold', 'command bar · threshold line'],
+  // RECORD MODE (W1-2). The three record surfaces borrowed Scene Mode's
+  // typography and none of their prose had been measured either.
+  ['.deposition-statement', 'record mode · sworn statement'],
+  ['.scene-detail-description', 'record mode · surface record'],
+  ['.scene-detail-method p', 'record mode · method prose'],
+  ['.rail-panel p', 'record mode · case-file prose'],
+  ['.rail-note', 'record mode · case-file note'],
 ])
 
 const PREPARE = `(() => {
   const targets = ${TARGETS}
   const found = []
   for (const [sel, label] of targets) {
-    const el = document.querySelector(sel)
-    if (!el) continue
+    // Every match, not just the first. The staged stanza now paints a two-line
+    // WINDOW while keeping every revealed line mounted, so document.querySelector
+    // often returns a line that has been pushed off the top of the plate and is
+    // not painted at all — measuring it would silently report "no target" for the
+    // very text that IS on screen. The first match with visible glyph boxes wins.
+    for (const el of document.querySelectorAll(sel)) {
     // Sample the GLYPH line boxes, not the element box. An element rect includes
     // its own 1px currentColor border and, for a flex caption spanning the plate,
     // several hundred px of empty track — sampling that reports the brightest
@@ -228,6 +289,8 @@ const PREPARE = `(() => {
     boxes.push(...visible)
     const cs = getComputedStyle(el)
     found.push({ sel, label, color: cs.color, fontSize: cs.fontSize, fontWeight: cs.fontWeight, boxes })
+    break
+    }
   }
   // Hide ONLY the glyphs. NOT visibility:hidden — that also hides the element's
   // OWN background, so a label with a scrim chip would be measured against
@@ -323,7 +386,7 @@ async function probe(name, width, height) {
   }
   await sleep(140)
   const { data } = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false })
-  writeFileSync(join(OUT_DIR, `contrast-band-${name}-${width}x${height}.png`), Buffer.from(data, 'base64'))
+  writeFileSync(join(OUT_DIR, `contrast-band-${name}${SUFFIX}-${width}x${height}.png`), Buffer.from(data, 'base64'))
   const rows = await evaluate(SAMPLE(`data:image/png;base64,${data}`, found))
   await evaluate(RESTORE)
   report.surfaces[`${name}@${width}`] = rows
@@ -332,7 +395,7 @@ async function probe(name, width, height) {
     // WCAG AA: 4.5:1 for normal text, 3:1 for >=18.66px bold or >=24px.
     const px = parseFloat(r.fontSize)
     const large = px >= 24 || (px >= 18.66 && parseInt(r.fontWeight, 10) >= 700)
-    const floor = large ? 3 : 4.5
+    const floor = large ? (SETTINGS.easyRead ? 4.5 : 3) : FLOOR_NORMAL
     const worst = Math.min(r.ratioOnDarkest, r.ratioOnBrightest)
     const ok = worst >= floor
     if (!ok) failures += 1
@@ -352,10 +415,37 @@ for (const [w, h] of [[1280, 800], [375, 812]]) {
   await probe('console-acoustic', w, h)
   await enterSite('Care ward 12')
   await probe('zones-care-ward', w, h)
+  // The staged beat, once per authored preview treatment. Each pass re-boots so
+  // the second method is filed on a plate that is not already resolved.
+  for (const [zone, label] of [[0, 'listen'], [1, 'pressure']]) {
+    if (zone > 0) {
+      await boot()
+      await enterSite('Care ward 12')
+    }
+    const staged = await stageBeat(zone)
+    console.log(`  · staged beat (${label}): phase=${staged.phase} nodes=${staged.lineNodes} treatment=${staged.treatment}`)
+    report.surfaces[`beat-${label}-staging@${w}`] = staged
+    await probe(`beat-${label}`, w, h)
+  }
+  // The record surfaces, reached from the same filed run.
+  await click('.scene-beat-advance')
+  await sleep(600)
+  if (await click('.scene-detail-summon')) {
+    await sleep(600)
+    await probe('record-detail', w, h)
+    await click('.scene-detail-close')
+    await sleep(400)
+  }
+  if (await click('.casefile-summon')) {
+    await sleep(700)
+    await probe('record-casefile', w, h)
+    await click('.casefile-close')
+    await sleep(400)
+  }
 }
 
 report.failures = failures
-writeFileSync(join(OUT_DIR, 'contrast-probe.json'), JSON.stringify(report, null, 2))
+writeFileSync(join(OUT_DIR, `contrast-probe${SUFFIX}.json`), JSON.stringify(report, null, 2))
 console.log(`\n${failures === 0 ? 'ALL PASS' : failures + ' FAILURE(S)'} — wrote ${OUT_DIR}contrast-probe.json`)
 clearTimeout(killTimer)
 chromeProcess.kill('SIGKILL')

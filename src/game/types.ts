@@ -77,6 +77,19 @@ export interface AccessibilitySettings {
   // bump. Sound is not motion: the reduced-motion preference does NOT gate it;
   // this toggle's default-off state is the accessibility posture on its own.
   ambientSound: boolean
+  // Flatten stylized text: the staged stanza drops its halo for an opaque plate
+  // and shows every revealed line at once, decorative letter-spacing and
+  // narrative uppercase return to normal, and the record surfaces read as plain
+  // documents. The escape hatch that has to exist BEFORE stylistic meaning is
+  // added to documents or to stance. Optional-tolerated in decode, exactly like
+  // ambientSound — a settings blob written before this field existed loads with
+  // easyRead === false, so no schema bump.
+  easyRead: boolean
+  // Put an opaque plate behind the staged beat instead of relying on the text's
+  // own shadow. Subtitle-presentation control, per-player, DEFAULT OFF: the
+  // scene reads as a photograph first, and a player who needs the text to sit on
+  // something says so. Optional-tolerated in decode for the same reason.
+  subtitlePlate: boolean
 }
 
 export interface GameEvent {
