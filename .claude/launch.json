@@ -5,8 +5,8 @@
       "name": "annex-dev",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
-      "port": 4199,
-      "autoPort": true
+      "port": 3000,
+      "autoPort": false
     }
   ]
 }
