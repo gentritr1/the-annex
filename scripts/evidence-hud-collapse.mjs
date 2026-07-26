@@ -591,10 +591,15 @@ async function drawerPass(width, height) {
   record(`${tag} · drawer rests visible (no opacity+fill:both reveal)`,
     geometry.opacity === '1', { opacity: geometry.opacity, animationName: geometry.animationName,
       fill: geometry.animationFillMode })
-  record(`${tag} · four tabs, aria-wired`,
-    geometry.tabs.length === 4 &&
+  // RE-BASELINED 4 → 5 at Wave 2 round 1: the searchable record (E5) added a
+  // fifth cell to this same bar. Nothing here is relaxed — every existing clause
+  // is kept and the roster clause is joined by a search clause, so the count is
+  // still pinned to a named set of tabs rather than to "at least four".
+  record(`${tag} · five tabs, aria-wired`,
+    geometry.tabs.length === 5 &&
       geometry.tabs.every((t) => t.controls && t.id && t.pressed !== null) &&
-      geometry.tabs.some((t) => /people/i.test(t.text)),
+      geometry.tabs.some((t) => /people/i.test(t.text)) &&
+      geometry.tabs.some((t) => /search/i.test(t.text)),
     { tabs: geometry.tabs })
   record(`${tag} · every tab meets the 44px target`, geometry.tabs.every((t) => t.h >= 44), {
     heights: geometry.tabs.map((t) => t.h),
@@ -604,7 +609,7 @@ async function drawerPass(width, height) {
   await shot('02-casefile-case-tab')
 
   // Each tab shows its own panel and only its own panel.
-  for (const tab of ['evidence', 'log', 'people']) {
+  for (const tab of ['evidence', 'log', 'people', 'search']) {
     await click(`#rail-tab-${tab}`)
     await sleep(240)
     const panels = await evaluate(`(() => ({
@@ -898,11 +903,12 @@ async function crossZonePass(width, height) {
     })
   })()`)
   report.measurements[`tabSweep:${tag}`] = tabSweep
+  // RE-BASELINED 4 → 5 with the search tab (see the aria-wiring check above).
   record(`${tag} · drawer tab bar: each tab's centre hits that tab`,
-    tabSweep.length === 4 && tabSweep.every((t) => t.hitsIntended), tabSweep)
+    tabSweep.length === 5 && tabSweep.every((t) => t.hitsIntended), tabSweep)
   await unfreeze()
 
-  for (const tab of ['case', 'evidence', 'log', 'people']) {
+  for (const tab of ['case', 'evidence', 'log', 'people', 'search']) {
     await click(`#rail-tab-${tab}`)
     await sleep(200)
     const state = await evaluate(`(() => ({

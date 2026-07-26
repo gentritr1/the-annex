@@ -167,6 +167,35 @@ export default function App() {
     if (caseFileOpen) setCaseFileOpen(false)
   }
 
+  // ── The query trail (E5) ───────────────────────────────────────────────────
+  // Every term this run has asked of the record, newest first. VIEW-LOCAL AND
+  // DELIBERATELY UNPERSISTED: it is a fiction flourish, and buying it with a
+  // save-schema change would put `precedents`, `previousRuns` and `runNumber`
+  // behind a decode that can reject the whole save. A reload loses the trail;
+  // that is the accepted cost, and the surface says so in its own voice.
+  //
+  // It lives HERE rather than in the rail because the case-file drawer unmounts
+  // every time it closes — a trail that died with the drawer would be a trail of
+  // one. It is cleared when the RUN changes (a new run, or a crossing into
+  // another case), derived during render via the adjust-state-on-change pattern
+  // the rail already uses.
+  const [queryTrail, setQueryTrail] = useState<readonly string[]>([])
+  const trailRunKey = `${state.caseId}#${state.runNumber}`
+  const [trailKey, setTrailKey] = useState(trailRunKey)
+  if (trailKey !== trailRunKey) {
+    setTrailKey(trailRunKey)
+    if (queryTrail.length > 0) setQueryTrail([])
+  }
+  // Newest first, an immediately repeated term is not re-recorded, and the trail
+  // is capped so a long session cannot turn the panel into a scroll well.
+  function recordQuery(query: string) {
+    const trimmed = query.trim()
+    if (!trimmed) return
+    setQueryTrail((trail) =>
+      trail[0] === trimmed ? trail : [trimmed, ...trail.filter((item) => item !== trimmed)].slice(0, 12),
+    )
+  }
+
   // The bed for this case, and the resolved scene state that drives its gain.
   // Only rain (Case 77) and dust (Case 81) are synthesized; a weatherless case
   // gets no bed. Tribunal/debrief resolve to fixed states; investigation resolves
@@ -382,7 +411,12 @@ export default function App() {
       )}
 
       {caseFileOpen && (
-        <CaseFileDrawer state={state} onClose={() => setCaseFileOpen(false)} />
+        <CaseFileDrawer
+          state={state}
+          onClose={() => setCaseFileOpen(false)}
+          queryTrail={queryTrail}
+          onQuery={recordQuery}
+        />
       )}
 
       <p className="sr-only" aria-live="polite" aria-atomic="true">

@@ -2720,16 +2720,28 @@ p {
   inset: 0;
 }
 
+/* CONTRAST FIX · the on-plate zone label at 2.46 : 1 (audit-contrast-probe's last
+   standing failure, measured on the custody plate's bright band at 1280×800,
+   floor 4.5).
+
+   The label was NOT missing a scrim — it has carried `oklch(0.03 0 0 / 0.88)`
+   since it was written. The whole zone was one 0.58-opacity GROUP, so that scrim
+   composited at 0.88 × 0.58 ≈ 0.51 effective alpha and the bright plate came
+   straight back through it. A scrim that is itself faded is a halo again, which
+   is P1-C ("a halo is not a scrim") one layer over.
+
+   The 0.58 exists to keep a dormant marker quiet, and that is worth keeping — so
+   it moves to the MARK, where dimming costs no legibility, and the label paints
+   at full strength over its own chip. The three room-phase suppressions below
+   still set `opacity: 0` on this container and still hide the whole zone; they
+   are unaffected, being both higher-specificity and a different value. */
 .site-closeup-zone {
   position: absolute;
   width: 17px;
   height: 17px;
   color: var(--fog);
   transform: translate(-50%, -50%);
-  opacity: 0.58;
-  transition:
-    color 180ms var(--ease-out),
-    opacity 180ms var(--ease-out);
+  transition: color 180ms var(--ease-out);
 }
 
 .site-closeup-zone-mark {
@@ -2739,6 +2751,8 @@ p {
   border: 1px solid currentColor;
   border-radius: 50%;
   box-shadow: 0 0 0 4px oklch(0.04 0 0 / 0.42);
+  opacity: 0.58;
+  transition: opacity 180ms var(--ease-out);
 }
 
 .site-closeup-zone-mark::after {
@@ -2765,7 +2779,11 @@ p {
   text-transform: uppercase;
   white-space: nowrap;
   text-shadow: 0 1px 6px var(--night), 0 0 2px var(--night);
-  background: oklch(0.03 0 0 / 0.88);
+  /* Raised 0.88 → 0.92 now that the chip is no longer being diluted by a group
+     opacity: over the brightest plate in the game this is a measured ≥ 7 : 1,
+     and over pure white it would still be ≥ 7 : 1. The chip, not the halo, is
+     what the glyphs are read against. */
+  background: oklch(0.03 0 0 / 0.92);
   border-left: 1px solid currentColor;
   transform: translateY(-50%);
 }
@@ -2778,8 +2796,14 @@ p {
   text-align: right;
 }
 
+/* The state lift now lands on the mark, because that is where the resting dim
+   went. The label was never the thing that should have been dim. */
 .site-closeup-zone[data-state='active'] {
   color: var(--amber-soft);
+}
+
+.site-closeup-zone[data-state='active'] .site-closeup-zone-mark,
+.site-closeup-zone[data-state='resolved'] .site-closeup-zone-mark {
   opacity: 1;
 }
 
@@ -2792,7 +2816,6 @@ p {
 
 .site-closeup-zone[data-state='resolved'] {
   color: var(--cyan);
-  opacity: 1;
 }
 
 .site-closeup-zone[data-state='resolved'] .site-closeup-zone-mark::after {
@@ -3128,6 +3151,10 @@ p {
 .reduce-motion .site-closeup-category-register::before,
 .reduce-motion .site-closeup-category-register::after,
 .reduce-motion .site-closeup-zone,
+/* The zone MARK now owns the resting dim and its 180ms opacity ease (the
+   contrast fix moved it off the group), so the descendant has to join the
+   motion suppression the container already had. */
+.reduce-motion .site-closeup-zone *,
 .reduce-motion .site-closeup-room,
 .reduce-motion .site-closeup-room *,
 .reduce-motion .site-closeup-acoustic,
@@ -3193,6 +3220,7 @@ p {
   .site-closeup-category-register::before,
   .site-closeup-category-register::after,
   .site-closeup-zone,
+  .site-closeup-zone *,
   .site-closeup-room,
   .site-closeup-room *,
   .site-closeup-acoustic,
@@ -5450,8 +5478,9 @@ p {
   z-index: 2;
   top: 0;
   display: grid;
-  /* Four tabs since the roster dossier joined: case · evidence · log · people. */
-  grid-template-columns: repeat(4, 1fr);
+  /* Five tabs since the record became searchable:
+     case · evidence · log · people · search. */
+  grid-template-columns: repeat(5, 1fr);
   background: var(--concrete);
   border-bottom: 1px solid var(--line);
 }
@@ -5969,6 +5998,165 @@ p {
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
   font-size: var(--type-micro);
   letter-spacing: 0.03em;
+}
+
+/* ══ THE SEARCHABLE RECORD (E5) ═══════════════════════════════════════════════
+   The fifth panel. It borrows the file's existing registers rather than opening
+   new ones: the query box is a control in the shell's own idiom, a result title
+   is the roster's `h3`, a result line is `.persona-dossier-line`'s prose, and a
+   citation is `.persona-dossier-cite` exactly — the log's monospace moment-name,
+   so a result can be matched back to the panel it came from by eye.
+   No new font-size literal: every size here is a --type-* token. */
+
+.record-search-form {
+  display: block;
+}
+
+.record-search-field {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.record-search-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 12px;
+  color: var(--record);
+  background: var(--raised);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: var(--type-meta);
+}
+
+.record-search-input::placeholder {
+  color: var(--fog-dim);
+}
+
+.record-search-input:focus-visible {
+  border-color: var(--amber);
+  outline: 2px solid var(--amber);
+  outline-offset: 1px;
+}
+
+.record-search-submit {
+  min-height: 44px;
+  padding: 0 16px;
+  color: var(--night);
+  background: var(--amber);
+  border: 0;
+  border-radius: 4px;
+  font-size: var(--type-label);
+  font-weight: 750;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.record-search-submit:hover {
+  background: var(--amber-soft);
+}
+
+/* The count line. It is the polite live region, so it must occupy a box even
+   when empty — a region that appears with its own text is announced as a new
+   region rather than as an answer. */
+.record-search-status {
+  min-height: 1.4em;
+  margin: 0;
+  padding: 0 18px;
+  color: var(--fog);
+  font-size: var(--type-meta);
+  line-height: 1.4;
+}
+
+.record-search-results {
+  padding: 0;
+}
+
+.record-search-group {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.record-search-entries,
+.record-search-voices,
+.record-search-lines {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  list-style: none;
+}
+
+.record-search-voices {
+  gap: 18px;
+}
+
+.record-search-lines {
+  gap: 10px;
+  margin-top: 8px;
+  padding-left: 12px;
+  border-left: 1px solid var(--line);
+}
+
+.record-search-entry-title,
+.record-search-voice {
+  margin: 0 0 4px;
+  color: var(--record);
+  font-size: var(--type-meta);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.record-search-line {
+  margin: 0;
+  color: var(--record);
+  font-size: var(--type-meta);
+  line-height: 1.5;
+}
+
+.record-search-cite {
+  margin: 4px 0 0;
+  color: var(--fog-dim);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-micro);
+  letter-spacing: 0.03em;
+}
+
+/* THE QUERY TRAIL. Past questions are controls, so a thought can be picked up
+   again — which means each one is a real 44px target, not a decorative chip. */
+.record-trail-list {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+}
+
+.record-trail-query {
+  min-height: 44px;
+  padding: 4px 12px;
+  color: var(--record);
+  background: var(--raised);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: var(--type-meta);
+}
+
+.record-trail-query:hover {
+  border-color: var(--amber);
+}
+
+.record-trail-query[aria-pressed='true'] {
+  color: var(--night);
+  background: var(--amber);
+  border-color: var(--amber);
+  font-weight: 700;
 }
 
 /* Responsive behavior */
@@ -11632,6 +11820,7 @@ p {
 .easy-read .subtitle-preview-label,
 .easy-read .section-context,
 .easy-read .rail-tabs button,
+.easy-read .record-search-submit,
 .easy-read .deposition-lead,
 .easy-read .scene-result-evidence {
   letter-spacing: 0.02em;

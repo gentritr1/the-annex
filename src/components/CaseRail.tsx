@@ -2,6 +2,12 @@ import { useEffect, useState } from 'react'
 import { getCaseContent, getReactionsForSource, methodLabels, personas } from '../game/content'
 import { getTrustLabel } from '../game/engine'
 import { personaRunLines } from '../game/personaRecord'
+import {
+  buildRecordIndex,
+  groupByVoice,
+  groupRecordEntries,
+  searchRecord,
+} from '../game/recordIndex'
 import type { EvidenceStatus, GameState, PersonaId } from '../game/types'
 import { DossierPhoto } from './DossierPhoto'
 import { PersonaPortrait } from './PersonaPortrait'
@@ -10,11 +16,24 @@ import { ReactionQuotes } from './ReactionQuotes'
 
 interface CaseRailProps {
   state: GameState
+  // The run's query trail, owned by the shell (see CaseFileDrawer). Passed in
+  // rather than held here because this component unmounts with the drawer.
+  queryTrail: readonly string[]
+  onQuery: (query: string) => void
 }
 
-type RailTab = 'case' | 'evidence' | 'log' | 'people'
+type RailTab = 'case' | 'evidence' | 'log' | 'people' | 'search'
 
-const RAIL_TABS: readonly RailTab[] = ['case', 'evidence', 'log', 'people']
+// SEARCH IS A FIFTH TAB, not a field above the bar. Argued from the drawer's own
+// structure: the bar is a mutually-exclusive panel switcher whose contract three
+// shipped harness sweeps assert ("exactly one .rail-panel, exactly one
+// aria-pressed"), and a field above it would have to render its results either
+// over that panel or in place of it — breaking the contract while the pressed
+// tab still claimed to be showing. It would also add a third permanent chrome
+// row above the fold on the 375-wide sheet, where the header and the bar already
+// sit. A fifth cell reuses the aria wiring exactly, keeps one surface visible at
+// a time, and keeps the query trail beside the results it produced.
+const RAIL_TABS: readonly RailTab[] = ['case', 'evidence', 'log', 'people', 'search']
 
 const statusLabels: Record<EvidenceStatus, string> = {
   verified: 'Verified',
@@ -23,7 +42,7 @@ const statusLabels: Record<EvidenceStatus, string> = {
   testimony: 'Testimony',
 }
 
-export function CaseRail({ state }: CaseRailProps) {
+export function CaseRail({ state, queryTrail, onQuery }: CaseRailProps) {
   const { caseFile, evidenceDefinitions, reconstructionDefinitions } = getCaseContent(state.caseId)
   const [activeTab, setActiveTab] = useState<RailTab>('case')
   const evidence = evidenceDefinitions.filter((item) => state.evidence.includes(item.id))
@@ -88,6 +107,32 @@ export function CaseRail({ state }: CaseRailProps) {
     const timer = window.setTimeout(() => setPulses({}), 1100)
     return () => window.clearTimeout(timer)
   }, [pulses])
+
+  // ── Search (E5) ────────────────────────────────────────────────────────────
+  // `draft` is what is typed; `query` is what has been ASKED. They are separate
+  // on purpose: the record answers a submitted question, the way Her Story's
+  // terminal does, so the results do not churn under the reader's hands and the
+  // trail records questions rather than keystrokes.
+  const [draft, setDraft] = useState('')
+  const [query, setQuery] = useState('')
+  // Built only when there is something to ask — a pure derivation over state and
+  // content lookups, so there is nothing to memoize away for correctness.
+  const matches = query ? searchRecord(buildRecordIndex(state), query) : []
+  const matchGroups = groupRecordEntries(matches)
+  const searchStatus = !query
+    ? ''
+    : matches.length === 0
+      ? `No entry answers to “${query}”.`
+      : matches.length === 1
+        ? `1 entry answers to “${query}”.`
+        : `${matches.length} entries answer to “${query}”.`
+
+  function ask(term: string) {
+    const asked = term.trim()
+    setDraft(asked)
+    setQuery(asked)
+    if (asked) onQuery(asked)
+  }
 
   return (
     // A plain container, not a landmark: the rail's one home is now the summoned
@@ -357,6 +402,138 @@ export function CaseRail({ state }: CaseRailProps) {
               )
             })}
           </ul>
+        </div>
+      )}
+
+      {/* The searchable record (E5). Her Story's move: a plain query box over
+          everything the run has already filed, and the questions themselves kept
+          as part of the fiction. The index is a pure derivation
+          (game/recordIndex.ts) — it can only return what is on the record, so
+          the file can never answer with a place the auditor has not been.
+
+          It animates nothing, for the same reason the roster does not: the
+          surface is summoned, and everything it reports has already happened. */}
+      {activeTab === 'search' && (
+        <div className="rail-panel search-panel" id="rail-panel-search" aria-labelledby="rail-tab-search">
+          <section className="rail-block">
+            <form
+              className="record-search-form"
+              role="search"
+              onSubmit={(event) => {
+                event.preventDefault()
+                ask(draft)
+              }}
+            >
+              <label className="rail-label" htmlFor="record-search-input">
+                Search the record
+              </label>
+              <div className="record-search-field">
+                <input
+                  className="record-search-input"
+                  id="record-search-input"
+                  type="search"
+                  autoComplete="off"
+                  placeholder="A name, a source, a phrase…"
+                  value={draft}
+                  onChange={(event) => setDraft(event.target.value)}
+                />
+                <button className="record-search-submit" type="submit">
+                  Search
+                </button>
+              </div>
+            </form>
+            <p className="rail-note">
+              The file reads back only what this run has put on the record. What is not
+              here has not been done yet.
+            </p>
+          </section>
+
+          {/* Present at every phase so the count is announced as a change, not as
+              a region appearing. Empty until something has been asked. */}
+          <p className="record-search-status" aria-live="polite">
+            {searchStatus}
+          </p>
+
+          {!query ? (
+            <div className="educational-empty">
+              <span aria-hidden="true">⌕</span>
+              <h2>Nothing has been asked of the file yet</h2>
+              <p>Ask it a name, a source, or a phrase, and it will read back every place that phrase is filed.</p>
+            </div>
+          ) : matchGroups.length === 0 ? (
+            <div className="educational-empty">
+              <span aria-hidden="true">⌕</span>
+              <h2>The record does not answer to that</h2>
+              <p>Nothing filed this run carries those words. A file cannot hold what has not been done.</p>
+            </div>
+          ) : (
+            <div className="record-search-results">
+              {matchGroups.map((group) => (
+                <section className="record-search-group" key={group.kind}>
+                  <p className="rail-label">{group.label}</p>
+                  {/* Spoken lines are grouped BY VOICE, one heading per presence.
+                      Four presences can answer a query with a dozen lines between
+                      them; the name is still printed once each. */}
+                  {group.kind === 'reaction' ? (
+                    <ul className="record-search-voices">
+                      {groupByVoice(group.entries).map((voice) => (
+                        <li key={voice.voice}>
+                          <h3 className="record-search-voice">{voice.voice}</h3>
+                          <ol className="record-search-lines">
+                            {voice.entries.map((entry) => (
+                              <li key={entry.id}>
+                                <p className="record-search-line">{entry.body}</p>
+                                <p className="record-search-cite">{entry.cite}</p>
+                              </li>
+                            ))}
+                          </ol>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <ol className="record-search-entries">
+                      {group.entries.map((entry) => (
+                        <li key={entry.id}>
+                          <h3 className="record-search-entry-title">{entry.title}</h3>
+                          <p className="record-search-line">{entry.body}</p>
+                          <p className="record-search-cite">{entry.cite}</p>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
+                </section>
+              ))}
+            </div>
+          )}
+
+          {/* THE QUERY TRAIL. What the auditor thought to ask is itself part of
+              the record of the run — but only of the run. It is never written to
+              the save: buying a flourish with a save-schema change would put the
+              whole decode at risk (App.tsx states the reasoning). Each past
+              question is a control, so a thought can be picked up again. */}
+          {queryTrail.length > 0 && (
+            <section className="rail-block record-trail">
+              <p className="rail-label">Queries this run</p>
+              <p className="rail-note">
+                Held for as long as the run is. Closing the file keeps them; leaving the
+                Annex does not.
+              </p>
+              <ul className="record-trail-list">
+                {queryTrail.map((entry) => (
+                  <li key={entry}>
+                    <button
+                      className="record-trail-query"
+                      type="button"
+                      aria-pressed={entry === query}
+                      onClick={() => ask(entry)}
+                    >
+                      {entry}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </div>
       )}
     </div>

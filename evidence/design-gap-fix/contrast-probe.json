@@ -1,6 +1,6 @@
 {
   "url": "http://127.0.0.1:3000/",
-  "capturedAt": "2026-07-25T22:39:27.040Z",
+  "capturedAt": "2026-07-26T09:35:31.520Z",
   "node": "v24.18.0",
   "surfaces": {
     "concourse@1280": [
@@ -113,8 +113,8 @@
         "sel": ".field-threshold",
         "fontSize": "12.16px",
         "fontWeight": "400",
-        "glyphBoxes": 1,
-        "sampledPx": 6747,
+        "glyphBoxes": 2,
+        "sampledPx": 13715,
         "textColor": "oklch(0.59 0.018 215)",
         "textRgb": [
           114,
@@ -133,6 +133,138 @@
         ],
         "ratioOnDarkest": 5.07,
         "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "command bar · purpose line",
+        "sel": ".field-purpose",
+        "fontSize": "12.16px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 6968,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          4
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "inspector · site cost line",
+        "sel": ".site-cost-note",
+        "fontSize": "11.2px",
+        "fontWeight": "650",
+        "glyphBoxes": 2,
+        "sampledPx": 4730,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          7,
+          11,
+          14
+        ],
+        "brightestBg": [
+          7,
+          11,
+          14
+        ],
+        "ratioOnDarkest": 4.83,
+        "ratioOnBrightest": 4.83
+      },
+      {
+        "label": "summon pill · purpose line",
+        "sel": ".casefile-summon-why",
+        "fontSize": "10.24px",
+        "fontWeight": "400",
+        "glyphBoxes": 3,
+        "sampledPx": 2600,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          1,
+          2,
+          4
+        ],
+        "brightestBg": [
+          3,
+          5,
+          7
+        ],
+        "ratioOnDarkest": 5.08,
+        "ratioOnBrightest": 4.99
+      }
+    ],
+    "casefile-people-fresh@1280": [
+      {
+        "label": "record mode · case-file prose",
+        "sel": ".rail-panel p",
+        "fontSize": "12.16px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 5824,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 8.24,
+        "ratioOnBrightest": 8.24
+      },
+      {
+        "label": "roster · purpose line",
+        "sel": ".people-purpose",
+        "fontSize": "12.16px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 5824,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 8.24,
+        "ratioOnBrightest": 8.24
       }
     ],
     "console-custody@1280": [
@@ -161,32 +293,6 @@
         ],
         "ratioOnDarkest": 5.1,
         "ratioOnBrightest": 4.51
-      },
-      {
-        "label": "on-plate zone label",
-        "sel": ".site-closeup-zone-label",
-        "fontSize": "11.2px",
-        "fontWeight": "600",
-        "glyphBoxes": 1,
-        "sampledPx": 561,
-        "textColor": "oklch(0.72 0.018 210)",
-        "textRgb": [
-          152,
-          168,
-          171
-        ],
-        "darkestBg": [
-          1,
-          11,
-          15
-        ],
-        "brightestBg": [
-          78,
-          102,
-          113
-        ],
-        "ratioOnDarkest": 8.07,
-        "ratioOnBrightest": 2.46
       },
       {
         "label": "inspector · surface heading",
@@ -297,8 +403,8 @@
         "sel": ".field-threshold",
         "fontSize": "12.16px",
         "fontWeight": "400",
-        "glyphBoxes": 1,
-        "sampledPx": 6747,
+        "glyphBoxes": 2,
+        "sampledPx": 13715,
         "textColor": "oklch(0.59 0.018 215)",
         "textRgb": [
           114,
@@ -316,6 +422,84 @@
           4
         ],
         "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "command bar · purpose line",
+        "sel": ".field-purpose",
+        "fontSize": "12.16px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 6968,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          4
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "inspector · site cost line",
+        "sel": ".site-cost-note",
+        "fontSize": "11.2px",
+        "fontWeight": "650",
+        "glyphBoxes": 2,
+        "sampledPx": 4730,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          7,
+          11,
+          15
+        ],
+        "brightestBg": [
+          7,
+          12,
+          15
+        ],
+        "ratioOnDarkest": 4.83,
+        "ratioOnBrightest": 4.81
+      },
+      {
+        "label": "summon pill · purpose line",
+        "sel": ".casefile-summon-why",
+        "fontSize": "10.24px",
+        "fontWeight": "400",
+        "glyphBoxes": 3,
+        "sampledPx": 2600,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          1,
+          2,
+          4
+        ],
+        "brightestBg": [
+          2,
+          3,
+          6
+        ],
+        "ratioOnDarkest": 5.08,
         "ratioOnBrightest": 5.04
       }
     ],
@@ -455,8 +639,8 @@
         "sel": ".field-threshold",
         "fontSize": "12.16px",
         "fontWeight": "400",
-        "glyphBoxes": 1,
-        "sampledPx": 6747,
+        "glyphBoxes": 2,
+        "sampledPx": 13715,
         "textColor": "oklch(0.59 0.018 215)",
         "textRgb": [
           114,
@@ -475,6 +659,84 @@
         ],
         "ratioOnDarkest": 5.07,
         "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "command bar · purpose line",
+        "sel": ".field-purpose",
+        "fontSize": "12.16px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 6968,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          4
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "inspector · site cost line",
+        "sel": ".site-cost-note",
+        "fontSize": "11.2px",
+        "fontWeight": "650",
+        "glyphBoxes": 2,
+        "sampledPx": 4730,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          7,
+          11,
+          15
+        ],
+        "brightestBg": [
+          7,
+          12,
+          15
+        ],
+        "ratioOnDarkest": 4.83,
+        "ratioOnBrightest": 4.81
+      },
+      {
+        "label": "summon pill · purpose line",
+        "sel": ".casefile-summon-why",
+        "fontSize": "10.24px",
+        "fontWeight": "400",
+        "glyphBoxes": 3,
+        "sampledPx": 2600,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          1,
+          2,
+          4
+        ],
+        "brightestBg": [
+          1,
+          3,
+          5
+        ],
+        "ratioOnDarkest": 5.08,
+        "ratioOnBrightest": 5.05
       }
     ],
     "zones-care-ward@1280": [
@@ -613,8 +875,8 @@
         "sel": ".field-threshold",
         "fontSize": "12.16px",
         "fontWeight": "400",
-        "glyphBoxes": 1,
-        "sampledPx": 6747,
+        "glyphBoxes": 2,
+        "sampledPx": 13715,
         "textColor": "oklch(0.59 0.018 215)",
         "textRgb": [
           114,
@@ -633,6 +895,58 @@
         ],
         "ratioOnDarkest": 5.07,
         "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "command bar · purpose line",
+        "sel": ".field-purpose",
+        "fontSize": "12.16px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 6968,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          4
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "summon pill · purpose line",
+        "sel": ".casefile-summon-why",
+        "fontSize": "10.24px",
+        "fontWeight": "400",
+        "glyphBoxes": 3,
+        "sampledPx": 2600,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          3,
+          4,
+          7
+        ],
+        "brightestBg": [
+          9,
+          10,
+          13
+        ],
+        "ratioOnDarkest": 5.01,
+        "ratioOnBrightest": 4.84
       }
     ],
     "beat-listen-staging@1280": {
@@ -1043,6 +1357,34 @@
         "ratioOnBrightest": 4.97
       }
     ],
+    "lattice-fresh@1280": [
+      {
+        "label": "lattice · purpose line",
+        "sel": ".lattice-purpose",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 12432,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          3,
+          3,
+          4
+        ],
+        "brightestBg": [
+          4,
+          5,
+          5
+        ],
+        "ratioOnDarkest": 8.37,
+        "ratioOnBrightest": 8.28
+      }
+    ],
     "concourse@375": [
       {
         "label": "on-plate caption",
@@ -1127,8 +1469,8 @@
         "sel": ".field-threshold",
         "fontSize": "11.68px",
         "fontWeight": "400",
-        "glyphBoxes": 2,
-        "sampledPx": 5467,
+        "glyphBoxes": 4,
+        "sampledPx": 11110,
         "textColor": "oklch(0.59 0.018 215)",
         "textRgb": [
           114,
@@ -1147,6 +1489,112 @@
         ],
         "ratioOnDarkest": 5.07,
         "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "command bar · purpose line",
+        "sel": ".field-purpose",
+        "fontSize": "11.68px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 5643,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          3
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "inspector · site cost line",
+        "sel": ".site-cost-note",
+        "fontSize": "10.72px",
+        "fontWeight": "650",
+        "glyphBoxes": 2,
+        "sampledPx": 4150,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          7,
+          12,
+          15
+        ],
+        "brightestBg": [
+          7,
+          12,
+          15
+        ],
+        "ratioOnDarkest": 4.81,
+        "ratioOnBrightest": 4.81
+      }
+    ],
+    "casefile-people-fresh@375": [
+      {
+        "label": "record mode · case-file prose",
+        "sel": ".rail-panel p",
+        "fontSize": "11.68px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 4752,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 8.24,
+        "ratioOnBrightest": 8.24
+      },
+      {
+        "label": "roster · purpose line",
+        "sel": ".people-purpose",
+        "fontSize": "11.68px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 4752,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 8.24,
+        "ratioOnBrightest": 8.24
       }
     ],
     "console-custody@375": [
@@ -1164,16 +1612,16 @@
           132
         ],
         "darkestBg": [
+          6,
           4,
-          5,
-          5
+          4
         ],
         "brightestBg": [
           9,
           17,
           21
         ],
-        "ratioOnDarkest": 4.99,
+        "ratioOnDarkest": 5,
         "ratioOnBrightest": 4.66
       },
       {
@@ -1218,14 +1666,14 @@
         "darkestBg": [
           7,
           12,
-          16
+          15
         ],
         "brightestBg": [
           7,
           12,
           16
         ],
-        "ratioOnDarkest": 7.97,
+        "ratioOnDarkest": 7.98,
         "ratioOnBrightest": 7.97
       },
       {
@@ -1259,8 +1707,34 @@
         "sel": ".field-threshold",
         "fontSize": "11.68px",
         "fontWeight": "400",
+        "glyphBoxes": 4,
+        "sampledPx": 11110,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          4
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "command bar · purpose line",
+        "sel": ".field-purpose",
+        "fontSize": "11.68px",
+        "fontWeight": "400",
         "glyphBoxes": 2,
-        "sampledPx": 5467,
+        "sampledPx": 5643,
         "textColor": "oklch(0.59 0.018 215)",
         "textRgb": [
           114,
@@ -1350,14 +1824,14 @@
         "darkestBg": [
           7,
           12,
-          16
+          15
         ],
         "brightestBg": [
           7,
           12,
           16
         ],
-        "ratioOnDarkest": 7.97,
+        "ratioOnDarkest": 7.98,
         "ratioOnBrightest": 7.97
       },
       {
@@ -1391,8 +1865,34 @@
         "sel": ".field-threshold",
         "fontSize": "11.68px",
         "fontWeight": "400",
+        "glyphBoxes": 4,
+        "sampledPx": 11110,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          4
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "command bar · purpose line",
+        "sel": ".field-purpose",
+        "fontSize": "11.68px",
+        "fontWeight": "400",
         "glyphBoxes": 2,
-        "sampledPx": 5467,
+        "sampledPx": 5643,
         "textColor": "oklch(0.59 0.018 215)",
         "textRgb": [
           114,
@@ -1482,14 +1982,14 @@
         "darkestBg": [
           7,
           12,
-          16
+          15
         ],
         "brightestBg": [
           7,
           12,
           16
         ],
-        "ratioOnDarkest": 7.97,
+        "ratioOnDarkest": 7.98,
         "ratioOnBrightest": 7.97
       },
       {
@@ -1523,8 +2023,8 @@
         "sel": ".field-threshold",
         "fontSize": "11.68px",
         "fontWeight": "400",
-        "glyphBoxes": 2,
-        "sampledPx": 5467,
+        "glyphBoxes": 4,
+        "sampledPx": 11110,
         "textColor": "oklch(0.59 0.018 215)",
         "textRgb": [
           114,
@@ -1539,7 +2039,33 @@
         "brightestBg": [
           3,
           3,
-          3
+          4
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "command bar · purpose line",
+        "sel": ".field-purpose",
+        "fontSize": "11.68px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 5643,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          4
         ],
         "ratioOnDarkest": 5.07,
         "ratioOnBrightest": 5.04
@@ -1900,7 +2426,35 @@
         "ratioOnDarkest": 4.97,
         "ratioOnBrightest": 4.97
       }
+    ],
+    "lattice-fresh@375": [
+      {
+        "label": "lattice · purpose line",
+        "sel": ".lattice-purpose",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "glyphBoxes": 3,
+        "sampledPx": 12336,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          3,
+          3,
+          3
+        ],
+        "brightestBg": [
+          4,
+          4,
+          5
+        ],
+        "ratioOnDarkest": 8.37,
+        "ratioOnBrightest": 8.32
+      }
     ]
   },
-  "failures": 1
+  "failures": 0
 }

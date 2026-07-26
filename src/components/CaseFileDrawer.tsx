@@ -9,6 +9,12 @@ import { recordPortalClass } from './recordMode'
 interface CaseFileDrawerProps {
   state: GameState
   onClose: () => void
+  // The run's query trail and the way to append to it. Both are owned by the
+  // shell, not by this drawer: the drawer unmounts every time it closes, and a
+  // trail that unmounted with it would never accumulate. View-local, never
+  // persisted (App.tsx states why).
+  queryTrail: readonly string[]
+  onQuery: (query: string) => void
 }
 
 interface CaseFileSummonProps {
@@ -70,7 +76,7 @@ export function CaseFileSummon({ state, onOpen, className }: CaseFileSummonProps
 // (opening one closes the other), so there is never more than one aria-modal
 // dialog over the plate — the double-trap hazard the tabbed design exists to
 // remove.
-export function CaseFileDrawer({ state, onClose }: CaseFileDrawerProps) {
+export function CaseFileDrawer({ state, onClose, queryTrail, onQuery }: CaseFileDrawerProps) {
   const dialogRef = useRef<HTMLDivElement>(null)
   const returnFocusRef = useRef<HTMLElement | null>(null)
   const settings: AccessibilitySettings = state.settings
@@ -138,7 +144,7 @@ export function CaseFileDrawer({ state, onClose }: CaseFileDrawerProps) {
             Close <span aria-hidden="true">✕</span>
           </button>
         </header>
-        <CaseRail state={state} />
+        <CaseRail state={state} queryTrail={queryTrail} onQuery={onQuery} />
       </div>
     </div>,
     document.body,

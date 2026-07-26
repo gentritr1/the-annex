@@ -256,6 +256,19 @@ const PREPARE = `(() => {
     // not painted at all — measuring it would silently report "no target" for the
     // very text that IS on screen. The first match with visible glyph boxes wins.
     for (const el of document.querySelectorAll(sel)) {
+    // INVISIBILITY BY ANCESTOR OPACITY. The occlusion rule below already encodes
+    // "a target with no reader has no contrast problem" for covered elements;
+    // the same holds for an element inside an opacity:0 group (the room-phase
+    // zone suppressions). Its own background paints nothing, elementFromPoint
+    // still hits it (pointer-events is forced on for the hit test), and the
+    // sample reports the plate as if it sat behind readable glyphs — a false
+    // failure measured on the custody surface at exactly the suppressed phase.
+    let effOp = 1
+    for (let n2 = el; n2 && n2.nodeType === Node.ELEMENT_NODE; n2 = n2.parentElement) {
+      const opv = parseFloat(getComputedStyle(n2).opacity)
+      effOp *= Number.isFinite(opv) ? opv : 1
+    }
+    if (effOp < 0.05) continue
     // Sample the GLYPH line boxes, not the element box. An element rect includes
     // its own 1px currentColor border and, for a flex caption spanning the plate,
     // several hundred px of empty track — sampling that reports the brightest
