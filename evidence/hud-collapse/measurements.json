@@ -1,6 +1,6 @@
 {
   "url": "http://127.0.0.1:3000/",
-  "capturedAt": "2026-07-25T22:26:54.913Z",
+  "capturedAt": "2026-07-26T20:28:30.250Z",
   "node": "v24.18.0",
   "checks": [
     {
@@ -97,7 +97,7 @@
       "pass": true,
       "detail": {
         "summons": [
-          "Case file0 evidence · 1 events"
+          "Case file0 evidence · 1 eventsThe tribunal reads only what is filed here."
         ]
       }
     },
@@ -203,7 +203,7 @@
       "pass": true,
       "detail": {
         "summons": [
-          "Case file0 evidence · 1 events"
+          "Case file0 evidence · 1 eventsThe tribunal reads only what is filed here."
         ]
       }
     },
@@ -211,7 +211,7 @@
       "step": "375x812 · narrow layout scrolls as a document (recorded, not a gate)",
       "pass": true,
       "detail": {
-        "scrollHeight": 1216,
+        "scrollHeight": 1277,
         "innerHeight": 812
       }
     },
@@ -251,6 +251,13 @@
             "h": 48
           },
           {
+            "text": "ledger",
+            "pressed": "false",
+            "controls": "rail-panel-ledger",
+            "id": "rail-tab-ledger",
+            "h": 48
+          },
+          {
             "text": "Evidence 0",
             "pressed": "false",
             "controls": "rail-panel-evidence",
@@ -269,6 +276,13 @@
             "pressed": "false",
             "controls": "rail-panel-people",
             "id": "rail-tab-people",
+            "h": 48
+          },
+          {
+            "text": "search",
+            "pressed": "false",
+            "controls": "rail-panel-search",
+            "id": "rail-tab-search",
             "h": 48
           }
         ]
@@ -294,7 +308,7 @@
       }
     },
     {
-      "step": "1280x800 · four tabs, aria-wired",
+      "step": "1280x800 · six tabs, aria-wired",
       "pass": true,
       "detail": {
         "tabs": [
@@ -303,6 +317,13 @@
             "pressed": "true",
             "controls": "rail-panel-case",
             "id": "rail-tab-case",
+            "h": 48
+          },
+          {
+            "text": "ledger",
+            "pressed": "false",
+            "controls": "rail-panel-ledger",
+            "id": "rail-tab-ledger",
             "h": 48
           },
           {
@@ -325,6 +346,13 @@
             "controls": "rail-panel-people",
             "id": "rail-tab-people",
             "h": 48
+          },
+          {
+            "text": "search",
+            "pressed": "false",
+            "controls": "rail-panel-search",
+            "id": "rail-tab-search",
+            "h": 48
           }
         ]
       }
@@ -337,7 +365,21 @@
           48,
           48,
           48,
+          48,
+          48,
           48
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · tab \"ledger\" shows exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-ledger"
+        ],
+        "pressed": [
+          "rail-tab-ledger"
         ]
       }
     },
@@ -374,6 +416,18 @@
         ],
         "pressed": [
           "rail-tab-people"
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · tab \"search\" shows exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-search"
+        ],
+        "pressed": [
+          "rail-tab-search"
         ]
       }
     },
@@ -484,6 +538,13 @@
             "h": 48
           },
           {
+            "text": "ledger",
+            "pressed": "false",
+            "controls": "rail-panel-ledger",
+            "id": "rail-tab-ledger",
+            "h": 48
+          },
+          {
             "text": "Evidence 0",
             "pressed": "false",
             "controls": "rail-panel-evidence",
@@ -502,6 +563,13 @@
             "pressed": "false",
             "controls": "rail-panel-people",
             "id": "rail-tab-people",
+            "h": 48
+          },
+          {
+            "text": "search",
+            "pressed": "false",
+            "controls": "rail-panel-search",
+            "id": "rail-tab-search",
             "h": 48
           }
         ]
@@ -527,7 +595,7 @@
       }
     },
     {
-      "step": "375x812 · four tabs, aria-wired",
+      "step": "375x812 · six tabs, aria-wired",
       "pass": true,
       "detail": {
         "tabs": [
@@ -536,6 +604,13 @@
             "pressed": "true",
             "controls": "rail-panel-case",
             "id": "rail-tab-case",
+            "h": 48
+          },
+          {
+            "text": "ledger",
+            "pressed": "false",
+            "controls": "rail-panel-ledger",
+            "id": "rail-tab-ledger",
             "h": 48
           },
           {
@@ -558,6 +633,13 @@
             "controls": "rail-panel-people",
             "id": "rail-tab-people",
             "h": 48
+          },
+          {
+            "text": "search",
+            "pressed": "false",
+            "controls": "rail-panel-search",
+            "id": "rail-tab-search",
+            "h": 48
           }
         ]
       }
@@ -570,7 +652,21 @@
           48,
           48,
           48,
+          48,
+          48,
           48
+        ]
+      }
+    },
+    {
+      "step": "375x812 · tab \"ledger\" shows exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-ledger"
+        ],
+        "pressed": [
+          "rail-tab-ledger"
         ]
       }
     },
@@ -607,6 +703,18 @@
         ],
         "pressed": [
           "rail-tab-people"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · tab \"search\" shows exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-search"
+        ],
+        "pressed": [
+          "rail-tab-search"
         ]
       }
     },
@@ -737,7 +845,7 @@
         "active": {
           "tag": "DIV",
           "cls": "casefile-drawer",
-          "label": "Held on this caseCase fileClose ✕caseEvidence 0logpeopleActive d"
+          "label": "Held on this caseCase fileClose ✕caseledgerEvidence 0logpeoplese"
         }
       }
     },
@@ -745,8 +853,8 @@
       "step": "casefile 1280x800 · Tab cycles inside without escaping",
       "pass": true,
       "detail": {
-        "cycle": 7,
-        "focusableCount": 5,
+        "cycle": 9,
+        "focusableCount": 7,
         "escaped": 0,
         "toBody": 0
       }
@@ -764,12 +872,12 @@
       "detail": {
         "returned": {
           "tag": "BUTTON",
-          "cls": "casefile-summon",
-          "label": "Case file0 evidence · 1 events"
+          "cls": "casefile-summon casefile-summon--oriented",
+          "label": "Case file0 evidence · 1 eventsThe tribunal reads only what is fi"
         },
         "returnedOk": {
           "ok": true,
-          "cls": "casefile-summon"
+          "cls": "casefile-summon casefile-summon--oriented"
         }
       }
     },
@@ -839,7 +947,7 @@
         "active": {
           "tag": "DIV",
           "cls": "casefile-drawer",
-          "label": "Held on this caseCase fileClose ✕caseEvidence 0logpeopleActive d"
+          "label": "Held on this caseCase fileClose ✕caseledgerEvidence 0logpeoplese"
         }
       }
     },
@@ -847,8 +955,8 @@
       "step": "casefile 375x812 · Tab cycles inside without escaping",
       "pass": true,
       "detail": {
-        "cycle": 7,
-        "focusableCount": 5,
+        "cycle": 9,
+        "focusableCount": 7,
         "escaped": 0,
         "toBody": 0
       }
@@ -866,12 +974,12 @@
       "detail": {
         "returned": {
           "tag": "BUTTON",
-          "cls": "casefile-summon",
-          "label": "Case file0 evidence · 1 events"
+          "cls": "casefile-summon casefile-summon--oriented",
+          "label": "Case file0 evidence · 1 eventsThe tribunal reads only what is fi"
         },
         "returnedOk": {
           "ok": true,
-          "cls": "casefile-summon"
+          "cls": "casefile-summon casefile-summon--oriented"
         }
       }
     },
@@ -905,13 +1013,13 @@
           "present": true,
           "box": {
             "w": 166,
-            "h": 44,
+            "h": 89,
             "top": 158,
             "left": 581,
             "right": 746
           },
           "hitsIntended": true,
-          "hitClass": ""
+          "hitClass": "casefile-summon-why"
         },
         {
           "sel": ".scene-detail-summon",
@@ -954,7 +1062,16 @@
           "hitsIntended": true,
           "hitId": "rail-tab-case",
           "box": {
-            "w": 130,
+            "w": 87,
+            "h": 48
+          }
+        },
+        {
+          "id": "rail-tab-ledger",
+          "hitsIntended": true,
+          "hitId": "rail-tab-ledger",
+          "box": {
+            "w": 87,
             "h": 48
           }
         },
@@ -963,7 +1080,7 @@
           "hitsIntended": true,
           "hitId": "rail-tab-evidence",
           "box": {
-            "w": 130,
+            "w": 87,
             "h": 48
           }
         },
@@ -972,7 +1089,7 @@
           "hitsIntended": true,
           "hitId": "rail-tab-log",
           "box": {
-            "w": 130,
+            "w": 87,
             "h": 48
           }
         },
@@ -981,7 +1098,16 @@
           "hitsIntended": true,
           "hitId": "rail-tab-people",
           "box": {
-            "w": 130,
+            "w": 87,
+            "h": 48
+          }
+        },
+        {
+          "id": "rail-tab-search",
+          "hitsIntended": true,
+          "hitId": "rail-tab-search",
+          "box": {
+            "w": 87,
             "h": 48
           }
         }
@@ -995,6 +1121,17 @@
         "panelId": "rail-panel-case",
         "pressed": [
           "rail-tab-case"
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · tab bar sweep: clicking \"ledger\" opens only \"ledger\"",
+      "pass": true,
+      "detail": {
+        "panels": 1,
+        "panelId": "rail-panel-ledger",
+        "pressed": [
+          "rail-tab-ledger"
         ]
       }
     },
@@ -1032,6 +1169,17 @@
       }
     },
     {
+      "step": "1280x800 · tab bar sweep: clicking \"search\" opens only \"search\"",
+      "pass": true,
+      "detail": {
+        "panels": 1,
+        "panelId": "rail-panel-search",
+        "pressed": [
+          "rail-tab-search"
+        ]
+      }
+    },
+    {
       "step": "375x812 · plate chrome: each control's visual centre activates THAT control",
       "pass": true,
       "detail": [
@@ -1041,7 +1189,7 @@
           "box": {
             "w": 157,
             "h": 44,
-            "top": 164,
+            "top": 180,
             "left": 10,
             "right": 167
           },
@@ -1054,7 +1202,7 @@
           "box": {
             "w": 154,
             "h": 44,
-            "top": 216,
+            "top": 232,
             "left": 82,
             "right": 236
           },
@@ -1067,7 +1215,7 @@
           "box": {
             "w": 124,
             "h": 40,
-            "top": 216,
+            "top": 232,
             "left": 242,
             "right": 365
           },
@@ -1102,7 +1250,16 @@
           "hitsIntended": true,
           "hitId": "rail-tab-case",
           "box": {
-            "w": 94,
+            "w": 125,
+            "h": 48
+          }
+        },
+        {
+          "id": "rail-tab-ledger",
+          "hitsIntended": true,
+          "hitId": "rail-tab-ledger",
+          "box": {
+            "w": 125,
             "h": 48
           }
         },
@@ -1111,7 +1268,7 @@
           "hitsIntended": true,
           "hitId": "rail-tab-evidence",
           "box": {
-            "w": 94,
+            "w": 125,
             "h": 48
           }
         },
@@ -1120,7 +1277,7 @@
           "hitsIntended": true,
           "hitId": "rail-tab-log",
           "box": {
-            "w": 94,
+            "w": 125,
             "h": 48
           }
         },
@@ -1129,7 +1286,16 @@
           "hitsIntended": true,
           "hitId": "rail-tab-people",
           "box": {
-            "w": 94,
+            "w": 125,
+            "h": 48
+          }
+        },
+        {
+          "id": "rail-tab-search",
+          "hitsIntended": true,
+          "hitId": "rail-tab-search",
+          "box": {
+            "w": 125,
             "h": 48
           }
         }
@@ -1143,6 +1309,17 @@
         "panelId": "rail-panel-case",
         "pressed": [
           "rail-tab-case"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · tab bar sweep: clicking \"ledger\" opens only \"ledger\"",
+      "pass": true,
+      "detail": {
+        "panels": 1,
+        "panelId": "rail-panel-ledger",
+        "pressed": [
+          "rail-tab-ledger"
         ]
       }
     },
@@ -1176,6 +1353,17 @@
         "panelId": "rail-panel-people",
         "pressed": [
           "rail-tab-people"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · tab bar sweep: clicking \"search\" opens only \"search\"",
+      "pass": true,
+      "detail": {
+        "panels": 1,
+        "panelId": "rail-panel-search",
+        "pressed": [
+          "rail-tab-search"
         ]
       }
     },
@@ -1283,7 +1471,7 @@
         "transition": "none",
         "opacity": "1",
         "transform": "none",
-        "visibleText": 197,
+        "visibleText": 209,
         "osReduced": true
       }
     },
@@ -1315,7 +1503,7 @@
         "altStillPresent": "Roster portrait of the Registrar, custodian of legal continuity.",
         "drawerBg": "rgb(0, 0, 0)",
         "summonBg": "rgb(0, 0, 0)",
-        "dossierText": 753
+        "dossierText": 833
       }
     },
     {
@@ -1323,7 +1511,7 @@
       "pass": true,
       "detail": {
         "alt": "Roster portrait of the Registrar, custodian of legal continuity.",
-        "textLength": 753
+        "textLength": 833
       }
     },
     {
@@ -1500,10 +1688,10 @@
         ],
         "summonBox": {
           "w": 166,
-          "h": 44
+          "h": 89
         },
         "summonHitsItself": true,
-        "summonText": "Case file0 evidence · 0 events"
+        "summonText": "Case file0 evidence · 0 eventsThe tribunal reads only what is filed here."
       }
     },
     {
@@ -1517,12 +1705,12 @@
             "occluded": []
           },
           {
-            "scrollY": 343,
+            "scrollY": 404,
             "swept": 14,
             "occluded": []
           },
           {
-            "scrollY": 343,
+            "scrollY": 404,
             "swept": 14,
             "occluded": []
           }
@@ -1598,14 +1786,18 @@
     "01-concourse-collapsed-1280x800.png",
     "01-concourse-collapsed-375x812.png",
     "02-casefile-case-tab-1280x800.png",
+    "03-casefile-ledger-tab-1280x800.png",
     "03-casefile-evidence-tab-1280x800.png",
     "03-casefile-log-tab-1280x800.png",
     "03-casefile-people-tab-1280x800.png",
+    "03-casefile-search-tab-1280x800.png",
     "04-casefile-people-empty-1280x800.png",
     "02-casefile-case-tab-375x812.png",
+    "03-casefile-ledger-tab-375x812.png",
     "03-casefile-evidence-tab-375x812.png",
     "03-casefile-log-tab-375x812.png",
     "03-casefile-people-tab-375x812.png",
+    "03-casefile-search-tab-375x812.png",
     "04-casefile-people-empty-375x812.png",
     "05-detail-drawer-open-1280x800.png",
     "06-casefile-over-plate-1280x800.png",
@@ -1651,7 +1843,7 @@
       "worldCaption": "Civic Archive concourseSelect a thresholdDrag to look · sele",
       "ctaDock": 1,
       "summons": [
-        "Case file0 evidence · 1 events"
+        "Case file0 evidence · 1 eventsThe tribunal reads only what is filed here."
       ],
       "plate": {
         "w": 889,
@@ -1681,14 +1873,14 @@
       "worldCaption": "Civic Archive concourseSelect a thresholdDrag to look · sele",
       "ctaDock": 1,
       "summons": [
-        "Case file0 evidence · 1 events"
+        "Case file0 evidence · 1 eventsThe tribunal reads only what is filed here."
       ],
       "plate": {
         "w": 375,
         "h": 300
       },
       "pageScrolls": true,
-      "scrollHeight": 1216,
+      "scrollHeight": 1277,
       "innerHeight": 812
     },
     "drawer:1280x800": {
@@ -1719,6 +1911,13 @@
           "h": 48
         },
         {
+          "text": "ledger",
+          "pressed": "false",
+          "controls": "rail-panel-ledger",
+          "id": "rail-tab-ledger",
+          "h": 48
+        },
+        {
           "text": "Evidence 0",
           "pressed": "false",
           "controls": "rail-panel-evidence",
@@ -1737,6 +1936,13 @@
           "pressed": "false",
           "controls": "rail-panel-people",
           "id": "rail-tab-people",
+          "h": 48
+        },
+        {
+          "text": "search",
+          "pressed": "false",
+          "controls": "rail-panel-search",
+          "id": "rail-tab-search",
           "h": 48
         }
       ]
@@ -1786,7 +1992,7 @@
       "portraitWidth": 120
     },
     "atText:people-panel-1280x800": {
-      "text": "The people on this case Roster portrait of the Registrar, custodian of legal continuity. Registrar · standing credential The Registrar Custodian of legal continuity uncertain A person is a chain the city can verify. On the record this run Nothing said on the record yet. Roster portrait of the Shepherd, care-ward advocate. Care ward · standing credential The Shepherd Care-ward advocate uncertain Care recognizes a self before procedure does. On the record this run Nothing said on the record yet. Roster portrait of the Defector, compromised systems guide. Systems office · credential withdrawn The Defector Compromised systems guide uncertain Every clean record is hiding who paid for it. On the record this run Nothing said on the record yet. Roster portrait of the Small Archivist, collector of missing categories. No credential issued · shelf zero, kept by hand The Small Archivist Collector of missing categories uncertain What you refuse to name still becomes evidence. On the record this run Nothing said on the record yet.",
+      "text": "The people on this case Their standing moves with your route, and what they will give you moves with it. Roster portrait of the Registrar, custodian of legal continuity. Registrar · standing credential The Registrar Custodian of legal continuity uncertain A person is a chain the city can verify. On the record this run Nothing said on the record yet. Roster portrait of the Shepherd, care-ward advocate. Care ward · standing credential The Shepherd Care-ward advocate uncertain Care recognizes a self before procedure does. On the record this run Nothing said on the record yet. Roster portrait of the Defector, compromised systems guide. Systems office · credential withdrawn The Defector Compromised systems guide uncertain Every clean record is hiding who paid for it. On the record this run Nothing said on the record yet. Roster portrait of the Small Archivist, collector of missing categories. No credential issued · shelf zero, kept by hand The Small Archivist Collector of missing categories uncertain What you refuse to name still becomes evidence. On the record this run Nothing said on the record yet.",
       "counts": {
         "The Registrar": 1,
         "The Shepherd": 1,
@@ -1822,6 +2028,13 @@
           "h": 48
         },
         {
+          "text": "ledger",
+          "pressed": "false",
+          "controls": "rail-panel-ledger",
+          "id": "rail-tab-ledger",
+          "h": 48
+        },
+        {
           "text": "Evidence 0",
           "pressed": "false",
           "controls": "rail-panel-evidence",
@@ -1840,6 +2053,13 @@
           "pressed": "false",
           "controls": "rail-panel-people",
           "id": "rail-tab-people",
+          "h": 48
+        },
+        {
+          "text": "search",
+          "pressed": "false",
+          "controls": "rail-panel-search",
+          "id": "rail-tab-search",
           "h": 48
         }
       ]
@@ -1889,7 +2109,7 @@
       "portraitWidth": 120
     },
     "atText:people-panel-375x812": {
-      "text": "The people on this case Roster portrait of the Registrar, custodian of legal continuity. Registrar · standing credential The Registrar Custodian of legal continuity uncertain A person is a chain the city can verify. On the record this run Nothing said on the record yet. Roster portrait of the Shepherd, care-ward advocate. Care ward · standing credential The Shepherd Care-ward advocate uncertain Care recognizes a self before procedure does. On the record this run Nothing said on the record yet. Roster portrait of the Defector, compromised systems guide. Systems office · credential withdrawn The Defector Compromised systems guide uncertain Every clean record is hiding who paid for it. On the record this run Nothing said on the record yet. Roster portrait of the Small Archivist, collector of missing categories. No credential issued · shelf zero, kept by hand The Small Archivist Collector of missing categories uncertain What you refuse to name still becomes evidence. On the record this run Nothing said on the record yet.",
+      "text": "The people on this case Their standing moves with your route, and what they will give you moves with it. Roster portrait of the Registrar, custodian of legal continuity. Registrar · standing credential The Registrar Custodian of legal continuity uncertain A person is a chain the city can verify. On the record this run Nothing said on the record yet. Roster portrait of the Shepherd, care-ward advocate. Care ward · standing credential The Shepherd Care-ward advocate uncertain Care recognizes a self before procedure does. On the record this run Nothing said on the record yet. Roster portrait of the Defector, compromised systems guide. Systems office · credential withdrawn The Defector Compromised systems guide uncertain Every clean record is hiding who paid for it. On the record this run Nothing said on the record yet. Roster portrait of the Small Archivist, collector of missing categories. No credential issued · shelf zero, kept by hand The Small Archivist Collector of missing categories uncertain What you refuse to name still becomes evidence. On the record this run Nothing said on the record yet.",
       "counts": {
         "The Registrar": 1,
         "The Shepherd": 1,
@@ -1917,13 +2137,13 @@
           "present": true,
           "box": {
             "w": 166,
-            "h": 44,
+            "h": 89,
             "top": 158,
             "left": 581,
             "right": 746
           },
           "hitsIntended": true,
-          "hitClass": ""
+          "hitClass": "casefile-summon-why"
         },
         {
           "sel": ".scene-detail-summon",
@@ -1948,7 +2168,16 @@
         "hitsIntended": true,
         "hitId": "rail-tab-case",
         "box": {
-          "w": 130,
+          "w": 87,
+          "h": 48
+        }
+      },
+      {
+        "id": "rail-tab-ledger",
+        "hitsIntended": true,
+        "hitId": "rail-tab-ledger",
+        "box": {
+          "w": 87,
           "h": 48
         }
       },
@@ -1957,7 +2186,7 @@
         "hitsIntended": true,
         "hitId": "rail-tab-evidence",
         "box": {
-          "w": 130,
+          "w": 87,
           "h": 48
         }
       },
@@ -1966,7 +2195,7 @@
         "hitsIntended": true,
         "hitId": "rail-tab-log",
         "box": {
-          "w": 130,
+          "w": 87,
           "h": 48
         }
       },
@@ -1975,7 +2204,16 @@
         "hitsIntended": true,
         "hitId": "rail-tab-people",
         "box": {
-          "w": 130,
+          "w": 87,
+          "h": 48
+        }
+      },
+      {
+        "id": "rail-tab-search",
+        "hitsIntended": true,
+        "hitId": "rail-tab-search",
+        "box": {
+          "w": 87,
           "h": 48
         }
       }
@@ -1988,7 +2226,7 @@
           "box": {
             "w": 157,
             "h": 44,
-            "top": 164,
+            "top": 180,
             "left": 10,
             "right": 167
           },
@@ -2001,7 +2239,7 @@
           "box": {
             "w": 154,
             "h": 44,
-            "top": 216,
+            "top": 232,
             "left": 82,
             "right": 236
           },
@@ -2014,7 +2252,7 @@
           "box": {
             "w": 124,
             "h": 40,
-            "top": 216,
+            "top": 232,
             "left": 242,
             "right": 365
           },
@@ -2031,7 +2269,16 @@
         "hitsIntended": true,
         "hitId": "rail-tab-case",
         "box": {
-          "w": 94,
+          "w": 125,
+          "h": 48
+        }
+      },
+      {
+        "id": "rail-tab-ledger",
+        "hitsIntended": true,
+        "hitId": "rail-tab-ledger",
+        "box": {
+          "w": 125,
           "h": 48
         }
       },
@@ -2040,7 +2287,7 @@
         "hitsIntended": true,
         "hitId": "rail-tab-evidence",
         "box": {
-          "w": 94,
+          "w": 125,
           "h": 48
         }
       },
@@ -2049,7 +2296,7 @@
         "hitsIntended": true,
         "hitId": "rail-tab-log",
         "box": {
-          "w": 94,
+          "w": 125,
           "h": 48
         }
       },
@@ -2058,7 +2305,16 @@
         "hitsIntended": true,
         "hitId": "rail-tab-people",
         "box": {
-          "w": 94,
+          "w": 125,
+          "h": 48
+        }
+      },
+      {
+        "id": "rail-tab-search",
+        "hitsIntended": true,
+        "hitId": "rail-tab-search",
+        "box": {
+          "w": 125,
           "h": 48
         }
       }
@@ -2136,7 +2392,7 @@
       "transition": "none",
       "opacity": "1",
       "transform": "none",
-      "visibleText": 197,
+      "visibleText": 209,
       "osReduced": true
     },
     "highContrast": {
@@ -2153,7 +2409,7 @@
       "altStillPresent": "Roster portrait of the Registrar, custodian of legal continuity.",
       "drawerBg": "rgb(0, 0, 0)",
       "summonBg": "rgb(0, 0, 0)",
-      "dossierText": 753
+      "dossierText": 833
     },
     "consoleProportions": {
       "Registry intake": {
@@ -2292,10 +2548,10 @@
         ],
         "summonBox": {
           "w": 166,
-          "h": 44
+          "h": 89
         },
         "summonHitsItself": true,
-        "summonText": "Case file0 evidence · 0 events"
+        "summonText": "Case file0 evidence · 0 eventsThe tribunal reads only what is filed here."
       },
       "reconstruction": {
         "positions": [
@@ -2305,12 +2561,12 @@
             "occluded": []
           },
           {
-            "scrollY": 343,
+            "scrollY": 404,
             "swept": 14,
             "occluded": []
           },
           {
-            "scrollY": 343,
+            "scrollY": 404,
             "swept": 14,
             "occluded": []
           }
@@ -2379,14 +2635,14 @@
       {
         "step": "focus the summon",
         "tag": "BUTTON",
-        "cls": "casefile-summon",
-        "label": "Case file0 evidence · 1 events"
+        "cls": "casefile-summon casefile-summon--oriented",
+        "label": "Case file0 evidence · 1 eventsThe tribunal reads only what is fi"
       },
       {
         "step": "Enter opens the dialog",
         "tag": "DIV",
         "cls": "casefile-drawer",
-        "label": "Held on this caseCase fileClose ✕caseEvidence 0logpeopleActive d"
+        "label": "Held on this caseCase fileClose ✕caseledgerEvidence 0logpeoplese"
       },
       {
         "step": "Tab ×1",
@@ -2407,31 +2663,45 @@
         "isBody": false,
         "inside": true,
         "tag": "BUTTON",
-        "label": "Evidence 0"
+        "label": "ledger"
       },
       {
         "step": "Tab ×4",
         "isBody": false,
         "inside": true,
         "tag": "BUTTON",
-        "label": "log"
+        "label": "Evidence 0"
       },
       {
         "step": "Tab ×5",
         "isBody": false,
         "inside": true,
         "tag": "BUTTON",
-        "label": "people"
+        "label": "log"
       },
       {
         "step": "Tab ×6",
         "isBody": false,
         "inside": true,
         "tag": "BUTTON",
-        "label": "Close ✕"
+        "label": "people"
       },
       {
         "step": "Tab ×7",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "search"
+      },
+      {
+        "step": "Tab ×8",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "Close ✕"
+      },
+      {
+        "step": "Tab ×9",
         "isBody": false,
         "inside": true,
         "tag": "BUTTON",
@@ -2455,8 +2725,8 @@
       {
         "step": "Escape closes; focus returns",
         "tag": "BUTTON",
-        "cls": "casefile-summon",
-        "label": "Case file0 evidence · 1 events"
+        "cls": "casefile-summon casefile-summon--oriented",
+        "label": "Case file0 evidence · 1 eventsThe tribunal reads only what is fi"
       }
     ],
     "detail-1280x800": [
@@ -2519,14 +2789,14 @@
       {
         "step": "focus the summon",
         "tag": "BUTTON",
-        "cls": "casefile-summon",
-        "label": "Case file0 evidence · 1 events"
+        "cls": "casefile-summon casefile-summon--oriented",
+        "label": "Case file0 evidence · 1 eventsThe tribunal reads only what is fi"
       },
       {
         "step": "Enter opens the dialog",
         "tag": "DIV",
         "cls": "casefile-drawer",
-        "label": "Held on this caseCase fileClose ✕caseEvidence 0logpeopleActive d"
+        "label": "Held on this caseCase fileClose ✕caseledgerEvidence 0logpeoplese"
       },
       {
         "step": "Tab ×1",
@@ -2547,31 +2817,45 @@
         "isBody": false,
         "inside": true,
         "tag": "BUTTON",
-        "label": "Evidence 0"
+        "label": "ledger"
       },
       {
         "step": "Tab ×4",
         "isBody": false,
         "inside": true,
         "tag": "BUTTON",
-        "label": "log"
+        "label": "Evidence 0"
       },
       {
         "step": "Tab ×5",
         "isBody": false,
         "inside": true,
         "tag": "BUTTON",
-        "label": "people"
+        "label": "log"
       },
       {
         "step": "Tab ×6",
         "isBody": false,
         "inside": true,
         "tag": "BUTTON",
-        "label": "Close ✕"
+        "label": "people"
       },
       {
         "step": "Tab ×7",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "search"
+      },
+      {
+        "step": "Tab ×8",
+        "isBody": false,
+        "inside": true,
+        "tag": "BUTTON",
+        "label": "Close ✕"
+      },
+      {
+        "step": "Tab ×9",
         "isBody": false,
         "inside": true,
         "tag": "BUTTON",
@@ -2595,14 +2879,14 @@
       {
         "step": "Escape closes; focus returns",
         "tag": "BUTTON",
-        "cls": "casefile-summon",
-        "label": "Case file0 evidence · 1 events"
+        "cls": "casefile-summon casefile-summon--oriented",
+        "label": "Case file0 evidence · 1 eventsThe tribunal reads only what is fi"
       }
     ]
   },
   "summary": {
-    "total": 123,
-    "passed": 123,
+    "total": 131,
+    "passed": 131,
     "failed": 0
   }
 }

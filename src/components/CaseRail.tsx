@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { getCaseContent, getReactionsForSource, methodLabels, personas } from '../game/content'
 import { getTrustLabel } from '../game/engine'
 import { personaRunLines } from '../game/personaRecord'
+import { buildLedger, ledgerFilingLabels, type LedgerCost } from '../game/ledger'
 import {
   buildRecordIndex,
   groupByVoice,
@@ -22,7 +23,7 @@ interface CaseRailProps {
   onQuery: (query: string) => void
 }
 
-type RailTab = 'case' | 'evidence' | 'log' | 'people' | 'search'
+type RailTab = 'case' | 'ledger' | 'evidence' | 'log' | 'people' | 'search'
 
 // SEARCH IS A FIFTH TAB, not a field above the bar. Argued from the drawer's own
 // structure: the bar is a mutually-exclusive panel switcher whose contract three
@@ -33,7 +34,25 @@ type RailTab = 'case' | 'evidence' | 'log' | 'people' | 'search'
 // row above the fold on the 375-wide sheet, where the header and the bar already
 // sit. A fifth cell reuses the aria wiring exactly, keeps one surface visible at
 // a time, and keeps the query trail beside the results it produced.
-const RAIL_TABS: readonly RailTab[] = ['case', 'evidence', 'log', 'people', 'search']
+//
+// LEDGER IS THE SIXTH CELL, and it sits SECOND — directly after the case, ahead
+// of the exhibits. The bar reads as the folio does: the assignment, the running
+// account of it, then the papers the account is drawn from (exhibits, log,
+// people), then the tool for interrogating them (search). A ledger filed behind
+// the search box would be a report nobody reaches; the clerk's summary belongs
+// at the front.
+const RAIL_TABS: readonly RailTab[] = ['case', 'ledger', 'evidence', 'log', 'people', 'search']
+
+// The ledger's cost column, in the log's own trace vocabulary. Terse on purpose:
+// a cost is scanned, not read, and a sentence per moment would make the book the
+// codex dump the whole item exists to avoid. `absorbed` is the honest reading of
+// the reducer's clamp — the method carried a trace the ceiling swallowed, which
+// is not the same fact as carrying none.
+function costLine(cost: LedgerCost): string {
+  if (cost.alarmDelta === 0) return 'Civic trace · none'
+  if (cost.alarmAfter === cost.alarmBefore) return `Civic trace · absorbed at ${cost.alarmAfter}`
+  return `Civic trace · ${cost.alarmBefore} → ${cost.alarmAfter}`
+}
 
 const statusLabels: Record<EvidenceStatus, string> = {
   verified: 'Verified',
@@ -126,6 +145,11 @@ export function CaseRail({ state, queryTrail, onQuery }: CaseRailProps) {
       : matches.length === 1
         ? `1 entry answers to “${query}”.`
         : `${matches.length} entries answer to “${query}”.`
+
+  // ── The ledger (E3) ────────────────────────────────────────────────────────
+  // Built only while its panel is up. A pure derivation over state, content and
+  // the record index — no state of its own, nothing memoized for correctness.
+  const ledger = activeTab === 'ledger' ? buildLedger(state) : null
 
   function ask(term: string) {
     const asked = term.trim()
@@ -265,6 +289,117 @@ export function CaseRail({ state, queryTrail, onQuery }: CaseRailProps) {
               </div>
             </section>
           )}
+        </div>
+      )}
+
+      {/* THE LEDGER (E3). Obra Dinn's book: the run's own paper trail, bound and
+          read forwards, with the clerk's summary at the front of the folio.
+
+          What it deliberately is NOT: a second log. The log panel reads newest
+          first and carries method tags; the ledger reads oldest first and
+          carries what each moment FILED, what it cost in civic trace, and the
+          contradiction each admitted exhibit brings with it. Two readings of one
+          record — the failure mode named in the research is the codex that
+          re-prints everything (`ui-patterns-deep-research.md:57`).
+
+          Every sentence here is either an authored string quoted verbatim or an
+          assembled sentence over derived facts (game/ledger.ts). It animates
+          nothing, for the same reason the roster and the search panel do not:
+          the surface is summoned, so everything it reports has already
+          happened. */}
+      {activeTab === 'ledger' && ledger && (
+        <div className="rail-panel ledger-panel" id="rail-panel-ledger" aria-labelledby="rail-tab-ledger">
+          <section className="rail-block ledger-findings">
+            <h2>Findings so far</h2>
+            <p className="rail-note">
+              What the record supports as it stands. Each line is read off the file
+              itself; nothing here is a guess about what the file will hold next.
+            </p>
+            <ol className="ledger-findings-list">
+              {ledger.findings.map((finding) => (
+                <li key={finding.id}>{finding.text}</li>
+              ))}
+            </ol>
+          </section>
+
+          {ledger.carriedIn.length > 0 && (
+            <section className="rail-block ledger-carried">
+              <h2>Carried in before this run</h2>
+              <ul className="ledger-carried-list">
+                {ledger.carriedIn.map((entry) => (
+                  <li key={entry.id}>
+                    <h3 className="ledger-filing-title">{entry.title}</h3>
+                    <p className="ledger-filing-body">{entry.body}</p>
+                    <p className="ledger-filing-cite">{entry.cite}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          <section className="rail-block ledger-chronology">
+            <h2>The record, in order</h2>
+            <ol className="ledger-moments">
+              {ledger.moments.map((moment) => (
+                <li className="ledger-moment" key={moment.id} data-tone={moment.tone}>
+                  <p className="ledger-moment-cite">{moment.cite}</p>
+                  <h3 className="ledger-moment-title">{moment.title}</h3>
+                  <p className="ledger-moment-detail">{moment.detail}</p>
+                  {moment.cost && <p className="ledger-moment-cost">{costLine(moment.cost)}</p>}
+
+                  {moment.filings.length > 0 && (
+                    <ul className="ledger-filings">
+                      {moment.filings.map((entry) => (
+                        <li key={entry.id} data-filing={entry.kind}>
+                          <p className="rail-label">{ledgerFilingLabels[entry.kind]}</p>
+                          <h4 className="ledger-filing-title">{entry.title}</h4>
+                          <p className="ledger-filing-cite">{entry.cite}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {/* THE PAIR. The case's central fiction is a chain that proves
+                      provenance and fails continuity, so the claim and the thing
+                      that argues with it are shown together, at the moment the
+                      exhibit was admitted — never as an appendix, and never one
+                      without the other. Both halves are the authored strings. */}
+                  {moment.contradictions.map((pair) => (
+                    <div className="ledger-pair" key={pair.id}>
+                      <p className="ledger-pair-half">
+                        <span className="rail-label">The claim</span>
+                        {pair.claim}
+                      </p>
+                      <p className="ledger-pair-half ledger-pair-against">
+                        <span className="rail-label">Against it</span>
+                        {pair.contradiction}
+                      </p>
+                      <p className="ledger-filing-cite">{pair.cite}</p>
+                    </div>
+                  ))}
+
+                  {/* Spoken lines are grouped by voice inside the moment, so a
+                      presence that answered twice is still named once here. */}
+                  {moment.voices.length > 0 && (
+                    <ul className="ledger-voices">
+                      {moment.voices.map((voice) => (
+                        <li key={voice.voice}>
+                          <h4 className="ledger-voice">{voice.voice}</h4>
+                          <ol className="ledger-voice-lines">
+                            {voice.entries.map((entry) => (
+                              <li key={entry.id}>
+                                <p className="ledger-line">{entry.body}</p>
+                              </li>
+                            ))}
+                          </ol>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </section>
         </div>
       )}
 

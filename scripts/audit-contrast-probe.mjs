@@ -244,6 +244,20 @@ const TARGETS = JSON.stringify([
   ['.casefile-summon-why', 'summon pill · purpose line'],
   ['.lattice-purpose', 'lattice · purpose line'],
   ['.people-purpose', 'roster · purpose line'],
+  // THE LEDGER (E3, Wave 2 round 2). ADDED targets, never a relaxed one. The
+  // ledger's prose sits inside `.rail-panel p`, which is already measured — but
+  // its own two dim registers are not: the mono citation at --fog-dim and the
+  // cost column at --fog, both at --type-micro, which is the smallest type the
+  // panel prints. Those are the rows that could fail; measuring only the bright
+  // prose would be measuring the safe half of a new surface.
+  ['.ledger-findings-list li', 'ledger · findings sentence'],
+  ['.ledger-moment-title', 'ledger · moment title'],
+  ['.ledger-moment-cite', 'ledger · moment citation'],
+  ['.ledger-moment-cost', 'ledger · cost column'],
+  ['.ledger-filing-title', 'ledger · filing title'],
+  ['.ledger-filing-cite', 'ledger · filing citation'],
+  ['.ledger-pair-half', 'ledger · contradiction pair'],
+  ['.ledger-voice', 'ledger · voice heading'],
 ])
 
 const PREPARE = `(() => {
@@ -487,6 +501,30 @@ for (const [w, h] of [[1280, 800], [375, 812]]) {
   if (await click('.casefile-summon')) {
     await sleep(700)
     await probe('record-casefile', w, h)
+    // E3. The ledger, on the SAME filed run and the same open drawer, so its
+    // chronology holds a real filing (a fresh-run ledger has one moment, no
+    // filings and no contradiction pair — half its registers would be absent).
+    if (await click('#rail-tab-ledger')) {
+      await sleep(500)
+      await probe('record-ledger', w, h)
+      // The panel is taller than the drawer, and PREPARE only samples glyph
+      // boxes that elementFromPoint actually hits — so a target below the fold
+      // is silently "not present" rather than measured. The contradiction pair
+      // and the voice heading both live near the end of a filing moment, so each
+      // is scrolled to the middle of the scroll port and measured there. Skipping
+      // this would have reported the ledger clean while two of its registers had
+      // never been sampled at all.
+      for (const [sel, name] of [['.ledger-pair', 'record-ledger-pair'], ['.ledger-voice', 'record-ledger-voice']]) {
+        const scrolled = await evaluate(`(() => {
+          const el = document.querySelector(${JSON.stringify(sel)})
+          if (!el) return false
+          el.scrollIntoView({ block: 'center' })
+          return true })()`)
+        if (!scrolled) continue
+        await sleep(400)
+        await probe(name, w, h)
+      }
+    }
     await click('.casefile-close')
     await sleep(400)
   }

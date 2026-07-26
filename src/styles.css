@@ -5478,9 +5478,15 @@ p {
   z-index: 2;
   top: 0;
   display: grid;
-  /* Five tabs since the record became searchable:
-     case · evidence · log · people · search. */
-  grid-template-columns: repeat(5, 1fr);
+  /* Six tabs since the record was bound into a ledger:
+     case · ledger · evidence · log · people · search.
+     Below 700px the drawer is a full-width sheet and six cells would leave ~46px
+     of content box for "Evidence 1" — so the bar wraps to two rows of three
+     there rather than shrinking a tab below its label or scrolling one out of
+     reach. Both rows are still the same sticky bar, so no third chrome row is
+     added above the fold; and each cell keeps its 48px min-height, so the 44px
+     target assertion holds at both widths. */
+  grid-template-columns: repeat(6, 1fr);
   background: var(--concrete);
   border-bottom: 1px solid var(--line);
 }
@@ -6157,6 +6163,207 @@ p {
   background: var(--amber);
   border-color: var(--amber);
   font-weight: 700;
+}
+
+/* ══ THE LEDGER (E3) ══════════════════════════════════════════════════════════
+   The sixth panel: the run's own paper trail, bound and read forwards, with the
+   clerk's summary at the front of the folio.
+
+   It opens NO new registers. The findings list is `.rail-note` prose one step up;
+   a moment title is the roster's `h3`; a filing title is a result title; every
+   citation is `.persona-dossier-cite` exactly — the log's monospace moment-name,
+   so a line here can be matched back to the panel that owns it by eye. No new
+   font-size literal: every size is a --type-* token, none of which is retuned.
+
+   The one piece of ornament is the rule down the left of the chronology. It is a
+   1px `--line` border on the list, with each moment's own dot sitting on it —
+   the physical fact of a bound book's gutter, doing the work an animation would
+   otherwise be asked to do. Nothing here animates: the surface is summoned, so
+   everything it reports has already happened. */
+
+.ledger-panel {
+  padding-bottom: 36px;
+}
+
+.ledger-findings-list {
+  margin: 12px 0 0;
+  padding: 0 0 0 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--record);
+  font-size: var(--type-body);
+  line-height: 1.55;
+  list-style: decimal;
+}
+
+.ledger-findings-list::marker,
+.ledger-findings-list li::marker {
+  color: var(--fog-dim);
+}
+
+.ledger-carried-list,
+.ledger-moments,
+.ledger-filings,
+.ledger-voices,
+.ledger-voice-lines {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+}
+
+.ledger-carried-list {
+  gap: 16px;
+  margin-top: 12px;
+}
+
+/* The gutter. The rule is the list's own left border; each moment hangs its
+   number plate on it. */
+.ledger-moments {
+  gap: 26px;
+  margin-top: 14px;
+  padding-left: 16px;
+  border-left: 1px solid var(--line);
+}
+
+.ledger-moment {
+  position: relative;
+}
+
+.ledger-moment::before {
+  content: '';
+  position: absolute;
+  top: 0.5em;
+  left: -20px;
+  width: 7px;
+  height: 7px;
+  background: var(--line-strong);
+  border-radius: 50%;
+}
+
+.ledger-moment[data-tone='warning']::before {
+  background: var(--coral);
+}
+
+.ledger-moment[data-tone='positive']::before {
+  background: var(--cyan);
+}
+
+.ledger-moment-cite,
+.ledger-filing-cite {
+  margin: 0;
+  color: var(--fog-dim);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-micro);
+  letter-spacing: 0.03em;
+}
+
+.ledger-filing-cite {
+  margin-top: 4px;
+}
+
+.ledger-moment-title {
+  margin: 2px 0 0;
+  color: var(--record);
+  font-size: var(--type-meta);
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+.ledger-moment-detail {
+  margin: 6px 0 0;
+  color: var(--record);
+  font-size: var(--type-body);
+  line-height: 1.55;
+}
+
+/* The cost column. Scanned, never read: a ledger's margin figure. */
+.ledger-moment-cost {
+  margin: 8px 0 0;
+  color: var(--fog);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-micro);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.ledger-filings {
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: var(--concrete);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.ledger-filing-title {
+  margin: 2px 0 0;
+  color: var(--record);
+  font-size: var(--type-meta);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.ledger-filing-body {
+  margin: 4px 0 0;
+  color: var(--record);
+  font-size: var(--type-body);
+  line-height: 1.55;
+}
+
+/* THE PAIR. Two halves of one exhibit, set as two halves: the claim on the
+   record's own ink, the thing that argues with it marked by a coral gutter. The
+   colour is never the only carrier — each half is labelled in words. */
+.ledger-pair {
+  margin-top: 12px;
+  padding-left: 12px;
+  border-left: 2px solid var(--line-strong);
+}
+
+.ledger-pair-half {
+  margin: 0;
+  color: var(--record);
+  font-size: var(--type-body);
+  line-height: 1.55;
+}
+
+.ledger-pair-half .rail-label {
+  display: block;
+  margin-bottom: 2px;
+}
+
+.ledger-pair-against {
+  margin-top: 10px;
+  padding-left: 10px;
+  border-left: 2px solid var(--coral);
+}
+
+.ledger-voices {
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.ledger-voice {
+  margin: 0 0 4px;
+  color: var(--record);
+  font-size: var(--type-meta);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.ledger-voice-lines {
+  gap: 8px;
+  padding-left: 12px;
+  border-left: 1px solid var(--line);
+}
+
+.ledger-line {
+  margin: 0;
+  color: var(--record);
+  font-size: var(--type-body);
+  line-height: 1.5;
 }
 
 /* Responsive behavior */
@@ -10656,7 +10863,7 @@ p {
 }
 
 /* The rail is the drawer's scrolling body; its tab bar pins to the top of that
-   scroll port, so all four tabs stay reachable however far the panel runs. */
+   scroll port, so all six tabs stay reachable however far the panel runs. */
 .casefile-drawer .case-rail {
   flex: 1 1 auto;
   min-height: 0;
@@ -10677,6 +10884,11 @@ p {
   .casefile-drawer {
     width: 100%;
     border-left: 0;
+  }
+
+  /* Two rows of three rather than six cells of ~62px (see .rail-tabs). */
+  .casefile-drawer .rail-tabs {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 

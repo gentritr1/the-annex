@@ -1,6 +1,6 @@
 {
   "url": "http://127.0.0.1:3000/",
-  "capturedAt": "2026-07-26T09:35:31.520Z",
+  "capturedAt": "2026-07-26T20:24:57.488Z",
   "node": "v24.18.0",
   "surfaces": {
     "concourse@1280": [
@@ -1357,6 +1357,636 @@
         "ratioOnBrightest": 4.97
       }
     ],
+    "record-ledger@1280": [
+      {
+        "label": "record mode · case-file prose",
+        "sel": ".rail-panel p",
+        "fontSize": "11.2px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 7513,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 4.97,
+        "ratioOnBrightest": 4.97
+      },
+      {
+        "label": "record mode · case-file note",
+        "sel": ".rail-note",
+        "fontSize": "11.2px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 7513,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 4.97,
+        "ratioOnBrightest": 4.97
+      },
+      {
+        "label": "ledger · findings sentence",
+        "sel": ".ledger-findings-list li",
+        "fontSize": "13.12px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 5908,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 17.13,
+        "ratioOnBrightest": 17.13
+      },
+      {
+        "label": "ledger · moment title",
+        "sel": ".ledger-moment-title",
+        "fontSize": "12.16px",
+        "fontWeight": "750",
+        "glyphBoxes": 1,
+        "sampledPx": 1690,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 17.13,
+        "ratioOnBrightest": 17.13
+      },
+      {
+        "label": "ledger · moment citation",
+        "sel": ".ledger-moment-cite",
+        "fontSize": "10.24px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 500,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 4.97,
+        "ratioOnBrightest": 4.97
+      },
+      {
+        "label": "ledger · cost column",
+        "sel": ".ledger-moment-cost",
+        "fontSize": "10.24px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 1150,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 8.24,
+        "ratioOnBrightest": 8.24
+      },
+      {
+        "label": "ledger · filing title",
+        "sel": ".ledger-filing-title",
+        "fontSize": "12.16px",
+        "fontWeight": "700",
+        "glyphBoxes": 1,
+        "sampledPx": 1508,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          9,
+          14,
+          18
+        ],
+        "brightestBg": [
+          9,
+          14,
+          18
+        ],
+        "ratioOnDarkest": 16.36,
+        "ratioOnBrightest": 16.36
+      },
+      {
+        "label": "ledger · filing citation",
+        "sel": ".ledger-filing-cite",
+        "fontSize": "10.24px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 1470,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          9,
+          14,
+          18
+        ],
+        "brightestBg": [
+          9,
+          14,
+          18
+        ],
+        "ratioOnDarkest": 4.74,
+        "ratioOnBrightest": 4.74
+      }
+    ],
+    "record-ledger-pair@1280": [
+      {
+        "label": "record mode · case-file prose",
+        "sel": ".rail-panel p",
+        "fontSize": "10.24px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 500,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 4.97,
+        "ratioOnBrightest": 4.97
+      },
+      {
+        "label": "ledger · moment title",
+        "sel": ".ledger-moment-title",
+        "fontSize": "12.16px",
+        "fontWeight": "750",
+        "glyphBoxes": 1,
+        "sampledPx": 2639,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 17.13,
+        "ratioOnBrightest": 17.13
+      },
+      {
+        "label": "ledger · moment citation",
+        "sel": ".ledger-moment-cite",
+        "fontSize": "10.24px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 500,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 4.97,
+        "ratioOnBrightest": 4.97
+      },
+      {
+        "label": "ledger · cost column",
+        "sel": ".ledger-moment-cost",
+        "fontSize": "10.24px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 1150,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 8.24,
+        "ratioOnBrightest": 8.24
+      },
+      {
+        "label": "ledger · filing title",
+        "sel": ".ledger-filing-title",
+        "fontSize": "12.16px",
+        "fontWeight": "700",
+        "glyphBoxes": 1,
+        "sampledPx": 1508,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          9,
+          14,
+          18
+        ],
+        "brightestBg": [
+          9,
+          14,
+          18
+        ],
+        "ratioOnDarkest": 16.36,
+        "ratioOnBrightest": 16.36
+      },
+      {
+        "label": "ledger · filing citation",
+        "sel": ".ledger-filing-cite",
+        "fontSize": "10.24px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 1470,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          9,
+          14,
+          18
+        ],
+        "brightestBg": [
+          9,
+          14,
+          18
+        ],
+        "ratioOnDarkest": 4.74,
+        "ratioOnBrightest": 4.74
+      },
+      {
+        "label": "ledger · contradiction pair",
+        "sel": ".ledger-pair-half",
+        "fontSize": "13.12px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 5181,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 17.13,
+        "ratioOnBrightest": 17.13
+      },
+      {
+        "label": "ledger · voice heading",
+        "sel": ".ledger-voice",
+        "fontSize": "12.16px",
+        "fontWeight": "700",
+        "glyphBoxes": 1,
+        "sampledPx": 1079,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 17.13,
+        "ratioOnBrightest": 17.13
+      }
+    ],
+    "record-ledger-voice@1280": [
+      {
+        "label": "record mode · case-file prose",
+        "sel": ".rail-panel p",
+        "fontSize": "10.24px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 500,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 4.97,
+        "ratioOnBrightest": 4.97
+      },
+      {
+        "label": "ledger · moment title",
+        "sel": ".ledger-moment-title",
+        "fontSize": "12.16px",
+        "fontWeight": "750",
+        "glyphBoxes": 1,
+        "sampledPx": 2639,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 17.13,
+        "ratioOnBrightest": 17.13
+      },
+      {
+        "label": "ledger · moment citation",
+        "sel": ".ledger-moment-cite",
+        "fontSize": "10.24px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 500,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 4.97,
+        "ratioOnBrightest": 4.97
+      },
+      {
+        "label": "ledger · cost column",
+        "sel": ".ledger-moment-cost",
+        "fontSize": "10.24px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 1150,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 8.24,
+        "ratioOnBrightest": 8.24
+      },
+      {
+        "label": "ledger · filing title",
+        "sel": ".ledger-filing-title",
+        "fontSize": "12.16px",
+        "fontWeight": "700",
+        "glyphBoxes": 1,
+        "sampledPx": 1508,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          9,
+          14,
+          18
+        ],
+        "brightestBg": [
+          9,
+          14,
+          18
+        ],
+        "ratioOnDarkest": 16.36,
+        "ratioOnBrightest": 16.36
+      },
+      {
+        "label": "ledger · filing citation",
+        "sel": ".ledger-filing-cite",
+        "fontSize": "10.24px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 1470,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          9,
+          14,
+          18
+        ],
+        "brightestBg": [
+          9,
+          14,
+          18
+        ],
+        "ratioOnDarkest": 4.74,
+        "ratioOnBrightest": 4.74
+      },
+      {
+        "label": "ledger · contradiction pair",
+        "sel": ".ledger-pair-half",
+        "fontSize": "13.12px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 5181,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 17.13,
+        "ratioOnBrightest": 17.13
+      },
+      {
+        "label": "ledger · voice heading",
+        "sel": ".ledger-voice",
+        "fontSize": "12.16px",
+        "fontWeight": "700",
+        "glyphBoxes": 1,
+        "sampledPx": 1079,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 17.13,
+        "ratioOnBrightest": 17.13
+      }
+    ],
     "lattice-fresh@1280": [
       {
         "label": "lattice · purpose line",
@@ -2425,6 +3055,480 @@
         ],
         "ratioOnDarkest": 4.97,
         "ratioOnBrightest": 4.97
+      }
+    ],
+    "record-ledger@375": [
+      {
+        "label": "record mode · case-file prose",
+        "sel": ".rail-panel p",
+        "fontSize": "10.72px",
+        "fontWeight": "400",
+        "glyphBoxes": 3,
+        "sampledPx": 6530,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 4.97,
+        "ratioOnBrightest": 4.97
+      },
+      {
+        "label": "record mode · case-file note",
+        "sel": ".rail-note",
+        "fontSize": "10.72px",
+        "fontWeight": "400",
+        "glyphBoxes": 3,
+        "sampledPx": 6530,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 4.97,
+        "ratioOnBrightest": 4.97
+      },
+      {
+        "label": "ledger · findings sentence",
+        "sel": ".ledger-findings-list li",
+        "fontSize": "12.64px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 5239,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 17.13,
+        "ratioOnBrightest": 17.13
+      },
+      {
+        "label": "ledger · moment title",
+        "sel": ".ledger-moment-title",
+        "fontSize": "11.68px",
+        "fontWeight": "750",
+        "glyphBoxes": 1,
+        "sampledPx": 1375,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 17.13,
+        "ratioOnBrightest": 17.13
+      },
+      {
+        "label": "ledger · moment citation",
+        "sel": ".ledger-moment-cite",
+        "fontSize": "9.92px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 432,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 4.97,
+        "ratioOnBrightest": 4.97
+      },
+      {
+        "label": "ledger · cost column",
+        "sel": ".ledger-moment-cost",
+        "fontSize": "9.92px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 999,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 8.24,
+        "ratioOnBrightest": 8.24
+      }
+    ],
+    "record-ledger-pair@375": [
+      {
+        "label": "record mode · case-file prose",
+        "sel": ".rail-panel p",
+        "fontSize": "12.64px",
+        "fontWeight": "400",
+        "glyphBoxes": 3,
+        "sampledPx": 10335,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          42,
+          53,
+          58
+        ],
+        "ratioOnDarkest": 17.13,
+        "ratioOnBrightest": 10.62
+      },
+      {
+        "label": "ledger · cost column",
+        "sel": ".ledger-moment-cost",
+        "fontSize": "9.92px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 999,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 8.24,
+        "ratioOnBrightest": 8.24
+      },
+      {
+        "label": "ledger · filing title",
+        "sel": ".ledger-filing-title",
+        "fontSize": "11.68px",
+        "fontWeight": "700",
+        "glyphBoxes": 1,
+        "sampledPx": 1232,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          9,
+          14,
+          18
+        ],
+        "brightestBg": [
+          9,
+          14,
+          18
+        ],
+        "ratioOnDarkest": 16.36,
+        "ratioOnBrightest": 16.36
+      },
+      {
+        "label": "ledger · filing citation",
+        "sel": ".ledger-filing-cite",
+        "fontSize": "9.92px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 1278,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          9,
+          14,
+          18
+        ],
+        "brightestBg": [
+          9,
+          14,
+          18
+        ],
+        "ratioOnDarkest": 4.74,
+        "ratioOnBrightest": 4.74
+      },
+      {
+        "label": "ledger · contradiction pair",
+        "sel": ".ledger-pair-half",
+        "fontSize": "12.64px",
+        "fontWeight": "400",
+        "glyphBoxes": 3,
+        "sampledPx": 4621,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 17.13,
+        "ratioOnBrightest": 17.13
+      },
+      {
+        "label": "ledger · voice heading",
+        "sel": ".ledger-voice",
+        "fontSize": "11.68px",
+        "fontWeight": "700",
+        "glyphBoxes": 1,
+        "sampledPx": 880,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 17.13,
+        "ratioOnBrightest": 17.13
+      }
+    ],
+    "record-ledger-voice@375": [
+      {
+        "label": "record mode · case-file prose",
+        "sel": ".rail-panel p",
+        "fontSize": "12.64px",
+        "fontWeight": "400",
+        "glyphBoxes": 3,
+        "sampledPx": 10335,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          42,
+          53,
+          58
+        ],
+        "ratioOnDarkest": 17.13,
+        "ratioOnBrightest": 10.62
+      },
+      {
+        "label": "ledger · cost column",
+        "sel": ".ledger-moment-cost",
+        "fontSize": "9.92px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 999,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 8.24,
+        "ratioOnBrightest": 8.24
+      },
+      {
+        "label": "ledger · filing title",
+        "sel": ".ledger-filing-title",
+        "fontSize": "11.68px",
+        "fontWeight": "700",
+        "glyphBoxes": 1,
+        "sampledPx": 1232,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          9,
+          14,
+          18
+        ],
+        "brightestBg": [
+          9,
+          14,
+          18
+        ],
+        "ratioOnDarkest": 16.36,
+        "ratioOnBrightest": 16.36
+      },
+      {
+        "label": "ledger · filing citation",
+        "sel": ".ledger-filing-cite",
+        "fontSize": "9.92px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 1278,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          9,
+          14,
+          18
+        ],
+        "brightestBg": [
+          9,
+          14,
+          18
+        ],
+        "ratioOnDarkest": 4.74,
+        "ratioOnBrightest": 4.74
+      },
+      {
+        "label": "ledger · contradiction pair",
+        "sel": ".ledger-pair-half",
+        "fontSize": "12.64px",
+        "fontWeight": "400",
+        "glyphBoxes": 3,
+        "sampledPx": 4621,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 17.13,
+        "ratioOnBrightest": 17.13
+      },
+      {
+        "label": "ledger · voice heading",
+        "sel": ".ledger-voice",
+        "fontSize": "11.68px",
+        "fontWeight": "700",
+        "glyphBoxes": 1,
+        "sampledPx": 880,
+        "textColor": "oklch(0.94 0.012 190)",
+        "textRgb": [
+          227,
+          238,
+          237
+        ],
+        "darkestBg": [
+          4,
+          6,
+          7
+        ],
+        "brightestBg": [
+          4,
+          6,
+          7
+        ],
+        "ratioOnDarkest": 17.13,
+        "ratioOnBrightest": 17.13
       }
     ],
     "lattice-fresh@375": [

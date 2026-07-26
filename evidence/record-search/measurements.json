@@ -1,0 +1,2503 @@
+{
+  "url": "http://127.0.0.1:3000/",
+  "capturedAt": "2026-07-26T20:27:18.500Z",
+  "node": "v24.18.0",
+  "checks": [
+    {
+      "step": "1280x800 · fresh search: a real labelled field inside a search form",
+      "pass": true,
+      "detail": {
+        "id": "record-search-input",
+        "type": "search",
+        "label": "Search the record",
+        "role": "search"
+      }
+    },
+    {
+      "step": "1280x800 · fresh search: the count line exists and is polite BEFORE anything is asked",
+      "pass": true,
+      "detail": {
+        "status": "",
+        "live": "polite"
+      }
+    },
+    {
+      "step": "1280x800 · fresh search: nothing asked yet, and the panel says so",
+      "pass": true,
+      "detail": "Nothing has been asked of the file yet"
+    },
+    {
+      "step": "1280x800 · a fresh run's record cannot answer with a place the auditor has not been",
+      "pass": true,
+      "detail": {
+        "status": "No entry answers to “room twelve”.",
+        "groups": 0,
+        "empty": "The record does not answer to that"
+      }
+    },
+    {
+      "step": "1280x800 · a fresh run answers with the approach it took, and nothing else",
+      "pass": true,
+      "detail": {
+        "groups": [
+          "On the log"
+        ],
+        "lines": 1
+      }
+    },
+    {
+      "step": "1280x800 · a fresh ledger states only what a fresh run supports",
+      "pass": true,
+      "detail": [
+        "No location is closed yet.",
+        "No memory model is on file.",
+        "The tribunal will not hear this record yet: 2 more locations must be closed and a memory model must be filed."
+      ]
+    },
+    {
+      "step": "1280x800 · a fresh ledger holds one moment: no filing, no cost, nothing carried in",
+      "pass": true,
+      "detail": [
+        {
+          "cite": "Entry 01",
+          "title": "Begin with the record",
+          "detail": "Establish chain of custody before speaking to anyone involved. — Registrar +1.",
+          "cost": null,
+          "tone": "neutral",
+          "filings": [],
+          "pairs": [],
+          "voices": [],
+          "lines": []
+        }
+      ]
+    },
+    {
+      "step": "1280x800 · a term reaches the admitted exhibit, cited to its authored source",
+      "pass": true,
+      "detail": {
+        "group": {
+          "label": "Admitted evidence",
+          "voices": [],
+          "entries": [
+            "The rain in room twelve"
+          ],
+          "lines": [
+            "77-A recalls rain against a window in a room that had no exterior wall. “I know there was no glass,” she says. “I watched it anyway.” The Shepherd remembers Mara using the same image as a calming metaphor."
+          ],
+          "cites": [
+            "77-A testimony"
+          ]
+        }
+      }
+    },
+    {
+      "step": "1280x800 · the same term also reaches the log entry that admitted it",
+      "pass": true,
+      "detail": {
+        "labels": [
+          "On the log",
+          "Admitted evidence"
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · the count line agrees with what is on screen",
+      "pass": true,
+      "detail": {
+        "status": "2 entries answer to “rain”.",
+        "lines": 2
+      }
+    },
+    {
+      "step": "1280x800 · a term reaches what a presence said, under its own voice heading",
+      "pass": true,
+      "detail": {
+        "group": {
+          "label": "Said on the record",
+          "voices": [
+            "The Shepherd"
+          ],
+          "entries": [],
+          "lines": [
+            "“You let her finish before you measured her. She was a person in that room, not a file. I’ll remember the order you chose.”"
+          ],
+          "cites": [
+            "77-A was heard before she was measured"
+          ]
+        }
+      }
+    },
+    {
+      "step": "1280x800 · search results name each presence at most once",
+      "pass": true,
+      "detail": {
+        "The Registrar": 0,
+        "The Shepherd": 1,
+        "The Defector": 0,
+        "The Small Archivist": 0
+      }
+    },
+    {
+      "step": "1280x800 · a term the record cannot answer says so, and shows nothing",
+      "pass": true,
+      "detail": {
+        "status": "No entry answers to “zeppelin”.",
+        "groups": 0,
+        "empty": "The record does not answer to that"
+      }
+    },
+    {
+      "step": "1280x800 · the trail holds every question asked this run, newest first",
+      "pass": true,
+      "detail": [
+        {
+          "text": "zeppelin",
+          "pressed": "true",
+          "h": 44
+        },
+        {
+          "text": "person in that room",
+          "pressed": "false",
+          "h": 44
+        },
+        {
+          "text": "rain",
+          "pressed": "false",
+          "h": 44
+        }
+      ]
+    },
+    {
+      "step": "1280x800 · every past question is a real ≥44px control",
+      "pass": true,
+      "detail": [
+        44,
+        44,
+        44
+      ]
+    },
+    {
+      "step": "1280x800 · the trail marks which question is currently being answered",
+      "pass": true,
+      "detail": [
+        {
+          "text": "zeppelin",
+          "pressed": "true"
+        },
+        {
+          "text": "person in that room",
+          "pressed": "false"
+        },
+        {
+          "text": "rain",
+          "pressed": "false"
+        }
+      ]
+    },
+    {
+      "step": "1280x800 · clicking a past question re-asks it, without lengthening the trail",
+      "pass": true,
+      "detail": {
+        "status": "2 entries answer to “rain”.",
+        "trail": [
+          "rain",
+          "zeppelin",
+          "person in that room"
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · the findings read off the file, sentence for sentence",
+      "pass": true,
+      "detail": [
+        "Care ward 12 is closed, and it put “The rain in room twelve” on the record.",
+        "1 admitted exhibit carries a contradiction against it.",
+        "No memory model is on file.",
+        "The tribunal will not hear this record yet: one more location must be closed and a memory model must be filed."
+      ]
+    },
+    {
+      "step": "1280x800 · the chronology reads FORWARDS, one moment per logged event",
+      "pass": true,
+      "detail": [
+        "Entry 01",
+        "Entry 02"
+      ]
+    },
+    {
+      "step": "1280x800 · the filing moment quotes the log's own title and detail",
+      "pass": true,
+      "detail": {
+        "title": "77-A was heard before she was measured",
+        "detail": "“It rained on the window all night,” she told you. “There was no window. Write down that I"
+      }
+    },
+    {
+      "step": "1280x800 · the moment shows WHAT IT FILED: the exhibit and the location, each cited",
+      "pass": true,
+      "detail": [
+        {
+          "kind": "evidence",
+          "label": "Admitted",
+          "title": "The rain in room twelve",
+          "cite": "77-A testimony"
+        },
+        {
+          "kind": "site",
+          "label": "Location closed",
+          "title": "Care ward 12",
+          "cite": "Location B · closed"
+        }
+      ]
+    },
+    {
+      "step": "1280x800 · the moment shows WHAT IT COST, in the log's own trace vocabulary",
+      "pass": true,
+      "detail": {
+        "cost": "Civic trace · none",
+        "tone": "neutral"
+      }
+    },
+    {
+      "step": "1280x800 · the contradiction is shown as a PAIR, in the authored words, both labelled",
+      "pass": true,
+      "detail": [
+        {
+          "labels": [
+            "The claim",
+            "Against it"
+          ],
+          "claim": "77-A recalls rain against a window in a room that had no exterior wall. “I know there was no glass,” she says. “I watched it anyway.”",
+          "against": "The Shepherd remembers Mara using the same image as a calming metaphor.",
+          "cite": "77-A testimony"
+        }
+      ]
+    },
+    {
+      "step": "1280x800 · the moment carries the line the presence said, under one name",
+      "pass": true,
+      "detail": {
+        "voices": [
+          "The Shepherd"
+        ],
+        "lines": 1
+      }
+    },
+    {
+      "step": "1280x800 · the ledger is real lists with real headings, no level skipped",
+      "pass": true,
+      "detail": {
+        "headings": [
+          {
+            "level": 2,
+            "text": "Findings so far"
+          },
+          {
+            "level": 2,
+            "text": "The record, in order"
+          },
+          {
+            "level": 3,
+            "text": "Begin with the record"
+          },
+          {
+            "level": 3,
+            "text": "77-A was heard before she was measured"
+          },
+          {
+            "level": 4,
+            "text": "The rain in room twelve"
+          },
+          {
+            "level": 4,
+            "text": "Care ward 12"
+          },
+          {
+            "level": 4,
+            "text": "The Shepherd"
+          }
+        ],
+        "skipped": 0
+      }
+    },
+    {
+      "step": "1280x800 · the ledger names each presence at most once inside any one moment",
+      "pass": true,
+      "detail": [
+        [],
+        [
+          "The Shepherd"
+        ]
+      ]
+    },
+    {
+      "step": "1280x800 · the ledger authors no persona heading of its own (recorded, not a gate)",
+      "pass": true,
+      "detail": {
+        "The Registrar": 0,
+        "The Shepherd": 2,
+        "The Defector": 0,
+        "The Small Archivist": 0
+      }
+    },
+    {
+      "step": "1280x800 · panel weight recorded (ledger vs log characters)",
+      "pass": true,
+      "detail": {
+        "ledger": 1284,
+        "log": 522
+      }
+    },
+    {
+      "step": "1280x800 · keyboard reaches the Search tab by Tab alone",
+      "pass": true,
+      "detail": {
+        "steps": 9
+      }
+    },
+    {
+      "step": "1280x800 · Enter on the Search tab opens the search panel",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "step": "1280x800 · keyboard reaches the search field by Tab alone",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "step": "1280x800 · Enter in the field submits the question and the record answers",
+      "pass": true,
+      "detail": {
+        "status": "2 entries answer to “rain”.",
+        "groups": 2
+      }
+    },
+    {
+      "step": "1280x800 · Tab through the results never leaves the dialog",
+      "pass": true,
+      "detail": {
+        "escaped": 0
+      }
+    },
+    {
+      "step": "1280x800 · the query trail is reachable from the keyboard",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "step": "1280x800 · keyboard reaches the Ledger tab by Tab alone",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "step": "1280x800 · Enter on the Ledger tab opens the ledger",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "step": "1280x800 · Escape closes and returns focus to the summoning button",
+      "pass": true,
+      "detail": {
+        "ok": true,
+        "cls": "casefile-summon"
+      }
+    },
+    {
+      "step": "1280x800 · Easy Read reaches the portal boundary, not just the shell",
+      "pass": true,
+      "detail": {
+        "atRest": 1,
+        "withDrawer": 2
+      }
+    },
+    {
+      "step": "1280x800 · Easy Read flattens the search panel's tracked capitals",
+      "pass": true,
+      "detail": {
+        "submitTransform": "none",
+        "submitTracking": "0.224px",
+        "offenders": []
+      }
+    },
+    {
+      "step": "1280x800 · Easy Read removes styling and NOT content on the search panel",
+      "pass": true,
+      "detail": {
+        "plainLength": 829,
+        "easyLength": 829,
+        "identical": true
+      }
+    },
+    {
+      "step": "1280x800 · Easy Read leaves no tracked capital prose in the ledger",
+      "pass": true,
+      "detail": {
+        "offenders": [],
+        "italics": 0
+      }
+    },
+    {
+      "step": "1280x800 · Easy Read removes styling and NOT content on the ledger",
+      "pass": true,
+      "detail": {
+        "plainLength": 1310,
+        "easyLength": 1310,
+        "identical": true
+      }
+    },
+    {
+      "step": "1280x800 · reduced motion: the ledger animates and transitions nothing",
+      "pass": true,
+      "detail": {
+        "portalClass": "casefile-portal record-mode reduce-motion",
+        "moving": [],
+        "osReduced": true,
+        "visibleText": 1284
+      }
+    },
+    {
+      "step": "1280x800 · reduced motion: the portal repeats the preference class",
+      "pass": true,
+      "detail": {
+        "portalClass": "casefile-portal record-mode reduce-motion"
+      }
+    },
+    {
+      "step": "1280x800 · reduced motion: the search panel animates nothing and still answers",
+      "pass": true,
+      "detail": {
+        "moving": [],
+        "results": 2
+      }
+    },
+    {
+      "step": "1280x800 · the bar carries six named cells including the ledger",
+      "pass": true,
+      "detail": [
+        "case",
+        "ledger",
+        "Evidence 0",
+        "log",
+        "people",
+        "search"
+      ]
+    },
+    {
+      "step": "1280x800 · every cell is a ≥44px target",
+      "pass": true,
+      "detail": [
+        48,
+        48,
+        48,
+        48,
+        48,
+        48
+      ]
+    },
+    {
+      "step": "1280x800 · no two cells overlap",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "step": "1280x800 · each cell's visual centre activates THAT cell (cross-zone sweep)",
+      "pass": true,
+      "detail": [
+        {
+          "id": "rail-tab-case",
+          "hit": true
+        },
+        {
+          "id": "rail-tab-ledger",
+          "hit": true
+        },
+        {
+          "id": "rail-tab-evidence",
+          "hit": true
+        },
+        {
+          "id": "rail-tab-log",
+          "hit": true
+        },
+        {
+          "id": "rail-tab-people",
+          "hit": true
+        },
+        {
+          "id": "rail-tab-search",
+          "hit": true
+        }
+      ]
+    },
+    {
+      "step": "1280x800 · no cell's label spills out of its own cell",
+      "pass": true,
+      "detail": [
+        {
+          "id": "rail-tab-case",
+          "scrollW": 87,
+          "clientW": 87
+        },
+        {
+          "id": "rail-tab-ledger",
+          "scrollW": 87,
+          "clientW": 87
+        },
+        {
+          "id": "rail-tab-evidence",
+          "scrollW": 87,
+          "clientW": 87
+        },
+        {
+          "id": "rail-tab-log",
+          "scrollW": 87,
+          "clientW": 87
+        },
+        {
+          "id": "rail-tab-people",
+          "scrollW": 87,
+          "clientW": 87
+        },
+        {
+          "id": "rail-tab-search",
+          "scrollW": 87,
+          "clientW": 87
+        }
+      ]
+    },
+    {
+      "step": "1280x800 · the bar lays out as one row of six",
+      "pass": true,
+      "detail": {
+        "rows": 1,
+        "columns": "86.5px 86.5px 86.5px 86.5px 86.5px 86.5px"
+      }
+    },
+    {
+      "step": "1280x800 · \"case\" opens exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-case"
+        ],
+        "pressed": [
+          "rail-tab-case"
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · \"ledger\" opens exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-ledger"
+        ],
+        "pressed": [
+          "rail-tab-ledger"
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · \"evidence\" opens exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-evidence"
+        ],
+        "pressed": [
+          "rail-tab-evidence"
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · \"log\" opens exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-log"
+        ],
+        "pressed": [
+          "rail-tab-log"
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · \"people\" opens exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-people"
+        ],
+        "pressed": [
+          "rail-tab-people"
+        ]
+      }
+    },
+    {
+      "step": "1280x800 · \"search\" opens exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-search"
+        ],
+        "pressed": [
+          "rail-tab-search"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · the bar carries six named cells including the ledger",
+      "pass": true,
+      "detail": [
+        "case",
+        "ledger",
+        "Evidence 0",
+        "log",
+        "people",
+        "search"
+      ]
+    },
+    {
+      "step": "375x812 · every cell is a ≥44px target",
+      "pass": true,
+      "detail": [
+        48,
+        48,
+        48,
+        48,
+        48,
+        48
+      ]
+    },
+    {
+      "step": "375x812 · no two cells overlap",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "step": "375x812 · each cell's visual centre activates THAT cell (cross-zone sweep)",
+      "pass": true,
+      "detail": [
+        {
+          "id": "rail-tab-case",
+          "hit": true
+        },
+        {
+          "id": "rail-tab-ledger",
+          "hit": true
+        },
+        {
+          "id": "rail-tab-evidence",
+          "hit": true
+        },
+        {
+          "id": "rail-tab-log",
+          "hit": true
+        },
+        {
+          "id": "rail-tab-people",
+          "hit": true
+        },
+        {
+          "id": "rail-tab-search",
+          "hit": true
+        }
+      ]
+    },
+    {
+      "step": "375x812 · no cell's label spills out of its own cell",
+      "pass": true,
+      "detail": [
+        {
+          "id": "rail-tab-case",
+          "scrollW": 125,
+          "clientW": 125
+        },
+        {
+          "id": "rail-tab-ledger",
+          "scrollW": 125,
+          "clientW": 125
+        },
+        {
+          "id": "rail-tab-evidence",
+          "scrollW": 125,
+          "clientW": 125
+        },
+        {
+          "id": "rail-tab-log",
+          "scrollW": 125,
+          "clientW": 125
+        },
+        {
+          "id": "rail-tab-people",
+          "scrollW": 125,
+          "clientW": 125
+        },
+        {
+          "id": "rail-tab-search",
+          "scrollW": 125,
+          "clientW": 125
+        }
+      ]
+    },
+    {
+      "step": "375x812 · the bar lays out as two rows of three",
+      "pass": true,
+      "detail": {
+        "rows": 2,
+        "columns": "125px 125px 125px"
+      }
+    },
+    {
+      "step": "375x812 · \"case\" opens exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-case"
+        ],
+        "pressed": [
+          "rail-tab-case"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · \"ledger\" opens exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-ledger"
+        ],
+        "pressed": [
+          "rail-tab-ledger"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · \"evidence\" opens exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-evidence"
+        ],
+        "pressed": [
+          "rail-tab-evidence"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · \"log\" opens exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-log"
+        ],
+        "pressed": [
+          "rail-tab-log"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · \"people\" opens exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-people"
+        ],
+        "pressed": [
+          "rail-tab-people"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · \"search\" opens exactly its own panel",
+      "pass": true,
+      "detail": {
+        "panels": [
+          "rail-panel-search"
+        ],
+        "pressed": [
+          "rail-tab-search"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · fresh search: a real labelled field inside a search form",
+      "pass": true,
+      "detail": {
+        "id": "record-search-input",
+        "type": "search",
+        "label": "Search the record",
+        "role": "search"
+      }
+    },
+    {
+      "step": "375x812 · fresh search: the count line exists and is polite BEFORE anything is asked",
+      "pass": true,
+      "detail": {
+        "status": "",
+        "live": "polite"
+      }
+    },
+    {
+      "step": "375x812 · fresh search: nothing asked yet, and the panel says so",
+      "pass": true,
+      "detail": "Nothing has been asked of the file yet"
+    },
+    {
+      "step": "375x812 · a fresh run's record cannot answer with a place the auditor has not been",
+      "pass": true,
+      "detail": {
+        "status": "No entry answers to “room twelve”.",
+        "groups": 0,
+        "empty": "The record does not answer to that"
+      }
+    },
+    {
+      "step": "375x812 · a fresh run answers with the approach it took, and nothing else",
+      "pass": true,
+      "detail": {
+        "groups": [
+          "On the log"
+        ],
+        "lines": 1
+      }
+    },
+    {
+      "step": "375x812 · a fresh ledger states only what a fresh run supports",
+      "pass": true,
+      "detail": [
+        "No location is closed yet.",
+        "No memory model is on file.",
+        "The tribunal will not hear this record yet: 2 more locations must be closed and a memory model must be filed."
+      ]
+    },
+    {
+      "step": "375x812 · a fresh ledger holds one moment: no filing, no cost, nothing carried in",
+      "pass": true,
+      "detail": [
+        {
+          "cite": "Entry 01",
+          "title": "Begin with the record",
+          "detail": "Establish chain of custody before speaking to anyone involved. — Registrar +1.",
+          "cost": null,
+          "tone": "neutral",
+          "filings": [],
+          "pairs": [],
+          "voices": [],
+          "lines": []
+        }
+      ]
+    },
+    {
+      "step": "375x812 · a term reaches the admitted exhibit, cited to its authored source",
+      "pass": true,
+      "detail": {
+        "group": {
+          "label": "Admitted evidence",
+          "voices": [],
+          "entries": [
+            "The rain in room twelve"
+          ],
+          "lines": [
+            "77-A recalls rain against a window in a room that had no exterior wall. “I know there was no glass,” she says. “I watched it anyway.” The Shepherd remembers Mara using the same image as a calming metaphor."
+          ],
+          "cites": [
+            "77-A testimony"
+          ]
+        }
+      }
+    },
+    {
+      "step": "375x812 · the same term also reaches the log entry that admitted it",
+      "pass": true,
+      "detail": {
+        "labels": [
+          "On the log",
+          "Admitted evidence"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · the count line agrees with what is on screen",
+      "pass": true,
+      "detail": {
+        "status": "2 entries answer to “rain”.",
+        "lines": 2
+      }
+    },
+    {
+      "step": "375x812 · a term reaches what a presence said, under its own voice heading",
+      "pass": true,
+      "detail": {
+        "group": {
+          "label": "Said on the record",
+          "voices": [
+            "The Shepherd"
+          ],
+          "entries": [],
+          "lines": [
+            "“You let her finish before you measured her. She was a person in that room, not a file. I’ll remember the order you chose.”"
+          ],
+          "cites": [
+            "77-A was heard before she was measured"
+          ]
+        }
+      }
+    },
+    {
+      "step": "375x812 · search results name each presence at most once",
+      "pass": true,
+      "detail": {
+        "The Registrar": 0,
+        "The Shepherd": 1,
+        "The Defector": 0,
+        "The Small Archivist": 0
+      }
+    },
+    {
+      "step": "375x812 · a term the record cannot answer says so, and shows nothing",
+      "pass": true,
+      "detail": {
+        "status": "No entry answers to “zeppelin”.",
+        "groups": 0,
+        "empty": "The record does not answer to that"
+      }
+    },
+    {
+      "step": "375x812 · the trail holds every question asked this run, newest first",
+      "pass": true,
+      "detail": [
+        {
+          "text": "zeppelin",
+          "pressed": "true",
+          "h": 44
+        },
+        {
+          "text": "person in that room",
+          "pressed": "false",
+          "h": 44
+        },
+        {
+          "text": "rain",
+          "pressed": "false",
+          "h": 44
+        }
+      ]
+    },
+    {
+      "step": "375x812 · every past question is a real ≥44px control",
+      "pass": true,
+      "detail": [
+        44,
+        44,
+        44
+      ]
+    },
+    {
+      "step": "375x812 · the trail marks which question is currently being answered",
+      "pass": true,
+      "detail": [
+        {
+          "text": "zeppelin",
+          "pressed": "true"
+        },
+        {
+          "text": "person in that room",
+          "pressed": "false"
+        },
+        {
+          "text": "rain",
+          "pressed": "false"
+        }
+      ]
+    },
+    {
+      "step": "375x812 · clicking a past question re-asks it, without lengthening the trail",
+      "pass": true,
+      "detail": {
+        "status": "2 entries answer to “rain”.",
+        "trail": [
+          "rain",
+          "zeppelin",
+          "person in that room"
+        ]
+      }
+    },
+    {
+      "step": "375x812 · the findings read off the file, sentence for sentence",
+      "pass": true,
+      "detail": [
+        "Care ward 12 is closed, and it put “The rain in room twelve” on the record.",
+        "1 admitted exhibit carries a contradiction against it.",
+        "No memory model is on file.",
+        "The tribunal will not hear this record yet: one more location must be closed and a memory model must be filed."
+      ]
+    },
+    {
+      "step": "375x812 · the chronology reads FORWARDS, one moment per logged event",
+      "pass": true,
+      "detail": [
+        "Entry 01",
+        "Entry 02"
+      ]
+    },
+    {
+      "step": "375x812 · the filing moment quotes the log's own title and detail",
+      "pass": true,
+      "detail": {
+        "title": "77-A was heard before she was measured",
+        "detail": "“It rained on the window all night,” she told you. “There was no window. Write down that I"
+      }
+    },
+    {
+      "step": "375x812 · the moment shows WHAT IT FILED: the exhibit and the location, each cited",
+      "pass": true,
+      "detail": [
+        {
+          "kind": "evidence",
+          "label": "Admitted",
+          "title": "The rain in room twelve",
+          "cite": "77-A testimony"
+        },
+        {
+          "kind": "site",
+          "label": "Location closed",
+          "title": "Care ward 12",
+          "cite": "Location B · closed"
+        }
+      ]
+    },
+    {
+      "step": "375x812 · the moment shows WHAT IT COST, in the log's own trace vocabulary",
+      "pass": true,
+      "detail": {
+        "cost": "Civic trace · none",
+        "tone": "neutral"
+      }
+    },
+    {
+      "step": "375x812 · the contradiction is shown as a PAIR, in the authored words, both labelled",
+      "pass": true,
+      "detail": [
+        {
+          "labels": [
+            "The claim",
+            "Against it"
+          ],
+          "claim": "77-A recalls rain against a window in a room that had no exterior wall. “I know there was no glass,” she says. “I watched it anyway.”",
+          "against": "The Shepherd remembers Mara using the same image as a calming metaphor.",
+          "cite": "77-A testimony"
+        }
+      ]
+    },
+    {
+      "step": "375x812 · the moment carries the line the presence said, under one name",
+      "pass": true,
+      "detail": {
+        "voices": [
+          "The Shepherd"
+        ],
+        "lines": 1
+      }
+    },
+    {
+      "step": "375x812 · the ledger is real lists with real headings, no level skipped",
+      "pass": true,
+      "detail": {
+        "headings": [
+          {
+            "level": 2,
+            "text": "Findings so far"
+          },
+          {
+            "level": 2,
+            "text": "The record, in order"
+          },
+          {
+            "level": 3,
+            "text": "Begin with the record"
+          },
+          {
+            "level": 3,
+            "text": "77-A was heard before she was measured"
+          },
+          {
+            "level": 4,
+            "text": "The rain in room twelve"
+          },
+          {
+            "level": 4,
+            "text": "Care ward 12"
+          },
+          {
+            "level": 4,
+            "text": "The Shepherd"
+          }
+        ],
+        "skipped": 0
+      }
+    },
+    {
+      "step": "375x812 · the ledger names each presence at most once inside any one moment",
+      "pass": true,
+      "detail": [
+        [],
+        [
+          "The Shepherd"
+        ]
+      ]
+    },
+    {
+      "step": "375x812 · the ledger authors no persona heading of its own (recorded, not a gate)",
+      "pass": true,
+      "detail": {
+        "The Registrar": 0,
+        "The Shepherd": 2,
+        "The Defector": 0,
+        "The Small Archivist": 0
+      }
+    },
+    {
+      "step": "375x812 · panel weight recorded (ledger vs log characters)",
+      "pass": true,
+      "detail": {
+        "ledger": 1284,
+        "log": 522
+      }
+    }
+  ],
+  "shots": [
+    "01-search-fresh-approach-only-1280x800.png",
+    "02-ledger-fresh-1280x800.png",
+    "03-search-hits-evidence-1280x800.png",
+    "04-search-hits-voice-1280x800.png",
+    "05-search-no-hit-1280x800.png",
+    "06-search-trail-reask-1280x800.png",
+    "07-ledger-after-filing-1280x800.png",
+    "08-ledger-contradiction-pair-1280x800.png",
+    "09-search-keyboard-results-1280x800.png",
+    "10-search-easy-read-1280x800.png",
+    "11-ledger-easy-read-1280x800.png",
+    "12-ledger-reduced-motion-1280x800.png",
+    "13-search-reduced-motion-1280x800.png",
+    "14-tab-bar-ledger-1280x800.png",
+    "14-tab-bar-ledger-375x812.png",
+    "01-search-fresh-approach-only-375x812.png",
+    "02-ledger-fresh-375x812.png",
+    "03-search-hits-evidence-375x812.png",
+    "04-search-hits-voice-375x812.png",
+    "05-search-no-hit-375x812.png",
+    "06-search-trail-reask-375x812.png",
+    "07-ledger-after-filing-375x812.png",
+    "08-ledger-contradiction-pair-375x812.png"
+  ],
+  "measurements": {
+    "search-idle:1280x800": {
+      "status": "",
+      "statusLive": "polite",
+      "empty": "Nothing has been asked of the file yet",
+      "groups": [],
+      "groupCount": 0,
+      "lineCount": 0,
+      "trail": [],
+      "inputLabelled": {
+        "id": "record-search-input",
+        "type": "search",
+        "label": "Search the record",
+        "role": "search"
+      }
+    },
+    "search-fresh-unfiled:1280x800": {
+      "status": "No entry answers to “room twelve”.",
+      "statusLive": "polite",
+      "empty": "The record does not answer to that",
+      "groups": [],
+      "groupCount": 0,
+      "lineCount": 0,
+      "trail": [
+        {
+          "text": "room twelve",
+          "pressed": "true",
+          "h": 44
+        }
+      ],
+      "inputLabelled": {
+        "id": "record-search-input",
+        "type": "search",
+        "label": "Search the record",
+        "role": "search"
+      }
+    },
+    "search-fresh-approach:1280x800": {
+      "status": "1 entry answers to “custody”.",
+      "statusLive": "polite",
+      "empty": null,
+      "groups": [
+        {
+          "label": "On the log",
+          "voices": [],
+          "entries": [
+            "Begin with the record"
+          ],
+          "lines": [
+            "Establish chain of custody before speaking to anyone involved. — Registrar +1."
+          ],
+          "cites": [
+            "Entry 01"
+          ]
+        }
+      ],
+      "groupCount": 1,
+      "lineCount": 1,
+      "trail": [
+        {
+          "text": "custody",
+          "pressed": "true",
+          "h": 44
+        },
+        {
+          "text": "room twelve",
+          "pressed": "false",
+          "h": 44
+        }
+      ],
+      "inputLabelled": {
+        "id": "record-search-input",
+        "type": "search",
+        "label": "Search the record",
+        "role": "search"
+      }
+    },
+    "ledger-fresh:1280x800": {
+      "findings": [
+        "No location is closed yet.",
+        "No memory model is on file.",
+        "The tribunal will not hear this record yet: 2 more locations must be closed and a memory model must be filed."
+      ],
+      "findingsListTag": "OL",
+      "momentsListTag": "OL",
+      "headings": [
+        {
+          "level": 2,
+          "text": "Findings so far"
+        },
+        {
+          "level": 2,
+          "text": "The record, in order"
+        },
+        {
+          "level": 3,
+          "text": "Begin with the record"
+        }
+      ],
+      "carried": [],
+      "moments": [
+        {
+          "cite": "Entry 01",
+          "title": "Begin with the record",
+          "detail": "Establish chain of custody before speaking to anyone involved. — Registrar +1.",
+          "cost": null,
+          "tone": "neutral",
+          "filings": [],
+          "pairs": [],
+          "voices": [],
+          "lines": []
+        }
+      ],
+      "charCount": 441
+    },
+    "search-evidence:1280x800": {
+      "status": "2 entries answer to “rain”.",
+      "statusLive": "polite",
+      "empty": null,
+      "groups": [
+        {
+          "label": "On the log",
+          "voices": [],
+          "entries": [
+            "77-A was heard before she was measured"
+          ],
+          "lines": [
+            "“It rained on the window all night,” she told you. “There was no window. Write down that I know that.” Her impossible room matched a metaphor Mara once used when she was afraid. — Shepherd +2, Small Archivist +1."
+          ],
+          "cites": [
+            "Entry 02"
+          ]
+        },
+        {
+          "label": "Admitted evidence",
+          "voices": [],
+          "entries": [
+            "The rain in room twelve"
+          ],
+          "lines": [
+            "77-A recalls rain against a window in a room that had no exterior wall. “I know there was no glass,” she says. “I watched it anyway.” The Shepherd remembers Mara using the same image as a calming metaphor."
+          ],
+          "cites": [
+            "77-A testimony"
+          ]
+        }
+      ],
+      "groupCount": 2,
+      "lineCount": 2,
+      "trail": [
+        {
+          "text": "rain",
+          "pressed": "true",
+          "h": 44
+        }
+      ],
+      "inputLabelled": {
+        "id": "record-search-input",
+        "type": "search",
+        "label": "Search the record",
+        "role": "search"
+      }
+    },
+    "search-voice:1280x800": {
+      "status": "1 entry answers to “person in that room”.",
+      "statusLive": "polite",
+      "empty": null,
+      "groups": [
+        {
+          "label": "Said on the record",
+          "voices": [
+            "The Shepherd"
+          ],
+          "entries": [],
+          "lines": [
+            "“You let her finish before you measured her. She was a person in that room, not a file. I’ll remember the order you chose.”"
+          ],
+          "cites": [
+            "77-A was heard before she was measured"
+          ]
+        }
+      ],
+      "groupCount": 1,
+      "lineCount": 1,
+      "trail": [
+        {
+          "text": "person in that room",
+          "pressed": "true",
+          "h": 44
+        },
+        {
+          "text": "rain",
+          "pressed": "false",
+          "h": 44
+        }
+      ],
+      "inputLabelled": {
+        "id": "record-search-input",
+        "type": "search",
+        "label": "Search the record",
+        "role": "search"
+      }
+    },
+    "search-nohit:1280x800": {
+      "status": "No entry answers to “zeppelin”.",
+      "statusLive": "polite",
+      "empty": "The record does not answer to that",
+      "groups": [],
+      "groupCount": 0,
+      "lineCount": 0,
+      "trail": [
+        {
+          "text": "zeppelin",
+          "pressed": "true",
+          "h": 44
+        },
+        {
+          "text": "person in that room",
+          "pressed": "false",
+          "h": 44
+        },
+        {
+          "text": "rain",
+          "pressed": "false",
+          "h": 44
+        }
+      ],
+      "inputLabelled": {
+        "id": "record-search-input",
+        "type": "search",
+        "label": "Search the record",
+        "role": "search"
+      }
+    },
+    "search-reasked:1280x800": {
+      "status": "2 entries answer to “rain”.",
+      "statusLive": "polite",
+      "empty": null,
+      "groups": [
+        {
+          "label": "On the log",
+          "voices": [],
+          "entries": [
+            "77-A was heard before she was measured"
+          ],
+          "lines": [
+            "“It rained on the window all night,” she told you. “There was no window. Write down that I know that.” Her impossible room matched a metaphor Mara once used when she was afraid. — Shepherd +2, Small Archivist +1."
+          ],
+          "cites": [
+            "Entry 02"
+          ]
+        },
+        {
+          "label": "Admitted evidence",
+          "voices": [],
+          "entries": [
+            "The rain in room twelve"
+          ],
+          "lines": [
+            "77-A recalls rain against a window in a room that had no exterior wall. “I know there was no glass,” she says. “I watched it anyway.” The Shepherd remembers Mara using the same image as a calming metaphor."
+          ],
+          "cites": [
+            "77-A testimony"
+          ]
+        }
+      ],
+      "groupCount": 2,
+      "lineCount": 2,
+      "trail": [
+        {
+          "text": "rain",
+          "pressed": "true",
+          "h": 44
+        },
+        {
+          "text": "zeppelin",
+          "pressed": "false",
+          "h": 44
+        },
+        {
+          "text": "person in that room",
+          "pressed": "false",
+          "h": 44
+        }
+      ],
+      "inputLabelled": {
+        "id": "record-search-input",
+        "type": "search",
+        "label": "Search the record",
+        "role": "search"
+      }
+    },
+    "ledger-filed:1280x800": {
+      "findings": [
+        "Care ward 12 is closed, and it put “The rain in room twelve” on the record.",
+        "1 admitted exhibit carries a contradiction against it.",
+        "No memory model is on file.",
+        "The tribunal will not hear this record yet: one more location must be closed and a memory model must be filed."
+      ],
+      "findingsListTag": "OL",
+      "momentsListTag": "OL",
+      "headings": [
+        {
+          "level": 2,
+          "text": "Findings so far"
+        },
+        {
+          "level": 2,
+          "text": "The record, in order"
+        },
+        {
+          "level": 3,
+          "text": "Begin with the record"
+        },
+        {
+          "level": 3,
+          "text": "77-A was heard before she was measured"
+        },
+        {
+          "level": 4,
+          "text": "The rain in room twelve"
+        },
+        {
+          "level": 4,
+          "text": "Care ward 12"
+        },
+        {
+          "level": 4,
+          "text": "The Shepherd"
+        }
+      ],
+      "carried": [],
+      "moments": [
+        {
+          "cite": "Entry 01",
+          "title": "Begin with the record",
+          "detail": "Establish chain of custody before speaking to anyone involved. — Registrar +1.",
+          "cost": null,
+          "tone": "neutral",
+          "filings": [],
+          "pairs": [],
+          "voices": [],
+          "lines": []
+        },
+        {
+          "cite": "Entry 02",
+          "title": "77-A was heard before she was measured",
+          "detail": "“It rained on the window all night,” she told you. “There was no window. Write down that I know that.” Her impossible room matched a metaphor Mara once used when she was afraid. — Shepherd +2, Small Archivist +1.",
+          "cost": "Civic trace · none",
+          "tone": "neutral",
+          "filings": [
+            {
+              "kind": "evidence",
+              "label": "Admitted",
+              "title": "The rain in room twelve",
+              "cite": "77-A testimony"
+            },
+            {
+              "kind": "site",
+              "label": "Location closed",
+              "title": "Care ward 12",
+              "cite": "Location B · closed"
+            }
+          ],
+          "pairs": [
+            {
+              "labels": [
+                "The claim",
+                "Against it"
+              ],
+              "claim": "77-A recalls rain against a window in a room that had no exterior wall. “I know there was no glass,” she says. “I watched it anyway.”",
+              "against": "The Shepherd remembers Mara using the same image as a calming metaphor.",
+              "cite": "77-A testimony"
+            }
+          ],
+          "voices": [
+            "The Shepherd"
+          ],
+          "lines": [
+            "“You let her finish before you measured her. She was a person in that room, not a file. I’ll remember the order you chose.”"
+          ]
+        }
+      ],
+      "charCount": 1284
+    },
+    "ledger-name-counts:1280x800": {
+      "perSurface": {
+        "The Registrar": 0,
+        "The Shepherd": 2,
+        "The Defector": 0,
+        "The Small Archivist": 0
+      },
+      "perMoment": [
+        [],
+        [
+          "The Shepherd"
+        ]
+      ]
+    },
+    "panel-weight:1280x800": {
+      "ledger": 1284,
+      "log": 522
+    },
+    "keyboard-results:1280x800": {
+      "status": "2 entries answer to “rain”.",
+      "statusLive": "polite",
+      "empty": null,
+      "groups": [
+        {
+          "label": "On the log",
+          "voices": [],
+          "entries": [
+            "77-A was heard before she was measured"
+          ],
+          "lines": [
+            "“It rained on the window all night,” she told you. “There was no window. Write down that I know that.” Her impossible room matched a metaphor Mara once used when she was afraid. — Shepherd +2, Small Archivist +1."
+          ],
+          "cites": [
+            "Entry 02"
+          ]
+        },
+        {
+          "label": "Admitted evidence",
+          "voices": [],
+          "entries": [
+            "The rain in room twelve"
+          ],
+          "lines": [
+            "77-A recalls rain against a window in a room that had no exterior wall. “I know there was no glass,” she says. “I watched it anyway.” The Shepherd remembers Mara using the same image as a calming metaphor."
+          ],
+          "cites": [
+            "77-A testimony"
+          ]
+        }
+      ],
+      "groupCount": 2,
+      "lineCount": 2,
+      "trail": [
+        {
+          "text": "rain",
+          "pressed": "true",
+          "h": 44
+        }
+      ],
+      "inputLabelled": {
+        "id": "record-search-input",
+        "type": "search",
+        "label": "Search the record",
+        "role": "search"
+      }
+    },
+    "easy-read-search:1280x800": {
+      "submitTransform": "none",
+      "submitTracking": "0.224px",
+      "offenders": []
+    },
+    "easy-read-ledger:1280x800": {
+      "offenders": [],
+      "italics": 0
+    },
+    "reduced-motion-ledger:1280x800": {
+      "portalClass": "casefile-portal record-mode reduce-motion",
+      "moving": [],
+      "osReduced": true,
+      "visibleText": 1284
+    },
+    "reduced-motion-search:1280x800": {
+      "moving": [],
+      "results": 2
+    },
+    "tab-bar:1280x800": {
+      "boxes": [
+        {
+          "id": "rail-tab-case",
+          "text": "case",
+          "w": 87,
+          "h": 48,
+          "top": 78,
+          "left": 761,
+          "raw": {
+            "left": 761,
+            "right": 847.5,
+            "top": 78.015625,
+            "bottom": 126.015625
+          },
+          "scrollW": 87,
+          "clientW": 87,
+          "hitsIntended": true
+        },
+        {
+          "id": "rail-tab-ledger",
+          "text": "ledger",
+          "w": 87,
+          "h": 48,
+          "top": 78,
+          "left": 848,
+          "raw": {
+            "left": 847.5,
+            "right": 934,
+            "top": 78.015625,
+            "bottom": 126.015625
+          },
+          "scrollW": 87,
+          "clientW": 87,
+          "hitsIntended": true
+        },
+        {
+          "id": "rail-tab-evidence",
+          "text": "Evidence 0",
+          "w": 87,
+          "h": 48,
+          "top": 78,
+          "left": 934,
+          "raw": {
+            "left": 934,
+            "right": 1020.5,
+            "top": 78.015625,
+            "bottom": 126.015625
+          },
+          "scrollW": 87,
+          "clientW": 87,
+          "hitsIntended": true
+        },
+        {
+          "id": "rail-tab-log",
+          "text": "log",
+          "w": 87,
+          "h": 48,
+          "top": 78,
+          "left": 1021,
+          "raw": {
+            "left": 1020.5,
+            "right": 1107,
+            "top": 78.015625,
+            "bottom": 126.015625
+          },
+          "scrollW": 87,
+          "clientW": 87,
+          "hitsIntended": true
+        },
+        {
+          "id": "rail-tab-people",
+          "text": "people",
+          "w": 87,
+          "h": 48,
+          "top": 78,
+          "left": 1107,
+          "raw": {
+            "left": 1107,
+            "right": 1193.5,
+            "top": 78.015625,
+            "bottom": 126.015625
+          },
+          "scrollW": 87,
+          "clientW": 87,
+          "hitsIntended": true
+        },
+        {
+          "id": "rail-tab-search",
+          "text": "search",
+          "w": 87,
+          "h": 48,
+          "top": 78,
+          "left": 1194,
+          "raw": {
+            "left": 1193.5,
+            "right": 1280,
+            "top": 78.015625,
+            "bottom": 126.015625
+          },
+          "scrollW": 87,
+          "clientW": 87,
+          "hitsIntended": true
+        }
+      ],
+      "overlaps": [],
+      "rows": 1,
+      "columns": "86.5px 86.5px 86.5px 86.5px 86.5px 86.5px"
+    },
+    "tab-bar:375x812": {
+      "boxes": [
+        {
+          "id": "rail-tab-case",
+          "text": "case",
+          "w": 125,
+          "h": 48,
+          "top": 77,
+          "left": 0,
+          "raw": {
+            "left": 0,
+            "right": 125,
+            "top": 77,
+            "bottom": 125
+          },
+          "scrollW": 125,
+          "clientW": 125,
+          "hitsIntended": true
+        },
+        {
+          "id": "rail-tab-ledger",
+          "text": "ledger",
+          "w": 125,
+          "h": 48,
+          "top": 77,
+          "left": 125,
+          "raw": {
+            "left": 125,
+            "right": 250,
+            "top": 77,
+            "bottom": 125
+          },
+          "scrollW": 125,
+          "clientW": 125,
+          "hitsIntended": true
+        },
+        {
+          "id": "rail-tab-evidence",
+          "text": "Evidence 0",
+          "w": 125,
+          "h": 48,
+          "top": 77,
+          "left": 250,
+          "raw": {
+            "left": 250,
+            "right": 375,
+            "top": 77,
+            "bottom": 125
+          },
+          "scrollW": 125,
+          "clientW": 125,
+          "hitsIntended": true
+        },
+        {
+          "id": "rail-tab-log",
+          "text": "log",
+          "w": 125,
+          "h": 48,
+          "top": 125,
+          "left": 0,
+          "raw": {
+            "left": 0,
+            "right": 125,
+            "top": 125,
+            "bottom": 173
+          },
+          "scrollW": 125,
+          "clientW": 125,
+          "hitsIntended": true
+        },
+        {
+          "id": "rail-tab-people",
+          "text": "people",
+          "w": 125,
+          "h": 48,
+          "top": 125,
+          "left": 125,
+          "raw": {
+            "left": 125,
+            "right": 250,
+            "top": 125,
+            "bottom": 173
+          },
+          "scrollW": 125,
+          "clientW": 125,
+          "hitsIntended": true
+        },
+        {
+          "id": "rail-tab-search",
+          "text": "search",
+          "w": 125,
+          "h": 48,
+          "top": 125,
+          "left": 250,
+          "raw": {
+            "left": 250,
+            "right": 375,
+            "top": 125,
+            "bottom": 173
+          },
+          "scrollW": 125,
+          "clientW": 125,
+          "hitsIntended": true
+        }
+      ],
+      "overlaps": [],
+      "rows": 2,
+      "columns": "125px 125px 125px"
+    },
+    "search-idle:375x812": {
+      "status": "",
+      "statusLive": "polite",
+      "empty": "Nothing has been asked of the file yet",
+      "groups": [],
+      "groupCount": 0,
+      "lineCount": 0,
+      "trail": [],
+      "inputLabelled": {
+        "id": "record-search-input",
+        "type": "search",
+        "label": "Search the record",
+        "role": "search"
+      }
+    },
+    "search-fresh-unfiled:375x812": {
+      "status": "No entry answers to “room twelve”.",
+      "statusLive": "polite",
+      "empty": "The record does not answer to that",
+      "groups": [],
+      "groupCount": 0,
+      "lineCount": 0,
+      "trail": [
+        {
+          "text": "room twelve",
+          "pressed": "true",
+          "h": 44
+        }
+      ],
+      "inputLabelled": {
+        "id": "record-search-input",
+        "type": "search",
+        "label": "Search the record",
+        "role": "search"
+      }
+    },
+    "search-fresh-approach:375x812": {
+      "status": "1 entry answers to “custody”.",
+      "statusLive": "polite",
+      "empty": null,
+      "groups": [
+        {
+          "label": "On the log",
+          "voices": [],
+          "entries": [
+            "Begin with the record"
+          ],
+          "lines": [
+            "Establish chain of custody before speaking to anyone involved. — Registrar +1."
+          ],
+          "cites": [
+            "Entry 01"
+          ]
+        }
+      ],
+      "groupCount": 1,
+      "lineCount": 1,
+      "trail": [
+        {
+          "text": "custody",
+          "pressed": "true",
+          "h": 44
+        },
+        {
+          "text": "room twelve",
+          "pressed": "false",
+          "h": 44
+        }
+      ],
+      "inputLabelled": {
+        "id": "record-search-input",
+        "type": "search",
+        "label": "Search the record",
+        "role": "search"
+      }
+    },
+    "ledger-fresh:375x812": {
+      "findings": [
+        "No location is closed yet.",
+        "No memory model is on file.",
+        "The tribunal will not hear this record yet: 2 more locations must be closed and a memory model must be filed."
+      ],
+      "findingsListTag": "OL",
+      "momentsListTag": "OL",
+      "headings": [
+        {
+          "level": 2,
+          "text": "Findings so far"
+        },
+        {
+          "level": 2,
+          "text": "The record, in order"
+        },
+        {
+          "level": 3,
+          "text": "Begin with the record"
+        }
+      ],
+      "carried": [],
+      "moments": [
+        {
+          "cite": "Entry 01",
+          "title": "Begin with the record",
+          "detail": "Establish chain of custody before speaking to anyone involved. — Registrar +1.",
+          "cost": null,
+          "tone": "neutral",
+          "filings": [],
+          "pairs": [],
+          "voices": [],
+          "lines": []
+        }
+      ],
+      "charCount": 441
+    },
+    "search-evidence:375x812": {
+      "status": "2 entries answer to “rain”.",
+      "statusLive": "polite",
+      "empty": null,
+      "groups": [
+        {
+          "label": "On the log",
+          "voices": [],
+          "entries": [
+            "77-A was heard before she was measured"
+          ],
+          "lines": [
+            "“It rained on the window all night,” she told you. “There was no window. Write down that I know that.” Her impossible room matched a metaphor Mara once used when she was afraid. — Shepherd +2, Small Archivist +1."
+          ],
+          "cites": [
+            "Entry 02"
+          ]
+        },
+        {
+          "label": "Admitted evidence",
+          "voices": [],
+          "entries": [
+            "The rain in room twelve"
+          ],
+          "lines": [
+            "77-A recalls rain against a window in a room that had no exterior wall. “I know there was no glass,” she says. “I watched it anyway.” The Shepherd remembers Mara using the same image as a calming metaphor."
+          ],
+          "cites": [
+            "77-A testimony"
+          ]
+        }
+      ],
+      "groupCount": 2,
+      "lineCount": 2,
+      "trail": [
+        {
+          "text": "rain",
+          "pressed": "true",
+          "h": 44
+        }
+      ],
+      "inputLabelled": {
+        "id": "record-search-input",
+        "type": "search",
+        "label": "Search the record",
+        "role": "search"
+      }
+    },
+    "search-voice:375x812": {
+      "status": "1 entry answers to “person in that room”.",
+      "statusLive": "polite",
+      "empty": null,
+      "groups": [
+        {
+          "label": "Said on the record",
+          "voices": [
+            "The Shepherd"
+          ],
+          "entries": [],
+          "lines": [
+            "“You let her finish before you measured her. She was a person in that room, not a file. I’ll remember the order you chose.”"
+          ],
+          "cites": [
+            "77-A was heard before she was measured"
+          ]
+        }
+      ],
+      "groupCount": 1,
+      "lineCount": 1,
+      "trail": [
+        {
+          "text": "person in that room",
+          "pressed": "true",
+          "h": 44
+        },
+        {
+          "text": "rain",
+          "pressed": "false",
+          "h": 44
+        }
+      ],
+      "inputLabelled": {
+        "id": "record-search-input",
+        "type": "search",
+        "label": "Search the record",
+        "role": "search"
+      }
+    },
+    "search-nohit:375x812": {
+      "status": "No entry answers to “zeppelin”.",
+      "statusLive": "polite",
+      "empty": "The record does not answer to that",
+      "groups": [],
+      "groupCount": 0,
+      "lineCount": 0,
+      "trail": [
+        {
+          "text": "zeppelin",
+          "pressed": "true",
+          "h": 44
+        },
+        {
+          "text": "person in that room",
+          "pressed": "false",
+          "h": 44
+        },
+        {
+          "text": "rain",
+          "pressed": "false",
+          "h": 44
+        }
+      ],
+      "inputLabelled": {
+        "id": "record-search-input",
+        "type": "search",
+        "label": "Search the record",
+        "role": "search"
+      }
+    },
+    "search-reasked:375x812": {
+      "status": "2 entries answer to “rain”.",
+      "statusLive": "polite",
+      "empty": null,
+      "groups": [
+        {
+          "label": "On the log",
+          "voices": [],
+          "entries": [
+            "77-A was heard before she was measured"
+          ],
+          "lines": [
+            "“It rained on the window all night,” she told you. “There was no window. Write down that I know that.” Her impossible room matched a metaphor Mara once used when she was afraid. — Shepherd +2, Small Archivist +1."
+          ],
+          "cites": [
+            "Entry 02"
+          ]
+        },
+        {
+          "label": "Admitted evidence",
+          "voices": [],
+          "entries": [
+            "The rain in room twelve"
+          ],
+          "lines": [
+            "77-A recalls rain against a window in a room that had no exterior wall. “I know there was no glass,” she says. “I watched it anyway.” The Shepherd remembers Mara using the same image as a calming metaphor."
+          ],
+          "cites": [
+            "77-A testimony"
+          ]
+        }
+      ],
+      "groupCount": 2,
+      "lineCount": 2,
+      "trail": [
+        {
+          "text": "rain",
+          "pressed": "true",
+          "h": 44
+        },
+        {
+          "text": "zeppelin",
+          "pressed": "false",
+          "h": 44
+        },
+        {
+          "text": "person in that room",
+          "pressed": "false",
+          "h": 44
+        }
+      ],
+      "inputLabelled": {
+        "id": "record-search-input",
+        "type": "search",
+        "label": "Search the record",
+        "role": "search"
+      }
+    },
+    "ledger-filed:375x812": {
+      "findings": [
+        "Care ward 12 is closed, and it put “The rain in room twelve” on the record.",
+        "1 admitted exhibit carries a contradiction against it.",
+        "No memory model is on file.",
+        "The tribunal will not hear this record yet: one more location must be closed and a memory model must be filed."
+      ],
+      "findingsListTag": "OL",
+      "momentsListTag": "OL",
+      "headings": [
+        {
+          "level": 2,
+          "text": "Findings so far"
+        },
+        {
+          "level": 2,
+          "text": "The record, in order"
+        },
+        {
+          "level": 3,
+          "text": "Begin with the record"
+        },
+        {
+          "level": 3,
+          "text": "77-A was heard before she was measured"
+        },
+        {
+          "level": 4,
+          "text": "The rain in room twelve"
+        },
+        {
+          "level": 4,
+          "text": "Care ward 12"
+        },
+        {
+          "level": 4,
+          "text": "The Shepherd"
+        }
+      ],
+      "carried": [],
+      "moments": [
+        {
+          "cite": "Entry 01",
+          "title": "Begin with the record",
+          "detail": "Establish chain of custody before speaking to anyone involved. — Registrar +1.",
+          "cost": null,
+          "tone": "neutral",
+          "filings": [],
+          "pairs": [],
+          "voices": [],
+          "lines": []
+        },
+        {
+          "cite": "Entry 02",
+          "title": "77-A was heard before she was measured",
+          "detail": "“It rained on the window all night,” she told you. “There was no window. Write down that I know that.” Her impossible room matched a metaphor Mara once used when she was afraid. — Shepherd +2, Small Archivist +1.",
+          "cost": "Civic trace · none",
+          "tone": "neutral",
+          "filings": [
+            {
+              "kind": "evidence",
+              "label": "Admitted",
+              "title": "The rain in room twelve",
+              "cite": "77-A testimony"
+            },
+            {
+              "kind": "site",
+              "label": "Location closed",
+              "title": "Care ward 12",
+              "cite": "Location B · closed"
+            }
+          ],
+          "pairs": [
+            {
+              "labels": [
+                "The claim",
+                "Against it"
+              ],
+              "claim": "77-A recalls rain against a window in a room that had no exterior wall. “I know there was no glass,” she says. “I watched it anyway.”",
+              "against": "The Shepherd remembers Mara using the same image as a calming metaphor.",
+              "cite": "77-A testimony"
+            }
+          ],
+          "voices": [
+            "The Shepherd"
+          ],
+          "lines": [
+            "“You let her finish before you measured her. She was a person in that room, not a file. I’ll remember the order you chose.”"
+          ]
+        }
+      ],
+      "charCount": 1284
+    },
+    "ledger-name-counts:375x812": {
+      "perSurface": {
+        "The Registrar": 0,
+        "The Shepherd": 2,
+        "The Defector": 0,
+        "The Small Archivist": 0
+      },
+      "perMoment": [
+        [],
+        [
+          "The Shepherd"
+        ]
+      ]
+    },
+    "panel-weight:375x812": {
+      "ledger": 1284,
+      "log": 522
+    }
+  },
+  "transcripts": {
+    "keyboard-1280x800": [
+      {
+        "step": "focus the summon",
+        "tag": "BUTTON",
+        "id": "",
+        "cls": "casefile-summon",
+        "label": "Case file1 evidence · 2 events",
+        "inside": false
+      },
+      {
+        "step": "Enter opens the case file",
+        "tag": "DIV",
+        "id": "",
+        "cls": "casefile-drawer",
+        "label": "Held on this caseCase fileClose ✕caseledgerE",
+        "inside": true
+      },
+      {
+        "step": "Tab ×1",
+        "tag": "BUTTON",
+        "id": "",
+        "cls": "casefile-close",
+        "label": "Close ✕",
+        "inside": true
+      },
+      {
+        "step": "Tab ×2",
+        "tag": "BUTTON",
+        "id": "rail-tab-case",
+        "cls": "",
+        "label": "case",
+        "inside": true
+      },
+      {
+        "step": "Tab ×3",
+        "tag": "BUTTON",
+        "id": "rail-tab-ledger",
+        "cls": "",
+        "label": "ledger",
+        "inside": true
+      },
+      {
+        "step": "Tab ×4",
+        "tag": "BUTTON",
+        "id": "rail-tab-evidence",
+        "cls": "",
+        "label": "Evidence 1",
+        "inside": true
+      },
+      {
+        "step": "Tab ×5",
+        "tag": "BUTTON",
+        "id": "rail-tab-log",
+        "cls": "",
+        "label": "log",
+        "inside": true
+      },
+      {
+        "step": "Tab ×6",
+        "tag": "BUTTON",
+        "id": "rail-tab-people",
+        "cls": "",
+        "label": "people",
+        "inside": true
+      },
+      {
+        "step": "Tab ×7",
+        "tag": "BUTTON",
+        "id": "rail-tab-search",
+        "cls": "",
+        "label": "search",
+        "inside": true
+      },
+      {
+        "step": "Tab to field ×1",
+        "tag": "INPUT",
+        "id": "record-search-input",
+        "cls": "record-search-input",
+        "label": "",
+        "inside": true
+      },
+      {
+        "step": "Enter submits the query",
+        "tag": "INPUT",
+        "id": "record-search-input",
+        "cls": "record-search-input",
+        "label": "rain",
+        "inside": true
+      },
+      {
+        "step": "Tab past results ×1",
+        "tag": "BUTTON",
+        "id": "",
+        "cls": "record-search-submit",
+        "label": "Search",
+        "inside": true
+      },
+      {
+        "step": "Tab past results ×2",
+        "tag": "BUTTON",
+        "id": "",
+        "cls": "record-trail-query",
+        "label": "rain",
+        "inside": true
+      },
+      {
+        "step": "Tab past results ×3",
+        "tag": "BUTTON",
+        "id": "",
+        "cls": "casefile-close",
+        "label": "Close ✕",
+        "inside": true
+      },
+      {
+        "step": "Tab past results ×4",
+        "tag": "BUTTON",
+        "id": "rail-tab-case",
+        "cls": "",
+        "label": "case",
+        "inside": true
+      },
+      {
+        "step": "Tab past results ×5",
+        "tag": "BUTTON",
+        "id": "rail-tab-ledger",
+        "cls": "",
+        "label": "ledger",
+        "inside": true
+      },
+      {
+        "step": "Tab past results ×6",
+        "tag": "BUTTON",
+        "id": "rail-tab-evidence",
+        "cls": "",
+        "label": "Evidence 1",
+        "inside": true
+      },
+      {
+        "step": "Tab past results ×7",
+        "tag": "BUTTON",
+        "id": "rail-tab-log",
+        "cls": "",
+        "label": "log",
+        "inside": true
+      },
+      {
+        "step": "Tab past results ×8",
+        "tag": "BUTTON",
+        "id": "rail-tab-people",
+        "cls": "",
+        "label": "people",
+        "inside": true
+      },
+      {
+        "step": "Tab past results ×9",
+        "tag": "BUTTON",
+        "id": "rail-tab-search",
+        "cls": "",
+        "label": "search",
+        "inside": true
+      },
+      {
+        "step": "Tab past results ×10",
+        "tag": "INPUT",
+        "id": "record-search-input",
+        "cls": "record-search-input",
+        "label": "rain",
+        "inside": true
+      },
+      {
+        "step": "Tab past results ×11",
+        "tag": "BUTTON",
+        "id": "",
+        "cls": "record-search-submit",
+        "label": "Search",
+        "inside": true
+      },
+      {
+        "step": "Tab past results ×12",
+        "tag": "BUTTON",
+        "id": "",
+        "cls": "record-trail-query",
+        "label": "rain",
+        "inside": true
+      },
+      {
+        "step": "Tab past results ×13",
+        "tag": "BUTTON",
+        "id": "",
+        "cls": "casefile-close",
+        "label": "Close ✕",
+        "inside": true
+      },
+      {
+        "step": "Tab past results ×14",
+        "tag": "BUTTON",
+        "id": "rail-tab-case",
+        "cls": "",
+        "label": "case",
+        "inside": true
+      },
+      {
+        "step": "Tab to ledger ×1",
+        "tag": "BUTTON",
+        "id": "rail-tab-ledger",
+        "cls": "",
+        "label": "ledger",
+        "inside": true
+      }
+    ]
+  },
+  "summary": {
+    "total": 97,
+    "passed": 97,
+    "failed": 0
+  }
+}

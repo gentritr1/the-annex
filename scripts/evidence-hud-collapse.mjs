@@ -9,14 +9,14 @@
 //      threshold-until-first-filing, promoted alarm, fieldCta dock), with the
 //      dropped items absent and the <h1> surviving as sr-only;
 //   3. the case file opens as a right-docked drawer at 1280 and a full sheet at
-//      375, with all four tabs including the roster dossier;
+//      375, with all six tabs including the roster dossier and the ledger;
 //   4. MUTUAL EXCLUSIVITY, live: opening either summon closes the other and
 //      document.querySelectorAll('[aria-modal="true"]').length === 1 throughout;
 //   5. keyboard-only transcripts through BOTH summons — focus lands inside, Tab
 //      cycles without escaping, Escape closes, focus returns to the summoner and
 //      never falls to <body>;
 //   6. the cross-zone sweep over every positioned control pair on the plate
-//      chrome and over the drawer's four-tab bar;
+//      chrome and over the drawer's six-tab bar;
 //   7. the alarm chip appears only when state.alarm > 0 and the threshold line
 //      retires after the first filing;
 //   8. forced-colors / high-contrast / reduced-motion;
@@ -591,15 +591,17 @@ async function drawerPass(width, height) {
   record(`${tag} · drawer rests visible (no opacity+fill:both reveal)`,
     geometry.opacity === '1', { opacity: geometry.opacity, animationName: geometry.animationName,
       fill: geometry.animationFillMode })
-  // RE-BASELINED 4 → 5 at Wave 2 round 1: the searchable record (E5) added a
-  // fifth cell to this same bar. Nothing here is relaxed — every existing clause
-  // is kept and the roster clause is joined by a search clause, so the count is
-  // still pinned to a named set of tabs rather than to "at least four".
-  record(`${tag} · five tabs, aria-wired`,
-    geometry.tabs.length === 5 &&
+  // RE-BASELINED 4 → 5 at Wave 2 round 1 (the searchable record, E5), then
+  // 5 → 6 at Wave 2 round 2 (the ledger, E3) — both times because the world
+  // legitimately changed. Nothing has ever been relaxed here: every earlier
+  // clause is kept verbatim and each new tab adds its OWN clause, so the count
+  // stays pinned to a named set of tabs and never degrades to "at least N".
+  record(`${tag} · six tabs, aria-wired`,
+    geometry.tabs.length === 6 &&
       geometry.tabs.every((t) => t.controls && t.id && t.pressed !== null) &&
       geometry.tabs.some((t) => /people/i.test(t.text)) &&
-      geometry.tabs.some((t) => /search/i.test(t.text)),
+      geometry.tabs.some((t) => /search/i.test(t.text)) &&
+      geometry.tabs.some((t) => /ledger/i.test(t.text)),
     { tabs: geometry.tabs })
   record(`${tag} · every tab meets the 44px target`, geometry.tabs.every((t) => t.h >= 44), {
     heights: geometry.tabs.map((t) => t.h),
@@ -609,7 +611,7 @@ async function drawerPass(width, height) {
   await shot('02-casefile-case-tab')
 
   // Each tab shows its own panel and only its own panel.
-  for (const tab of ['evidence', 'log', 'people', 'search']) {
+  for (const tab of ['ledger', 'evidence', 'log', 'people', 'search']) {
     await click(`#rail-tab-${tab}`)
     await sleep(240)
     const panels = await evaluate(`(() => ({
@@ -888,7 +890,7 @@ async function crossZonePass(width, height) {
   await pressEscape()
   await sleep(300)
 
-  // (b) The drawer's four-tab bar: same sweep, plus at most one panel open.
+  // (b) The drawer's six-tab bar: same sweep, plus at most one panel open.
   await click('.casefile-summon')
   await waitFor(`!!document.querySelector('.casefile-drawer')`)
   await sleep(320)
@@ -903,12 +905,15 @@ async function crossZonePass(width, height) {
     })
   })()`)
   report.measurements[`tabSweep:${tag}`] = tabSweep
-  // RE-BASELINED 4 → 5 with the search tab (see the aria-wiring check above).
+  // RE-BASELINED 4 → 5 with the search tab, 5 → 6 with the ledger tab (see the
+  // aria-wiring check above). The sweep itself is unchanged: every cell's visual
+  // centre must still activate that cell, which is the clause that caught the
+  // real 375 bug, and a six-cell bar is a strictly harder version of it.
   record(`${tag} · drawer tab bar: each tab's centre hits that tab`,
-    tabSweep.length === 5 && tabSweep.every((t) => t.hitsIntended), tabSweep)
+    tabSweep.length === 6 && tabSweep.every((t) => t.hitsIntended), tabSweep)
   await unfreeze()
 
-  for (const tab of ['case', 'evidence', 'log', 'people', 'search']) {
+  for (const tab of ['case', 'ledger', 'evidence', 'log', 'people', 'search']) {
     await click(`#rail-tab-${tab}`)
     await sleep(200)
     const state = await evaluate(`(() => ({
