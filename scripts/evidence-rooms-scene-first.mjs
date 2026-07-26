@@ -961,15 +961,33 @@ async function depositionPass(width, height) {
 
 // ── Run ─────────────────────────────────────────────────────────────────────
 
+// THE MATRIX, EXTENDED (ultra-wide round). 1920x1080 joins the standing set for
+// the full room pass at every room. Every clause the room pass already made
+// runs at it unchanged — the console still docks inside the plate, the room is
+// still a single instance re-parented rather than re-rendered, the zone rings
+// still land on the props they name, and the plate's phase attributes still
+// track the ritual. Nothing was relaxed to let the width in.
+//
+// This is the harness that owns "the console is docked WITHIN the plate" and
+// "the zone rings sit on their authored anchors", which are the two claims the
+// letterbox most obviously could have broken: the fit changes the projection
+// the rings are placed against, and the console gained a reserved band. 1080 is
+// above the letterbox's 977px height gate, so this is the letterboxed geometry.
+//
+// The keyboard, reduced-motion and resume passes stay at 1280x800: none of them
+// is a geometry claim, and the round changed no keyboard path, no motion rule
+// and nothing persisted.
 const passes = []
 for (const key of Object.keys(ROOMS)) {
   passes.push([`${key} 1280x800`, () => roomPass(key, 1280, 800)])
+  passes.push([`${key} 1920x1080`, () => roomPass(key, 1920, 1080)])
   passes.push([`${key} 375x812`, () => roomPass(key, 375, 812)])
   passes.push([`${key} keyboard`, () => keyboardPass(key, 1280, 800)])
   passes.push([`${key} reduced-motion`, () => reducedMotionPass(key, 1280, 800)])
   passes.push([`${key} resume`, () => resumePass(key, 1280, 800)])
 }
 passes.push(['deposition 1280x800', () => depositionPass(1280, 800)])
+passes.push(['deposition 1920x1080', () => depositionPass(1920, 1080)])
 passes.push(['deposition 375x812', () => depositionPass(375, 812)])
 
 const PASS_FILTER = process.env.PASS ?? ''

@@ -1,0 +1,422 @@
+[
+  {
+    "caseId": "case-77",
+    "reduced": false,
+    "rest": {
+      "frame": {
+        "x": 20,
+        "y": 150,
+        "w": 515.984375,
+        "h": 458
+      },
+      "planes": [
+        {
+          "name": "background",
+          "transform": "matrix3d(1.6545, 0, 0, 0, 0, 1.6545, 0, 0, 0, 0, 1, 0, 0, 0, -720, 1)",
+          "netScaleX": 1.045,
+          "netScaleY": 1.045
+        },
+        {
+          "name": "far",
+          "transform": "matrix3d(1.4182, 0, 0, 0, 0, 1.4182, 0, 0, 0, 0, 1, 0, 0, 0, -460, 1)",
+          "netScaleX": 1.045,
+          "netScaleY": 1.045
+        },
+        {
+          "name": "mid",
+          "transform": "matrix3d(1.2182, 0, 0, 0, 0, 1.2182, 0, 0, 0, 0, 1, 0, 0, 0, -240, 1)",
+          "netScaleX": 1.045,
+          "netScaleY": 1.045
+        },
+        {
+          "name": "near",
+          "transform": "matrix3d(1.0727, 0, 0, 0, 0, 1.0727, 0, 0, 0, 0, 1, 0, 0, 0, -80, 1)",
+          "netScaleX": 1.045,
+          "netScaleY": 1.045
+        }
+      ],
+      "hplanes": [
+        {
+          "plane": "far",
+          "netScaleX": 1.045
+        },
+        {
+          "plane": "mid",
+          "netScaleX": 1.045
+        },
+        null
+      ],
+      "groupTransform": "translate(-12.9px, -11.45px) scale(1.045) rotateX(0deg) rotateY(0deg)"
+    },
+    "swing": {
+      "pointer": {
+        "from": [
+          0,
+          400
+        ],
+        "to": [
+          1279,
+          400
+        ]
+      },
+      "groupAtLeft": "translate(-12.9px, -11.45px) scale(1.045) rotateX(0deg) rotateY(-0.13deg)",
+      "groupAtRight": "translate(-12.9px, -11.45px) scale(1.045) rotateX(0deg) rotateY(0.13deg)",
+      "probes": [
+        {
+          "id": "background-a",
+          "dx": -0.15,
+          "dy": -0.01,
+          "mag": 0.15
+        },
+        {
+          "id": "background-b",
+          "dx": -0.13,
+          "dy": 0.01,
+          "mag": 0.14
+        },
+        {
+          "id": "far-a",
+          "dx": 0.72,
+          "dy": -0.01,
+          "mag": 0.72
+        },
+        {
+          "id": "far-b",
+          "dx": 0.74,
+          "dy": 0.01,
+          "mag": 0.74
+        },
+        {
+          "id": "mid-a",
+          "dx": 1.72,
+          "dy": -0.01,
+          "mag": 1.72
+        },
+        {
+          "id": "mid-b",
+          "dx": 1.74,
+          "dy": 0.01,
+          "mag": 1.74
+        },
+        {
+          "id": "near-a",
+          "dx": 2.68,
+          "dy": -0.01,
+          "mag": 2.68
+        },
+        {
+          "id": "near-b",
+          "dx": 2.7,
+          "dy": 0.01,
+          "mag": 2.7
+        }
+      ],
+      "markers": [
+        {
+          "id": "registry",
+          "dx": 0.68,
+          "dy": -0.03,
+          "mag": 0.68
+        },
+        {
+          "id": "care-ward",
+          "dx": 1.86,
+          "dy": 0.01,
+          "mag": 1.86
+        },
+        {
+          "id": "maintenance",
+          "dx": 1.85,
+          "dy": -0.03,
+          "mag": 1.85
+        },
+        {
+          "id": "small-archive",
+          "dx": 1.66,
+          "dy": 0.06,
+          "mag": 1.66
+        }
+      ],
+      "planeShift": {
+        "background": 0.14,
+        "far": 0.73,
+        "mid": 1.73,
+        "near": 2.69
+      },
+      "strictOrder": true
+    },
+    "hitAreas": [
+      {
+        "site": "registry",
+        "plane": "far",
+        "w": 45.98,
+        "h": 45.98
+      },
+      {
+        "site": "care-ward",
+        "plane": "mid",
+        "w": 45.98,
+        "h": 45.98
+      },
+      {
+        "site": "maintenance",
+        "plane": "mid",
+        "w": 45.98,
+        "h": 45.98
+      },
+      {
+        "site": "small-archive",
+        "plane": "mid",
+        "w": 45.98,
+        "h": 45.98
+      }
+    ],
+    "hitAreasOk": true,
+    "coincidence": [
+      {
+        "site": "registry",
+        "plane": "far",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "site": "care-ward",
+        "plane": "mid",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "site": "maintenance",
+        "plane": "mid",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "site": "small-archive",
+        "plane": "mid",
+        "dx": 0,
+        "dy": 0
+      }
+    ],
+    "coincidenceOk": true
+  },
+  {
+    "caseId": "case-77",
+    "reduced": true,
+    "reducedMotion": {
+      "groupBefore": "none",
+      "groupAfter": "none",
+      "flat": true
+    }
+  },
+  {
+    "caseId": "case-81",
+    "reduced": false,
+    "rest": {
+      "frame": {
+        "x": 20,
+        "y": 150,
+        "w": 515.984375,
+        "h": 458
+      },
+      "planes": [
+        {
+          "name": "background",
+          "transform": "matrix3d(1.6545, 0, 0, 0, 0, 1.6545, 0, 0, 0, 0, 1, 0, 0, 0, -720, 1)",
+          "netScaleX": 1.05,
+          "netScaleY": 1.05
+        },
+        {
+          "name": "far",
+          "transform": "matrix3d(1.4182, 0, 0, 0, 0, 1.4182, 0, 0, 0, 0, 1, 0, 0, 0, -460, 1)",
+          "netScaleX": 1.05,
+          "netScaleY": 1.05
+        },
+        {
+          "name": "mid",
+          "transform": "matrix3d(1.2182, 0, 0, 0, 0, 1.2182, 0, 0, 0, 0, 1, 0, 0, 0, -240, 1)",
+          "netScaleX": 1.05,
+          "netScaleY": 1.05
+        },
+        {
+          "name": "near",
+          "transform": "matrix3d(1.0727, 0, 0, 0, 0, 1.0727, 0, 0, 0, 0, 1, 0, 0, 0, -80, 1)",
+          "netScaleX": 1.05,
+          "netScaleY": 1.05
+        }
+      ],
+      "hplanes": [
+        {
+          "plane": "far",
+          "netScaleX": 1.05
+        },
+        {
+          "plane": "mid",
+          "netScaleX": 1.05
+        },
+        null
+      ],
+      "groupTransform": "translate(4.89px, -11.45px) scale(1.05) rotateX(0deg) rotateY(0deg)"
+    },
+    "swing": {
+      "pointer": {
+        "from": [
+          0,
+          400
+        ],
+        "to": [
+          1279,
+          400
+        ]
+      },
+      "groupAtLeft": "translate(4.89px, -11.45px) scale(1.05) rotateX(0deg) rotateY(-0.14deg)",
+      "groupAtRight": "translate(4.89px, -11.45px) scale(1.05) rotateX(0deg) rotateY(0.139deg)",
+      "probes": [
+        {
+          "id": "background-a",
+          "dx": -0.15,
+          "dy": -0.01,
+          "mag": 0.15
+        },
+        {
+          "id": "background-b",
+          "dx": -0.15,
+          "dy": 0.01,
+          "mag": 0.15
+        },
+        {
+          "id": "far-a",
+          "dx": 0.79,
+          "dy": -0.01,
+          "mag": 0.79
+        },
+        {
+          "id": "far-b",
+          "dx": 0.78,
+          "dy": 0.01,
+          "mag": 0.78
+        },
+        {
+          "id": "mid-a",
+          "dx": 1.87,
+          "dy": -0.01,
+          "mag": 1.87
+        },
+        {
+          "id": "mid-b",
+          "dx": 1.86,
+          "dy": 0.01,
+          "mag": 1.86
+        },
+        {
+          "id": "near-a",
+          "dx": 2.9,
+          "dy": -0.01,
+          "mag": 2.9
+        },
+        {
+          "id": "near-b",
+          "dx": 2.9,
+          "dy": 0.01,
+          "mag": 2.9
+        }
+      ],
+      "markers": [
+        {
+          "id": "deposition-suite",
+          "dx": 2.01,
+          "dy": 0,
+          "mag": 2.01
+        },
+        {
+          "id": "restoration-lab",
+          "dx": 1.99,
+          "dy": 0,
+          "mag": 1.99
+        },
+        {
+          "id": "records-annex",
+          "dx": 0.93,
+          "dy": 0,
+          "mag": 0.93
+        },
+        {
+          "id": "counsel-office",
+          "dx": 0.93,
+          "dy": 0,
+          "mag": 0.93
+        }
+      ],
+      "planeShift": {
+        "background": 0.15,
+        "far": 0.79,
+        "mid": 1.87,
+        "near": 2.9
+      },
+      "strictOrder": true
+    },
+    "hitAreas": [
+      {
+        "site": "deposition-suite",
+        "plane": "mid",
+        "w": 46.2,
+        "h": 46.2
+      },
+      {
+        "site": "restoration-lab",
+        "plane": "mid",
+        "w": 46.2,
+        "h": 46.2
+      },
+      {
+        "site": "records-annex",
+        "plane": "far",
+        "w": 46.2,
+        "h": 46.2
+      },
+      {
+        "site": "counsel-office",
+        "plane": "far",
+        "w": 46.2,
+        "h": 46.2
+      }
+    ],
+    "hitAreasOk": true,
+    "coincidence": [
+      {
+        "site": "deposition-suite",
+        "plane": "mid",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "site": "restoration-lab",
+        "plane": "mid",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "site": "records-annex",
+        "plane": "far",
+        "dx": 0,
+        "dy": 0
+      },
+      {
+        "site": "counsel-office",
+        "plane": "far",
+        "dx": 0,
+        "dy": 0
+      }
+    ],
+    "coincidenceOk": true
+  },
+  {
+    "caseId": "case-81",
+    "reduced": true,
+    "reducedMotion": {
+      "groupBefore": "none",
+      "groupAfter": "none",
+      "flat": true
+    }
+  }
+]

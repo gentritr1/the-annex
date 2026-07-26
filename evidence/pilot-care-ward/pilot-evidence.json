@@ -1,6 +1,6 @@
 {
   "url": "http://127.0.0.1:3000/",
-  "capturedAt": "2026-07-26T21:26:27.296Z",
+  "capturedAt": "2026-07-26T22:41:11.268Z",
   "checks": [
     {
       "step": "[1280x800] care ward close read settles fully inside the fold",

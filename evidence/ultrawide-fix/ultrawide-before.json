@@ -1,0 +1,6522 @@
+{
+  "url": "http://127.0.0.1:3000/",
+  "label": "before",
+  "baseline": true,
+  "capturedAt": "2026-07-26T22:20:45.123Z",
+  "node": "v24.18.0",
+  "floors": {
+    "PHOTO_EPSILON_PX": 1,
+    "RING_CONTRAST_FLOOR": 3,
+    "SHIPPED_MARK_PX": {
+      ".site-closeup-zone": 17,
+      ".scene-zone-ring": 62,
+      ".crs-latch": 13,
+      ".asc-checkpoint": 12
+    },
+    "SHIPPED_PHOTO_W_1280": 1190,
+    "FOCAL_CELL_FRACTION": 0.3333333333333333,
+    "LETTERBOX_MIN_WIDTH": 1281,
+    "LETTERBOX_MIN_HEIGHT": 977,
+    "CONSOLE_BAND_PX": 248
+  },
+  "measurements": {
+    "registry-intake@375": {
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "workspace": {
+        "top": 170.08,
+        "left": 14,
+        "right": 361,
+        "bottom": 960,
+        "width": 347,
+        "height": 789.92
+      },
+      "worldView": {
+        "top": 170.08,
+        "left": 0,
+        "right": 375,
+        "bottom": 470.08,
+        "width": 375,
+        "height": 300
+      },
+      "plate": {
+        "top": 170.08,
+        "left": 0,
+        "right": 375,
+        "bottom": 470.08,
+        "width": 375,
+        "height": 300
+      },
+      "photo": {
+        "top": 166.72,
+        "left": -91.21,
+        "right": 455.99,
+        "bottom": 474.52,
+        "width": 547.19,
+        "height": 307.8
+      },
+      "console": {
+        "top": 254.08,
+        "left": 0,
+        "right": 375,
+        "bottom": 470.08,
+        "width": 375,
+        "height": 216
+      },
+      "cover": {
+        "top": 170.08,
+        "left": -82.33,
+        "right": 451,
+        "bottom": 470.08,
+        "width": 533.33,
+        "height": 300
+      },
+      "visible": {
+        "left": 0,
+        "right": 375,
+        "top": 170.08,
+        "bottom": 470.08
+      },
+      "photoArea": 168425,
+      "visibleArea": 112500,
+      "croppedPct": 33.2,
+      "consoleOccludedPct": 48.09,
+      "chromeOccludedPct": 10.91,
+      "unseenPct": 81.3,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": false,
+      "photoAspect": 1.7777,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 232.08,
+            "left": 211.3,
+            "right": 365,
+            "bottom": 276.08,
+            "width": 153.7,
+            "height": 44
+          },
+          "overPhotoPx": 6763
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 440.16,
+            "left": 18,
+            "right": 357,
+            "bottom": 454.08,
+            "width": 339,
+            "height": 13.92
+          },
+          "overPhotoPx": 4719
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 180.08,
+            "left": 10,
+            "right": 166.8,
+            "bottom": 224.08,
+            "width": 156.8,
+            "height": 44
+          },
+          "overPhotoPx": 6899
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark",
+          "state": "dormant",
+          "rect": {
+            "top": 348.84,
+            "left": 113.47,
+            "right": 130.91,
+            "bottom": 366.28,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 122.19,
+            "y": 357.56
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.03107,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark #2",
+          "state": "dormant",
+          "rect": {
+            "top": 290.36,
+            "left": 250.28,
+            "right": 267.72,
+            "bottom": 307.8,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 259,
+            "y": 299.08
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.03107,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch",
+          "state": "seated",
+          "rect": {
+            "top": 375.52,
+            "left": 60.8,
+            "right": 74.14,
+            "bottom": 388.85,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 67.47,
+            "y": 382.19
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.02376,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch #2",
+          "state": "seated",
+          "rect": {
+            "top": 360.13,
+            "left": 93.64,
+            "right": 106.97,
+            "bottom": 373.46,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 100.31,
+            "y": 366.8
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.02376,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch #3",
+          "state": "seated",
+          "rect": {
+            "top": 344.74,
+            "left": 126.47,
+            "right": 139.81,
+            "bottom": 358.07,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 133.14,
+            "y": 351.41
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.02376,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch #4",
+          "state": "refused",
+          "rect": {
+            "top": 329.35,
+            "left": 159.3,
+            "right": 172.64,
+            "bottom": 342.68,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 165.97,
+            "y": 336.02
+          },
+          "effectiveOpacity": 0.78,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.02376,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-closure",
+          "label": "custody closure stop",
+          "state": null,
+          "rect": {
+            "top": 302.16,
+            "left": 202.73,
+            "right": 205.81,
+            "bottom": 345.25,
+            "width": 3.08,
+            "height": 43.09
+          },
+          "centre": {
+            "x": 204.27,
+            "y": 323.71
+          },
+          "effectiveOpacity": 0.9,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 42,
+          "fractionOfPhotoWidth": 0.07676,
+          "drawnPx": 43.09
+        },
+        {
+          "sel": ".crs-mirror-ring",
+          "label": "custody mirror ring",
+          "state": "available",
+          "rect": {
+            "top": 277.2,
+            "left": 237.11,
+            "right": 280.88,
+            "bottom": 320.96,
+            "width": 43.77,
+            "height": 43.77
+          },
+          "centre": {
+            "x": 259,
+            "y": 299.08
+          },
+          "effectiveOpacity": 0.9,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 43,
+          "fractionOfPhotoWidth": 0.07858,
+          "drawnPx": 43.77
+        }
+      ],
+      "focal": {
+        "x": 193.33,
+        "y": 323.7,
+        "normalized": {
+          "x": 0.52,
+          "y": 0.51
+        },
+        "cell": {
+          "left": 102.13,
+          "right": 284.53,
+          "top": 272.4,
+          "bottom": 375
+        }
+      },
+      "marksUnderConsole": [
+        "custody carrier latch",
+        "custody carrier latch #2",
+        "custody carrier latch #3",
+        "custody carrier latch #4",
+        "custody closure stop",
+        "custody mirror ring"
+      ],
+      "marksUnderChrome": [],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [
+        "CASE FILE pill"
+      ],
+      "ringContrast": []
+    },
+    "maintenance-spine@375": {
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "workspace": {
+        "top": 170.08,
+        "left": 14,
+        "right": 361,
+        "bottom": 960,
+        "width": 347,
+        "height": 789.92
+      },
+      "worldView": {
+        "top": 170.08,
+        "left": 0,
+        "right": 375,
+        "bottom": 470.08,
+        "width": 375,
+        "height": 300
+      },
+      "plate": {
+        "top": 170.08,
+        "left": 0,
+        "right": 375,
+        "bottom": 470.08,
+        "width": 375,
+        "height": 300
+      },
+      "photo": {
+        "top": 164.93,
+        "left": -124.49,
+        "right": 422.71,
+        "bottom": 472.73,
+        "width": 547.19,
+        "height": 307.8
+      },
+      "console": {
+        "top": 254.08,
+        "left": 0,
+        "right": 375,
+        "bottom": 470.08,
+        "width": 375,
+        "height": 216
+      },
+      "cover": {
+        "top": 170.08,
+        "left": -120.33,
+        "right": 413,
+        "bottom": 470.08,
+        "width": 533.33,
+        "height": 300
+      },
+      "visible": {
+        "left": 0,
+        "right": 375,
+        "top": 170.08,
+        "bottom": 470.08
+      },
+      "photoArea": 168425,
+      "visibleArea": 112500,
+      "croppedPct": 33.2,
+      "consoleOccludedPct": 48.09,
+      "chromeOccludedPct": 10.91,
+      "unseenPct": 81.3,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": false,
+      "photoAspect": 1.7777,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 232.08,
+            "left": 211.3,
+            "right": 365,
+            "bottom": 276.08,
+            "width": 153.7,
+            "height": 44
+          },
+          "overPhotoPx": 6763
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 440.16,
+            "left": 18,
+            "right": 357,
+            "bottom": 454.08,
+            "width": 339,
+            "height": 13.92
+          },
+          "overPhotoPx": 4719
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 180.08,
+            "left": 10,
+            "right": 166.8,
+            "bottom": 224.08,
+            "width": 156.8,
+            "height": 44
+          },
+          "overPhotoPx": 6899
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark",
+          "state": "dormant",
+          "rect": {
+            "top": 328.58,
+            "left": 123.96,
+            "right": 141.4,
+            "bottom": 346.02,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 132.68,
+            "y": 337.3
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.03107,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark #2",
+          "state": "dormant",
+          "rect": {
+            "top": 328.58,
+            "left": 331.9,
+            "right": 349.35,
+            "bottom": 346.02,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 340.62,
+            "y": 337.3
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.03107,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".asc-checkpoint",
+          "label": "acoustic checkpoint",
+          "state": "current",
+          "rect": {
+            "top": 361,
+            "left": 32.58,
+            "right": 46.73,
+            "bottom": 375.16,
+            "width": 14.16,
+            "height": 14.16
+          },
+          "centre": {
+            "x": 39.66,
+            "y": 368.08
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 12,
+          "fractionOfPhotoWidth": 0.02193,
+          "drawnPx": 14.16
+        },
+        {
+          "sel": ".asc-checkpoint",
+          "label": "acoustic checkpoint #2",
+          "state": "ahead",
+          "rect": {
+            "top": 324.99,
+            "left": 121.06,
+            "right": 133.37,
+            "bottom": 337.3,
+            "width": 12.31,
+            "height": 12.31
+          },
+          "centre": {
+            "x": 127.22,
+            "y": 331.14
+          },
+          "effectiveOpacity": 0.5,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 12,
+          "fractionOfPhotoWidth": 0.02193,
+          "drawnPx": 12.31
+        },
+        {
+          "sel": ".asc-checkpoint",
+          "label": "acoustic checkpoint #3",
+          "state": "ahead",
+          "rect": {
+            "top": 302.09,
+            "left": 172.03,
+            "right": 180.9,
+            "bottom": 310.95,
+            "width": 8.86,
+            "height": 8.86
+          },
+          "centre": {
+            "x": 176.46,
+            "y": 306.52
+          },
+          "effectiveOpacity": 0.5,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 12,
+          "fractionOfPhotoWidth": 0.02193,
+          "drawnPx": 8.86
+        },
+        {
+          "sel": ".asc-credential",
+          "label": "acoustic credential door",
+          "state": null,
+          "rect": {
+            "top": 306.52,
+            "left": 318.74,
+            "right": 362.51,
+            "bottom": 343.45,
+            "width": 43.77,
+            "height": 36.94
+          },
+          "centre": {
+            "x": 340.63,
+            "y": 324.99
+          },
+          "effectiveOpacity": 0.4,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 43,
+          "fractionOfPhotoWidth": 0.07858,
+          "drawnPx": 43.77
+        }
+      ],
+      "focal": {
+        "x": 291.37,
+        "y": 318.83,
+        "normalized": {
+          "x": 0.76,
+          "y": 0.5
+        },
+        "cell": {
+          "left": 200.18,
+          "right": 382.57,
+          "top": 267.53,
+          "bottom": 370.13
+        }
+      },
+      "marksUnderConsole": [
+        "acoustic checkpoint",
+        "acoustic checkpoint #2",
+        "acoustic checkpoint #3",
+        "acoustic credential door"
+      ],
+      "marksUnderChrome": [],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [
+        "CASE FILE pill"
+      ],
+      "ringContrast": []
+    },
+    "small-archive@375": {
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "workspace": {
+        "top": 170.08,
+        "left": 14,
+        "right": 361,
+        "bottom": 960,
+        "width": 347,
+        "height": 789.92
+      },
+      "worldView": {
+        "top": 170.08,
+        "left": 0,
+        "right": 375,
+        "bottom": 470.08,
+        "width": 375,
+        "height": 300
+      },
+      "plate": {
+        "top": 170.08,
+        "left": 0,
+        "right": 375,
+        "bottom": 470.08,
+        "width": 375,
+        "height": 300
+      },
+      "photo": {
+        "top": 164.46,
+        "left": -85.6,
+        "right": 461.59,
+        "bottom": 472.26,
+        "width": 547.19,
+        "height": 307.8
+      },
+      "console": {
+        "top": 254.08,
+        "left": 0,
+        "right": 375,
+        "bottom": 470.08,
+        "width": 375,
+        "height": 216
+      },
+      "cover": {
+        "top": 170.08,
+        "left": -80.75,
+        "right": 452.58,
+        "bottom": 470.08,
+        "width": 533.33,
+        "height": 300
+      },
+      "visible": {
+        "left": 0,
+        "right": 375,
+        "top": 170.08,
+        "bottom": 470.08
+      },
+      "photoArea": 168425,
+      "visibleArea": 112500,
+      "croppedPct": 33.2,
+      "consoleOccludedPct": 48.09,
+      "chromeOccludedPct": 10.91,
+      "unseenPct": 81.3,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": false,
+      "photoAspect": 1.7777,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 232.08,
+            "left": 211.3,
+            "right": 365,
+            "bottom": 276.08,
+            "width": 153.7,
+            "height": 44
+          },
+          "overPhotoPx": 6763
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 440.16,
+            "left": 18,
+            "right": 357,
+            "bottom": 454.08,
+            "width": 339,
+            "height": 13.92
+          },
+          "overPhotoPx": 4719
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 180.08,
+            "left": 10,
+            "right": 166.8,
+            "bottom": 224.08,
+            "width": 156.8,
+            "height": 44
+          },
+          "overPhotoPx": 6899
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark",
+          "state": "dormant",
+          "rect": {
+            "top": 371.2,
+            "left": 108.14,
+            "right": 125.58,
+            "bottom": 388.64,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 116.86,
+            "y": 379.92
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.03107,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark #2",
+          "state": "dormant",
+          "rect": {
+            "top": 294.25,
+            "left": 261.35,
+            "right": 278.79,
+            "bottom": 311.69,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 270.07,
+            "y": 302.97
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.03107,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".scr-drawer-glow",
+          "label": "archive drawer register",
+          "state": null,
+          "rect": {
+            "top": 347.3,
+            "left": 37.09,
+            "right": 174.73,
+            "bottom": 424.86,
+            "width": 137.64,
+            "height": 77.56
+          },
+          "centre": {
+            "x": 105.91,
+            "y": 386.08
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 134,
+          "fractionOfPhotoWidth": 0.24489,
+          "drawnPx": 137.64
+        },
+        {
+          "sel": ".scr-aperture",
+          "label": "archive aperture",
+          "state": null,
+          "rect": {
+            "top": 431.32,
+            "left": 40.25,
+            "right": 94.97,
+            "bottom": 439.33,
+            "width": 54.71,
+            "height": 8
+          },
+          "centre": {
+            "x": 67.61,
+            "y": 435.32
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 53,
+          "fractionOfPhotoWidth": 0.09686,
+          "drawnPx": 54.71
+        },
+        {
+          "sel": ".scr-slip",
+          "label": "archive removal slip",
+          "state": null,
+          "rect": {
+            "top": 278.86,
+            "left": 257.07,
+            "right": 294,
+            "bottom": 286.04,
+            "width": 36.94,
+            "height": 7.18
+          },
+          "centre": {
+            "x": 275.54,
+            "y": 282.45
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 36,
+          "fractionOfPhotoWidth": 0.06579,
+          "drawnPx": 36.94
+        },
+        {
+          "sel": ".scr-slip",
+          "label": "archive removal slip #2",
+          "state": null,
+          "rect": {
+            "top": 290.15,
+            "left": 257.07,
+            "right": 294,
+            "bottom": 297.33,
+            "width": 36.94,
+            "height": 7.18
+          },
+          "centre": {
+            "x": 275.54,
+            "y": 293.74
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 36,
+          "fractionOfPhotoWidth": 0.06579,
+          "drawnPx": 36.94
+        },
+        {
+          "sel": ".scr-slip",
+          "label": "archive removal slip #3",
+          "state": null,
+          "rect": {
+            "top": 301.43,
+            "left": 257.07,
+            "right": 294,
+            "bottom": 308.62,
+            "width": 36.94,
+            "height": 7.18
+          },
+          "centre": {
+            "x": 275.54,
+            "y": 305.02
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 36,
+          "fractionOfPhotoWidth": 0.06579,
+          "drawnPx": 36.94
+        }
+      ],
+      "focal": {
+        "x": 193.47,
+        "y": 321.44,
+        "normalized": {
+          "x": 0.51,
+          "y": 0.51
+        },
+        "cell": {
+          "left": 102.27,
+          "right": 284.67,
+          "top": 270.14,
+          "bottom": 372.74
+        }
+      },
+      "marksUnderConsole": [
+        "archive drawer register"
+      ],
+      "marksUnderChrome": [],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [
+        "CASE FILE pill"
+      ],
+      "ringContrast": []
+    },
+    "care-ward@375": {
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "workspace": {
+        "top": 170.08,
+        "left": 14,
+        "right": 361,
+        "bottom": 982.06,
+        "width": 347,
+        "height": 811.98
+      },
+      "worldView": {
+        "top": 170.08,
+        "left": 0,
+        "right": 375,
+        "bottom": 470.08,
+        "width": 375,
+        "height": 300
+      },
+      "plate": {
+        "top": 170.08,
+        "left": 0,
+        "right": 375,
+        "bottom": 470.08,
+        "width": 375,
+        "height": 300
+      },
+      "photo": {
+        "top": 170.08,
+        "left": -79.16,
+        "right": 454.16,
+        "bottom": 470.08,
+        "width": 533.33,
+        "height": 300
+      },
+      "console": null,
+      "cover": {
+        "top": 170.08,
+        "left": -79.16,
+        "right": 454.16,
+        "bottom": 470.08,
+        "width": 533.33,
+        "height": 300
+      },
+      "visible": {
+        "left": 0,
+        "right": 375,
+        "top": 170.08,
+        "bottom": 470.08
+      },
+      "photoArea": 159999,
+      "visibleArea": 112500,
+      "croppedPct": 29.69,
+      "consoleOccludedPct": 0,
+      "chromeOccludedPct": 14.88,
+      "unseenPct": 29.69,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": true,
+      "photoAspect": 1.7778,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 232.08,
+            "left": 81.8,
+            "right": 235.5,
+            "bottom": 276.08,
+            "width": 153.7,
+            "height": 44
+          },
+          "overPhotoPx": 6763
+        },
+        {
+          "sel": ".scene-summons .scene-detail-summon",
+          "label": "LOCATION DETAIL summon",
+          "rect": {
+            "top": 232.08,
+            "left": 241.5,
+            "right": 365,
+            "bottom": 276.08,
+            "width": 123.5,
+            "height": 44
+          },
+          "overPhotoPx": 5434
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 440.16,
+            "left": 18,
+            "right": 357,
+            "bottom": 454.08,
+            "width": 339,
+            "height": 13.92
+          },
+          "overPhotoPx": 4719
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 180.08,
+            "left": 10,
+            "right": 166.8,
+            "bottom": 224.08,
+            "width": 156.8,
+            "height": 44
+          },
+          "overPhotoPx": 6899
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".scene-zone-ring",
+          "label": "live zone ring",
+          "state": null,
+          "rect": {
+            "top": 316.08,
+            "left": 21.49,
+            "right": 65.49,
+            "bottom": 360.08,
+            "width": 44,
+            "height": 44
+          },
+          "centre": {
+            "x": 43.49,
+            "y": 338.08
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 44,
+          "fractionOfPhotoWidth": 0.0825,
+          "drawnPx": 44
+        },
+        {
+          "sel": ".scene-zone-ring",
+          "label": "live zone ring #2",
+          "state": null,
+          "rect": {
+            "top": 310.08,
+            "left": 314.82,
+            "right": 358.82,
+            "bottom": 354.08,
+            "width": 44,
+            "height": 44
+          },
+          "centre": {
+            "x": 336.82,
+            "y": 332.08
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 44,
+          "fractionOfPhotoWidth": 0.0825,
+          "drawnPx": 44
+        }
+      ],
+      "focal": {
+        "x": 187.51,
+        "y": 320.08,
+        "normalized": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "cell": {
+          "left": 98.62,
+          "right": 276.39,
+          "top": 270.08,
+          "bottom": 370.08
+        }
+      },
+      "marksUnderConsole": [],
+      "marksUnderChrome": [],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [
+        "CASE FILE pill",
+        "LOCATION DETAIL summon"
+      ],
+      "ringContrast": [
+        {
+          "label": "live zone ring",
+          "sel": ".scene-zone-ring",
+          "state": null,
+          "sampledPx": 2304,
+          "painted": 1276,
+          "maxChannelDelta": 300,
+          "corePx": 192,
+          "ringContrast": 1.76,
+          "p50": 1.07,
+          "p90": 1.66,
+          "max": 4.44
+        },
+        {
+          "label": "live zone ring #2",
+          "sel": ".scene-zone-ring",
+          "state": null,
+          "sampledPx": 2304,
+          "painted": 1385,
+          "maxChannelDelta": 298,
+          "corePx": 208,
+          "ringContrast": 1.79,
+          "p50": 1.1,
+          "p90": 1.66,
+          "max": 4.36
+        }
+      ]
+    },
+    "registry-intake@1280": {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "workspace": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1262,
+        "bottom": 700.02,
+        "width": 1244,
+        "height": 558
+      },
+      "worldView": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1178,
+        "bottom": 618.02,
+        "width": 1160,
+        "height": 476
+      },
+      "plate": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1178,
+        "bottom": 618.02,
+        "width": 1160,
+        "height": 476
+      },
+      "photo": {
+        "top": 44.7,
+        "left": -1.31,
+        "right": 1188.85,
+        "bottom": 714.16,
+        "width": 1190.16,
+        "height": 669.46
+      },
+      "console": {
+        "top": 461.83,
+        "left": 18,
+        "right": 1178,
+        "bottom": 618.02,
+        "width": 1160,
+        "height": 156.19
+      },
+      "cover": {
+        "top": 51.99,
+        "left": 17.99,
+        "right": 1177.99,
+        "bottom": 704.49,
+        "width": 1160,
+        "height": 652.5
+      },
+      "visible": {
+        "left": 18,
+        "right": 1178,
+        "top": 142.02,
+        "bottom": 618.02
+      },
+      "photoArea": 796765,
+      "visibleArea": 552160,
+      "croppedPct": 30.7,
+      "consoleOccludedPct": 22.74,
+      "chromeOccludedPct": 5.66,
+      "unseenPct": 53.44,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": false,
+      "photoAspect": 1.7778,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 158.02,
+            "left": 994.05,
+            "right": 1160,
+            "bottom": 247.45,
+            "width": 165.95,
+            "height": 89.44
+          },
+          "overPhotoPx": 14841
+        },
+        {
+          "sel": ".casefile-summon-why",
+          "label": "CASE FILE purpose copy",
+          "rect": {
+            "top": 194.02,
+            "left": 1009.05,
+            "right": 1138.5,
+            "bottom": 240.45,
+            "width": 129.45,
+            "height": 46.44
+          },
+          "overPhotoPx": 6010
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 587.45,
+            "left": 36,
+            "right": 1160,
+            "bottom": 602.02,
+            "width": 1124,
+            "height": 14.56
+          },
+          "overPhotoPx": 16377
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 158.02,
+            "left": 36,
+            "right": 214.2,
+            "bottom": 202.02,
+            "width": 178.2,
+            "height": 44
+          },
+          "overPhotoPx": 7841
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark",
+          "state": "dormant",
+          "rect": {
+            "top": 451.04,
+            "left": 454.12,
+            "right": 471.56,
+            "bottom": 468.48,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 462.84,
+            "y": 459.76
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.01428,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark #2",
+          "state": "dormant",
+          "rect": {
+            "top": 323.83,
+            "left": 751.66,
+            "right": 769.1,
+            "bottom": 341.27,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 760.38,
+            "y": 332.55
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.01428,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch",
+          "state": "seated",
+          "rect": {
+            "top": 506.65,
+            "left": 337.15,
+            "right": 350.49,
+            "bottom": 519.99,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 343.82,
+            "y": 513.32
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.01092,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch #2",
+          "state": "seated",
+          "rect": {
+            "top": 473.18,
+            "left": 408.57,
+            "right": 421.91,
+            "bottom": 486.52,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 415.24,
+            "y": 479.85
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.01092,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch #3",
+          "state": "seated",
+          "rect": {
+            "top": 439.71,
+            "left": 479.98,
+            "right": 493.31,
+            "bottom": 453.04,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 486.65,
+            "y": 446.38
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.01092,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch #4",
+          "state": "refused",
+          "rect": {
+            "top": 406.23,
+            "left": 551.38,
+            "right": 564.72,
+            "bottom": 419.57,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 558.05,
+            "y": 412.9
+          },
+          "effectiveOpacity": 0.78,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.01092,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-closure",
+          "label": "custody closure stop",
+          "state": null,
+          "rect": {
+            "top": 339.25,
+            "left": 639.82,
+            "right": 642.9,
+            "bottom": 432.97,
+            "width": 3.08,
+            "height": 93.72
+          },
+          "centre": {
+            "x": 641.36,
+            "y": 386.11
+          },
+          "effectiveOpacity": 0.9,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 91,
+          "fractionOfPhotoWidth": 0.07646,
+          "drawnPx": 93.72
+        },
+        {
+          "sel": ".crs-mirror-ring",
+          "label": "custody mirror ring",
+          "state": "available",
+          "rect": {
+            "top": 284.95,
+            "left": 712.77,
+            "right": 807.98,
+            "bottom": 380.16,
+            "width": 95.21,
+            "height": 95.21
+          },
+          "centre": {
+            "x": 760.38,
+            "y": 332.56
+          },
+          "effectiveOpacity": 0.9,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 93,
+          "fractionOfPhotoWidth": 0.07814,
+          "drawnPx": 95.21
+        }
+      ],
+      "focal": {
+        "x": 617.57,
+        "y": 386.12,
+        "normalized": {
+          "x": 0.52,
+          "y": 0.51
+        },
+        "cell": {
+          "left": 419.21,
+          "right": 815.93,
+          "top": 274.55,
+          "bottom": 497.7
+        }
+      },
+      "marksUnderConsole": [
+        "custody carrier latch",
+        "custody carrier latch #2"
+      ],
+      "marksUnderChrome": [],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [],
+      "ringContrast": [
+        {
+          "label": "custody carrier latch #3",
+          "sel": ".crs-latch",
+          "state": "seated",
+          "sampledPx": 289,
+          "painted": 154,
+          "maxChannelDelta": 354,
+          "corePx": 24,
+          "ringContrast": 4.17,
+          "p50": 1.8,
+          "p90": 3.57,
+          "max": 7.05
+        },
+        {
+          "label": "custody carrier latch #4",
+          "sel": ".crs-latch",
+          "state": "refused",
+          "sampledPx": 289,
+          "painted": 56,
+          "maxChannelDelta": 271,
+          "corePx": 9,
+          "ringContrast": 2.14,
+          "p50": 1.4,
+          "p90": 2.13,
+          "max": 3.7
+        },
+        {
+          "label": "custody closure stop",
+          "sel": ".crs-closure",
+          "state": null,
+          "sampledPx": 686,
+          "painted": 569,
+          "maxChannelDelta": 316,
+          "corePx": 86,
+          "ringContrast": 3.89,
+          "p50": 1.44,
+          "p90": 3.85,
+          "max": 4
+        },
+        {
+          "label": "custody mirror ring",
+          "sel": ".crs-mirror-ring",
+          "state": "available",
+          "sampledPx": 9801,
+          "painted": 377,
+          "maxChannelDelta": 347,
+          "corePx": 57,
+          "ringContrast": 4.51,
+          "p50": 1.52,
+          "p90": 3.88,
+          "max": 6.39
+        }
+      ]
+    },
+    "maintenance-spine@1280": {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "workspace": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1262,
+        "bottom": 700.02,
+        "width": 1244,
+        "height": 558
+      },
+      "worldView": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1178,
+        "bottom": 618.02,
+        "width": 1160,
+        "height": 476
+      },
+      "plate": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1178,
+        "bottom": 618.02,
+        "width": 1160,
+        "height": 476
+      },
+      "photo": {
+        "top": 42.57,
+        "left": 8.95,
+        "right": 1199.11,
+        "bottom": 712.03,
+        "width": 1190.16,
+        "height": 669.47
+      },
+      "console": {
+        "top": 383.83,
+        "left": 18,
+        "right": 1178,
+        "bottom": 618.02,
+        "width": 1160,
+        "height": 234.19
+      },
+      "cover": {
+        "top": 53.77,
+        "left": 17.99,
+        "right": 1177.99,
+        "bottom": 706.27,
+        "width": 1160,
+        "height": 652.5
+      },
+      "visible": {
+        "left": 18,
+        "right": 1178,
+        "top": 142.02,
+        "bottom": 618.02
+      },
+      "photoArea": 796776,
+      "visibleArea": 552160,
+      "croppedPct": 30.7,
+      "consoleOccludedPct": 34.09,
+      "chromeOccludedPct": 5.66,
+      "unseenPct": 64.8,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": false,
+      "photoAspect": 1.7778,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 158.02,
+            "left": 994.05,
+            "right": 1160,
+            "bottom": 247.45,
+            "width": 165.95,
+            "height": 89.44
+          },
+          "overPhotoPx": 14841
+        },
+        {
+          "sel": ".casefile-summon-why",
+          "label": "CASE FILE purpose copy",
+          "rect": {
+            "top": 194.02,
+            "left": 1009.05,
+            "right": 1138.5,
+            "bottom": 240.45,
+            "width": 129.45,
+            "height": 46.44
+          },
+          "overPhotoPx": 6010
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 587.45,
+            "left": 36,
+            "right": 1160,
+            "bottom": 602.02,
+            "width": 1124,
+            "height": 14.56
+          },
+          "overPhotoPx": 16377
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 158.02,
+            "left": 36,
+            "right": 214.2,
+            "bottom": 202.02,
+            "width": 178.2,
+            "height": 44
+          },
+          "overPhotoPx": 7841
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark",
+          "state": "dormant",
+          "rect": {
+            "top": 408.74,
+            "left": 559.59,
+            "right": 577.03,
+            "bottom": 426.18,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 568.31,
+            "y": 417.46
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.01428,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark #2",
+          "state": "dormant",
+          "rect": {
+            "top": 408.74,
+            "left": 1011.86,
+            "right": 1029.3,
+            "bottom": 426.18,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 1020.58,
+            "y": 417.46
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.01428,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".asc-checkpoint",
+          "label": "acoustic checkpoint",
+          "state": "current",
+          "rect": {
+            "top": 477.33,
+            "left": 358.91,
+            "right": 373.07,
+            "bottom": 491.49,
+            "width": 14.16,
+            "height": 14.16
+          },
+          "centre": {
+            "x": 365.99,
+            "y": 484.41
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 12,
+          "fractionOfPhotoWidth": 0.01008,
+          "drawnPx": 14.16
+        },
+        {
+          "sel": ".asc-checkpoint",
+          "label": "acoustic checkpoint #2",
+          "state": "ahead",
+          "rect": {
+            "top": 397.92,
+            "left": 550.26,
+            "right": 562.57,
+            "bottom": 410.23,
+            "width": 12.31,
+            "height": 12.31
+          },
+          "centre": {
+            "x": 556.41,
+            "y": 404.07
+          },
+          "effectiveOpacity": 0.5,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 12,
+          "fractionOfPhotoWidth": 0.01008,
+          "drawnPx": 12.31
+        },
+        {
+          "sel": ".asc-checkpoint",
+          "label": "acoustic checkpoint #3",
+          "state": "ahead",
+          "rect": {
+            "top": 346.08,
+            "left": 659.1,
+            "right": 667.97,
+            "bottom": 354.95,
+            "width": 8.86,
+            "height": 8.86
+          },
+          "centre": {
+            "x": 663.53,
+            "y": 350.51
+          },
+          "effectiveOpacity": 0.5,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 12,
+          "fractionOfPhotoWidth": 0.01008,
+          "drawnPx": 8.86
+        },
+        {
+          "sel": ".asc-credential",
+          "label": "acoustic credential door",
+          "state": null,
+          "rect": {
+            "top": 350.52,
+            "left": 972.98,
+            "right": 1068.19,
+            "bottom": 430.85,
+            "width": 95.21,
+            "height": 80.33
+          },
+          "centre": {
+            "x": 1020.59,
+            "y": 390.69
+          },
+          "effectiveOpacity": 0.4,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 93,
+          "fractionOfPhotoWidth": 0.07814,
+          "drawnPx": 95.21
+        }
+      ],
+      "focal": {
+        "x": 913.47,
+        "y": 377.31,
+        "normalized": {
+          "x": 0.76,
+          "y": 0.5
+        },
+        "cell": {
+          "left": 715.11,
+          "right": 1111.83,
+          "top": 265.73,
+          "bottom": 488.88
+        }
+      },
+      "marksUnderConsole": [
+        "acoustic checkpoint",
+        "acoustic checkpoint #2",
+        "acoustic credential door"
+      ],
+      "marksUnderChrome": [],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [],
+      "ringContrast": [
+        {
+          "label": "acoustic checkpoint #3",
+          "sel": ".asc-checkpoint",
+          "state": "ahead",
+          "sampledPx": 169,
+          "painted": 114,
+          "maxChannelDelta": 80,
+          "corePx": 18,
+          "ringContrast": 1.37,
+          "p50": 1.06,
+          "p90": 1.31,
+          "max": 1.45
+        }
+      ]
+    },
+    "small-archive@1280": {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "workspace": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1262,
+        "bottom": 700.02,
+        "width": 1244,
+        "height": 558
+      },
+      "worldView": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1178,
+        "bottom": 618.02,
+        "width": 1160,
+        "height": 476
+      },
+      "plate": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1178,
+        "bottom": 618.02,
+        "width": 1160,
+        "height": 476
+      },
+      "photo": {
+        "top": 39.78,
+        "left": 7.44,
+        "right": 1197.6,
+        "bottom": 709.24,
+        "width": 1190.16,
+        "height": 669.47
+      },
+      "console": {
+        "top": 397.73,
+        "left": 18,
+        "right": 1178,
+        "bottom": 618.02,
+        "width": 1160,
+        "height": 220.28
+      },
+      "cover": {
+        "top": 51.99,
+        "left": 17.99,
+        "right": 1177.99,
+        "bottom": 704.49,
+        "width": 1160,
+        "height": 652.5
+      },
+      "visible": {
+        "left": 18,
+        "right": 1178,
+        "top": 142.02,
+        "bottom": 618.02
+      },
+      "photoArea": 796776,
+      "visibleArea": 552160,
+      "croppedPct": 30.7,
+      "consoleOccludedPct": 32.07,
+      "chromeOccludedPct": 5.66,
+      "unseenPct": 62.77,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": false,
+      "photoAspect": 1.7778,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 158.02,
+            "left": 994.05,
+            "right": 1160,
+            "bottom": 247.45,
+            "width": 165.95,
+            "height": 89.44
+          },
+          "overPhotoPx": 14841
+        },
+        {
+          "sel": ".casefile-summon-why",
+          "label": "CASE FILE purpose copy",
+          "rect": {
+            "top": 194.02,
+            "left": 1009.05,
+            "right": 1138.5,
+            "bottom": 240.45,
+            "width": 129.45,
+            "height": 46.44
+          },
+          "overPhotoPx": 6010
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 587.45,
+            "left": 36,
+            "right": 1160,
+            "bottom": 602.02,
+            "width": 1124,
+            "height": 14.56
+          },
+          "overPhotoPx": 16377
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 158.02,
+            "left": 36,
+            "right": 214.2,
+            "bottom": 202.02,
+            "width": 178.2,
+            "height": 44
+          },
+          "overPhotoPx": 7841
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark",
+          "state": "dormant",
+          "rect": {
+            "top": 499.68,
+            "left": 439.06,
+            "right": 456.51,
+            "bottom": 517.12,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 447.78,
+            "y": 508.4
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.01428,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark #2",
+          "state": "dormant",
+          "rect": {
+            "top": 332.31,
+            "left": 772.32,
+            "right": 789.76,
+            "bottom": 349.76,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 781.04,
+            "y": 341.03
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.01428,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".scr-drawer-glow",
+          "label": "archive drawer register",
+          "state": null,
+          "rect": {
+            "top": 437.45,
+            "left": 274.29,
+            "right": 573.69,
+            "bottom": 606.13,
+            "width": 299.4,
+            "height": 168.68
+          },
+          "centre": {
+            "x": 423.99,
+            "y": 521.79
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [
+            "plate caption"
+          ],
+          "insidePlate": true,
+          "layoutPx": 292,
+          "fractionOfPhotoWidth": 0.24535,
+          "drawnPx": 299.4
+        },
+        {
+          "sel": ".scr-aperture",
+          "label": "archive aperture",
+          "state": null,
+          "rect": {
+            "top": 620.19,
+            "left": 281.17,
+            "right": 400.19,
+            "bottom": 637.59,
+            "width": 119.02,
+            "height": 17.4
+          },
+          "centre": {
+            "x": 340.68,
+            "y": 628.89
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": false,
+          "layoutPx": 116,
+          "fractionOfPhotoWidth": 0.09747,
+          "drawnPx": 119.02
+        },
+        {
+          "sel": ".scr-slip",
+          "label": "archive removal slip",
+          "state": null,
+          "rect": {
+            "top": 306.07,
+            "left": 774.47,
+            "right": 811.41,
+            "bottom": 313.25,
+            "width": 36.94,
+            "height": 7.18
+          },
+          "centre": {
+            "x": 792.94,
+            "y": 309.66
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 36,
+          "fractionOfPhotoWidth": 0.03025,
+          "drawnPx": 36.94
+        },
+        {
+          "sel": ".scr-slip",
+          "label": "archive removal slip #2",
+          "state": null,
+          "rect": {
+            "top": 317.36,
+            "left": 774.47,
+            "right": 811.41,
+            "bottom": 324.54,
+            "width": 36.94,
+            "height": 7.18
+          },
+          "centre": {
+            "x": 792.94,
+            "y": 320.95
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 36,
+          "fractionOfPhotoWidth": 0.03025,
+          "drawnPx": 36.94
+        },
+        {
+          "sel": ".scr-slip",
+          "label": "archive removal slip #3",
+          "state": null,
+          "rect": {
+            "top": 328.64,
+            "left": 774.47,
+            "right": 811.41,
+            "bottom": 335.82,
+            "width": 36.94,
+            "height": 7.18
+          },
+          "centre": {
+            "x": 792.94,
+            "y": 332.23
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 36,
+          "fractionOfPhotoWidth": 0.03025,
+          "drawnPx": 36.94
+        }
+      ],
+      "focal": {
+        "x": 614.42,
+        "y": 381.21,
+        "normalized": {
+          "x": 0.51,
+          "y": 0.51
+        },
+        "cell": {
+          "left": 416.06,
+          "right": 812.78,
+          "top": 269.63,
+          "bottom": 492.79
+        }
+      },
+      "marksUnderConsole": [
+        "archive drawer register"
+      ],
+      "marksUnderChrome": [
+        "archive drawer register"
+      ],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [],
+      "ringContrast": []
+    },
+    "care-ward@1280": {
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "workspace": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1262,
+        "bottom": 700.02,
+        "width": 1244,
+        "height": 558
+      },
+      "worldView": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1178,
+        "bottom": 618.02,
+        "width": 1160,
+        "height": 476
+      },
+      "plate": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1178,
+        "bottom": 618.02,
+        "width": 1160,
+        "height": 476
+      },
+      "photo": {
+        "top": 53.77,
+        "left": 18,
+        "right": 1178,
+        "bottom": 706.27,
+        "width": 1160,
+        "height": 652.5
+      },
+      "console": null,
+      "cover": {
+        "top": 53.77,
+        "left": 18,
+        "right": 1178,
+        "bottom": 706.27,
+        "width": 1160,
+        "height": 652.5
+      },
+      "visible": {
+        "left": 18,
+        "right": 1178,
+        "top": 142.02,
+        "bottom": 618.02
+      },
+      "photoArea": 756900,
+      "visibleArea": 552160,
+      "croppedPct": 27.05,
+      "consoleOccludedPct": 0,
+      "chromeOccludedPct": 6.74,
+      "unseenPct": 27.05,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": true,
+      "photoAspect": 1.7778,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 158.02,
+            "left": 851.28,
+            "right": 1017.23,
+            "bottom": 247.45,
+            "width": 165.95,
+            "height": 89.44
+          },
+          "overPhotoPx": 14841
+        },
+        {
+          "sel": ".scene-summons .scene-detail-summon",
+          "label": "LOCATION DETAIL summon",
+          "rect": {
+            "top": 158.02,
+            "left": 1025.23,
+            "right": 1160,
+            "bottom": 202.02,
+            "width": 134.77,
+            "height": 44
+          },
+          "overPhotoPx": 5930
+        },
+        {
+          "sel": ".casefile-summon-why",
+          "label": "CASE FILE purpose copy",
+          "rect": {
+            "top": 194.02,
+            "left": 866.28,
+            "right": 995.73,
+            "bottom": 240.45,
+            "width": 129.45,
+            "height": 46.44
+          },
+          "overPhotoPx": 6010
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 587.45,
+            "left": 36,
+            "right": 1160,
+            "bottom": 602.02,
+            "width": 1124,
+            "height": 14.56
+          },
+          "overPhotoPx": 16377
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 158.02,
+            "left": 36,
+            "right": 214.2,
+            "bottom": 202.02,
+            "width": 178.2,
+            "height": 44
+          },
+          "overPhotoPx": 7841
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".scene-zone-ring",
+          "label": "live zone ring",
+          "state": null,
+          "rect": {
+            "top": 388.16,
+            "left": 253.8,
+            "right": 315.8,
+            "bottom": 450.16,
+            "width": 62,
+            "height": 62
+          },
+          "centre": {
+            "x": 284.8,
+            "y": 419.16
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 62,
+          "fractionOfPhotoWidth": 0.05345,
+          "drawnPx": 62
+        },
+        {
+          "sel": ".scene-zone-ring",
+          "label": "live zone ring #2",
+          "state": null,
+          "rect": {
+            "top": 375.11,
+            "left": 891.8,
+            "right": 953.8,
+            "bottom": 437.11,
+            "width": 62,
+            "height": 62
+          },
+          "centre": {
+            "x": 922.8,
+            "y": 406.11
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 62,
+          "fractionOfPhotoWidth": 0.05345,
+          "drawnPx": 62
+        }
+      ],
+      "focal": {
+        "x": 598,
+        "y": 380.02,
+        "normalized": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "cell": {
+          "left": 404.67,
+          "right": 791.33,
+          "top": 271.27,
+          "bottom": 488.77
+        }
+      },
+      "marksUnderConsole": [],
+      "marksUnderChrome": [],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [],
+      "ringContrast": [
+        {
+          "label": "live zone ring",
+          "sel": ".scene-zone-ring",
+          "state": null,
+          "sampledPx": 4356,
+          "painted": 2348,
+          "maxChannelDelta": 325,
+          "corePx": 353,
+          "ringContrast": 1.64,
+          "p50": 1.08,
+          "p90": 1.55,
+          "max": 4.77
+        },
+        {
+          "label": "live zone ring #2",
+          "sel": ".scene-zone-ring",
+          "state": null,
+          "sampledPx": 4356,
+          "painted": 2369,
+          "maxChannelDelta": 287,
+          "corePx": 356,
+          "ringContrast": 1.72,
+          "p50": 1.08,
+          "p90": 1.56,
+          "max": 4.18
+        }
+      ]
+    },
+    "registry-intake@1512": {
+      "viewport": {
+        "width": 1512,
+        "height": 982
+      },
+      "workspace": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1494,
+        "bottom": 882.02,
+        "width": 1476,
+        "height": 740
+      },
+      "worldView": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1410,
+        "bottom": 800.02,
+        "width": 1392,
+        "height": 658
+      },
+      "plate": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1410,
+        "bottom": 800.02,
+        "width": 1392,
+        "height": 658
+      },
+      "photo": {
+        "top": 69.51,
+        "left": -5.17,
+        "right": 1423.02,
+        "bottom": 872.87,
+        "width": 1428.19,
+        "height": 803.36
+      },
+      "console": {
+        "top": 643.83,
+        "left": 18,
+        "right": 1410,
+        "bottom": 800.02,
+        "width": 1392,
+        "height": 156.19
+      },
+      "cover": {
+        "top": 78.26,
+        "left": 17.99,
+        "right": 1409.99,
+        "bottom": 861.26,
+        "width": 1392,
+        "height": 783
+      },
+      "visible": {
+        "left": 18,
+        "right": 1410,
+        "top": 142.02,
+        "bottom": 800.02
+      },
+      "photoArea": 1147351,
+      "visibleArea": 915936,
+      "croppedPct": 20.17,
+      "consoleOccludedPct": 18.95,
+      "chromeOccludedPct": 4.22,
+      "unseenPct": 39.12,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": false,
+      "photoAspect": 1.7778,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 158.02,
+            "left": 1226.05,
+            "right": 1392,
+            "bottom": 247.45,
+            "width": 165.95,
+            "height": 89.44
+          },
+          "overPhotoPx": 14841
+        },
+        {
+          "sel": ".casefile-summon-why",
+          "label": "CASE FILE purpose copy",
+          "rect": {
+            "top": 194.02,
+            "left": 1241.05,
+            "right": 1370.5,
+            "bottom": 240.45,
+            "width": 129.45,
+            "height": 46.44
+          },
+          "overPhotoPx": 6010
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 769.45,
+            "left": 36,
+            "right": 1392,
+            "bottom": 784.02,
+            "width": 1356,
+            "height": 14.56
+          },
+          "overPhotoPx": 19757
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 158.02,
+            "left": 36,
+            "right": 214.2,
+            "bottom": 202.02,
+            "width": 178.2,
+            "height": 44
+          },
+          "overPhotoPx": 7841
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark",
+          "state": "dormant",
+          "rect": {
+            "top": 558.86,
+            "left": 543.09,
+            "right": 560.54,
+            "bottom": 576.31,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 551.81,
+            "y": 567.58
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.0119,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark #2",
+          "state": "dormant",
+          "rect": {
+            "top": 406.23,
+            "left": 900.14,
+            "right": 917.58,
+            "bottom": 423.67,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 908.86,
+            "y": 414.95
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.0119,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch",
+          "state": "seated",
+          "rect": {
+            "top": 625.19,
+            "left": 402.32,
+            "right": 415.66,
+            "bottom": 638.52,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 408.99,
+            "y": 631.86
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.0091,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch #2",
+          "state": "seated",
+          "rect": {
+            "top": 585.01,
+            "left": 488.01,
+            "right": 501.35,
+            "bottom": 598.35,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 494.68,
+            "y": 591.68
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.0091,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch #3",
+          "state": "seated",
+          "rect": {
+            "top": 544.85,
+            "left": 573.71,
+            "right": 587.05,
+            "bottom": 558.19,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 580.38,
+            "y": 551.52
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.0091,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch #4",
+          "state": "refused",
+          "rect": {
+            "top": 504.68,
+            "left": 659.4,
+            "right": 672.74,
+            "bottom": 518.02,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 666.07,
+            "y": 511.35
+          },
+          "effectiveOpacity": 0.78,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.0091,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-closure",
+          "label": "custody closure stop",
+          "state": null,
+          "rect": {
+            "top": 422.99,
+            "left": 764.5,
+            "right": 767.58,
+            "bottom": 535.45,
+            "width": 3.08,
+            "height": 112.46
+          },
+          "centre": {
+            "x": 766.04,
+            "y": 479.22
+          },
+          "effectiveOpacity": 0.9,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 110,
+          "fractionOfPhotoWidth": 0.07702,
+          "drawnPx": 112.46
+        },
+        {
+          "sel": ".crs-mirror-ring",
+          "label": "custody mirror ring",
+          "state": "available",
+          "rect": {
+            "top": 357.82,
+            "left": 851.74,
+            "right": 965.99,
+            "bottom": 472.08,
+            "width": 114.25,
+            "height": 114.25
+          },
+          "centre": {
+            "x": 908.87,
+            "y": 414.94
+          },
+          "effectiveOpacity": 0.9,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 111,
+          "fractionOfPhotoWidth": 0.07772,
+          "drawnPx": 114.25
+        }
+      ],
+      "focal": {
+        "x": 737.49,
+        "y": 479.22,
+        "normalized": {
+          "x": 0.52,
+          "y": 0.51
+        },
+        "cell": {
+          "left": 499.46,
+          "right": 975.52,
+          "top": 345.33,
+          "bottom": 613.12
+        }
+      },
+      "marksUnderConsole": [],
+      "marksUnderChrome": [],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [],
+      "ringContrast": [
+        {
+          "label": "custody carrier latch",
+          "sel": ".crs-latch",
+          "state": "seated",
+          "sampledPx": 289,
+          "painted": 156,
+          "maxChannelDelta": 417,
+          "corePx": 24,
+          "ringContrast": 6.88,
+          "p50": 1.62,
+          "p90": 5.82,
+          "max": 8.9
+        },
+        {
+          "label": "custody carrier latch #2",
+          "sel": ".crs-latch",
+          "state": "seated",
+          "sampledPx": 289,
+          "painted": 161,
+          "maxChannelDelta": 431,
+          "corePx": 25,
+          "ringContrast": 5.13,
+          "p50": 1.64,
+          "p90": 4.89,
+          "max": 8.81
+        },
+        {
+          "label": "custody carrier latch #3",
+          "sel": ".crs-latch",
+          "state": "seated",
+          "sampledPx": 289,
+          "painted": 154,
+          "maxChannelDelta": 401,
+          "corePx": 24,
+          "ringContrast": 4.98,
+          "p50": 1.83,
+          "p90": 4.08,
+          "max": 8.25
+        },
+        {
+          "label": "custody carrier latch #4",
+          "sel": ".crs-latch",
+          "state": "refused",
+          "sampledPx": 289,
+          "painted": 63,
+          "maxChannelDelta": 188,
+          "corePx": 10,
+          "ringContrast": 1.92,
+          "p50": 1.26,
+          "p90": 1.87,
+          "max": 2.38
+        },
+        {
+          "label": "custody closure stop",
+          "sel": ".crs-closure",
+          "state": null,
+          "sampledPx": 812,
+          "painted": 674,
+          "maxChannelDelta": 316,
+          "corePx": 102,
+          "ringContrast": 3.87,
+          "p50": 1.64,
+          "p90": 3.85,
+          "max": 3.99
+        },
+        {
+          "label": "custody mirror ring",
+          "sel": ".crs-mirror-ring",
+          "state": "available",
+          "sampledPx": 13924,
+          "painted": 439,
+          "maxChannelDelta": 343,
+          "corePx": 66,
+          "ringContrast": 4.94,
+          "p50": 1.61,
+          "p90": 4.48,
+          "max": 6.42
+        }
+      ]
+    },
+    "maintenance-spine@1512": {
+      "viewport": {
+        "width": 1512,
+        "height": 982
+      },
+      "workspace": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1494,
+        "bottom": 882.02,
+        "width": 1476,
+        "height": 740
+      },
+      "worldView": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1410,
+        "bottom": 800.02,
+        "width": 1392,
+        "height": 658
+      },
+      "plate": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1410,
+        "bottom": 800.02,
+        "width": 1392,
+        "height": 658
+      },
+      "photo": {
+        "top": 66.08,
+        "left": 7.13,
+        "right": 1435.32,
+        "bottom": 869.44,
+        "width": 1428.19,
+        "height": 803.36
+      },
+      "console": {
+        "top": 565.83,
+        "left": 18,
+        "right": 1410,
+        "bottom": 800.02,
+        "width": 1392,
+        "height": 234.19
+      },
+      "cover": {
+        "top": 79.52,
+        "left": 17.99,
+        "right": 1409.99,
+        "bottom": 862.52,
+        "width": 1392,
+        "height": 783
+      },
+      "visible": {
+        "left": 18,
+        "right": 1410,
+        "top": 142.02,
+        "bottom": 800.02
+      },
+      "photoArea": 1147351,
+      "visibleArea": 915936,
+      "croppedPct": 20.17,
+      "consoleOccludedPct": 28.41,
+      "chromeOccludedPct": 4.22,
+      "unseenPct": 48.58,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": false,
+      "photoAspect": 1.7778,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 158.02,
+            "left": 1226.05,
+            "right": 1392,
+            "bottom": 247.45,
+            "width": 165.95,
+            "height": 89.44
+          },
+          "overPhotoPx": 14841
+        },
+        {
+          "sel": ".casefile-summon-why",
+          "label": "CASE FILE purpose copy",
+          "rect": {
+            "top": 194.02,
+            "left": 1241.05,
+            "right": 1370.5,
+            "bottom": 240.45,
+            "width": 129.45,
+            "height": 46.44
+          },
+          "overPhotoPx": 6010
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 769.45,
+            "left": 36,
+            "right": 1392,
+            "bottom": 784.02,
+            "width": 1356,
+            "height": 14.56
+          },
+          "overPhotoPx": 19757
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 158.02,
+            "left": 36,
+            "right": 214.2,
+            "bottom": 202.02,
+            "width": 178.2,
+            "height": 44
+          },
+          "overPhotoPx": 7841
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark",
+          "state": "dormant",
+          "rect": {
+            "top": 507.23,
+            "left": 669.65,
+            "right": 687.09,
+            "bottom": 524.67,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 678.37,
+            "y": 515.95
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.0119,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark #2",
+          "state": "dormant",
+          "rect": {
+            "top": 507.23,
+            "left": 1212.36,
+            "right": 1229.8,
+            "bottom": 524.67,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 1221.08,
+            "y": 515.95
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.0119,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".asc-checkpoint",
+          "label": "acoustic checkpoint",
+          "state": "current",
+          "rect": {
+            "top": 589.2,
+            "left": 428.5,
+            "right": 442.66,
+            "bottom": 603.36,
+            "width": 14.16,
+            "height": 14.16
+          },
+          "centre": {
+            "x": 435.58,
+            "y": 596.28
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 12,
+          "fractionOfPhotoWidth": 0.0084,
+          "drawnPx": 14.16
+        },
+        {
+          "sel": ".asc-checkpoint",
+          "label": "acoustic checkpoint #2",
+          "state": "ahead",
+          "rect": {
+            "top": 493.73,
+            "left": 657.93,
+            "right": 670.25,
+            "bottom": 506.04,
+            "width": 12.31,
+            "height": 12.31
+          },
+          "centre": {
+            "x": 664.08,
+            "y": 499.88
+          },
+          "effectiveOpacity": 0.5,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 12,
+          "fractionOfPhotoWidth": 0.0084,
+          "drawnPx": 12.31
+        },
+        {
+          "sel": ".asc-checkpoint",
+          "label": "acoustic checkpoint #3",
+          "state": "ahead",
+          "rect": {
+            "top": 431.18,
+            "left": 788.2,
+            "right": 797.06,
+            "bottom": 440.05,
+            "width": 8.86,
+            "height": 8.86
+          },
+          "centre": {
+            "x": 792.63,
+            "y": 435.61
+          },
+          "effectiveOpacity": 0.5,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 12,
+          "fractionOfPhotoWidth": 0.0084,
+          "drawnPx": 8.86
+        },
+        {
+          "sel": ".asc-credential",
+          "label": "acoustic credential door",
+          "state": null,
+          "rect": {
+            "top": 435.62,
+            "left": 1163.95,
+            "right": 1278.21,
+            "bottom": 532.02,
+            "width": 114.25,
+            "height": 96.4
+          },
+          "centre": {
+            "x": 1221.08,
+            "y": 483.82
+          },
+          "effectiveOpacity": 0.4,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 111,
+          "fractionOfPhotoWidth": 0.07772,
+          "drawnPx": 114.25
+        }
+      ],
+      "focal": {
+        "x": 1092.55,
+        "y": 467.76,
+        "normalized": {
+          "x": 0.76,
+          "y": 0.5
+        },
+        "cell": {
+          "left": 854.52,
+          "right": 1330.59,
+          "top": 333.87,
+          "bottom": 601.65
+        }
+      },
+      "marksUnderConsole": [
+        "acoustic checkpoint"
+      ],
+      "marksUnderChrome": [],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [],
+      "ringContrast": [
+        {
+          "label": "acoustic checkpoint #2",
+          "sel": ".asc-checkpoint",
+          "state": "ahead",
+          "sampledPx": 256,
+          "painted": 174,
+          "maxChannelDelta": 90,
+          "corePx": 27,
+          "ringContrast": 1.55,
+          "p50": 1.16,
+          "p90": 1.52,
+          "max": 1.73
+        },
+        {
+          "label": "acoustic checkpoint #3",
+          "sel": ".asc-checkpoint",
+          "state": "ahead",
+          "sampledPx": 169,
+          "painted": 114,
+          "maxChannelDelta": 80,
+          "corePx": 18,
+          "ringContrast": 1.37,
+          "p50": 1.07,
+          "p90": 1.33,
+          "max": 1.45
+        },
+        {
+          "label": "acoustic credential door",
+          "sel": ".asc-credential",
+          "state": null,
+          "sampledPx": 11800,
+          "painted": 9641,
+          "maxChannelDelta": 28,
+          "corePx": 1447,
+          "ringContrast": 1.03,
+          "p50": 1.03,
+          "p90": 1.03,
+          "max": 1.13
+        }
+      ]
+    },
+    "small-archive@1512": {
+      "viewport": {
+        "width": 1512,
+        "height": 982
+      },
+      "workspace": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1494,
+        "bottom": 882.02,
+        "width": 1476,
+        "height": 740
+      },
+      "worldView": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1410,
+        "bottom": 800.02,
+        "width": 1392,
+        "height": 658
+      },
+      "plate": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1410,
+        "bottom": 800.02,
+        "width": 1392,
+        "height": 658
+      },
+      "photo": {
+        "top": 63.61,
+        "left": 5.32,
+        "right": 1433.51,
+        "bottom": 866.96,
+        "width": 1428.19,
+        "height": 803.36
+      },
+      "console": {
+        "top": 579.73,
+        "left": 18,
+        "right": 1410,
+        "bottom": 800.02,
+        "width": 1392,
+        "height": 220.28
+      },
+      "cover": {
+        "top": 78.26,
+        "left": 17.99,
+        "right": 1409.99,
+        "bottom": 861.26,
+        "width": 1392,
+        "height": 783
+      },
+      "visible": {
+        "left": 18,
+        "right": 1410,
+        "top": 142.02,
+        "bottom": 800.02
+      },
+      "photoArea": 1147351,
+      "visibleArea": 915936,
+      "croppedPct": 20.17,
+      "consoleOccludedPct": 26.73,
+      "chromeOccludedPct": 4.22,
+      "unseenPct": 46.9,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": false,
+      "photoAspect": 1.7778,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 158.02,
+            "left": 1226.05,
+            "right": 1392,
+            "bottom": 247.45,
+            "width": 165.95,
+            "height": 89.44
+          },
+          "overPhotoPx": 14841
+        },
+        {
+          "sel": ".casefile-summon-why",
+          "label": "CASE FILE purpose copy",
+          "rect": {
+            "top": 194.02,
+            "left": 1241.05,
+            "right": 1370.5,
+            "bottom": 240.45,
+            "width": 129.45,
+            "height": 46.44
+          },
+          "overPhotoPx": 6010
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 769.45,
+            "left": 36,
+            "right": 1392,
+            "bottom": 784.02,
+            "width": 1356,
+            "height": 14.56
+          },
+          "overPhotoPx": 19757
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 158.02,
+            "left": 36,
+            "right": 214.2,
+            "bottom": 202.02,
+            "width": 178.2,
+            "height": 44
+          },
+          "overPhotoPx": 7841
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark",
+          "state": "dormant",
+          "rect": {
+            "top": 617.23,
+            "left": 525.02,
+            "right": 542.46,
+            "bottom": 634.67,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 533.74,
+            "y": 625.95
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.0119,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark #2",
+          "state": "dormant",
+          "rect": {
+            "top": 416.39,
+            "left": 924.92,
+            "right": 942.36,
+            "bottom": 433.83,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 933.64,
+            "y": 425.11
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.0119,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".scr-drawer-glow",
+          "label": "archive drawer register",
+          "state": null,
+          "rect": {
+            "top": 540.81,
+            "left": 325.53,
+            "right": 684.82,
+            "bottom": 743.22,
+            "width": 359.29,
+            "height": 202.41
+          },
+          "centre": {
+            "x": 505.17,
+            "y": 642.01
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 350,
+          "fractionOfPhotoWidth": 0.24507,
+          "drawnPx": 359.29
+        },
+        {
+          "sel": ".scr-aperture",
+          "label": "archive aperture",
+          "state": null,
+          "rect": {
+            "top": 760.11,
+            "left": 333.8,
+            "right": 476.61,
+            "bottom": 780.99,
+            "width": 142.81,
+            "height": 20.89
+          },
+          "centre": {
+            "x": 405.21,
+            "y": 770.56
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [
+            "plate caption"
+          ],
+          "insidePlate": true,
+          "layoutPx": 139,
+          "fractionOfPhotoWidth": 0.09733,
+          "drawnPx": 142.81
+        },
+        {
+          "sel": ".scr-slip",
+          "label": "archive removal slip",
+          "state": null,
+          "rect": {
+            "top": 386.14,
+            "left": 929.46,
+            "right": 966.39,
+            "bottom": 393.32,
+            "width": 36.94,
+            "height": 7.18
+          },
+          "centre": {
+            "x": 947.93,
+            "y": 389.73
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 36,
+          "fractionOfPhotoWidth": 0.02521,
+          "drawnPx": 36.94
+        },
+        {
+          "sel": ".scr-slip",
+          "label": "archive removal slip #2",
+          "state": null,
+          "rect": {
+            "top": 397.42,
+            "left": 929.46,
+            "right": 966.39,
+            "bottom": 404.61,
+            "width": 36.94,
+            "height": 7.18
+          },
+          "centre": {
+            "x": 947.93,
+            "y": 401.01
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 36,
+          "fractionOfPhotoWidth": 0.02521,
+          "drawnPx": 36.94
+        },
+        {
+          "sel": ".scr-slip",
+          "label": "archive removal slip #3",
+          "state": null,
+          "rect": {
+            "top": 408.71,
+            "left": 929.46,
+            "right": 966.39,
+            "bottom": 415.89,
+            "width": 36.94,
+            "height": 7.18
+          },
+          "centre": {
+            "x": 947.93,
+            "y": 412.3
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 36,
+          "fractionOfPhotoWidth": 0.02521,
+          "drawnPx": 36.94
+        }
+      ],
+      "focal": {
+        "x": 733.7,
+        "y": 473.32,
+        "normalized": {
+          "x": 0.51,
+          "y": 0.51
+        },
+        "cell": {
+          "left": 495.67,
+          "right": 971.73,
+          "top": 339.43,
+          "bottom": 607.22
+        }
+      },
+      "marksUnderConsole": [
+        "archive drawer register"
+      ],
+      "marksUnderChrome": [],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [],
+      "ringContrast": []
+    },
+    "care-ward@1512": {
+      "viewport": {
+        "width": 1512,
+        "height": 982
+      },
+      "workspace": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1494,
+        "bottom": 882.02,
+        "width": 1476,
+        "height": 740
+      },
+      "worldView": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1410,
+        "bottom": 800.02,
+        "width": 1392,
+        "height": 658
+      },
+      "plate": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1410,
+        "bottom": 800.02,
+        "width": 1392,
+        "height": 658
+      },
+      "photo": {
+        "top": 79.52,
+        "left": 18,
+        "right": 1410,
+        "bottom": 862.52,
+        "width": 1392,
+        "height": 783
+      },
+      "console": null,
+      "cover": {
+        "top": 79.52,
+        "left": 18,
+        "right": 1410,
+        "bottom": 862.52,
+        "width": 1392,
+        "height": 783
+      },
+      "visible": {
+        "left": 18,
+        "right": 1410,
+        "top": 142.02,
+        "bottom": 800.02
+      },
+      "photoArea": 1089936,
+      "visibleArea": 915936,
+      "croppedPct": 15.96,
+      "consoleOccludedPct": 0,
+      "chromeOccludedPct": 4.99,
+      "unseenPct": 15.96,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": true,
+      "photoAspect": 1.7778,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 158.02,
+            "left": 1083.28,
+            "right": 1249.23,
+            "bottom": 247.45,
+            "width": 165.95,
+            "height": 89.44
+          },
+          "overPhotoPx": 14841
+        },
+        {
+          "sel": ".scene-summons .scene-detail-summon",
+          "label": "LOCATION DETAIL summon",
+          "rect": {
+            "top": 158.02,
+            "left": 1257.23,
+            "right": 1392,
+            "bottom": 202.02,
+            "width": 134.77,
+            "height": 44
+          },
+          "overPhotoPx": 5930
+        },
+        {
+          "sel": ".casefile-summon-why",
+          "label": "CASE FILE purpose copy",
+          "rect": {
+            "top": 194.02,
+            "left": 1098.28,
+            "right": 1227.73,
+            "bottom": 240.45,
+            "width": 129.45,
+            "height": 46.44
+          },
+          "overPhotoPx": 6010
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 769.45,
+            "left": 36,
+            "right": 1392,
+            "bottom": 784.02,
+            "width": 1356,
+            "height": 14.56
+          },
+          "overPhotoPx": 19757
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 158.02,
+            "left": 36,
+            "right": 214.2,
+            "bottom": 202.02,
+            "width": 178.2,
+            "height": 44
+          },
+          "overPhotoPx": 7841
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".scene-zone-ring",
+          "label": "live zone ring",
+          "state": null,
+          "rect": {
+            "top": 486.98,
+            "left": 307.16,
+            "right": 369.16,
+            "bottom": 548.98,
+            "width": 62,
+            "height": 62
+          },
+          "centre": {
+            "x": 338.16,
+            "y": 517.98
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 62,
+          "fractionOfPhotoWidth": 0.04454,
+          "drawnPx": 62
+        },
+        {
+          "sel": ".scene-zone-ring",
+          "label": "live zone ring #2",
+          "state": null,
+          "rect": {
+            "top": 471.33,
+            "left": 1072.75,
+            "right": 1134.75,
+            "bottom": 533.33,
+            "width": 62,
+            "height": 62
+          },
+          "centre": {
+            "x": 1103.75,
+            "y": 502.33
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 62,
+          "fractionOfPhotoWidth": 0.04454,
+          "drawnPx": 62
+        }
+      ],
+      "focal": {
+        "x": 714,
+        "y": 471.02,
+        "normalized": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "cell": {
+          "left": 482,
+          "right": 946,
+          "top": 340.52,
+          "bottom": 601.52
+        }
+      },
+      "marksUnderConsole": [],
+      "marksUnderChrome": [],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [],
+      "ringContrast": [
+        {
+          "label": "live zone ring",
+          "sel": ".scene-zone-ring",
+          "state": null,
+          "sampledPx": 4356,
+          "painted": 2383,
+          "maxChannelDelta": 355,
+          "corePx": 358,
+          "ringContrast": 1.58,
+          "p50": 1.07,
+          "p90": 1.5,
+          "max": 5.33
+        },
+        {
+          "label": "live zone ring #2",
+          "sel": ".scene-zone-ring",
+          "state": null,
+          "sampledPx": 4356,
+          "painted": 2332,
+          "maxChannelDelta": 269,
+          "corePx": 350,
+          "ringContrast": 1.66,
+          "p50": 1.08,
+          "p90": 1.58,
+          "max": 3.83
+        }
+      ]
+    },
+    "registry-intake@1920": {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "workspace": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1902,
+        "bottom": 980.02,
+        "width": 1884,
+        "height": 838
+      },
+      "worldView": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1818,
+        "bottom": 898.02,
+        "width": 1800,
+        "height": 756
+      },
+      "plate": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1818,
+        "bottom": 898.02,
+        "width": 1800,
+        "height": 756
+      },
+      "photo": {
+        "top": -0.13,
+        "left": -11.95,
+        "right": 1834.85,
+        "bottom": 1038.69,
+        "width": 1846.8,
+        "height": 1038.83
+      },
+      "console": {
+        "top": 741.83,
+        "left": 18,
+        "right": 1818,
+        "bottom": 898.02,
+        "width": 1800,
+        "height": 156.19
+      },
+      "cover": {
+        "top": 11.19,
+        "left": 18,
+        "right": 1818,
+        "bottom": 1023.69,
+        "width": 1800,
+        "height": 1012.5
+      },
+      "visible": {
+        "left": 18,
+        "right": 1818,
+        "top": 142.02,
+        "bottom": 898.02
+      },
+      "photoArea": 1918511,
+      "visibleArea": 1360800,
+      "croppedPct": 29.07,
+      "consoleOccludedPct": 14.65,
+      "chromeOccludedPct": 2.84,
+      "unseenPct": 43.72,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": false,
+      "photoAspect": 1.7778,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 158.02,
+            "left": 1634.05,
+            "right": 1800,
+            "bottom": 247.45,
+            "width": 165.95,
+            "height": 89.44
+          },
+          "overPhotoPx": 14841
+        },
+        {
+          "sel": ".casefile-summon-why",
+          "label": "CASE FILE purpose copy",
+          "rect": {
+            "top": 194.02,
+            "left": 1649.05,
+            "right": 1778.5,
+            "bottom": 240.45,
+            "width": 129.45,
+            "height": 46.44
+          },
+          "overPhotoPx": 6010
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 867.45,
+            "left": 36,
+            "right": 1800,
+            "bottom": 882.02,
+            "width": 1764,
+            "height": 14.56
+          },
+          "overPhotoPx": 25701
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 158.02,
+            "left": 36,
+            "right": 214.2,
+            "bottom": 202.02,
+            "width": 178.2,
+            "height": 44
+          },
+          "overPhotoPx": 7841
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark",
+          "state": "dormant",
+          "rect": {
+            "top": 635.22,
+            "left": 699.58,
+            "right": 717.02,
+            "bottom": 652.66,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 708.3,
+            "y": 643.94
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.00921,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark #2",
+          "state": "dormant",
+          "rect": {
+            "top": 437.84,
+            "left": 1161.28,
+            "right": 1178.72,
+            "bottom": 455.28,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 1170,
+            "y": 446.56
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.00921,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch",
+          "state": "seated",
+          "rect": {
+            "top": 720.38,
+            "left": 516.95,
+            "right": 530.29,
+            "bottom": 733.71,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 523.62,
+            "y": 727.05
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.00704,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch #2",
+          "state": "seated",
+          "rect": {
+            "top": 668.43,
+            "left": 627.76,
+            "right": 641.1,
+            "bottom": 681.77,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 634.43,
+            "y": 675.1
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.00704,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch #3",
+          "state": "seated",
+          "rect": {
+            "top": 616.49,
+            "left": 738.57,
+            "right": 751.9,
+            "bottom": 629.83,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 745.24,
+            "y": 623.16
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.00704,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch #4",
+          "state": "refused",
+          "rect": {
+            "top": 564.55,
+            "left": 849.38,
+            "right": 862.71,
+            "bottom": 577.89,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 856.05,
+            "y": 571.22
+          },
+          "effectiveOpacity": 0.78,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.00704,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-closure",
+          "label": "custody closure stop",
+          "state": null,
+          "rect": {
+            "top": 456.95,
+            "left": 983.78,
+            "right": 986.86,
+            "bottom": 602.39,
+            "width": 3.08,
+            "height": 145.44
+          },
+          "centre": {
+            "x": 985.32,
+            "y": 529.67
+          },
+          "effectiveOpacity": 0.9,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 142,
+          "fractionOfPhotoWidth": 0.07689,
+          "drawnPx": 145.44
+        },
+        {
+          "sel": ".crs-mirror-ring",
+          "label": "custody mirror ring",
+          "state": "available",
+          "rect": {
+            "top": 372.69,
+            "left": 1096.13,
+            "right": 1243.87,
+            "bottom": 520.43,
+            "width": 147.74,
+            "height": 147.74
+          },
+          "centre": {
+            "x": 1170,
+            "y": 446.56
+          },
+          "effectiveOpacity": 0.9,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 144,
+          "fractionOfPhotoWidth": 0.07797,
+          "drawnPx": 147.74
+        }
+      ],
+      "focal": {
+        "x": 948.39,
+        "y": 529.67,
+        "normalized": {
+          "x": 0.52,
+          "y": 0.51
+        },
+        "cell": {
+          "left": 640.59,
+          "right": 1256.19,
+          "top": 356.53,
+          "bottom": 702.81
+        }
+      },
+      "marksUnderConsole": [],
+      "marksUnderChrome": [],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [],
+      "ringContrast": [
+        {
+          "label": "custody carrier latch",
+          "sel": ".crs-latch",
+          "state": "seated",
+          "sampledPx": 289,
+          "painted": 155,
+          "maxChannelDelta": 427,
+          "corePx": 24,
+          "ringContrast": 8.52,
+          "p50": 1.64,
+          "p90": 5.72,
+          "max": 9.33
+        },
+        {
+          "label": "custody carrier latch #2",
+          "sel": ".crs-latch",
+          "state": "seated",
+          "sampledPx": 289,
+          "painted": 156,
+          "maxChannelDelta": 439,
+          "corePx": 24,
+          "ringContrast": 6.9,
+          "p50": 1.53,
+          "p90": 6.72,
+          "max": 9.25
+        },
+        {
+          "label": "custody carrier latch #3",
+          "sel": ".crs-latch",
+          "state": "seated",
+          "sampledPx": 289,
+          "painted": 153,
+          "maxChannelDelta": 438,
+          "corePx": 23,
+          "ringContrast": 5.09,
+          "p50": 1.79,
+          "p90": 5.04,
+          "max": 9.8
+        },
+        {
+          "label": "custody carrier latch #4",
+          "sel": ".crs-latch",
+          "state": "refused",
+          "sampledPx": 289,
+          "painted": 58,
+          "maxChannelDelta": 210,
+          "corePx": 9,
+          "ringContrast": 2.16,
+          "p50": 1.29,
+          "p90": 2.1,
+          "max": 2.71
+        },
+        {
+          "label": "custody closure stop",
+          "sel": ".crs-closure",
+          "state": null,
+          "sampledPx": 1043,
+          "painted": 876,
+          "maxChannelDelta": 316,
+          "corePx": 132,
+          "ringContrast": 3.88,
+          "p50": 1.59,
+          "p90": 3.85,
+          "max": 4
+        },
+        {
+          "label": "custody mirror ring",
+          "sel": ".crs-mirror-ring",
+          "state": "available",
+          "sampledPx": 23104,
+          "painted": 572,
+          "maxChannelDelta": 339,
+          "corePx": 86,
+          "ringContrast": 4.33,
+          "p50": 1.53,
+          "p90": 3.97,
+          "max": 6.31
+        }
+      ]
+    },
+    "maintenance-spine@1920": {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "workspace": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1902,
+        "bottom": 980.02,
+        "width": 1884,
+        "height": 838
+      },
+      "worldView": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1818,
+        "bottom": 898.02,
+        "width": 1800,
+        "height": 756
+      },
+      "plate": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1818,
+        "bottom": 898.02,
+        "width": 1800,
+        "height": 756
+      },
+      "photo": {
+        "top": -3.61,
+        "left": 3.96,
+        "right": 1850.76,
+        "bottom": 1035.22,
+        "width": 1846.8,
+        "height": 1038.83
+      },
+      "console": {
+        "top": 663.83,
+        "left": 18,
+        "right": 1818,
+        "bottom": 898.02,
+        "width": 1800,
+        "height": 234.19
+      },
+      "cover": {
+        "top": 13.77,
+        "left": 18,
+        "right": 1818,
+        "bottom": 1026.27,
+        "width": 1800,
+        "height": 1012.5
+      },
+      "visible": {
+        "left": 18,
+        "right": 1818,
+        "top": 142.02,
+        "bottom": 898.02
+      },
+      "photoArea": 1918511,
+      "visibleArea": 1360800,
+      "croppedPct": 29.07,
+      "consoleOccludedPct": 21.97,
+      "chromeOccludedPct": 2.84,
+      "unseenPct": 51.04,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": false,
+      "photoAspect": 1.7778,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 158.02,
+            "left": 1634.05,
+            "right": 1800,
+            "bottom": 247.45,
+            "width": 165.95,
+            "height": 89.44
+          },
+          "overPhotoPx": 14841
+        },
+        {
+          "sel": ".casefile-summon-why",
+          "label": "CASE FILE purpose copy",
+          "rect": {
+            "top": 194.02,
+            "left": 1649.05,
+            "right": 1778.5,
+            "bottom": 240.45,
+            "width": 129.45,
+            "height": 46.44
+          },
+          "overPhotoPx": 6010
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 867.45,
+            "left": 36,
+            "right": 1800,
+            "bottom": 882.02,
+            "width": 1764,
+            "height": 14.56
+          },
+          "overPhotoPx": 25701
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 158.02,
+            "left": 36,
+            "right": 214.2,
+            "bottom": 202.02,
+            "width": 178.2,
+            "height": 44
+          },
+          "overPhotoPx": 7841
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark",
+          "state": "dormant",
+          "rect": {
+            "top": 569.41,
+            "left": 863.23,
+            "right": 880.68,
+            "bottom": 586.85,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 871.95,
+            "y": 578.13
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.00921,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark #2",
+          "state": "dormant",
+          "rect": {
+            "top": 569.41,
+            "left": 1565.02,
+            "right": 1582.46,
+            "bottom": 586.85,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 1573.74,
+            "y": 578.13
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.00921,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".asc-checkpoint",
+          "label": "acoustic checkpoint",
+          "state": "current",
+          "rect": {
+            "top": 674.94,
+            "left": 550.92,
+            "right": 565.08,
+            "bottom": 689.09,
+            "width": 14.16,
+            "height": 14.16
+          },
+          "centre": {
+            "x": 558,
+            "y": 682.02
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 12,
+          "fractionOfPhotoWidth": 0.0065,
+          "drawnPx": 14.16
+        },
+        {
+          "sel": ".asc-checkpoint",
+          "label": "acoustic checkpoint #2",
+          "state": "ahead",
+          "rect": {
+            "top": 551.2,
+            "left": 847.33,
+            "right": 859.64,
+            "bottom": 563.51,
+            "width": 12.31,
+            "height": 12.31
+          },
+          "centre": {
+            "x": 853.49,
+            "y": 557.36
+          },
+          "effectiveOpacity": 0.5,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 12,
+          "fractionOfPhotoWidth": 0.0065,
+          "drawnPx": 12.31
+        },
+        {
+          "sel": ".asc-checkpoint",
+          "label": "acoustic checkpoint #3",
+          "state": "ahead",
+          "rect": {
+            "top": 469.82,
+            "left": 1015.27,
+            "right": 1024.13,
+            "bottom": 478.68,
+            "width": 8.86,
+            "height": 8.86
+          },
+          "centre": {
+            "x": 1019.7,
+            "y": 474.25
+          },
+          "effectiveOpacity": 0.5,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 12,
+          "fractionOfPhotoWidth": 0.0065,
+          "drawnPx": 8.86
+        },
+        {
+          "sel": ".asc-credential",
+          "label": "acoustic credential door",
+          "state": null,
+          "rect": {
+            "top": 474.25,
+            "left": 1499.87,
+            "right": 1647.61,
+            "bottom": 598.91,
+            "width": 147.74,
+            "height": 124.66
+          },
+          "centre": {
+            "x": 1573.74,
+            "y": 536.58
+          },
+          "effectiveOpacity": 0.4,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 144,
+          "fractionOfPhotoWidth": 0.07797,
+          "drawnPx": 147.74
+        }
+      ],
+      "focal": {
+        "x": 1407.53,
+        "y": 515.8,
+        "normalized": {
+          "x": 0.76,
+          "y": 0.5
+        },
+        "cell": {
+          "left": 1099.73,
+          "right": 1715.33,
+          "top": 342.67,
+          "bottom": 688.94
+        }
+      },
+      "marksUnderConsole": [
+        "acoustic checkpoint"
+      ],
+      "marksUnderChrome": [],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [],
+      "ringContrast": [
+        {
+          "label": "acoustic checkpoint #2",
+          "sel": ".asc-checkpoint",
+          "state": "ahead",
+          "sampledPx": 256,
+          "painted": 174,
+          "maxChannelDelta": 84,
+          "corePx": 27,
+          "ringContrast": 1.47,
+          "p50": 1.18,
+          "p90": 1.44,
+          "max": 1.67
+        },
+        {
+          "label": "acoustic checkpoint #3",
+          "sel": ".asc-checkpoint",
+          "state": "ahead",
+          "sampledPx": 169,
+          "painted": 111,
+          "maxChannelDelta": 79,
+          "corePx": 17,
+          "ringContrast": 1.39,
+          "p50": 1.06,
+          "p90": 1.32,
+          "max": 1.46
+        },
+        {
+          "label": "acoustic credential door",
+          "sel": ".asc-credential",
+          "state": null,
+          "sampledPx": 19608,
+          "painted": 15975,
+          "maxChannelDelta": 28,
+          "corePx": 2397,
+          "ringContrast": 1.02,
+          "p50": 1.03,
+          "p90": 1.03,
+          "max": 1.13
+        }
+      ]
+    },
+    "small-archive@1920": {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "workspace": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1902,
+        "bottom": 980.02,
+        "width": 1884,
+        "height": 838
+      },
+      "worldView": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1818,
+        "bottom": 898.02,
+        "width": 1800,
+        "height": 756
+      },
+      "plate": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1818,
+        "bottom": 898.02,
+        "width": 1800,
+        "height": 756
+      },
+      "photo": {
+        "top": -7.77,
+        "left": 1.62,
+        "right": 1848.42,
+        "bottom": 1031.06,
+        "width": 1846.8,
+        "height": 1038.83
+      },
+      "console": {
+        "top": 677.73,
+        "left": 18,
+        "right": 1818,
+        "bottom": 898.02,
+        "width": 1800,
+        "height": 220.28
+      },
+      "cover": {
+        "top": 11.19,
+        "left": 18,
+        "right": 1818,
+        "bottom": 1023.69,
+        "width": 1800,
+        "height": 1012.5
+      },
+      "visible": {
+        "left": 18,
+        "right": 1818,
+        "top": 142.02,
+        "bottom": 898.02
+      },
+      "photoArea": 1918511,
+      "visibleArea": 1360800,
+      "croppedPct": 29.07,
+      "consoleOccludedPct": 20.67,
+      "chromeOccludedPct": 2.84,
+      "unseenPct": 49.74,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": false,
+      "photoAspect": 1.7778,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 158.02,
+            "left": 1634.05,
+            "right": 1800,
+            "bottom": 247.45,
+            "width": 165.95,
+            "height": 89.44
+          },
+          "overPhotoPx": 14841
+        },
+        {
+          "sel": ".casefile-summon-why",
+          "label": "CASE FILE purpose copy",
+          "rect": {
+            "top": 194.02,
+            "left": 1649.05,
+            "right": 1778.5,
+            "bottom": 240.45,
+            "width": 129.45,
+            "height": 46.44
+          },
+          "overPhotoPx": 6010
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 867.45,
+            "left": 36,
+            "right": 1800,
+            "bottom": 882.02,
+            "width": 1764,
+            "height": 14.56
+          },
+          "overPhotoPx": 25701
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 158.02,
+            "left": 36,
+            "right": 214.2,
+            "bottom": 202.02,
+            "width": 178.2,
+            "height": 44
+          },
+          "overPhotoPx": 7841
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark",
+          "state": "dormant",
+          "rect": {
+            "top": 710.69,
+            "left": 676.22,
+            "right": 693.66,
+            "bottom": 728.13,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 684.94,
+            "y": 719.41
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.00921,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark #2",
+          "state": "dormant",
+          "rect": {
+            "top": 450.98,
+            "left": 1193.32,
+            "right": 1210.76,
+            "bottom": 468.43,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 1202.04,
+            "y": 459.7
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.00921,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".scr-drawer-glow",
+          "label": "archive drawer register",
+          "state": null,
+          "rect": {
+            "top": 609.31,
+            "left": 415.68,
+            "right": 880.32,
+            "bottom": 871.07,
+            "width": 464.65,
+            "height": 261.76
+          },
+          "centre": {
+            "x": 648,
+            "y": 740.19
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [
+            "plate caption"
+          ],
+          "insidePlate": true,
+          "layoutPx": 453,
+          "fractionOfPhotoWidth": 0.24529,
+          "drawnPx": 464.65
+        },
+        {
+          "sel": ".scr-aperture",
+          "label": "archive aperture",
+          "state": null,
+          "rect": {
+            "top": 892.89,
+            "left": 426.38,
+            "right": 611.06,
+            "bottom": 919.9,
+            "width": 184.68,
+            "height": 27.01
+          },
+          "centre": {
+            "x": 518.72,
+            "y": 906.39
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": false,
+          "layoutPx": 180,
+          "fractionOfPhotoWidth": 0.09747,
+          "drawnPx": 184.68
+        },
+        {
+          "sel": ".scr-slip",
+          "label": "archive removal slip",
+          "state": null,
+          "rect": {
+            "top": 413.66,
+            "left": 1202.04,
+            "right": 1238.98,
+            "bottom": 420.84,
+            "width": 36.94,
+            "height": 7.18
+          },
+          "centre": {
+            "x": 1220.51,
+            "y": 417.25
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 36,
+          "fractionOfPhotoWidth": 0.01949,
+          "drawnPx": 36.94
+        },
+        {
+          "sel": ".scr-slip",
+          "label": "archive removal slip #2",
+          "state": null,
+          "rect": {
+            "top": 424.95,
+            "left": 1202.04,
+            "right": 1238.98,
+            "bottom": 432.13,
+            "width": 36.94,
+            "height": 7.18
+          },
+          "centre": {
+            "x": 1220.51,
+            "y": 428.54
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 36,
+          "fractionOfPhotoWidth": 0.01949,
+          "drawnPx": 36.94
+        },
+        {
+          "sel": ".scr-slip",
+          "label": "archive removal slip #3",
+          "state": null,
+          "rect": {
+            "top": 436.23,
+            "left": 1202.04,
+            "right": 1238.98,
+            "bottom": 443.42,
+            "width": 36.94,
+            "height": 7.18
+          },
+          "centre": {
+            "x": 1220.51,
+            "y": 439.82
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 36,
+          "fractionOfPhotoWidth": 0.01949,
+          "drawnPx": 36.94
+        }
+      ],
+      "focal": {
+        "x": 943.49,
+        "y": 522.03,
+        "normalized": {
+          "x": 0.51,
+          "y": 0.51
+        },
+        "cell": {
+          "left": 635.69,
+          "right": 1251.29,
+          "top": 348.89,
+          "bottom": 695.17
+        }
+      },
+      "marksUnderConsole": [
+        "archive drawer register"
+      ],
+      "marksUnderChrome": [
+        "archive drawer register"
+      ],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [],
+      "ringContrast": []
+    },
+    "care-ward@1920": {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "workspace": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1902,
+        "bottom": 980.02,
+        "width": 1884,
+        "height": 838
+      },
+      "worldView": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1818,
+        "bottom": 898.02,
+        "width": 1800,
+        "height": 756
+      },
+      "plate": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1818,
+        "bottom": 898.02,
+        "width": 1800,
+        "height": 756
+      },
+      "photo": {
+        "top": 13.77,
+        "left": 18,
+        "right": 1818,
+        "bottom": 1026.27,
+        "width": 1800,
+        "height": 1012.5
+      },
+      "console": null,
+      "cover": {
+        "top": 13.77,
+        "left": 18,
+        "right": 1818,
+        "bottom": 1026.27,
+        "width": 1800,
+        "height": 1012.5
+      },
+      "visible": {
+        "left": 18,
+        "right": 1818,
+        "top": 142.02,
+        "bottom": 898.02
+      },
+      "photoArea": 1822500,
+      "visibleArea": 1360800,
+      "croppedPct": 25.33,
+      "consoleOccludedPct": 0,
+      "chromeOccludedPct": 3.31,
+      "unseenPct": 25.33,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": true,
+      "photoAspect": 1.7778,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 158.02,
+            "left": 1491.28,
+            "right": 1657.23,
+            "bottom": 247.45,
+            "width": 165.95,
+            "height": 89.44
+          },
+          "overPhotoPx": 14841
+        },
+        {
+          "sel": ".scene-summons .scene-detail-summon",
+          "label": "LOCATION DETAIL summon",
+          "rect": {
+            "top": 158.02,
+            "left": 1665.23,
+            "right": 1800,
+            "bottom": 202.02,
+            "width": 134.77,
+            "height": 44
+          },
+          "overPhotoPx": 5930
+        },
+        {
+          "sel": ".casefile-summon-why",
+          "label": "CASE FILE purpose copy",
+          "rect": {
+            "top": 194.02,
+            "left": 1506.28,
+            "right": 1635.73,
+            "bottom": 240.45,
+            "width": 129.45,
+            "height": 46.44
+          },
+          "overPhotoPx": 6010
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 867.45,
+            "left": 36,
+            "right": 1800,
+            "bottom": 882.02,
+            "width": 1764,
+            "height": 14.56
+          },
+          "overPhotoPx": 25701
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 158.02,
+            "left": 36,
+            "right": 214.2,
+            "bottom": 202.02,
+            "width": 178.2,
+            "height": 44
+          },
+          "overPhotoPx": 7841
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".scene-zone-ring",
+          "label": "live zone ring",
+          "state": null,
+          "rect": {
+            "top": 549.77,
+            "left": 401,
+            "right": 463,
+            "bottom": 611.77,
+            "width": 62,
+            "height": 62
+          },
+          "centre": {
+            "x": 432,
+            "y": 580.77
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 62,
+          "fractionOfPhotoWidth": 0.03444,
+          "drawnPx": 62
+        },
+        {
+          "sel": ".scene-zone-ring",
+          "label": "live zone ring #2",
+          "state": null,
+          "rect": {
+            "top": 529.52,
+            "left": 1391,
+            "right": 1453,
+            "bottom": 591.52,
+            "width": 62,
+            "height": 62
+          },
+          "centre": {
+            "x": 1422,
+            "y": 560.52
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 62,
+          "fractionOfPhotoWidth": 0.03444,
+          "drawnPx": 62
+        }
+      ],
+      "focal": {
+        "x": 918,
+        "y": 520.02,
+        "normalized": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "cell": {
+          "left": 618,
+          "right": 1218,
+          "top": 351.27,
+          "bottom": 688.77
+        }
+      },
+      "marksUnderConsole": [],
+      "marksUnderChrome": [],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [],
+      "ringContrast": [
+        {
+          "label": "live zone ring",
+          "sel": ".scene-zone-ring",
+          "state": null,
+          "sampledPx": 4356,
+          "painted": 2244,
+          "maxChannelDelta": 354,
+          "corePx": 337,
+          "ringContrast": 1.59,
+          "p50": 1.06,
+          "p90": 1.47,
+          "max": 5.29
+        },
+        {
+          "label": "live zone ring #2",
+          "sel": ".scene-zone-ring",
+          "state": null,
+          "sampledPx": 4356,
+          "painted": 2288,
+          "maxChannelDelta": 274,
+          "corePx": 344,
+          "ringContrast": 1.68,
+          "p50": 1.06,
+          "p90": 1.52,
+          "max": 3.97
+        }
+      ]
+    },
+    "registry-intake@2000": {
+      "viewport": {
+        "width": 2000,
+        "height": 1178
+      },
+      "workspace": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1982,
+        "bottom": 1078.02,
+        "width": 1964,
+        "height": 936
+      },
+      "worldView": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1898,
+        "bottom": 996.02,
+        "width": 1880,
+        "height": 854
+      },
+      "plate": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1898,
+        "bottom": 996.02,
+        "width": 1880,
+        "height": 854
+      },
+      "photo": {
+        "top": 26.4,
+        "left": -13.29,
+        "right": 1915.59,
+        "bottom": 1111.39,
+        "width": 1928.88,
+        "height": 1084.99
+      },
+      "console": {
+        "top": 839.83,
+        "left": 18,
+        "right": 1898,
+        "bottom": 996.02,
+        "width": 1880,
+        "height": 156.19
+      },
+      "cover": {
+        "top": 38.22,
+        "left": 17.99,
+        "right": 1897.99,
+        "bottom": 1095.72,
+        "width": 1880,
+        "height": 1057.5
+      },
+      "visible": {
+        "left": 18,
+        "right": 1898,
+        "top": 142.02,
+        "bottom": 996.02
+      },
+      "photoArea": 2092816,
+      "visibleArea": 1605520,
+      "croppedPct": 23.28,
+      "consoleOccludedPct": 14.03,
+      "chromeOccludedPct": 2.65,
+      "unseenPct": 37.31,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": false,
+      "photoAspect": 1.7778,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 158.02,
+            "left": 1714.05,
+            "right": 1880,
+            "bottom": 247.45,
+            "width": 165.95,
+            "height": 89.44
+          },
+          "overPhotoPx": 14841
+        },
+        {
+          "sel": ".casefile-summon-why",
+          "label": "CASE FILE purpose copy",
+          "rect": {
+            "top": 194.02,
+            "left": 1729.05,
+            "right": 1858.5,
+            "bottom": 240.45,
+            "width": 129.45,
+            "height": 46.44
+          },
+          "overPhotoPx": 6010
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 965.45,
+            "left": 36,
+            "right": 1880,
+            "bottom": 980.02,
+            "width": 1844,
+            "height": 14.56
+          },
+          "overPhotoPx": 26867
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 158.02,
+            "left": 36,
+            "right": 214.2,
+            "bottom": 202.02,
+            "width": 178.2,
+            "height": 44
+          },
+          "overPhotoPx": 7841
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark",
+          "state": "dormant",
+          "rect": {
+            "top": 690.37,
+            "left": 730.24,
+            "right": 747.68,
+            "bottom": 707.81,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 738.96,
+            "y": 699.09
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.00881,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark #2",
+          "state": "dormant",
+          "rect": {
+            "top": 484.22,
+            "left": 1212.46,
+            "right": 1229.9,
+            "bottom": 501.66,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 1221.18,
+            "y": 492.94
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.00881,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch",
+          "state": "seated",
+          "rect": {
+            "top": 779.23,
+            "left": 539.4,
+            "right": 552.74,
+            "bottom": 792.56,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 546.07,
+            "y": 785.9
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.00674,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch #2",
+          "state": "seated",
+          "rect": {
+            "top": 724.98,
+            "left": 655.15,
+            "right": 668.49,
+            "bottom": 738.31,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 661.82,
+            "y": 731.65
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.00674,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch #3",
+          "state": "seated",
+          "rect": {
+            "top": 670.73,
+            "left": 770.88,
+            "right": 784.22,
+            "bottom": 684.07,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 777.55,
+            "y": 677.4
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.00674,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-latch",
+          "label": "custody carrier latch #4",
+          "state": "refused",
+          "rect": {
+            "top": 616.48,
+            "left": 886.61,
+            "right": 899.95,
+            "bottom": 629.82,
+            "width": 13.34,
+            "height": 13.34
+          },
+          "centre": {
+            "x": 893.28,
+            "y": 623.15
+          },
+          "effectiveOpacity": 0.78,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 13,
+          "fractionOfPhotoWidth": 0.00674,
+          "drawnPx": 13.34
+        },
+        {
+          "sel": ".crs-closure",
+          "label": "custody closure stop",
+          "state": null,
+          "rect": {
+            "top": 503.79,
+            "left": 1026.75,
+            "right": 1029.83,
+            "bottom": 655.68,
+            "width": 3.08,
+            "height": 151.9
+          },
+          "centre": {
+            "x": 1028.29,
+            "y": 579.74
+          },
+          "effectiveOpacity": 0.9,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 148,
+          "fractionOfPhotoWidth": 0.07673,
+          "drawnPx": 151.9
+        },
+        {
+          "sel": ".crs-mirror-ring",
+          "label": "custody mirror ring",
+          "state": "available",
+          "rect": {
+            "top": 415.79,
+            "left": 1144.03,
+            "right": 1298.33,
+            "bottom": 570.09,
+            "width": 154.3,
+            "height": 154.3
+          },
+          "centre": {
+            "x": 1221.18,
+            "y": 492.94
+          },
+          "effectiveOpacity": 0.9,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 150,
+          "fractionOfPhotoWidth": 0.07777,
+          "drawnPx": 154.3
+        }
+      ],
+      "focal": {
+        "x": 989.73,
+        "y": 579.74,
+        "normalized": {
+          "x": 0.52,
+          "y": 0.51
+        },
+        "cell": {
+          "left": 668.25,
+          "right": 1311.21,
+          "top": 398.91,
+          "bottom": 760.58
+        }
+      },
+      "marksUnderConsole": [],
+      "marksUnderChrome": [],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [],
+      "ringContrast": [
+        {
+          "label": "custody carrier latch",
+          "sel": ".crs-latch",
+          "state": "seated",
+          "sampledPx": 289,
+          "painted": 152,
+          "maxChannelDelta": 429,
+          "corePx": 23,
+          "ringContrast": 5.46,
+          "p50": 1.74,
+          "p90": 4.97,
+          "max": 9.39
+        },
+        {
+          "label": "custody carrier latch #2",
+          "sel": ".crs-latch",
+          "state": "seated",
+          "sampledPx": 289,
+          "painted": 153,
+          "maxChannelDelta": 402,
+          "corePx": 23,
+          "ringContrast": 6.17,
+          "p50": 1.55,
+          "p90": 4.63,
+          "max": 8.03
+        },
+        {
+          "label": "custody carrier latch #3",
+          "sel": ".crs-latch",
+          "state": "seated",
+          "sampledPx": 289,
+          "painted": 161,
+          "maxChannelDelta": 406,
+          "corePx": 25,
+          "ringContrast": 6.47,
+          "p50": 1.64,
+          "p90": 5.42,
+          "max": 8.91
+        },
+        {
+          "label": "custody carrier latch #4",
+          "sel": ".crs-latch",
+          "state": "refused",
+          "sampledPx": 289,
+          "painted": 61,
+          "maxChannelDelta": 248,
+          "corePx": 10,
+          "ringContrast": 2.04,
+          "p50": 1.2,
+          "p90": 1.96,
+          "max": 3.21
+        },
+        {
+          "label": "custody closure stop",
+          "sel": ".crs-closure",
+          "state": null,
+          "sampledPx": 1092,
+          "painted": 977,
+          "maxChannelDelta": 316,
+          "corePx": 147,
+          "ringContrast": 3.91,
+          "p50": 1.43,
+          "p90": 3.88,
+          "max": 3.99
+        },
+        {
+          "label": "custody mirror ring",
+          "sel": ".crs-mirror-ring",
+          "state": "available",
+          "sampledPx": 24964,
+          "painted": 596,
+          "maxChannelDelta": 369,
+          "corePx": 90,
+          "ringContrast": 4.28,
+          "p50": 1.63,
+          "p90": 3.92,
+          "max": 6.73
+        }
+      ]
+    },
+    "maintenance-spine@2000": {
+      "viewport": {
+        "width": 2000,
+        "height": 1178
+      },
+      "workspace": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1982,
+        "bottom": 1078.02,
+        "width": 1964,
+        "height": 936
+      },
+      "worldView": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1898,
+        "bottom": 996.02,
+        "width": 1880,
+        "height": 854
+      },
+      "plate": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1898,
+        "bottom": 996.02,
+        "width": 1880,
+        "height": 854
+      },
+      "photo": {
+        "top": 22.12,
+        "left": 3.33,
+        "right": 1932.21,
+        "bottom": 1107.11,
+        "width": 1928.88,
+        "height": 1084.99
+      },
+      "console": {
+        "top": 761.83,
+        "left": 18,
+        "right": 1898,
+        "bottom": 996.02,
+        "width": 1880,
+        "height": 234.19
+      },
+      "cover": {
+        "top": 40.27,
+        "left": 18,
+        "right": 1898,
+        "bottom": 1097.77,
+        "width": 1880,
+        "height": 1057.5
+      },
+      "visible": {
+        "left": 18,
+        "right": 1898,
+        "top": 142.02,
+        "bottom": 996.02
+      },
+      "photoArea": 2092816,
+      "visibleArea": 1605520,
+      "croppedPct": 23.28,
+      "consoleOccludedPct": 21.04,
+      "chromeOccludedPct": 2.65,
+      "unseenPct": 44.32,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": false,
+      "photoAspect": 1.7778,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 158.02,
+            "left": 1714.05,
+            "right": 1880,
+            "bottom": 247.45,
+            "width": 165.95,
+            "height": 89.44
+          },
+          "overPhotoPx": 14841
+        },
+        {
+          "sel": ".casefile-summon-why",
+          "label": "CASE FILE purpose copy",
+          "rect": {
+            "top": 194.02,
+            "left": 1729.05,
+            "right": 1858.5,
+            "bottom": 240.45,
+            "width": 129.45,
+            "height": 46.44
+          },
+          "overPhotoPx": 6010
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 965.45,
+            "left": 36,
+            "right": 1880,
+            "bottom": 980.02,
+            "width": 1844,
+            "height": 14.56
+          },
+          "overPhotoPx": 26867
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 158.02,
+            "left": 36,
+            "right": 214.2,
+            "bottom": 202.02,
+            "width": 178.2,
+            "height": 44
+          },
+          "overPhotoPx": 7841
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark",
+          "state": "dormant",
+          "rect": {
+            "top": 620.98,
+            "left": 901.18,
+            "right": 918.62,
+            "bottom": 638.42,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 909.9,
+            "y": 629.7
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.00881,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark #2",
+          "state": "dormant",
+          "rect": {
+            "top": 620.98,
+            "left": 1634.16,
+            "right": 1651.6,
+            "bottom": 638.42,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 1642.88,
+            "y": 629.7
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.00881,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".asc-checkpoint",
+          "label": "acoustic checkpoint",
+          "state": "current",
+          "rect": {
+            "top": 731.12,
+            "left": 574.92,
+            "right": 589.08,
+            "bottom": 745.28,
+            "width": 14.16,
+            "height": 14.16
+          },
+          "centre": {
+            "x": 582,
+            "y": 738.2
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 12,
+          "fractionOfPhotoWidth": 0.00622,
+          "drawnPx": 14.16
+        },
+        {
+          "sel": ".asc-checkpoint",
+          "label": "acoustic checkpoint #2",
+          "state": "ahead",
+          "rect": {
+            "top": 601.86,
+            "left": 884.46,
+            "right": 896.77,
+            "bottom": 614.17,
+            "width": 12.31,
+            "height": 12.31
+          },
+          "centre": {
+            "x": 890.62,
+            "y": 608.01
+          },
+          "effectiveOpacity": 0.5,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 12,
+          "fractionOfPhotoWidth": 0.00622,
+          "drawnPx": 12.31
+        },
+        {
+          "sel": ".asc-checkpoint",
+          "label": "acoustic checkpoint #3",
+          "state": "ahead",
+          "rect": {
+            "top": 516.77,
+            "left": 1059.78,
+            "right": 1068.65,
+            "bottom": 525.64,
+            "width": 8.86,
+            "height": 8.86
+          },
+          "centre": {
+            "x": 1064.21,
+            "y": 521.2
+          },
+          "effectiveOpacity": 0.5,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 12,
+          "fractionOfPhotoWidth": 0.00622,
+          "drawnPx": 8.86
+        },
+        {
+          "sel": ".asc-credential",
+          "label": "acoustic credential door",
+          "state": null,
+          "rect": {
+            "top": 521.21,
+            "left": 1565.73,
+            "right": 1720.03,
+            "bottom": 651.4,
+            "width": 154.3,
+            "height": 130.19
+          },
+          "centre": {
+            "x": 1642.88,
+            "y": 586.31
+          },
+          "effectiveOpacity": 0.4,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 150,
+          "fractionOfPhotoWidth": 0.07777,
+          "drawnPx": 154.3
+        }
+      ],
+      "focal": {
+        "x": 1469.28,
+        "y": 564.62,
+        "normalized": {
+          "x": 0.76,
+          "y": 0.5
+        },
+        "cell": {
+          "left": 1147.8,
+          "right": 1790.76,
+          "top": 383.78,
+          "bottom": 745.45
+        }
+      },
+      "marksUnderConsole": [],
+      "marksUnderChrome": [],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [],
+      "ringContrast": [
+        {
+          "label": "acoustic checkpoint",
+          "sel": ".asc-checkpoint",
+          "state": "current",
+          "sampledPx": 324,
+          "painted": 231,
+          "maxChannelDelta": 426,
+          "corePx": 35,
+          "ringContrast": 7.39,
+          "p50": 1.1,
+          "p90": 6.22,
+          "max": 9.72
+        },
+        {
+          "label": "acoustic checkpoint #2",
+          "sel": ".asc-checkpoint",
+          "state": "ahead",
+          "sampledPx": 256,
+          "painted": 173,
+          "maxChannelDelta": 90,
+          "corePx": 26,
+          "ringContrast": 1.62,
+          "p50": 1.18,
+          "p90": 1.58,
+          "max": 1.73
+        },
+        {
+          "label": "acoustic checkpoint #3",
+          "sel": ".asc-checkpoint",
+          "state": "ahead",
+          "sampledPx": 169,
+          "painted": 109,
+          "maxChannelDelta": 76,
+          "corePx": 17,
+          "ringContrast": 1.35,
+          "p50": 1.06,
+          "p90": 1.34,
+          "max": 1.47
+        },
+        {
+          "label": "acoustic credential door",
+          "sel": ".asc-credential",
+          "state": null,
+          "sampledPx": 21172,
+          "painted": 17333,
+          "maxChannelDelta": 29,
+          "corePx": 2600,
+          "ringContrast": 1.03,
+          "p50": 1.03,
+          "p90": 1.03,
+          "max": 1.13
+        }
+      ]
+    },
+    "small-archive@2000": {
+      "viewport": {
+        "width": 2000,
+        "height": 1178
+      },
+      "workspace": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1982,
+        "bottom": 1078.02,
+        "width": 1964,
+        "height": 936
+      },
+      "worldView": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1898,
+        "bottom": 996.02,
+        "width": 1880,
+        "height": 854
+      },
+      "plate": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1898,
+        "bottom": 996.02,
+        "width": 1880,
+        "height": 854
+      },
+      "photo": {
+        "top": 18.43,
+        "left": 0.89,
+        "right": 1929.77,
+        "bottom": 1103.42,
+        "width": 1928.88,
+        "height": 1084.99
+      },
+      "console": {
+        "top": 775.73,
+        "left": 18,
+        "right": 1898,
+        "bottom": 996.02,
+        "width": 1880,
+        "height": 220.28
+      },
+      "cover": {
+        "top": 38.22,
+        "left": 18,
+        "right": 1898,
+        "bottom": 1095.72,
+        "width": 1880,
+        "height": 1057.5
+      },
+      "visible": {
+        "left": 18,
+        "right": 1898,
+        "top": 142.02,
+        "bottom": 996.02
+      },
+      "photoArea": 2092816,
+      "visibleArea": 1605520,
+      "croppedPct": 23.28,
+      "consoleOccludedPct": 19.79,
+      "chromeOccludedPct": 2.65,
+      "unseenPct": 43.07,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": false,
+      "photoAspect": 1.7778,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 158.02,
+            "left": 1714.05,
+            "right": 1880,
+            "bottom": 247.45,
+            "width": 165.95,
+            "height": 89.44
+          },
+          "overPhotoPx": 14841
+        },
+        {
+          "sel": ".casefile-summon-why",
+          "label": "CASE FILE purpose copy",
+          "rect": {
+            "top": 194.02,
+            "left": 1729.05,
+            "right": 1858.5,
+            "bottom": 240.45,
+            "width": 129.45,
+            "height": 46.44
+          },
+          "overPhotoPx": 6010
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 965.45,
+            "left": 36,
+            "right": 1880,
+            "bottom": 980.02,
+            "width": 1844,
+            "height": 14.56
+          },
+          "overPhotoPx": 26867
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 158.02,
+            "left": 36,
+            "right": 214.2,
+            "bottom": 202.02,
+            "width": 178.2,
+            "height": 44
+          },
+          "overPhotoPx": 7841
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark",
+          "state": "dormant",
+          "rect": {
+            "top": 769.2,
+            "left": 705.85,
+            "right": 723.29,
+            "bottom": 786.64,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 714.57,
+            "y": 777.92
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.00881,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".site-closeup-zone",
+          "label": "decorative zone mark #2",
+          "state": "dormant",
+          "rect": {
+            "top": 497.95,
+            "left": 1245.94,
+            "right": 1263.38,
+            "bottom": 515.39,
+            "width": 17.44,
+            "height": 17.44
+          },
+          "centre": {
+            "x": 1254.66,
+            "y": 506.67
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 17,
+          "fractionOfPhotoWidth": 0.00881,
+          "drawnPx": 17.44
+        },
+        {
+          "sel": ".scr-drawer-glow",
+          "label": "archive drawer register",
+          "state": null,
+          "rect": {
+            "top": 662.91,
+            "left": 433.36,
+            "right": 918.63,
+            "bottom": 936.31,
+            "width": 485.27,
+            "height": 273.4
+          },
+          "centre": {
+            "x": 676,
+            "y": 799.61
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 473,
+          "fractionOfPhotoWidth": 0.24522,
+          "drawnPx": 485.27
+        },
+        {
+          "sel": ".scr-aperture",
+          "label": "archive aperture",
+          "state": null,
+          "rect": {
+            "top": 959.11,
+            "left": 444.52,
+            "right": 637.41,
+            "bottom": 987.32,
+            "width": 192.89,
+            "height": 28.21
+          },
+          "centre": {
+            "x": 540.96,
+            "y": 973.22
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": true,
+          "centreUnderConsole": true,
+          "underChrome": [
+            "plate caption"
+          ],
+          "insidePlate": true,
+          "layoutPx": 188,
+          "fractionOfPhotoWidth": 0.09747,
+          "drawnPx": 192.89
+        },
+        {
+          "sel": ".scr-slip",
+          "label": "archive removal slip",
+          "state": null,
+          "rect": {
+            "top": 459.24,
+            "left": 1255.48,
+            "right": 1292.41,
+            "bottom": 466.42,
+            "width": 36.94,
+            "height": 7.18
+          },
+          "centre": {
+            "x": 1273.95,
+            "y": 462.83
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 36,
+          "fractionOfPhotoWidth": 0.01866,
+          "drawnPx": 36.94
+        },
+        {
+          "sel": ".scr-slip",
+          "label": "archive removal slip #2",
+          "state": null,
+          "rect": {
+            "top": 470.52,
+            "left": 1255.48,
+            "right": 1292.41,
+            "bottom": 477.7,
+            "width": 36.94,
+            "height": 7.18
+          },
+          "centre": {
+            "x": 1273.95,
+            "y": 474.11
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 36,
+          "fractionOfPhotoWidth": 0.01866,
+          "drawnPx": 36.94
+        },
+        {
+          "sel": ".scr-slip",
+          "label": "archive removal slip #3",
+          "state": null,
+          "rect": {
+            "top": 481.81,
+            "left": 1255.48,
+            "right": 1292.41,
+            "bottom": 488.99,
+            "width": 36.94,
+            "height": 7.18
+          },
+          "centre": {
+            "x": 1273.95,
+            "y": 485.4
+          },
+          "effectiveOpacity": 0,
+          "onScreen": false,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 36,
+          "fractionOfPhotoWidth": 0.01866,
+          "drawnPx": 36.94
+        }
+      ],
+      "focal": {
+        "x": 984.62,
+        "y": 571.77,
+        "normalized": {
+          "x": 0.51,
+          "y": 0.51
+        },
+        "cell": {
+          "left": 663.14,
+          "right": 1306.1,
+          "top": 390.94,
+          "bottom": 752.61
+        }
+      },
+      "marksUnderConsole": [
+        "archive drawer register"
+      ],
+      "marksUnderChrome": [],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [],
+      "ringContrast": []
+    },
+    "care-ward@2000": {
+      "viewport": {
+        "width": 2000,
+        "height": 1178
+      },
+      "workspace": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1982,
+        "bottom": 1078.02,
+        "width": 1964,
+        "height": 936
+      },
+      "worldView": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1898,
+        "bottom": 996.02,
+        "width": 1880,
+        "height": 854
+      },
+      "plate": {
+        "top": 142.02,
+        "left": 18,
+        "right": 1898,
+        "bottom": 996.02,
+        "width": 1880,
+        "height": 854
+      },
+      "photo": {
+        "top": 40.27,
+        "left": 18,
+        "right": 1898,
+        "bottom": 1097.77,
+        "width": 1880,
+        "height": 1057.5
+      },
+      "console": null,
+      "cover": {
+        "top": 40.27,
+        "left": 18,
+        "right": 1898,
+        "bottom": 1097.77,
+        "width": 1880,
+        "height": 1057.5
+      },
+      "visible": {
+        "left": 18,
+        "right": 1898,
+        "top": 142.02,
+        "bottom": 996.02
+      },
+      "photoArea": 1988100,
+      "visibleArea": 1605520,
+      "croppedPct": 19.24,
+      "consoleOccludedPct": 0,
+      "chromeOccludedPct": 3.09,
+      "unseenPct": 19.24,
+      "photoFullyInsidePlate": false,
+      "photoClearOfConsole": true,
+      "photoAspect": 1.7778,
+      "chrome": [
+        {
+          "sel": ".scene-summons .casefile-summon",
+          "label": "CASE FILE pill",
+          "rect": {
+            "top": 158.02,
+            "left": 1571.28,
+            "right": 1737.23,
+            "bottom": 247.45,
+            "width": 165.95,
+            "height": 89.44
+          },
+          "overPhotoPx": 14841
+        },
+        {
+          "sel": ".scene-summons .scene-detail-summon",
+          "label": "LOCATION DETAIL summon",
+          "rect": {
+            "top": 158.02,
+            "left": 1745.23,
+            "right": 1880,
+            "bottom": 202.02,
+            "width": 134.77,
+            "height": 44
+          },
+          "overPhotoPx": 5930
+        },
+        {
+          "sel": ".casefile-summon-why",
+          "label": "CASE FILE purpose copy",
+          "rect": {
+            "top": 194.02,
+            "left": 1586.28,
+            "right": 1715.73,
+            "bottom": 240.45,
+            "width": 129.45,
+            "height": 46.44
+          },
+          "overPhotoPx": 6010
+        },
+        {
+          "sel": ".world-caption",
+          "label": "plate caption",
+          "rect": {
+            "top": 965.45,
+            "left": 36,
+            "right": 1880,
+            "bottom": 980.02,
+            "width": 1844,
+            "height": 14.56
+          },
+          "overPhotoPx": 26867
+        },
+        {
+          "sel": ".world-return",
+          "label": "concourse return",
+          "rect": {
+            "top": 158.02,
+            "left": 36,
+            "right": 214.2,
+            "bottom": 202.02,
+            "width": 178.2,
+            "height": 44
+          },
+          "overPhotoPx": 7841
+        }
+      ],
+      "marks": [
+        {
+          "sel": ".scene-zone-ring",
+          "label": "live zone ring",
+          "state": null,
+          "rect": {
+            "top": 601.45,
+            "left": 419.39,
+            "right": 481.39,
+            "bottom": 663.45,
+            "width": 62,
+            "height": 62
+          },
+          "centre": {
+            "x": 450.39,
+            "y": 632.45
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 62,
+          "fractionOfPhotoWidth": 0.03298,
+          "drawnPx": 62
+        },
+        {
+          "sel": ".scene-zone-ring",
+          "label": "live zone ring #2",
+          "state": null,
+          "rect": {
+            "top": 580.31,
+            "left": 1453.39,
+            "right": 1515.39,
+            "bottom": 642.31,
+            "width": 62,
+            "height": 62
+          },
+          "centre": {
+            "x": 1484.39,
+            "y": 611.31
+          },
+          "effectiveOpacity": 1,
+          "onScreen": true,
+          "underConsole": false,
+          "centreUnderConsole": false,
+          "underChrome": [],
+          "insidePlate": true,
+          "layoutPx": 62,
+          "fractionOfPhotoWidth": 0.03298,
+          "drawnPx": 62
+        }
+      ],
+      "focal": {
+        "x": 958,
+        "y": 569.02,
+        "normalized": {
+          "x": 0.5,
+          "y": 0.5
+        },
+        "cell": {
+          "left": 644.67,
+          "right": 1271.33,
+          "top": 392.77,
+          "bottom": 745.27
+        }
+      },
+      "marksUnderConsole": [],
+      "marksUnderChrome": [],
+      "marksOutsidePlate": [],
+      "chromeOverFocalCell": [],
+      "ringContrast": [
+        {
+          "label": "live zone ring",
+          "sel": ".scene-zone-ring",
+          "state": null,
+          "sampledPx": 4356,
+          "painted": 2207,
+          "maxChannelDelta": 329,
+          "corePx": 332,
+          "ringContrast": 1.6,
+          "p50": 1.06,
+          "p90": 1.47,
+          "max": 4.84
+        },
+        {
+          "label": "live zone ring #2",
+          "sel": ".scene-zone-ring",
+          "state": null,
+          "sampledPx": 4356,
+          "painted": 2256,
+          "maxChannelDelta": 264,
+          "corePx": 339,
+          "ringContrast": 1.65,
+          "p50": 1.06,
+          "p90": 1.51,
+          "max": 3.8
+        }
+      ]
+    }
+  },
+  "checks": [],
+  "shots": [
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/registry-intake-before-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/maintenance-spine-before-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/small-archive-before-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/care-ward-before-375x812.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/registry-intake-before-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/maintenance-spine-before-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/small-archive-before-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/care-ward-before-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/registry-intake-before-1512x982.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/maintenance-spine-before-1512x982.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/small-archive-before-1512x982.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/care-ward-before-1512x982.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/registry-intake-before-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/maintenance-spine-before-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/small-archive-before-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/care-ward-before-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/registry-intake-before-2000x1178.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/maintenance-spine-before-2000x1178.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/small-archive-before-2000x1178.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/ultrawide-fix/care-ward-before-2000x1178.png"
+  ],
+  "failures": 0
+}

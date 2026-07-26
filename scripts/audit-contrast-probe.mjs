@@ -466,7 +466,20 @@ async function probe(name, width, height) {
   }
 }
 
-for (const [w, h] of [[1280, 800], [375, 812]]) {
+// THE MATRIX, EXTENDED (ultra-wide round). 1920x1080 joins 1280x800 and
+// 375x812, and every target above is measured at it — not a subset.
+//
+// The reason is written into the last block of styles.css, in this probe's own
+// words: the on-plate rows are read against a PHOTOGRAPH, so their background
+// is whatever the plate's crop happens to put behind a glyph, and widening the
+// plate has already moved that number once (the docked console's lead line went
+// 4.51 -> 4.33 : 1 purely because the crop moved). The ultra-wide letterbox
+// changes the crop again, and by more: the plate now shows the WHOLE frame
+// instead of a centre slice, so every on-plate row is over pixels this probe
+// has never sampled. A round that changed which part of the photograph is on
+// screen and did not re-measure the text on top of it would be verifying a
+// fiction — which is the premise this file was written on.
+for (const [w, h] of [[1280, 800], [1920, 1080], [375, 812]]) {
   await setViewport(w, h)
   await boot()
   await probe('concourse', w, h)

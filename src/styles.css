@@ -2445,12 +2445,17 @@ p {
 
 /* Cartridge latch: solid inset registration when seated; dashed and offset at the
    closure refusal. Shape carries every state independently of hue. */
+/* FINDABILITY FIX · same two-tone edge, same reason. The waiting latch measured
+   1.9–2.1 : 1 against the rail under it: a carrier the player is about to seat,
+   effectively unfindable on a bright band. The resting dim moves off the group
+   (which was diluting the latch's own edge) and into the stroke alpha. */
 .crs-latch {
-  width: 13px;
-  height: 13px;
-  border: 1px solid oklch(0.62 0.025 210 / 0.38);
+  width: var(--plate-mark-size-13, 13px);
+  height: var(--plate-mark-size-13, 13px);
+  border: 1px solid oklch(0.9 0.015 210 / 0.55);
   border-radius: 3px;
-  opacity: 0.38;
+  box-shadow: 0 0 0 1.5px oklch(0.02 0 0 / 0.78);
+  opacity: 1;
   transform: translate(-50%, -50%) rotate(-18deg);
   transition:
     opacity 180ms var(--ease-out),
@@ -2461,17 +2466,21 @@ p {
 .crs-latch[data-state='current'] {
   opacity: 1;
   border-color: var(--amber);
-  box-shadow: inset 0 0 0 2px oklch(0.72 0.14 70 / 0.18);
+  box-shadow:
+    0 0 0 1.5px oklch(0.02 0 0 / 0.78),
+    inset 0 0 0 2px oklch(0.72 0.14 70 / 0.18);
 }
 .crs-latch[data-state='seated'] {
   opacity: 1;
   border-color: var(--cyan);
-  box-shadow: inset 0 0 0 2px oklch(0.78 0.11 190 / 0.24);
+  box-shadow:
+    0 0 0 1.5px oklch(0.02 0 0 / 0.78),
+    inset 0 0 0 2px oklch(0.78 0.11 190 / 0.24);
 }
 .crs-latch[data-state='refused'] {
-  opacity: 0.78;
+  opacity: 1;
   border-style: dashed;
-  border-color: var(--fog);
+  border-color: var(--record);
   transform: translate(calc(-50% - 4px), -50%) rotate(-18deg);
 }
 
@@ -2596,12 +2605,23 @@ p {
 }
 /* A checkpoint registration: a small cyan sensor tick. 'ahead' is faint and small,
    'current' is lit, 'crossed' recedes to a broken, colourless trace. */
+/* FINDABILITY FIX · the checkpoint ticks measured 1.32–1.58 : 1 at 'ahead' and
+   'crossed' — the two states that make up most of a crossing. Same treatment:
+   the stroke alpha comes up, an undiluted dark ring goes outside it, and the
+   two dim states stop halving their own edge with a group opacity (0.5 → 0.82,
+   0.62 → 0.85). 'current' still reads as the lit one, by hue and glow. */
 .asc-checkpoint {
-  width: 12px;
-  height: 12px;
+  width: var(--plate-mark-size-12, 12px);
+  height: var(--plate-mark-size-12, 12px);
   border-radius: 50%;
-  border: 1px solid oklch(0.78 0.11 190 / 0.5);
-  box-shadow: 0 0 0 3px oklch(0.04 0 0 / 0.4);
+  /* 1.5px, not the shipped 1px: the far checkpoint carries an authored
+     perspective `scale(0.72)`, which turned a 1px stroke into 0.72px — a stroke
+     thinner than a pixel is antialiased into the plate and measured 1.3 : 1
+     however opaque its colour was. Weight is what a sub-pixel stroke needs. */
+  border: 1.5px solid oklch(0.92 0.06 195 / 0.92);
+  box-shadow:
+    0 0 0 1.5px oklch(0.02 0 0 / 0.88),
+    0 0 0 3.5px oklch(0.04 0 0 / 0.32);
   opacity: 0;
   transition:
     opacity 320ms var(--ease-out),
@@ -2617,22 +2637,23 @@ p {
   transform: translate(-50%, -50%) scale(0.72);
 }
 .asc-checkpoint[data-state='ahead'] {
-  opacity: 0.5;
+  opacity: 0.82;
 }
 .asc-checkpoint[data-state='current'] {
   opacity: 1;
   border-color: var(--cyan);
   box-shadow:
+    0 0 0 1.5px oklch(0.02 0 0 / 0.85),
     0 0 0 3px oklch(0.04 0 0 / 0.5),
     0 0 14px oklch(0.78 0.11 190 / 0.42);
 }
 /* Crossed: the sensor's reach here is broken — a dashed, dimmed, off-colour ring
    (the "quiet broken interval"), never extinguished to pure black. */
 .asc-checkpoint[data-state='crossed'] {
-  opacity: 0.62;
+  opacity: 0.85;
   border-style: dashed;
-  border-color: oklch(0.5 0.02 210 / 0.6);
-  box-shadow: none;
+  border-color: oklch(0.82 0.015 210 / 0.7);
+  box-shadow: 0 0 0 1.5px oklch(0.02 0 0 / 0.8);
 }
 /* The rain-shadow break: a dark, soft occlusion that interrupts the floor
    reflection at the current stage. It replays a subtle drop per pulse (keyed). */
@@ -2737,30 +2758,60 @@ p {
    are unaffected, being both higher-specificity and a different value. */
 .site-closeup-zone {
   position: absolute;
-  width: 17px;
-  height: 17px;
+  /* 17px below the letterbox breakpoint — the shipped value, byte-identical.
+     Above it the mark scales with the photograph (see the ULTRA-WIDE block at
+     the end of this sheet), because a fixed 17px dot on a wide plate is the
+     other half of "we cannot see the orange dots". */
+  width: var(--plate-mark-size, 17px);
+  height: var(--plate-mark-size, 17px);
   color: var(--fog);
   transform: translate(-50%, -50%);
   transition: color 180ms var(--ease-out);
 }
 
+/* FINDABILITY FIX · the two-tone edge ring.
+   Measured (scripts/evidence-ultrawide.mjs, composited two-frame difference):
+   a rest-state mark reached only 1.4–1.6 : 1 against the plate band directly
+   under it — under the 3 : 1 that WCAG 2.1 SC 1.4.11 asks of a graphical object
+   you have to find in order to use the surface. The player's report was exactly
+   that: "we cannot see the orange dots".
+
+   The cause is the same one the zone LABEL was already fixed for, one layer
+   down: the mark carried its quiet register as `opacity: 0.58`, and the group
+   opacity diluted its own dark scrim to 0.42 x 0.58 ~ 0.24 — a halo, not a
+   scrim. So the mark could only ever be as visible as the plate band let it be,
+   and over a bright band it was nothing.
+
+   The dimming therefore moves OFF the group and INTO the stroke colour, and the
+   mark gets a two-tone edge: a bright hairline with an undiluted dark ring
+   outside it. One of the two tones always contrasts, whatever the band under it
+   — which is the standard treatment for a marker over unknown imagery. The
+   weight is unchanged (still a 1px stroke), so the register stays quiet; only
+   the contrast moves. */
 .site-closeup-zone-mark {
   position: absolute;
   inset: 0;
   display: block;
-  border: 1px solid currentColor;
+  border: 1px solid oklch(0.94 0.012 240 / 0.72);
   border-radius: 50%;
-  box-shadow: 0 0 0 4px oklch(0.04 0 0 / 0.42);
-  opacity: 0.58;
-  transition: opacity 180ms var(--ease-out);
+  box-shadow:
+    0 0 0 1.5px oklch(0.02 0 0 / 0.88),
+    0 0 0 4px oklch(0.04 0 0 / 0.34);
+  opacity: 1;
+  transition:
+    opacity 180ms var(--ease-out),
+    border-color 180ms var(--ease-out);
 }
 
+/* The centre dot, centred by margin rather than by a second layout box. The
+   margin is derived from the mark so it stays centred when the mark scales:
+   (mark − 2 × 1px border − 3px dot) / 2, which is 6px at the shipped 17px. */
 .site-closeup-zone-mark::after {
   content: '';
   position: absolute;
   width: 3px;
   height: 3px;
-  margin: 6px;
+  margin: calc((var(--plate-mark-size, 17px) - 5px) / 2);
   border-radius: 50%;
   background: currentColor;
 }
@@ -2768,7 +2819,9 @@ p {
 .site-closeup-zone-label {
   position: absolute;
   top: 50%;
-  left: 24px;
+  /* Clears the mark plus its 4px dark ring plus 3px of air — 24px at the
+     shipped 17px mark, and it stays clear when the mark scales. */
+  left: calc(var(--plate-mark-size, 17px) + 7px);
   padding: 4px 7px;
   color: currentColor;
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -2789,7 +2842,7 @@ p {
 }
 
 .site-closeup-zone[data-edge='end'] .site-closeup-zone-label {
-  right: 24px;
+  right: calc(var(--plate-mark-size, 17px) + 7px);
   left: auto;
   border-right: 1px solid currentColor;
   border-left: 0;
@@ -2802,14 +2855,19 @@ p {
   color: var(--amber-soft);
 }
 
+/* The two state lifts take their hue back from the zone's own currentColor —
+   the base rule now paints the DORMANT stroke, so a state that did not restate
+   its border-colour would arrive amber-lit and grey-ringed. */
 .site-closeup-zone[data-state='active'] .site-closeup-zone-mark,
 .site-closeup-zone[data-state='resolved'] .site-closeup-zone-mark {
+  border-color: currentColor;
   opacity: 1;
 }
 
 .site-closeup-zone[data-state='active'] .site-closeup-zone-mark {
   background: oklch(0.72 0.14 70 / 0.16);
   box-shadow:
+    0 0 0 1.5px oklch(0.02 0 0 / 0.88),
     0 0 0 4px oklch(0.04 0 0 / 0.5),
     0 0 20px oklch(0.72 0.14 70 / 0.34);
 }
@@ -2826,7 +2884,7 @@ p {
   color: currentColor;
   font-size: 11px;
   font-weight: 800;
-  line-height: 17px;
+  line-height: var(--plate-mark-size, 17px);
   background: transparent;
 }
 
@@ -10012,8 +10070,18 @@ p {
   height: 62px;
   display: grid;
   place-items: center;
-  border: 1.5px solid oklch(0.86 0.04 210 / 0.35);
+  /* FINDABILITY FIX · the same two-tone edge the decorative mark now carries.
+     Measured at rest: 1.47–1.58 : 1 against the plate band under it, on a ring
+     that IS the method — the one thing on the photograph that says where the
+     choice is. The stroke alpha comes up and an undiluted dark ring is added on
+     both sides of it, so one tone always contrasts whatever the band does. The
+     stroke stays 1.5px: the weight, and with it the quiet register, is
+     unchanged; only the contrast moves. */
+  border: 2px solid oklch(0.94 0.02 210 / 0.9);
   border-radius: 50%;
+  box-shadow:
+    0 0 0 2px oklch(0.02 0 0 / 0.85),
+    inset 0 0 0 2px oklch(0.02 0 0 / 0.6);
   pointer-events: none;
   backdrop-filter: blur(1px);
   transition:
@@ -10028,18 +10096,23 @@ p {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: oklch(0.86 0.04 210 / 0.55);
+  background: oklch(0.94 0.02 210 / 0.86);
+  box-shadow: 0 0 0 1.5px oklch(0.02 0 0 / 0.78);
   transition:
     background 220ms var(--ease-out),
     box-shadow 220ms var(--ease-out);
 }
 
+/* The two authored preview hues, at the same lifted alpha as the neutral ring
+   above. These are REST styling (a site that authors preview treatments wears
+   them before anything is hovered), so leaving them at 0.4 would have kept the
+   care ward's two rings at the measured 1.5 : 1 while every other plate moved. */
 .scene-zone[data-treatment='listen'] .scene-zone-ring {
-  border-color: oklch(0.82 0.1 74 / 0.4);
+  border-color: oklch(0.9 0.1 74 / 0.92);
 }
 
 .scene-zone[data-treatment='pressure'] .scene-zone-ring {
-  border-color: oklch(0.78 0.1 200 / 0.4);
+  border-color: oklch(0.88 0.1 200 / 0.92);
 }
 
 /* The wrapped canonical button. Its semantics, arm/confirm two-step, disarm
@@ -12375,4 +12448,195 @@ p {
 .room-console .as-lead,
 .room-console .cr-lead {
   color: var(--fog);
+}
+
+/* ══ ULTRA-WIDE · THE LETTERBOXED PLATE ══════════════════════════════════════
+   Appended at the end of the sheet on purpose: every rule here overrides a
+   shipped rule at equal specificity, and a new rule that is not last in source
+   order loses to the one it is meant to replace.
+
+   THE DEFECT, AS MEASURED (scripts/evidence-ultrawide.mjs, BASELINE=1, five
+   viewports x four locations, evidence/ultrawide-fix/ultrawide-before.json):
+
+     viewport     plate box     photo 16:9    cropped  under console  unseen
+     1512x982     1392x658      1428x803       20.2%      18.9–28.4%   39–49%
+     1920x1080    1800x756      1847x1039      29.1%      14.7–22.0%   44–51%
+     2000x1178    1880x854      1929x1085      23.3%      14.0–21.0%   37–44%
+
+   The plate's photograph is projected `object-fit: cover`
+   (`.site-closeup-cover`: `width: max(100cqw, 100cqh * 16 / 9)`), and cover
+   crops on whichever axis the container is short in. The plate BOX is 2.12–2.38
+   wide-to-tall; the photograph is 1.78. So the wider the workspace got, the
+   MORE of the authored frame was thrown away — the inspector collapse handing
+   the plate the full width made this worse, not better. On top of the crop the
+   docked console covers the bottom, and at the reporter's 2000x1178 the two
+   together hid 37–44% of every plate.
+
+   THE POLICY: cinema letterbox. Above the breakpoint the photograph is
+   CONTAINED, not covered — the whole 16:9 frame, at its own aspect, centred in
+   the plate's clear band with quiet gutters of the plate's own night. Nothing
+   is cropped and nothing is under the console, which is the acceptance bar the
+   player set ("we cannot see ... the full image").
+
+   WHY THIS BREAKPOINT, and not a width alone:
+
+   * min-width 1281 — the shipped layout at 1280 and below is verified by six
+     standing harnesses and is left byte-identical. Nothing here can regress a
+     clause that was already reviewed and approved.
+   * min-height 977 — the photograph's size in letterbox is set by HEIGHT, not
+     width, so a height gate is the only honest one: a 1440x900 window has the
+     width to letterbox and not the height, and would land a 583px-wide frame.
+     Measured at four viewports, the plate's height is exactly `100svh - 324px`
+     (the workspace is `100svh - 242px`, less the 72px site switcher and the
+     10px pane gap). Reserving the console band leaves a clear band of
+     `100svh - 572px`; requiring at least a 720x405 frame — the smallest 16:9
+     frame that still shows the authored props LARGER, as a fraction, than the
+     shipped 1280 plate does (17px on 720 = 2.4%, against 1.43% at 1280) —
+     gives 405 + 572 = 977.
+
+   WHY 248px OF RESERVED CONSOLE BAND: measured, not chosen. Twenty-two phase
+   samples across all three rooms at 1280 / 1512 / 1920 / 2000 / 2560 put the
+   tallest docked tableau at 234.2px (the acoustic crossing) and, notably,
+   IDENTICAL at every width — the tableaus lay out across the plate, so their
+   height does not move with it. 248 is that maximum plus ~6%. It is applied as
+   BOTH a `height` and a `max-height`: the max-height makes the guarantee
+   structural rather than dependent on the measurement staying true (a tableau
+   that ever exceeded the band scrolls inside it — the safety net the console
+   already had — and still cannot reach the photograph), and the height stops
+   the band it reserves from being larger than the console that fills it, which
+   is what left a strip of dead black under the frame the first time round.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+@media (min-width: 1281px) and (min-height: 977px) {
+  .world-view {
+    --plate-console-band: 0px;
+    /* Plain lengths, not container units — these two inherit into the plate and
+       into the live zone layer, and a container unit declared on an ancestor of
+       the container would resolve against the wrong box. */
+    --plate-chrome-reserve: 200px;
+  }
+
+  /* Same specificity as the rule above, so this MUST stay after it. */
+  .world-view--room-console {
+    --plate-console-band: 248px;
+  }
+
+  /* The console FILLS the band it reserves, rather than merely fitting inside
+     it. Caught by eyeball, not by a number: with `max-height` alone the fit
+     above had reserved 248px while the custody console at its late-carrier
+     phase renders 156px, leaving a ~92px strip of dead black between the bottom
+     of the frame and the top of the console — a plate that looked broken while
+     every measured clause passed. A fixed strip also stops the console
+     resizing between phases (156 / 190 / 220 / 234px measured), which was a
+     visible twitch under the frame at every step of a ritual. The scroll is
+     still there for a tableau that ever exceeds the band. */
+  .room-console {
+    height: var(--plate-console-band);
+    max-height: var(--plate-console-band);
+  }
+
+  /* The contain fit. `min()` where the shipped rule has `max()` is the whole
+     change: cover takes the LARGER of the two axes and crops the other, contain
+     takes the smaller and letterboxes. Centred horizontally, and centred in the
+     clear band vertically, so the gutters read as a mount rather than as a
+     layout accident.
+
+     THESE TWO RULES MUST STAY IDENTICAL. The live zone layer is a sibling of
+     the aria-hidden figure and re-derives the same projection; a ring and the
+     prop it names drift apart the moment the two expressions differ. */
+  .site-closeup-cover,
+  .scene-zones-live-cover {
+    /* 200px of gutter is reserved on each side for the plate's own chrome.
+       Measured AT THESE WIDTHS, which is the correction that matters: the first
+       version of this constant was 190px, sized from a concourse return of
+       156.8px — a number read off the 375px layout, where the control prints at
+       --type-micro. At the widths this block governs it prints at --type-label
+       and measures 178.2px, so 190 left the return overhanging the frame's left
+       edge by 6px at Care ward 12 (97px^2 at 1512x982, 273px^2 at 2000x1178).
+       Caught by the harness, which now asserts the return alongside the summon
+       pills rather than merely reporting it. 178.2 + the 18px inset = 196.2, so
+       200. The summon pill is the other column at 165.95 + 18 = 184.
+
+       The summons row is stacked (below) so this is ONE pill wide, not two side
+       by side. Without the reserve the one location with no docked console —
+       Care ward 12, whose clear band is the whole plate — letterboxes to 111px
+       gutters at 1512x982 and puts the CASE FILE pill straight back on the
+       photograph, which is the other half of what the player reported. */
+    top: calc((100cqh - var(--plate-console-band, 0px)) / 2);
+    left: 50%;
+    width: min(
+      calc(100cqw - 2 * var(--plate-chrome-reserve)),
+      calc((100cqh - var(--plate-console-band, 0px)) * 16 / 9)
+    );
+    height: min(
+      calc(100cqh - var(--plate-console-band, 0px)),
+      calc((100cqw - 2 * var(--plate-chrome-reserve)) * 9 / 16)
+    );
+    transform: translate(-50%, -50%);
+  }
+
+  /* The summons stack instead of sitting side by side, so the chrome column is
+     one pill wide and fits the gutter the fit above reserves for it. Both pills
+     keep their own box and their own >=44px target; only the row's axis
+     changes. */
+  .scene-summons {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  /* THE CAMERA IS LOCKED OFF IN LETTERBOX. The action-focus push-in scales the
+     projection about an authored focus point, which on a contained frame pushes
+     the photograph's edges out past the letterbox and — with a focus point low
+     on the plate — under the console the fit just cleared it of. A push-in that
+     breaks the frame contradicts the policy the frame exists for, so in this
+     mode emphasis is carried entirely by the filter change the plate already
+     authors (brightness 0.88 / contrast 1.08 / saturate 0.94), which is
+     untouched. Both layers are pinned together, for the same reason as above. */
+  .site-closeup-stage[data-emphasis='true'] .site-closeup-projection,
+  .site-closeup-stage[data-resolved='true'] .site-closeup-projection,
+  .scene-zones-live[data-emphasis='true'] .scene-zones-live-projection {
+    transform: none;
+  }
+
+  /* The photograph's own edge, so a letterboxed frame reads as a mounted print
+     and not as a plate that failed to fill. One hairline, no glow. */
+  .site-closeup-projection > img {
+    box-shadow: 0 0 0 1px oklch(0.62 0.01 235 / 0.22);
+  }
+
+  /* ── Marks scale with the photograph ──────────────────────────────────────
+     Declared on the PROJECTIONS, never on the two `container-type: size`
+     elements themselves: `100cqw` inside a container's own declarations
+     resolves against that container's ANCESTOR container, not against itself.
+     The projections are strict descendants, so the units resolve against the
+     plate — and the harness measures the drawn pixel size, so a mis-resolution
+     fails there rather than shipping as invisible speckle.
+
+     1.45% is the shipped proportion, back-computed from the values the design
+     already stood on: 17px on the 1190px-wide photograph the 1280 plate
+     projects. The clamp floor keeps a letterboxed frame from making marks
+     SMALLER than they ship at (at 2000x1178 the frame is 1077px wide, so the
+     floor binds and the mark stays 17px — which is already 1.58% of that frame
+     against 0.88% before this round). The 34px ceiling stops a 4K window from
+     turning a quiet mark into a target. */
+  .site-closeup-projection,
+  .scene-zones-live-projection {
+    /* Must stay identical to the width in the fit above — this is what the mark
+       scale is a fraction OF. */
+    --plate-photo-w: min(
+      calc(100cqw - 2 * var(--plate-chrome-reserve)),
+      calc((100cqh - var(--plate-console-band, 0px)) * 16 / 9)
+    );
+    --plate-mark-size: clamp(17px, calc(var(--plate-photo-w) * 0.0145), 34px);
+    --plate-mark-size-13: calc(var(--plate-mark-size) * 13 / 17);
+    --plate-mark-size-12: calc(var(--plate-mark-size) * 12 / 17);
+    --plate-zone-ring-size: clamp(62px, calc(var(--plate-photo-w) * 0.0535), 96px);
+  }
+
+  .scene-zone-ring {
+    top: calc(var(--plate-zone-ring-size, 62px) / -2);
+    left: calc(var(--plate-zone-ring-size, 62px) / -2);
+    width: var(--plate-zone-ring-size, 62px);
+    height: var(--plate-zone-ring-size, 62px);
+  }
 }

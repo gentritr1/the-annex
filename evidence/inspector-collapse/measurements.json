@@ -1,6 +1,6 @@
 {
   "url": "http://127.0.0.1:3000/",
-  "capturedAt": "2026-07-26T21:39:23.392Z",
+  "capturedAt": "2026-07-26T23:04:25.282Z",
   "node": "v24.18.0",
   "before": {
     "inspectorWidth": 342.8,
@@ -639,6 +639,631 @@
       }
     },
     {
+      "step": "[registry-intake 1920x1080] off the close read the inspector is expanded and printing its prose",
+      "pass": true,
+      "detail": {
+        "description": "Admitted memory carriers enter on a cust",
+        "spine": false
+      }
+    },
+    {
+      "step": "[registry-intake 1920x1080] the column collapses to the 72px spine and the plate takes the width",
+      "pass": true,
+      "detail": {
+        "inspectorWidth": 72,
+        "plateWidth": 1800,
+        "wasPlateWidth": 889.3,
+        "wasInspectorWidth": 342.8,
+        "plateArea": 1360800
+      }
+    },
+    {
+      "step": "[registry-intake 1920x1080] the spine keeps identity and status, and retires the prose",
+      "pass": true,
+      "detail": {
+        "heading": "Registry intake",
+        "index": "A",
+        "status": "Open",
+        "description": "",
+        "costNote": "",
+        "prompt": "",
+        "sceneFirstNotes": 0,
+        "methods": 0,
+        "filedCard": "",
+        "headingIdResolves": true
+      }
+    },
+    {
+      "step": "[registry-intake 1920x1080] exactly one summon to the full text, in exactly one place",
+      "pass": true,
+      "detail": {
+        "detailSummons": 1,
+        "summonsOnPlate": 0,
+        "summonsInSpine": 1,
+        "caseFileSummons": 1,
+        "worldReturns": 1,
+        "roomConsoles": 1,
+        "roomInstances": 1,
+        "consoleSlots": 1,
+        "slotChildren": 0,
+        "zoneButtons": 0,
+        "inspectorChoiceRows": 0,
+        "anyChoiceRows": 0,
+        "ariaModals": 0,
+        "headingIdResolves": true
+      }
+    },
+    {
+      "step": "[registry-intake 1920x1080] every retired string is on the Location detail drawer",
+      "pass": true,
+      "detail": {
+        "opened": true,
+        "missing": [],
+        "methodsCompared": 0,
+        "standingNote": "One method files this location — the other sta",
+        "ariaModals": 1
+      }
+    },
+    {
+      "step": "[registry-intake 1920x1080] the console is docked, single, and its slot is present and empty",
+      "pass": true,
+      "detail": {
+        "detailSummons": 1,
+        "summonsOnPlate": 0,
+        "summonsInSpine": 1,
+        "caseFileSummons": 1,
+        "worldReturns": 1,
+        "roomConsoles": 1,
+        "roomInstances": 1,
+        "consoleSlots": 1,
+        "slotChildren": 0,
+        "zoneButtons": 0,
+        "inspectorChoiceRows": 0,
+        "anyChoiceRows": 0,
+        "ariaModals": 0,
+        "headingIdResolves": true
+      }
+    },
+    {
+      "step": "[care-ward 1920x1080] off the close read the inspector is expanded and printing its prose",
+      "pass": true,
+      "detail": {
+        "description": "77-A is awake, articulate, and aware tha",
+        "spine": false
+      }
+    },
+    {
+      "step": "[care-ward 1920x1080] the column collapses to the 72px spine and the plate takes the width",
+      "pass": true,
+      "detail": {
+        "inspectorWidth": 72,
+        "plateWidth": 1800,
+        "wasPlateWidth": 889.3,
+        "wasInspectorWidth": 342.8,
+        "plateArea": 1360800
+      }
+    },
+    {
+      "step": "[care-ward 1920x1080] the spine keeps identity and status, and retires the prose",
+      "pass": true,
+      "detail": {
+        "heading": "Care ward 12",
+        "index": "B",
+        "status": "Open",
+        "description": "",
+        "costNote": "",
+        "prompt": "",
+        "sceneFirstNotes": 0,
+        "methods": 0,
+        "filedCard": "",
+        "headingIdResolves": true
+      }
+    },
+    {
+      "step": "[care-ward 1920x1080] exactly one summon to the full text, in exactly one place",
+      "pass": true,
+      "detail": {
+        "detailSummons": 1,
+        "summonsOnPlate": 1,
+        "summonsInSpine": 0,
+        "caseFileSummons": 1,
+        "worldReturns": 1,
+        "roomConsoles": 0,
+        "roomInstances": 0,
+        "consoleSlots": 0,
+        "slotChildren": 0,
+        "zoneButtons": 2,
+        "inspectorChoiceRows": 0,
+        "anyChoiceRows": 2,
+        "ariaModals": 0,
+        "headingIdResolves": true
+      }
+    },
+    {
+      "step": "[care-ward 1920x1080] every retired string is on the Location detail drawer",
+      "pass": true,
+      "detail": {
+        "opened": true,
+        "missing": [],
+        "methodsCompared": 2,
+        "standingNote": "Choose one method in the room. This location t",
+        "ariaModals": 1
+      }
+    },
+    {
+      "step": "[care-ward 1920x1080] the plate carries both methods, once each, and the column none",
+      "pass": true,
+      "detail": {
+        "detailSummons": 1,
+        "summonsOnPlate": 1,
+        "summonsInSpine": 0,
+        "caseFileSummons": 1,
+        "worldReturns": 1,
+        "roomConsoles": 0,
+        "roomInstances": 0,
+        "consoleSlots": 0,
+        "slotChildren": 0,
+        "zoneButtons": 2,
+        "inspectorChoiceRows": 0,
+        "anyChoiceRows": 2,
+        "ariaModals": 0,
+        "headingIdResolves": true
+      }
+    },
+    {
+      "step": "[maintenance-spine 1920x1080] off the close read the inspector is expanded and printing its prose",
+      "pass": true,
+      "detail": {
+        "description": "A rain-slicked sensor ecology built arou",
+        "spine": false
+      }
+    },
+    {
+      "step": "[maintenance-spine 1920x1080] the column collapses to the 72px spine and the plate takes the width",
+      "pass": true,
+      "detail": {
+        "inspectorWidth": 72,
+        "plateWidth": 1800,
+        "wasPlateWidth": 889.3,
+        "wasInspectorWidth": 342.8,
+        "plateArea": 1360800
+      }
+    },
+    {
+      "step": "[maintenance-spine 1920x1080] the spine keeps identity and status, and retires the prose",
+      "pass": true,
+      "detail": {
+        "heading": "Maintenance spine",
+        "index": "C",
+        "status": "Open",
+        "description": "",
+        "costNote": "",
+        "prompt": "",
+        "sceneFirstNotes": 0,
+        "methods": 0,
+        "filedCard": "",
+        "headingIdResolves": true
+      }
+    },
+    {
+      "step": "[maintenance-spine 1920x1080] exactly one summon to the full text, in exactly one place",
+      "pass": true,
+      "detail": {
+        "detailSummons": 1,
+        "summonsOnPlate": 0,
+        "summonsInSpine": 1,
+        "caseFileSummons": 1,
+        "worldReturns": 1,
+        "roomConsoles": 1,
+        "roomInstances": 1,
+        "consoleSlots": 1,
+        "slotChildren": 0,
+        "zoneButtons": 0,
+        "inspectorChoiceRows": 0,
+        "anyChoiceRows": 0,
+        "ariaModals": 0,
+        "headingIdResolves": true
+      }
+    },
+    {
+      "step": "[maintenance-spine 1920x1080] every retired string is on the Location detail drawer",
+      "pass": true,
+      "detail": {
+        "opened": true,
+        "missing": [],
+        "methodsCompared": 0,
+        "standingNote": "One method files this location — the other sta",
+        "ariaModals": 1
+      }
+    },
+    {
+      "step": "[maintenance-spine 1920x1080] the console is docked, single, and its slot is present and empty",
+      "pass": true,
+      "detail": {
+        "detailSummons": 1,
+        "summonsOnPlate": 0,
+        "summonsInSpine": 1,
+        "caseFileSummons": 1,
+        "worldReturns": 1,
+        "roomConsoles": 1,
+        "roomInstances": 1,
+        "consoleSlots": 1,
+        "slotChildren": 0,
+        "zoneButtons": 0,
+        "inspectorChoiceRows": 0,
+        "anyChoiceRows": 0,
+        "ariaModals": 0,
+        "headingIdResolves": true
+      }
+    },
+    {
+      "step": "[small-archive 1920x1080] off the close read the inspector is expanded and printing its prose",
+      "pass": true,
+      "detail": {
+        "description": "Questions, omitted categories, and a cus",
+        "spine": false
+      }
+    },
+    {
+      "step": "[small-archive 1920x1080] the column collapses to the 72px spine and the plate takes the width",
+      "pass": true,
+      "detail": {
+        "inspectorWidth": 72,
+        "plateWidth": 1800,
+        "wasPlateWidth": 889.3,
+        "wasInspectorWidth": 342.8,
+        "plateArea": 1360800
+      }
+    },
+    {
+      "step": "[small-archive 1920x1080] the spine keeps identity and status, and retires the prose",
+      "pass": true,
+      "detail": {
+        "heading": "The Small Archive",
+        "index": "D",
+        "status": "Open",
+        "description": "",
+        "costNote": "",
+        "prompt": "",
+        "sceneFirstNotes": 0,
+        "methods": 0,
+        "filedCard": "",
+        "headingIdResolves": true
+      }
+    },
+    {
+      "step": "[small-archive 1920x1080] exactly one summon to the full text, in exactly one place",
+      "pass": true,
+      "detail": {
+        "detailSummons": 1,
+        "summonsOnPlate": 0,
+        "summonsInSpine": 1,
+        "caseFileSummons": 1,
+        "worldReturns": 1,
+        "roomConsoles": 1,
+        "roomInstances": 1,
+        "consoleSlots": 1,
+        "slotChildren": 0,
+        "zoneButtons": 0,
+        "inspectorChoiceRows": 0,
+        "anyChoiceRows": 0,
+        "ariaModals": 0,
+        "headingIdResolves": true
+      }
+    },
+    {
+      "step": "[small-archive 1920x1080] every retired string is on the Location detail drawer",
+      "pass": true,
+      "detail": {
+        "opened": true,
+        "missing": [],
+        "methodsCompared": 0,
+        "standingNote": "One method files this location — the other sta",
+        "ariaModals": 1
+      }
+    },
+    {
+      "step": "[small-archive 1920x1080] the console is docked, single, and its slot is present and empty",
+      "pass": true,
+      "detail": {
+        "detailSummons": 1,
+        "summonsOnPlate": 0,
+        "summonsInSpine": 1,
+        "caseFileSummons": 1,
+        "worldReturns": 1,
+        "roomConsoles": 1,
+        "roomInstances": 1,
+        "consoleSlots": 1,
+        "slotChildren": 0,
+        "zoneButtons": 0,
+        "inspectorChoiceRows": 0,
+        "anyChoiceRows": 0,
+        "ariaModals": 0,
+        "headingIdResolves": true
+      }
+    },
+    {
+      "step": "[always-mounted 1920x1080] no sample shows a spine outside a settled close read",
+      "pass": true,
+      "detail": {
+        "samples": 15,
+        "states": [
+          "travel",
+          "arriving",
+          "closeup"
+        ],
+        "badSpine": 0
+      }
+    },
+    {
+      "step": "[always-mounted 1920x1080] the description is on screen at every non-closeup sample",
+      "pass": true,
+      "detail": {
+        "checked": 14,
+        "missing": 0
+      }
+    },
+    {
+      "step": "[always-mounted 1920x1080] exactly one room console instance at every sample",
+      "pass": true,
+      "detail": {
+        "samples": 15,
+        "wrong": 0
+      }
+    },
+    {
+      "step": "[always-mounted 1920x1080] a room at its terminal phase does NOT collapse — the console is back in the column",
+      "pass": true,
+      "detail": {
+        "spine": false,
+        "zones": 2,
+        "slotChildren": 1,
+        "unlockLine": "One reading can be authenticated for provena"
+      }
+    },
+    {
+      "step": "[always-mounted 1920x1080] a filed location does NOT collapse — its resolved card stays in the column",
+      "pass": true,
+      "detail": {
+        "spine": false,
+        "filedCardChars": 337,
+        "inspectorWidth": 520.8
+      }
+    },
+    {
+      "step": "[sweep care-ward 1920x1080] every control's own centre resolves to itself",
+      "pass": true,
+      "detail": {
+        "count": 5,
+        "strays": [],
+        "labels": [
+          "case-file summon",
+          "plate detail summon",
+          "concourse return",
+          "plate zone",
+          "plate zone #2"
+        ]
+      }
+    },
+    {
+      "step": "[sweep care-ward 1920x1080] no two controls' boxes intersect past the 0.5px epsilon",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "step": "[sweep care-ward 1920x1080] every swept control is at least 44x44",
+      "pass": true,
+      "detail": [
+        {
+          "label": "case-file summon",
+          "w": 166,
+          "h": 89.4
+        },
+        {
+          "label": "plate detail summon",
+          "w": 134.8,
+          "h": 44
+        },
+        {
+          "label": "concourse return",
+          "w": 178.2,
+          "h": 44
+        },
+        {
+          "label": "plate zone",
+          "w": 71.9,
+          "h": 71.9
+        },
+        {
+          "label": "plate zone #2",
+          "w": 71.9,
+          "h": 71.9
+        }
+      ]
+    },
+    {
+      "step": "[sweep care-ward 1920x1080] the pointer on the summon opens no plate caption",
+      "pass": true,
+      "detail": {
+        "openOverRail": 0
+      }
+    },
+    {
+      "step": "[sweep care-ward 1920x1080] hovering a zone opens exactly one caption, and a split focus does not open a second",
+      "pass": true,
+      "detail": {
+        "openOnZone": 1,
+        "openSplit": 1,
+        "focusHeld": true
+      }
+    },
+    {
+      "step": "[sweep registry-intake 1920x1080] every control's own centre resolves to itself",
+      "pass": true,
+      "detail": {
+        "count": 6,
+        "strays": [],
+        "labels": [
+          "case-file summon",
+          "spine detail summon",
+          "concourse return",
+          "docked console control",
+          "docked console control #2",
+          "docked console control #3"
+        ]
+      }
+    },
+    {
+      "step": "[sweep registry-intake 1920x1080] no two controls' boxes intersect past the 0.5px epsilon",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "step": "[sweep registry-intake 1920x1080] every swept control is at least 44x44",
+      "pass": true,
+      "detail": [
+        {
+          "label": "case-file summon",
+          "w": 166,
+          "h": 89.4
+        },
+        {
+          "label": "spine detail summon",
+          "w": 44,
+          "h": 134.8
+        },
+        {
+          "label": "concourse return",
+          "w": 178.2,
+          "h": 44
+        },
+        {
+          "label": "docked console control",
+          "w": 331.9,
+          "h": 106
+        },
+        {
+          "label": "docked console control #2",
+          "w": 331.9,
+          "h": 106
+        },
+        {
+          "label": "docked console control #3",
+          "w": 331.9,
+          "h": 106
+        }
+      ]
+    },
+    {
+      "step": "[sweep registry-intake 1920x1080] the pointer on the summon opens no plate caption",
+      "pass": true,
+      "detail": {
+        "openOverRail": 0
+      }
+    },
+    {
+      "step": "[keyboard 1920x1080] Tab alone reaches the spine's summon",
+      "pass": true,
+      "detail": {
+        "step": "Tab 1",
+        "kind": "tab",
+        "tag": "BUTTON",
+        "cls": "scene-detail-summon site-spine-summon",
+        "text": "Location detail",
+        "isBody": false
+      }
+    },
+    {
+      "step": "[keyboard 1920x1080] Enter opens the drawer, Escape returns focus to the summon",
+      "pass": true,
+      "detail": {
+        "drawerOpen": true,
+        "returned": {
+          "tag": "BUTTON",
+          "cls": "scene-detail-summon site-spine-summon",
+          "text": "Location detail",
+          "isBody": false
+        }
+      }
+    },
+    {
+      "step": "[keyboard 1920x1080] Tab alone reaches the docked console from the spine",
+      "pass": true,
+      "detail": {
+        "step": "Tab to console 10",
+        "kind": "tab",
+        "tag": "BUTTON",
+        "cls": "cr-carrier",
+        "text": "Carrier 01Civic backup bundleAvailable",
+        "isBody": false
+      }
+    },
+    {
+      "step": "[keyboard 1920x1080] the ritual completes keyboard-only and hands the route to a plate zone",
+      "pass": true,
+      "detail": {
+        "zones": 2,
+        "onZone": true,
+        "spine": false
+      }
+    },
+    {
+      "step": "[keyboard 1920x1080] Enter arms, Enter files, the beat and the strip are reachable by key",
+      "pass": true,
+      "detail": {
+        "armed": "true",
+        "filedNow": true
+      }
+    },
+    {
+      "step": "[keyboard 1920x1080] the filed location's drawer is reachable and carries its record",
+      "pass": true,
+      "detail": {
+        "reachedFiledSummon": true,
+        "methodArticles": 2
+      }
+    },
+    {
+      "step": "[keyboard 1920x1080] focus never fell to <body> after an activation, and every <body> sample is a proved tab wrap",
+      "pass": true,
+      "detail": {
+        "steps": 39,
+        "total": 2,
+        "afterActivation": 0,
+        "unexplained": 0,
+        "wraps": 2
+      }
+    },
+    {
+      "step": "[reduced motion 1920x1080] the spine collapses with nothing animating past 1ms",
+      "pass": true,
+      "detail": {
+        "spine": true,
+        "motion": [
+          {
+            "cls": "site-record site-inspector site-inspecto",
+            "transitionMs": 0.01,
+            "animation": "none"
+          },
+          {
+            "cls": "site-header site-header--spine",
+            "transitionMs": 0.01,
+            "animation": "none"
+          },
+          {
+            "cls": "scene-detail-summon site-spine-summon",
+            "transitionMs": 0.01,
+            "animation": "none"
+          },
+          {
+            "cls": "field-workspace field-workspace--spine",
+            "transitionMs": 0.01,
+            "animation": "none"
+          }
+        ]
+      }
+    },
+    {
       "step": "[registry-intake 375x812] off the close read the inspector is expanded and printing its prose",
       "pass": true,
       "detail": {
@@ -974,6 +1599,22 @@
     "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/07-keyboard-drawer-from-spine-1280x800.png",
     "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/08-keyboard-filed-1280x800.png",
     "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/09-reduced-motion-spine-1280x800.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/01-registry-intake-close-read-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/02-registry-intake-drawer-over-spine-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/01-care-ward-close-read-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/02-care-ward-drawer-over-spine-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/01-maintenance-spine-close-read-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/02-maintenance-spine-drawer-over-spine-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/01-small-archive-close-read-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/02-small-archive-drawer-over-spine-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/03-terminal-phase-no-collapse-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/04-filed-location-no-collapse-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/05-sweep-care-ward-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/06-sweep-care-ward-split-focus-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/05-sweep-registry-intake-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/07-keyboard-drawer-from-spine-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/08-keyboard-filed-1920x1080.png",
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/09-reduced-motion-spine-1920x1080.png",
     "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/01-registry-intake-close-read-375x812.png",
     "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/01-care-ward-close-read-375x812.png",
     "/Users/gentlegen/Desktop/the-annex-mvp/evidence/inspector-collapse/01-maintenance-spine-close-read-375x812.png",
@@ -1181,6 +1822,203 @@
       "inspectorTextLength": 40,
       "pageScrollHeight": 800,
       "viewportHeight": 800
+    },
+    "registry-intake@1920": {
+      "transition": "closeup",
+      "workspace": {
+        "top": 142,
+        "left": 18,
+        "width": 1884,
+        "height": 838,
+        "bottom": 980,
+        "right": 1902
+      },
+      "worldView": {
+        "top": 142,
+        "left": 18,
+        "width": 1800,
+        "height": 756,
+        "bottom": 898,
+        "right": 1818
+      },
+      "plate": {
+        "top": 142,
+        "left": 18,
+        "width": 1800,
+        "height": 756,
+        "bottom": 898,
+        "right": 1818
+      },
+      "console": {
+        "top": 650,
+        "left": 18,
+        "width": 1800,
+        "height": 248,
+        "bottom": 898,
+        "right": 1818
+      },
+      "inspector": {
+        "top": 142,
+        "left": 1830,
+        "width": 72,
+        "height": 838,
+        "bottom": 980,
+        "right": 1902
+      },
+      "spinePresent": true,
+      "workspaceSpineClass": true,
+      "sceneAboveConsoleHeight": 508,
+      "sceneAboveConsoleArea": 914400,
+      "plateArea": 1360800,
+      "inspectorTextLength": 38,
+      "pageScrollHeight": 1080,
+      "viewportHeight": 1080
+    },
+    "care-ward@1920": {
+      "transition": "closeup",
+      "workspace": {
+        "top": 142,
+        "left": 18,
+        "width": 1884,
+        "height": 838,
+        "bottom": 980,
+        "right": 1902
+      },
+      "worldView": {
+        "top": 142,
+        "left": 18,
+        "width": 1800,
+        "height": 756,
+        "bottom": 898,
+        "right": 1818
+      },
+      "plate": {
+        "top": 142,
+        "left": 18,
+        "width": 1800,
+        "height": 756,
+        "bottom": 898,
+        "right": 1818
+      },
+      "console": null,
+      "inspector": {
+        "top": 142,
+        "left": 1830,
+        "width": 72,
+        "height": 838,
+        "bottom": 980,
+        "right": 1902
+      },
+      "spinePresent": true,
+      "workspaceSpineClass": true,
+      "sceneAboveConsoleHeight": null,
+      "sceneAboveConsoleArea": null,
+      "plateArea": 1360800,
+      "inspectorTextLength": 19,
+      "pageScrollHeight": 1080,
+      "viewportHeight": 1080
+    },
+    "maintenance-spine@1920": {
+      "transition": "closeup",
+      "workspace": {
+        "top": 142,
+        "left": 18,
+        "width": 1884,
+        "height": 838,
+        "bottom": 980,
+        "right": 1902
+      },
+      "worldView": {
+        "top": 142,
+        "left": 18,
+        "width": 1800,
+        "height": 756,
+        "bottom": 898,
+        "right": 1818
+      },
+      "plate": {
+        "top": 142,
+        "left": 18,
+        "width": 1800,
+        "height": 756,
+        "bottom": 898,
+        "right": 1818
+      },
+      "console": {
+        "top": 650,
+        "left": 18,
+        "width": 1800,
+        "height": 248,
+        "bottom": 898,
+        "right": 1818
+      },
+      "inspector": {
+        "top": 142,
+        "left": 1830,
+        "width": 72,
+        "height": 838,
+        "bottom": 980,
+        "right": 1902
+      },
+      "spinePresent": true,
+      "workspaceSpineClass": true,
+      "sceneAboveConsoleHeight": 508,
+      "sceneAboveConsoleArea": 914400,
+      "plateArea": 1360800,
+      "inspectorTextLength": 40,
+      "pageScrollHeight": 1080,
+      "viewportHeight": 1080
+    },
+    "small-archive@1920": {
+      "transition": "closeup",
+      "workspace": {
+        "top": 142,
+        "left": 18,
+        "width": 1884,
+        "height": 838,
+        "bottom": 980,
+        "right": 1902
+      },
+      "worldView": {
+        "top": 142,
+        "left": 18,
+        "width": 1800,
+        "height": 756,
+        "bottom": 898,
+        "right": 1818
+      },
+      "plate": {
+        "top": 142,
+        "left": 18,
+        "width": 1800,
+        "height": 756,
+        "bottom": 898,
+        "right": 1818
+      },
+      "console": {
+        "top": 650,
+        "left": 18,
+        "width": 1800,
+        "height": 248,
+        "bottom": 898,
+        "right": 1818
+      },
+      "inspector": {
+        "top": 142,
+        "left": 1830,
+        "width": 72,
+        "height": 838,
+        "bottom": 980,
+        "right": 1902
+      },
+      "spinePresent": true,
+      "workspaceSpineClass": true,
+      "sceneAboveConsoleHeight": 508,
+      "sceneAboveConsoleArea": 914400,
+      "plateArea": 1360800,
+      "inspectorTextLength": 40,
+      "pageScrollHeight": 1080,
+      "viewportHeight": 1080
     },
     "registry-intake@375": {
       "transition": "closeup",
@@ -1747,5 +2585,6 @@
       "inspectorWidthBefore": 342.8,
       "inspectorWidthAfter": 72
     }
-  ]
+  ],
+  "rendererCrashed": false
 }

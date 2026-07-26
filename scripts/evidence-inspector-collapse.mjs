@@ -118,7 +118,9 @@ function raw(method, params = {}, sessionId) {
     const timer = setTimeout(() => {
       if (pending.has(id)) {
         pending.delete(id)
-        reject(new Error(`CDP timeout: ${method}`))
+        reject(new Error(
+          `CDP timeout: ${method}${rendererCrashed ? ' (AFTER A RENDERER CRASH — that is the cause)' : ''}`,
+        ))
       }
     }, 30000)
     pending.set(id, {
@@ -135,13 +137,42 @@ function raw(method, params = {}, sessionId) {
   })
 }
 
-const { targetId } = await raw('Target.createTarget', { url: 'about:blank' })
-await raw('Target.activateTarget', { targetId })
-const { sessionId } = await raw('Target.attachToTarget', { targetId, flatten: true })
+// A RECYCLABLE PAGE, and why. Extending the matrix to a third width — and a
+// third width whose screenshots are 2.5x the pixels of 1280x800 — pushed a
+// single long-lived page past what it could carry: the run died on a bare
+// `CDP timeout: Runtime.evaluate` two thirds of the way in, at the same call,
+// twice. Running the SAME width on its own passed 46/46, which is what proves
+// it was capacity and not a defect at that width.
+//
+// A timeout is also the worst possible symptom, because it is what a renderer
+// crash and a slow page look like from out here. So two things change: the page
+// is replaced between widths, so nothing accumulates across a whole matrix; and
+// a crash is now caught and named instead of arriving disguised as a timeout.
+let targetId
+let sessionId
 const send = (method, params = {}) => raw(method, params, sessionId)
-await send('Runtime.enable')
-await send('Page.enable')
-await send('Emulation.setFocusEmulationEnabled', { enabled: true })
+
+async function openPage() {
+  if (targetId) await raw('Target.closeTarget', { targetId }).catch(() => undefined)
+  const created = await raw('Target.createTarget', { url: 'about:blank' })
+  targetId = created.targetId
+  await raw('Target.activateTarget', { targetId })
+  const attached = await raw('Target.attachToTarget', { targetId, flatten: true })
+  sessionId = attached.sessionId
+  await send('Runtime.enable')
+  await send('Page.enable')
+  await send('Emulation.setFocusEmulationEnabled', { enabled: true })
+}
+await openPage()
+
+let rendererCrashed = false
+socket.addEventListener('message', (event) => {
+  const message = JSON.parse(event.data)
+  if (message.method === 'Inspector.targetCrashed' || message.method === 'Target.targetCrashed') {
+    rendererCrashed = true
+    console.error('!!! RENDERER CRASHED — every timeout after this line is a consequence, not a cause')
+  }
+})
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -918,7 +949,28 @@ async function reducedMotionPass(width, height) {
 
 // ── Run ─────────────────────────────────────────────────────────────────────
 
-for (const [w, h] of [[1280, 800], [375, 812]]) {
+// THE MATRIX, EXTENDED (ultra-wide round). 1920x1080 is added to the standing
+// set and every clause above runs at it unchanged — none was relaxed to let it
+// in, and the two shipped widths keep every clause they had.
+//
+// It is added HERE, and not only to the round's own probe, because this is the
+// harness that owns the cross-zone sweep and the keyboard walk. The ultra-wide
+// letterbox moves a positioned-control surface (the summons row stacks, and the
+// photograph no longer fills the plate), and a control-pair interference is
+// exactly the class of defect the recorded cross-zone scar says per-zone
+// verification is blind to. A sweep at 1280 and 375 cannot see a collision that
+// only exists at a width where the frame is inset from the plate.
+//
+// 1080 is above the letterbox's 977px height gate, so this run exercises the
+// letterboxed geometry rather than a wider copy of the shipped one.
+const WIDTH_FILTER = process.env.ONLY_WIDTH ? Number(process.env.ONLY_WIDTH) : null
+let widthIndex = 0
+for (const [w, h] of [[1280, 800], [1920, 1080], [375, 812]]) {
+  if (WIDTH_FILTER && w !== WIDTH_FILTER) continue
+  // Fresh page per width (see openPage). Not before the first one — that page
+  // is already fresh, and closing it would only cost a round trip.
+  if (widthIndex > 0) await openPage()
+  widthIndex += 1
   for (const site of SITES) await collapsePass(site, w, h)
   await alwaysMountedPass(w, h)
   await sweepPass('Care ward 12', 'care-ward', w, h)
@@ -948,8 +1000,9 @@ report.plateTable = SITES.map((site) => {
   }
 })
 
+report.rendererCrashed = rendererCrashed
 const passed = report.checks.filter((c) => c.pass).length
-const failed = report.checks.length - passed
+const failed = report.checks.length - passed + (rendererCrashed ? 1 : 0)
 writeFileSync(join(OUT_DIR, 'measurements.json'), JSON.stringify(report, null, 2))
 console.log(`\n${passed}/${report.checks.length} checks passed · ${report.shots.length} screenshots → ${OUT_DIR}`)
 console.table(report.plateTable)
