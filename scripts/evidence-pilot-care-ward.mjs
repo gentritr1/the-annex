@@ -790,6 +790,17 @@ async function nonPilotPass(width, height) {
     decorativeZones: document.querySelectorAll('.site-closeup-zone').length,
     sceneFirstLayer: !!document.querySelector('.scene-zones-live'),
     detailSummon: !!document.querySelector('.scene-detail-summon'),
+    // E1b re-baseline. The original clause was detailSummon === false: this
+    // location's PLATE carries no summon-rail entry while its ritual runs, and
+    // that is still asserted, unrelaxed, as summonsOnPlate === 0. What changed
+    // in the world is that the collapsed inspector carries exactly one summon of
+    // its own on the spine, so the total is pinned to a NAMED place rather than
+    // loosened to a smaller number. At 375 the column never collapses, so the
+    // spine is absent and the total is 0 — both shapes are named below.
+    summonsOnPlate: document.querySelectorAll('.scene-summons .scene-detail-summon').length,
+    summonsTotal: document.querySelectorAll('.scene-detail-summon').length,
+    summonInSpine: !!document.querySelector('.site-inspector--spine .scene-detail-summon'),
+    spinePresent: !!document.querySelector('.site-inspector--spine'),
     previewTreatment: document.querySelector('.site-closeup-stage')?.dataset.previewTreatment ?? null,
     plateDepth: !!document.querySelector('.site-closeup-depth'),
   }))()`)
@@ -797,7 +808,9 @@ async function nonPilotPass(width, height) {
   record(`[${tag}] Registry intake is untouched by the pilot`, Boolean(
     registry.carrierControls === 3 &&
       registry.sceneFirstLayer === false &&
-      registry.detailSummon === false &&
+      registry.summonsOnPlate === 0 &&
+      registry.summonsTotal === (registry.spinePresent ? 1 : 0) &&
+      registry.summonInSpine === registry.spinePresent &&
       registry.previewTreatment === null &&
       registry.plateDepth === true,
   ), registry)

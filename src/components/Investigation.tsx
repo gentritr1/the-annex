@@ -141,6 +141,33 @@ function forcedColorsActive() {
   )
 }
 
+// ── The inspector collapse's width gate (E1b · audit P1-D) ───────────────────
+// Below 841px the workspace stops being two columns at all — `styles.css`
+// @media (max-width: 840px) turns `.field-workspace` into a stacked flex column
+// — and a spine there would reclaim nothing while retiring prose. So the
+// collapse is a WIDE-LAYOUT decision, and the DOM (not only the styling)
+// follows the same breakpoint: at 375 the inspector renders exactly as it does
+// today, which is what makes "no narrow-layout regression" provable rather than
+// argued. The number is duplicated from the stylesheet because a media query is
+// not readable from script; `evidence-inspector-collapse.mjs` asserts both sides
+// of it at 1280 and 375, so a drift fails a harness instead of shipping.
+const SIDE_BY_SIDE_WORKSPACE_QUERY = '(min-width: 841px)'
+
+function sideBySideWorkspace() {
+  return (
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia(SIDE_BY_SIDE_WORKSPACE_QUERY).matches
+  )
+}
+
+// The two standing prompts the inspector prints for a location that has not been
+// filed. Named constants because the collapse hands whichever one applies to the
+// Location detail drawer, and a copy that drifted between the two homes would
+// print two different sentences for one fact.
+const SCENE_FIRST_METHOD_PROMPT = 'Choose one method in the room. This location then closes.'
+const INSPECTOR_METHOD_PROMPT = 'Choose one method. This location then closes.'
+
 export function Investigation({
   state,
   caseFileOpen,
@@ -170,6 +197,7 @@ export function Investigation({
   const [selectedSiteId, setSelectedSiteId] = useState<SiteId>(() => initialSite.id)
   const [osReducedMotion, setOsReducedMotion] = useState(prefersReducedMotion)
   const [osForcedColors, setOsForcedColors] = useState(forcedColorsActive)
+  const [sideBySide, setSideBySide] = useState(sideBySideWorkspace)
   const [worldPresentation, setWorldPresentation] = useState<WorldPresentation>(() =>
     scene.world
       ? { kind: 'concourse' }
@@ -267,6 +295,15 @@ export function Investigation({
   useEffect(() => {
     const query = window.matchMedia('(forced-colors: active)')
     const onChange = (event: MediaQueryListEvent) => setOsForcedColors(event.matches)
+    query.addEventListener('change', onChange)
+    return () => query.removeEventListener('change', onChange)
+  }, [])
+
+  // The workspace's own breakpoint, kept live: a resize across it must re-expand
+  // the inspector rather than leaving a spine on a stacked column.
+  useEffect(() => {
+    const query = window.matchMedia(SIDE_BY_SIDE_WORKSPACE_QUERY)
+    const onChange = (event: MediaQueryListEvent) => setSideBySide(event.matches)
     query.addEventListener('change', onChange)
     return () => query.removeEventListener('change', onChange)
   }, [])
@@ -701,6 +738,50 @@ export function Investigation({
     !roomMethodsRevealed &&
     presentationForRender.kind === 'closeup' &&
     presentationMatchesSelection
+  // ── THE INSPECTOR COLLAPSE (E1b · audit P1-D) ──────────────────────────────
+  // The audit measured the inspector at 434×546 carrying two sentences and ~450px
+  // of nothing while the plate was squeezed to a letterbox strip. This is the
+  // phase gate that removes exactly that emptiness, and nothing else.
+  //
+  // TRUE only where the column has genuinely run out of work: a wide (two-column)
+  // workspace, the settled close read on screen, and the PLATE carrying the
+  // interaction — either the room's console docked over it, or the two methods
+  // standing as the plate's own zones. Three states are deliberately excluded
+  // because the column is not empty in them:
+  //
+  //   · a FILED location — the resolved card, its record delta and the reaction
+  //     quotes are the inspector's real content, not chrome;
+  //   · a ROOM location at its terminal phase — the console has come back to the
+  //     inspector slot and is printing the room's authored unlock line, so the
+  //     column holds authored prose that no other surface carries;
+  //   · every stacked width — a spine there would retire prose and reclaim
+  //     nothing (see SIDE_BY_SIDE_WORKSPACE_QUERY).
+  //
+  // What the spine keeps is fixed by `spineKeeps()` in `game/siteRecordText.ts`;
+  // what it retires is proved to be carried, string-for-string, by the Location
+  // detail drawer in the same module's `equivalenceGaps()`. Nothing is hidden —
+  // the prose has a proven second home before this flag can ever be true.
+  const inspectorSpine =
+    sideBySide &&
+    !selectedCompletedAction &&
+    (roomConsoleDocked || (sceneFirstPlate && !roomSite))
+  // ONE summon to the full text, never two: the plate's chrome carries it
+  // wherever the plate is already hosting the methods, and the spine carries it
+  // in the phase where the plate is not (the docked-console ritual, which has no
+  // summon rail entry today). Same class, same handler, so every existing
+  // selector, style and assertion still finds exactly one control.
+  const spineCarriesDetailSummon = inspectorSpine && !sceneFirstPlate
+  // The one standing line the collapsed inspector would have printed for this
+  // phase, handed to the drawer so it is relocated rather than dropped. Exactly
+  // one instance exists at any moment: the inspector prints it when expanded, the
+  // drawer when the spine is up.
+  const spineStandingNote = !inspectorSpine
+    ? undefined
+    : roomSite
+      ? showsSiteCost(state)
+        ? purposeCopy.siteCost
+        : undefined
+      : SCENE_FIRST_METHOD_PROMPT
   const sceneFirstEmphasisId = selectedCompletedAction?.id ?? previewActionId
   const sceneFirstDerivedFocus = derivedStageFocus({
     roomStage: plateRoomStage,
@@ -1085,7 +1166,7 @@ export function Investigation({
         )}
       </header>
 
-      <div className="field-workspace">
+      <div className={`field-workspace ${inspectorSpine ? 'field-workspace--spine' : ''}`}>
         <section className="world-pane" aria-label="District navigation">
           <div
             className={worldViewClass}
@@ -1343,13 +1424,17 @@ export function Investigation({
         </section>
 
         <section
-          className={`site-record site-inspector ${selectedCompletedAction ? 'site-record-complete' : ''}`}
+          className={`site-record site-inspector ${inspectorSpine ? 'site-inspector--spine' : ''} ${selectedCompletedAction ? 'site-record-complete' : ''}`}
           id={`site-card-${selectedSite.id}`}
           ref={siteInspectorRef}
           tabIndex={-1}
           aria-labelledby={`site-heading-${selectedSite.id}`}
         >
-          <header className="site-header">
+          {/* The header is the SAME markup in both states — the spine restyles it
+              rather than replacing it, so the heading id this section is labelled
+              by, the h2 in the heading order, and every selector already pointed
+              at `.site-header h2` survive the collapse untouched. */}
+          <header className={`site-header ${inspectorSpine ? 'site-header--spine' : ''}`}>
             <span className="site-index">{selectedSite.index}</span>
             <div>
               <p className="site-location-label">Location in view</p>
@@ -1361,9 +1446,34 @@ export function Investigation({
               {selectedCompletedAction ? 'Filed' : 'Open'}
             </span>
           </header>
-          <p className="site-description">{selectedSite.description}</p>
 
-          {selectedCompletedAction ? (
+          {inspectorSpine ? (
+            // THE SPINE. Identity, status, and the way back to the full text —
+            // and nothing else, because nothing else is left to say while the
+            // room itself is carrying the work. Every string this branch stops
+            // printing is proved to be on the Location detail drawer by
+            // `equivalenceGaps()`; the standing line for this phase is handed to
+            // that drawer above, so it moves rather than disappearing.
+            <>
+              {spineCarriesDetailSummon && (
+                <button
+                  className="scene-detail-summon site-spine-summon"
+                  type="button"
+                  onClick={openDetailDrawer}
+                >
+                  Location detail
+                </button>
+              )}
+              {/* Kept mounted and empty: the console is docked over the plate in
+                  this state, and the host's return trip needs this node to exist
+                  in the same commit that un-collapses the column. */}
+              {roomSite ? <div className="room-console-slot" ref={roomSlotRef} /> : null}
+            </>
+          ) : (
+            <>
+              <p className="site-description">{selectedSite.description}</p>
+
+              {selectedCompletedAction ? (
             <>
               <div className="resolved-action">
                 <span className="resolved-mark" aria-hidden="true">
@@ -1464,9 +1574,7 @@ export function Investigation({
               key={selectedSite.id}
             >
               <p className="site-action-prompt">
-                {sceneFirstPlate
-                  ? 'Choose one method in the room. This location then closes.'
-                  : 'Choose one method. This location then closes.'}
+                {sceneFirstPlate ? SCENE_FIRST_METHOD_PROMPT : INSPECTOR_METHOD_PROMPT}
               </p>
               {/* Scene-first: the two methods are the marked points on the plate,
                   rendered exactly once. The canonical list returns here the moment
@@ -1507,6 +1615,8 @@ export function Investigation({
                 )
               })}
             </div>
+              )}
+            </>
           )}
         </section>
       </div>
@@ -1548,6 +1658,7 @@ export function Investigation({
           completedAction={selectedCompletedAction}
           evidenceTitle={selectedEvidence?.title}
           eventTitle={selectedEvent?.title}
+          standingNote={spineStandingNote}
           settings={state.settings}
           onClose={() => setDetailDrawerOpen(false)}
         />

@@ -10905,7 +10905,13 @@ p {
   z-index: 14;
   top: 16px;
   right: 18px;
-  min-height: 40px;
+  /* 40px → 44px (E1b). Measured, not assumed: the round-3 cross-zone sweep put a
+     tap-target floor on every positioned control it touches and this one — the
+     shipped plate summon, not the new spine one — came back 134.8 x 40 at 1280
+     and 123.5 x 40 at 375, the only control on the plate under the repo's own
+     44px rule. The summon rail is `align-items: flex-start` and the case-file
+     summon beside it is 89.4px tall, so the row's height is unchanged. */
+  min-height: 44px;
   padding: 8px 14px;
   color: var(--fog);
   background: oklch(0.09 0.01 235 / 0.88);
@@ -12223,4 +12229,150 @@ p {
   color: var(--fog);
   font-size: var(--type-meta);
   line-height: 1.5;
+}
+
+/* ══ THE INSPECTOR COLLAPSE — the spine (E1b · audit P1-D) ════════════════════
+   The audit measured the inspector at 434x546 in close-read, carrying two
+   sentences and ~450px of nothing, while the plate was squeezed to a 792x210
+   letterbox strip — "the single largest remaining ambience win at 1280, and a
+   layout decision, not a style one" (design-gap-audit-2026-07.md:86-89).
+
+   This is that layout decision. In the phases where the PLATE is carrying the
+   interaction — the room's console docked over it, or the two methods standing
+   as its own zones — the column becomes a spine: the index chip, the location's
+   name read down the rail, its status, and (where the plate's summon rail does
+   not already carry one) the way back to the full text. Everything it stops
+   printing is proved to be on the Location detail drawer, string-for-string, by
+   `equivalenceGaps()` in src/game/siteRecordText.ts; the phase gate itself is
+   `inspectorSpine` in Investigation.tsx, which excludes a filed location, a room
+   at its terminal phase, and every stacked width.
+
+   NO TRANSITION IS AUTHORED HERE, deliberately. The collapse coincides with the
+   plate's own arrival/dock animation; a second, competing width tween would be
+   the opacity-ramp strand scar in a new costume, and an instant re-flow behind a
+   moving plate reads as the plate arriving, not as the column twitching.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+@media (min-width: 841px) {
+  /* Paired with the stacking breakpoint below: `@media (max-width: 840px)` turns
+     the workspace into a flex column, where a 72px rail would reclaim nothing.
+     SIDE_BY_SIDE_WORKSPACE_QUERY in Investigation.tsx is the same number, and
+     the harness asserts both sides of it. 72px is the index chip (32px) plus the
+     rail's own 8px gutters plus the 44px minimum the vertical summon needs to
+     stay a legal tap target. */
+  .field-workspace--spine {
+    grid-template-columns: minmax(0, 1fr) 72px;
+  }
+}
+
+.site-inspector--spine {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 0 8px 16px;
+  overflow: hidden;
+}
+
+/* The header is the SAME element in both states — restyled, never replaced — so
+   the h2 that labels the section, its place in the heading order, and every
+   selector already aimed at `.site-header h2` survive the collapse. */
+.site-header--spine {
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 0 16px;
+}
+
+/* Hoist the header's wrapper out of the flow so the label, the name and the
+   status stack as siblings of the index chip on one rail. */
+.site-header--spine > div {
+  display: contents;
+}
+
+/* "LOCATION IN VIEW" is a label for a column that no longer has anything to
+   label: on the rail the name IS the only thing present. */
+.site-header--spine .site-location-label {
+  display: none;
+}
+
+.site-header--spine h2 {
+  writing-mode: vertical-rl;
+  max-height: 300px;
+  overflow: hidden;
+  font-size: var(--type-body);
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.site-header--spine .site-state {
+  writing-mode: vertical-rl;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-micro);
+  font-weight: 650;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+/* ONE summon to the full text, never two. This is the same control and the same
+   class the plate's summon rail uses, so every existing selector, style and
+   assertion still finds exactly one; it renders here only in the phase where the
+   plate is not hosting a rail entry (the docked-console ritual). The pill turns
+   on its side; `min-width` keeps the tap target legal at 44px, which vertical
+   caps-mono at --type-micro would otherwise miss by ~16px. */
+.site-inspector--spine .site-spine-summon {
+  position: static;
+  writing-mode: vertical-rl;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 14px 8px;
+  display: grid;
+  place-items: center;
+}
+
+/* The relocated standing line. While the inspector is a spine it is not printing
+   its own phase's standing line (the bounded-room cost note, or the plain
+   location's method prompt), so that ONE line is handed to this drawer instead —
+   moved, never duplicated, and never re-worded: `Investigation.tsx` passes the
+   same constant both surfaces read. It sits above the methods it is about, in
+   the drawer's own body register rather than the inspector's dim label register,
+   because on this surface it is a sentence the reader has opened the drawer to
+   find, not a caption under something else. */
+.scene-detail-standing-note {
+  margin: 0;
+  color: var(--fog);
+  font-size: var(--type-meta);
+  line-height: 1.55;
+}
+
+/* ── The docked console's prompt, re-measured after the collapse ─────────────
+   MEASURED, and the number is the whole argument. The three rooms' lead lines
+   render at --fog-dim (11.2px / 600) over a translucent console whose TOP edge
+   is only 0.6 alpha — i.e. the dimmest body register in the palette, read
+   against a photograph. The composited probe scored that row at 4.51 : 1
+   (custody) and 4.50 : 1 (acoustic) against a 4.5 floor BEFORE this round: a
+   pass by 0.01, which is inside the instrument's own jitter, because the
+   "brightest pixel behind a glyph" moves with the plate's crop.
+
+   Widening the plate moved the crop, and the row went to 4.33 (custody) and
+   4.58 (acoustic) — the same row, the same rule, a different photograph behind
+   it. A nudge would only re-buy another coin toss: even a FULLY OPAQUE console
+   caps this row at ~4.88 : 1, so the alpha is not the lever. The register is.
+
+   --fog-dim (oklch L 0.59) → --fog (oklch L 0.72) on the DOCKED console only,
+   which takes the same worst-case background from 4.33 : 1 to ~7 : 1 — real
+   headroom instead of a knife edge. The slotted console keeps --fog-dim: over
+   the inspector's flat panel that register is not at risk, and this is the same
+   argument the sheet already makes for `.high-contrast .room-console` and for
+   the Easy Read rule that promotes these exact three selectors to --record.
+   The titles above these lines are --record, so the hierarchy is unchanged. */
+.room-console .room-prompt,
+.room-console .as-lead,
+.room-console .cr-lead {
+  color: var(--fog);
 }

@@ -1,6 +1,6 @@
 {
   "url": "http://127.0.0.1:3000/",
-  "capturedAt": "2026-07-25T22:36:14.637Z",
+  "capturedAt": "2026-07-26T21:35:59.380Z",
   "checks": [
     {
       "step": "[small-archive 1280x800] the console docks OVER the plate, one instance only",
@@ -16,13 +16,13 @@
           "top": 398,
           "bottom": 618,
           "left": 18,
-          "right": 907
+          "right": 1178
         },
         "plateRect": {
           "top": 142,
           "bottom": 618,
           "left": 18,
-          "right": 907
+          "right": 1178
         },
         "consoleWithinPlate": true,
         "consoleScrolls": false,
@@ -32,7 +32,7 @@
         "inspectorChoiceRows": 0,
         "decorativeZoneMirrors": 2,
         "anyChoiceRows": 0,
-        "detailSummon": false,
+        "detailSummon": true,
         "liveOutsideAriaHiddenFigure": null
       }
     },
@@ -207,14 +207,14 @@
         "roomInsideDock": true,
         "roomInsideInspector": false,
         "dockRect": {
-          "top": 238,
-          "bottom": 454,
+          "top": 254,
+          "bottom": 470,
           "left": 0,
           "right": 375
         },
         "plateRect": {
-          "top": 154,
-          "bottom": 454,
+          "top": 170,
+          "bottom": 470,
           "left": 0,
           "right": 375
         },
@@ -394,7 +394,7 @@
       "step": "[small-archive keyboard 1280x800] Tab alone reaches the docked console",
       "pass": true,
       "detail": {
-        "step": "Tab 10",
+        "step": "Tab 11",
         "tag": "BUTTON",
         "cls": "room-category",
         "text": "Continuation"
@@ -425,7 +425,7 @@
       "pass": true,
       "detail": {
         "tag": "SECTION",
-        "cls": "site-record site-inspector site-record-complete",
+        "cls": "site-record site-inspector  site-record-complete",
         "text": "DLocation in viewThe Small ArchiveFiledQuestions, omitted categories, "
       }
     },
@@ -478,16 +478,16 @@
         "roomInsideDock": true,
         "roomInsideInspector": false,
         "dockRect": {
-          "top": 369,
+          "top": 384,
           "bottom": 618,
           "left": 18,
-          "right": 907
+          "right": 1178
         },
         "plateRect": {
           "top": 142,
           "bottom": 618,
           "left": 18,
-          "right": 907
+          "right": 1178
         },
         "consoleWithinPlate": true,
         "consoleScrolls": false,
@@ -497,7 +497,7 @@
         "inspectorChoiceRows": 0,
         "decorativeZoneMirrors": 2,
         "anyChoiceRows": 0,
-        "detailSummon": false,
+        "detailSummon": true,
         "liveOutsideAriaHiddenFigure": null
       }
     },
@@ -672,14 +672,14 @@
         "roomInsideDock": true,
         "roomInsideInspector": false,
         "dockRect": {
-          "top": 238,
-          "bottom": 454,
+          "top": 254,
+          "bottom": 470,
           "left": 0,
           "right": 375
         },
         "plateRect": {
-          "top": 154,
-          "bottom": 454,
+          "top": 170,
+          "bottom": 470,
           "left": 0,
           "right": 375
         },
@@ -859,7 +859,7 @@
       "step": "[maintenance keyboard 1280x800] Tab alone reaches the docked console",
       "pass": true,
       "detail": {
-        "step": "Tab 9",
+        "step": "Tab 10",
         "tag": "BUTTON",
         "cls": "as-listen",
         "text": "Listen for the next pulsepulse 1 / 3"
@@ -890,7 +890,7 @@
       "pass": true,
       "detail": {
         "tag": "SECTION",
-        "cls": "site-record site-inspector site-record-complete",
+        "cls": "site-record site-inspector  site-record-complete",
         "text": "CLocation in viewMaintenance spineFiledA rain-slicked sensor ecology b"
       }
     },
@@ -946,13 +946,13 @@
           "top": 428,
           "bottom": 618,
           "left": 18,
-          "right": 907
+          "right": 1178
         },
         "plateRect": {
           "top": 142,
           "bottom": 618,
           "left": 18,
-          "right": 907
+          "right": 1178
         },
         "consoleWithinPlate": true,
         "consoleScrolls": false,
@@ -962,7 +962,7 @@
         "inspectorChoiceRows": 0,
         "decorativeZoneMirrors": 2,
         "anyChoiceRows": 0,
-        "detailSummon": false,
+        "detailSummon": true,
         "liveOutsideAriaHiddenFigure": null
       }
     },
@@ -1137,14 +1137,14 @@
         "roomInsideDock": true,
         "roomInsideInspector": false,
         "dockRect": {
-          "top": 238,
-          "bottom": 454,
+          "top": 254,
+          "bottom": 470,
           "left": 0,
           "right": 375
         },
         "plateRect": {
-          "top": 154,
-          "bottom": 454,
+          "top": 170,
+          "bottom": 470,
           "left": 0,
           "right": 375
         },
@@ -1324,7 +1324,7 @@
       "step": "[registry keyboard 1280x800] Tab alone reaches the docked console",
       "pass": true,
       "detail": {
-        "step": "Tab 10",
+        "step": "Tab 11",
         "tag": "BUTTON",
         "cls": "cr-carrier",
         "text": "Carrier 01Civic backup bundleAvailable"
@@ -1355,7 +1355,7 @@
       "pass": true,
       "detail": {
         "tag": "SECTION",
-        "cls": "site-record site-inspector site-record-complete",
+        "cls": "site-record site-inspector  site-record-complete",
         "text": "ALocation in viewRegistry intakeFiledAdmitted memory carriers enter on"
       }
     },
@@ -1575,59 +1575,65 @@
     {
       "step": "Tab 1",
       "tag": "BUTTON",
+      "cls": "scene-detail-summon site-spine-summon",
+      "text": "Location detail"
+    },
+    {
+      "step": "Tab 2",
+      "tag": "BUTTON",
       "cls": "button button-primary",
       "text": "File the routine records →"
     },
     {
-      "step": "Tab 2",
+      "step": "Tab 3",
       "tag": "BODY",
       "cls": "",
       "text": "Skip to current sceneAThe AnnexCMA–77–AField record/Run 1AccessAccess "
     },
     {
-      "step": "Tab 3",
+      "step": "Tab 4",
       "tag": "A",
       "cls": "skip-link",
       "text": "Skip to current scene"
     },
     {
-      "step": "Tab 4",
+      "step": "Tab 5",
       "tag": "BUTTON",
       "cls": "brand-button",
       "text": "AThe AnnexCMA–77–A"
     },
     {
-      "step": "Tab 5",
+      "step": "Tab 6",
       "tag": "SUMMARY",
       "cls": "",
       "text": "Access"
     },
     {
-      "step": "Tab 6",
+      "step": "Tab 7",
       "tag": "BUTTON",
       "cls": "annex-world-portal",
       "text": "ARegistry intake"
     },
     {
-      "step": "Tab 7",
+      "step": "Tab 8",
       "tag": "BUTTON",
       "cls": "annex-world-portal",
       "text": "BCare ward 12"
     },
     {
-      "step": "Tab 8",
+      "step": "Tab 9",
       "tag": "BUTTON",
       "cls": "annex-world-portal",
       "text": "CMaintenance spine"
     },
     {
-      "step": "Tab 9",
+      "step": "Tab 10",
       "tag": "BUTTON",
       "cls": "annex-world-portal",
       "text": "DThe Small Archive"
     },
     {
-      "step": "Tab 10",
+      "step": "Tab 11",
       "tag": "BUTTON",
       "cls": "room-category",
       "text": "Continuation"
@@ -1653,7 +1659,7 @@
     {
       "step": "Enter (close the record)",
       "tag": "SECTION",
-      "cls": "site-record site-inspector site-record-complete",
+      "cls": "site-record site-inspector  site-record-complete",
       "text": "DLocation in viewThe Small ArchiveFiledQuestions, omitted categories, "
     }
   ],
@@ -1664,91 +1670,14 @@
     {
       "step": "Tab 1",
       "tag": "BUTTON",
+      "cls": "scene-detail-summon site-spine-summon",
+      "text": "Location detail"
+    },
+    {
+      "step": "Tab 2",
+      "tag": "BUTTON",
       "cls": "button button-primary",
       "text": "Read the sensor cadence →"
-    },
-    {
-      "step": "Tab 2",
-      "tag": "A",
-      "cls": "skip-link",
-      "text": "Skip to current scene"
-    },
-    {
-      "step": "Tab 3",
-      "tag": "BUTTON",
-      "cls": "brand-button",
-      "text": "AThe AnnexCMA–77–A"
-    },
-    {
-      "step": "Tab 4",
-      "tag": "SUMMARY",
-      "cls": "",
-      "text": "Access"
-    },
-    {
-      "step": "Tab 5",
-      "tag": "BUTTON",
-      "cls": "annex-world-portal",
-      "text": "ARegistry intake"
-    },
-    {
-      "step": "Tab 6",
-      "tag": "BUTTON",
-      "cls": "annex-world-portal",
-      "text": "BCare ward 12"
-    },
-    {
-      "step": "Tab 7",
-      "tag": "BUTTON",
-      "cls": "annex-world-portal",
-      "text": "CMaintenance spine"
-    },
-    {
-      "step": "Tab 8",
-      "tag": "BUTTON",
-      "cls": "annex-world-portal",
-      "text": "DThe Small Archive"
-    },
-    {
-      "step": "Tab 9",
-      "tag": "BUTTON",
-      "cls": "as-listen",
-      "text": "Listen for the next pulsepulse 1 / 3"
-    },
-    {
-      "step": "ritual 2",
-      "tag": "BUTTON",
-      "cls": "as-listen",
-      "text": "Listen for the next pulsepulse 2 / 3"
-    },
-    {
-      "step": "ritual 5",
-      "tag": "BUTTON",
-      "cls": "as-listen",
-      "text": "Listen for the next pulsepulse 2 / 3"
-    },
-    {
-      "step": "Enter (close the record)",
-      "tag": "SECTION",
-      "cls": "site-record site-inspector site-record-complete",
-      "text": "CLocation in viewMaintenance spineFiledA rain-slicked sensor ecology b"
-    }
-  ],
-  "registryBeatLines": [
-    "You proved where every admitted memory came from."
-  ],
-  "registryKeyboardTranscript": [
-    {
-      "step": "Tab 1",
-      "tag": "BUTTON",
-      "cls": "button button-primary",
-      "text": "Seat the carriers on the rail →"
-    },
-    {
-      "step": "Tab 2",
-      "tag": "BODY",
-      "cls": "",
-      "text": "Skip to current sceneAThe AnnexCMA–77–AField record/Run 1AccessAccess "
     },
     {
       "step": "Tab 3",
@@ -1795,6 +1724,95 @@
     {
       "step": "Tab 10",
       "tag": "BUTTON",
+      "cls": "as-listen",
+      "text": "Listen for the next pulsepulse 1 / 3"
+    },
+    {
+      "step": "ritual 2",
+      "tag": "BUTTON",
+      "cls": "as-listen",
+      "text": "Listen for the next pulsepulse 2 / 3"
+    },
+    {
+      "step": "ritual 5",
+      "tag": "BUTTON",
+      "cls": "as-listen",
+      "text": "Listen for the next pulsepulse 2 / 3"
+    },
+    {
+      "step": "Enter (close the record)",
+      "tag": "SECTION",
+      "cls": "site-record site-inspector  site-record-complete",
+      "text": "CLocation in viewMaintenance spineFiledA rain-slicked sensor ecology b"
+    }
+  ],
+  "registryBeatLines": [
+    "You proved where every admitted memory came from."
+  ],
+  "registryKeyboardTranscript": [
+    {
+      "step": "Tab 1",
+      "tag": "BUTTON",
+      "cls": "scene-detail-summon site-spine-summon",
+      "text": "Location detail"
+    },
+    {
+      "step": "Tab 2",
+      "tag": "BUTTON",
+      "cls": "button button-primary",
+      "text": "Seat the carriers on the rail →"
+    },
+    {
+      "step": "Tab 3",
+      "tag": "BODY",
+      "cls": "",
+      "text": "Skip to current sceneAThe AnnexCMA–77–AField record/Run 1AccessAccess "
+    },
+    {
+      "step": "Tab 4",
+      "tag": "A",
+      "cls": "skip-link",
+      "text": "Skip to current scene"
+    },
+    {
+      "step": "Tab 5",
+      "tag": "BUTTON",
+      "cls": "brand-button",
+      "text": "AThe AnnexCMA–77–A"
+    },
+    {
+      "step": "Tab 6",
+      "tag": "SUMMARY",
+      "cls": "",
+      "text": "Access"
+    },
+    {
+      "step": "Tab 7",
+      "tag": "BUTTON",
+      "cls": "annex-world-portal",
+      "text": "ARegistry intake"
+    },
+    {
+      "step": "Tab 8",
+      "tag": "BUTTON",
+      "cls": "annex-world-portal",
+      "text": "BCare ward 12"
+    },
+    {
+      "step": "Tab 9",
+      "tag": "BUTTON",
+      "cls": "annex-world-portal",
+      "text": "CMaintenance spine"
+    },
+    {
+      "step": "Tab 10",
+      "tag": "BUTTON",
+      "cls": "annex-world-portal",
+      "text": "DThe Small Archive"
+    },
+    {
+      "step": "Tab 11",
+      "tag": "BUTTON",
       "cls": "cr-carrier",
       "text": "Carrier 01Civic backup bundleAvailable"
     },
@@ -1813,7 +1831,7 @@
     {
       "step": "Enter (close the record)",
       "tag": "SECTION",
-      "cls": "site-record site-inspector site-record-complete",
+      "cls": "site-record site-inspector  site-record-complete",
       "text": "ALocation in viewRegistry intakeFiledAdmitted memory carriers enter on"
     }
   ],

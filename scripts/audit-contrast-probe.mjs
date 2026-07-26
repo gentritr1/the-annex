@@ -258,6 +258,17 @@ const TARGETS = JSON.stringify([
   ['.ledger-filing-cite', 'ledger · filing citation'],
   ['.ledger-pair-half', 'ledger · contradiction pair'],
   ['.ledger-voice', 'ledger · voice heading'],
+  // THE INSPECTOR COLLAPSE (E1b, Wave 2 round 3). ADDED targets, never a
+  // relaxed one. Two registers the spine puts on screen that nothing measured
+  // before — the status stamp (which had NO target at all, collapsed or not) and
+  // the vertical summon pill — plus the standing line the collapse RELOCATES to
+  // the Location detail drawer, which would otherwise move from a measured home
+  // (`.site-cost-note`, still measured on the concourse surface) to an
+  // unmeasured one. The spine's own heading needs no new target: it is the same
+  // `.site-header h2` element, restyled rather than replaced.
+  ['.site-inspector--spine .site-state', 'spine · status stamp'],
+  ['.site-spine-summon', 'spine · summon to the full text'],
+  ['.scene-detail-standing-note', 'record mode · relocated standing line'],
 ])
 
 const PREPARE = `(() => {
@@ -473,6 +484,17 @@ for (const [w, h] of [[1280, 800], [375, 812]]) {
   }
   await enterSite('Registry intake')
   await probe('console-custody', w, h)
+  // E1b. The one state that carries the RELOCATED standing line: the inspector
+  // collapsed to its spine mid-ritual, and the drawer opened from the spine's
+  // own summon. Skipped at 375, where the column never collapses and the line
+  // stays on `.site-cost-note` (measured on the concourse surface at both
+  // widths) — the click simply finds no spine summon and returns false.
+  if (await click('.site-spine-summon')) {
+    await sleep(700)
+    await probe('record-detail-ritual', w, h)
+    await click('.scene-detail-close')
+    await sleep(400)
+  }
   await enterSite('Maintenance spine')
   await probe('console-acoustic', w, h)
   await enterSite('Care ward 12')

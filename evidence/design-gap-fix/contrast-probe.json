@@ -1,6 +1,6 @@
 {
   "url": "http://127.0.0.1:3000/",
-  "capturedAt": "2026-07-26T20:24:57.488Z",
+  "capturedAt": "2026-07-26T21:35:01.300Z",
   "node": "v24.18.0",
   "surfaces": {
     "concourse@1280": [
@@ -275,32 +275,32 @@
         "fontWeight": "600",
         "glyphBoxes": 1,
         "sampledPx": 8052,
-        "textColor": "oklch(0.59 0.018 215)",
+        "textColor": "oklch(0.72 0.018 210)",
         "textRgb": [
-          114,
-          128,
-          132
+          152,
+          168,
+          171
         ],
         "darkestBg": [
+          3,
           2,
-          1,
           2
         ],
         "brightestBg": [
-          15,
-          21,
-          23
+          30,
+          23,
+          18
         ],
-        "ratioOnDarkest": 5.1,
-        "ratioOnBrightest": 4.51
+        "ratioOnDarkest": 8.41,
+        "ratioOnBrightest": 7.18
       },
       {
         "label": "inspector · surface heading",
         "sel": ".site-header h2",
-        "fontSize": "22.4px",
+        "fontSize": "13.12px",
         "fontWeight": "700",
         "glyphBoxes": 1,
-        "sampledPx": 3700,
+        "sampledPx": 1372,
         "textColor": "oklch(0.99 0.004 190)",
         "textRgb": [
           249,
@@ -315,14 +315,198 @@
         "brightestBg": [
           7,
           11,
-          14
+          15
         ],
         "ratioOnDarkest": 19.27,
-        "ratioOnBrightest": 19.27
+        "ratioOnBrightest": 19.26
       },
       {
-        "label": "inspector · record body",
-        "sel": ".site-description",
+        "label": "dock · standing instruction",
+        "sel": ".field-dock-copy > p",
+        "fontSize": "12.16px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 3471,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          7,
+          12,
+          16
+        ],
+        "brightestBg": [
+          7,
+          12,
+          16
+        ],
+        "ratioOnDarkest": 7.97,
+        "ratioOnBrightest": 7.97
+      },
+      {
+        "label": "command bar · counter label",
+        "sel": ".field-objectives > span",
+        "fontSize": "10.24px",
+        "fontWeight": "500",
+        "glyphBoxes": 4,
+        "sampledPx": 580,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          3
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "command bar · threshold line",
+        "sel": ".field-threshold",
+        "fontSize": "12.16px",
+        "fontWeight": "400",
+        "glyphBoxes": 2,
+        "sampledPx": 13715,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          4
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "command bar · purpose line",
+        "sel": ".field-purpose",
+        "fontSize": "12.16px",
+        "fontWeight": "400",
+        "glyphBoxes": 1,
+        "sampledPx": 6968,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          2,
+          2,
+          2
+        ],
+        "brightestBg": [
+          3,
+          3,
+          4
+        ],
+        "ratioOnDarkest": 5.07,
+        "ratioOnBrightest": 5.04
+      },
+      {
+        "label": "summon pill · purpose line",
+        "sel": ".casefile-summon-why",
+        "fontSize": "10.24px",
+        "fontWeight": "400",
+        "glyphBoxes": 3,
+        "sampledPx": 2600,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          1,
+          2,
+          4
+        ],
+        "brightestBg": [
+          2,
+          3,
+          4
+        ],
+        "ratioOnDarkest": 5.08,
+        "ratioOnBrightest": 5.05
+      },
+      {
+        "label": "spine · status stamp",
+        "sel": ".site-inspector--spine .site-state",
+        "fontSize": "10.24px",
+        "fontWeight": "650",
+        "glyphBoxes": 1,
+        "sampledPx": 260,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          7,
+          11,
+          15
+        ],
+        "brightestBg": [
+          7,
+          11,
+          15
+        ],
+        "ratioOnDarkest": 4.83,
+        "ratioOnBrightest": 4.83
+      },
+      {
+        "label": "spine · summon to the full text",
+        "sel": ".site-spine-summon",
+        "fontSize": "10.24px",
+        "fontWeight": "750",
+        "glyphBoxes": 1,
+        "sampledPx": 1030,
+        "textColor": "oklch(0.72 0.018 210)",
+        "textRgb": [
+          152,
+          168,
+          171
+        ],
+        "darkestBg": [
+          2,
+          3,
+          6
+        ],
+        "brightestBg": [
+          2,
+          3,
+          6
+        ],
+        "ratioOnDarkest": 8.37,
+        "ratioOnBrightest": 8.37
+      }
+    ],
+    "record-detail-ritual@1280": [
+      {
+        "label": "record mode · surface record",
+        "sel": ".scene-detail-description",
         "fontSize": "14.08px",
         "fontWeight": "400",
         "glyphBoxes": 2,
@@ -334,25 +518,25 @@
           171
         ],
         "darkestBg": [
-          7,
-          11,
-          14
+          4,
+          6,
+          7
         ],
         "brightestBg": [
-          7,
-          11,
-          15
+          4,
+          6,
+          7
         ],
-        "ratioOnDarkest": 8.02,
-        "ratioOnBrightest": 8.01
+        "ratioOnDarkest": 8.24,
+        "ratioOnBrightest": 8.24
       },
       {
-        "label": "dock · standing instruction",
-        "sel": ".field-dock-copy > p",
-        "fontSize": "12.16px",
-        "fontWeight": "400",
+        "label": "record mode · method prose",
+        "sel": ".scene-detail-method p",
+        "fontSize": "13.12px",
+        "fontWeight": "750",
         "glyphBoxes": 1,
-        "sampledPx": 3471,
+        "sampledPx": 1053,
         "textColor": "oklch(0.72 0.018 210)",
         "textRgb": [
           152,
@@ -360,147 +544,43 @@
           171
         ],
         "darkestBg": [
-          7,
-          12,
-          16
+          9,
+          14,
+          18
         ],
         "brightestBg": [
-          7,
-          12,
-          16
+          9,
+          14,
+          18
         ],
-        "ratioOnDarkest": 7.97,
-        "ratioOnBrightest": 7.97
+        "ratioOnDarkest": 7.87,
+        "ratioOnBrightest": 7.87
       },
       {
-        "label": "command bar · counter label",
-        "sel": ".field-objectives > span",
-        "fontSize": "10.24px",
-        "fontWeight": "500",
-        "glyphBoxes": 4,
-        "sampledPx": 580,
-        "textColor": "oklch(0.59 0.018 215)",
-        "textRgb": [
-          114,
-          128,
-          132
-        ],
-        "darkestBg": [
-          2,
-          2,
-          2
-        ],
-        "brightestBg": [
-          3,
-          3,
-          3
-        ],
-        "ratioOnDarkest": 5.07,
-        "ratioOnBrightest": 5.04
-      },
-      {
-        "label": "command bar · threshold line",
-        "sel": ".field-threshold",
-        "fontSize": "12.16px",
-        "fontWeight": "400",
-        "glyphBoxes": 2,
-        "sampledPx": 13715,
-        "textColor": "oklch(0.59 0.018 215)",
-        "textRgb": [
-          114,
-          128,
-          132
-        ],
-        "darkestBg": [
-          2,
-          2,
-          2
-        ],
-        "brightestBg": [
-          3,
-          3,
-          4
-        ],
-        "ratioOnDarkest": 5.07,
-        "ratioOnBrightest": 5.04
-      },
-      {
-        "label": "command bar · purpose line",
-        "sel": ".field-purpose",
+        "label": "record mode · relocated standing line",
+        "sel": ".scene-detail-standing-note",
         "fontSize": "12.16px",
         "fontWeight": "400",
         "glyphBoxes": 1,
-        "sampledPx": 6968,
-        "textColor": "oklch(0.59 0.018 215)",
+        "sampledPx": 5772,
+        "textColor": "oklch(0.72 0.018 210)",
         "textRgb": [
-          114,
-          128,
-          132
+          152,
+          168,
+          171
         ],
         "darkestBg": [
-          2,
-          2,
-          2
+          4,
+          6,
+          7
         ],
         "brightestBg": [
-          3,
-          3,
-          4
+          4,
+          6,
+          7
         ],
-        "ratioOnDarkest": 5.07,
-        "ratioOnBrightest": 5.04
-      },
-      {
-        "label": "inspector · site cost line",
-        "sel": ".site-cost-note",
-        "fontSize": "11.2px",
-        "fontWeight": "650",
-        "glyphBoxes": 2,
-        "sampledPx": 4730,
-        "textColor": "oklch(0.59 0.018 215)",
-        "textRgb": [
-          114,
-          128,
-          132
-        ],
-        "darkestBg": [
-          7,
-          11,
-          15
-        ],
-        "brightestBg": [
-          7,
-          12,
-          15
-        ],
-        "ratioOnDarkest": 4.83,
-        "ratioOnBrightest": 4.81
-      },
-      {
-        "label": "summon pill · purpose line",
-        "sel": ".casefile-summon-why",
-        "fontSize": "10.24px",
-        "fontWeight": "400",
-        "glyphBoxes": 3,
-        "sampledPx": 2600,
-        "textColor": "oklch(0.59 0.018 215)",
-        "textRgb": [
-          114,
-          128,
-          132
-        ],
-        "darkestBg": [
-          1,
-          2,
-          4
-        ],
-        "brightestBg": [
-          2,
-          3,
-          6
-        ],
-        "ratioOnDarkest": 5.08,
-        "ratioOnBrightest": 5.04
+        "ratioOnDarkest": 8.24,
+        "ratioOnBrightest": 8.24
       }
     ],
     "console-acoustic@1280": [
@@ -509,34 +589,34 @@
         "sel": ".room-console .room-prompt, .room-console .as-lead, .room-console .cr-lead",
         "fontSize": "11.2px",
         "fontWeight": "600",
-        "glyphBoxes": 2,
-        "sampledPx": 10461,
-        "textColor": "oklch(0.59 0.018 215)",
+        "glyphBoxes": 1,
+        "sampledPx": 10516,
+        "textColor": "oklch(0.72 0.018 210)",
         "textRgb": [
-          114,
-          128,
-          132
+          152,
+          168,
+          171
         ],
         "darkestBg": [
           0,
-          1,
-          2
+          2,
+          3
         ],
         "brightestBg": [
-          28,
-          18,
-          10
+          12,
+          19,
+          23
         ],
-        "ratioOnDarkest": 5.11,
-        "ratioOnBrightest": 4.5
+        "ratioOnDarkest": 8.44,
+        "ratioOnBrightest": 7.6
       },
       {
         "label": "inspector · surface heading",
         "sel": ".site-header h2",
-        "fontSize": "22.4px",
+        "fontSize": "13.12px",
         "fontWeight": "700",
         "glyphBoxes": 1,
-        "sampledPx": 4675,
+        "sampledPx": 1722,
         "textColor": "oklch(0.99 0.004 190)",
         "textRgb": [
           249,
@@ -551,36 +631,10 @@
         "brightestBg": [
           7,
           11,
-          14
-        ],
-        "ratioOnDarkest": 19.27,
-        "ratioOnBrightest": 19.27
-      },
-      {
-        "label": "inspector · record body",
-        "sel": ".site-description",
-        "fontSize": "14.08px",
-        "fontWeight": "400",
-        "glyphBoxes": 2,
-        "sampledPx": 8535,
-        "textColor": "oklch(0.72 0.018 210)",
-        "textRgb": [
-          152,
-          168,
-          171
-        ],
-        "darkestBg": [
-          7,
-          11,
-          14
-        ],
-        "brightestBg": [
-          7,
-          11,
           15
         ],
-        "ratioOnDarkest": 8.02,
-        "ratioOnBrightest": 8.01
+        "ratioOnDarkest": 19.27,
+        "ratioOnBrightest": 19.26
       },
       {
         "label": "dock · standing instruction",
@@ -687,12 +741,38 @@
         "ratioOnBrightest": 5.04
       },
       {
-        "label": "inspector · site cost line",
-        "sel": ".site-cost-note",
-        "fontSize": "11.2px",
+        "label": "summon pill · purpose line",
+        "sel": ".casefile-summon-why",
+        "fontSize": "10.24px",
+        "fontWeight": "400",
+        "glyphBoxes": 3,
+        "sampledPx": 2600,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          1,
+          2,
+          4
+        ],
+        "brightestBg": [
+          2,
+          4,
+          6
+        ],
+        "ratioOnDarkest": 5.08,
+        "ratioOnBrightest": 5.02
+      },
+      {
+        "label": "spine · status stamp",
+        "sel": ".site-inspector--spine .site-state",
+        "fontSize": "10.24px",
         "fontWeight": "650",
-        "glyphBoxes": 2,
-        "sampledPx": 4730,
+        "glyphBoxes": 1,
+        "sampledPx": 260,
         "textColor": "oklch(0.59 0.018 215)",
         "textRgb": [
           114,
@@ -713,30 +793,30 @@
         "ratioOnBrightest": 4.81
       },
       {
-        "label": "summon pill · purpose line",
-        "sel": ".casefile-summon-why",
+        "label": "spine · summon to the full text",
+        "sel": ".site-spine-summon",
         "fontSize": "10.24px",
-        "fontWeight": "400",
-        "glyphBoxes": 3,
-        "sampledPx": 2600,
-        "textColor": "oklch(0.59 0.018 215)",
+        "fontWeight": "750",
+        "glyphBoxes": 1,
+        "sampledPx": 1030,
+        "textColor": "oklch(0.72 0.018 210)",
         "textRgb": [
-          114,
-          128,
-          132
+          152,
+          168,
+          171
         ],
         "darkestBg": [
-          1,
           2,
-          4
+          3,
+          6
         ],
         "brightestBg": [
-          1,
+          2,
           3,
-          5
+          6
         ],
-        "ratioOnDarkest": 5.08,
-        "ratioOnBrightest": 5.05
+        "ratioOnDarkest": 8.37,
+        "ratioOnBrightest": 8.37
       }
     ],
     "zones-care-ward@1280": [
@@ -759,20 +839,20 @@
           0
         ],
         "brightestBg": [
-          1,
-          1,
-          1
+          5,
+          8,
+          10
         ],
         "ratioOnDarkest": 8.52,
-        "ratioOnBrightest": 8.47
+        "ratioOnBrightest": 8.15
       },
       {
         "label": "inspector · surface heading",
         "sel": ".site-header h2",
-        "fontSize": "22.4px",
+        "fontSize": "13.12px",
         "fontWeight": "700",
         "glyphBoxes": 1,
-        "sampledPx": 3200,
+        "sampledPx": 1176,
         "textColor": "oklch(0.99 0.004 190)",
         "textRgb": [
           249,
@@ -791,32 +871,6 @@
         ],
         "ratioOnDarkest": 19.27,
         "ratioOnBrightest": 19.27
-      },
-      {
-        "label": "inspector · record body",
-        "sel": ".site-description",
-        "fontSize": "14.08px",
-        "fontWeight": "400",
-        "glyphBoxes": 2,
-        "sampledPx": 7050,
-        "textColor": "oklch(0.72 0.018 210)",
-        "textRgb": [
-          152,
-          168,
-          171
-        ],
-        "darkestBg": [
-          7,
-          11,
-          14
-        ],
-        "brightestBg": [
-          7,
-          11,
-          15
-        ],
-        "ratioOnDarkest": 8.02,
-        "ratioOnBrightest": 8.01
       },
       {
         "label": "dock · standing instruction",
@@ -936,17 +990,43 @@
           132
         ],
         "darkestBg": [
-          3,
           4,
-          7
+          5,
+          8
         ],
         "brightestBg": [
-          9,
-          10,
-          13
+          15,
+          16,
+          18
         ],
-        "ratioOnDarkest": 5.01,
-        "ratioOnBrightest": 4.84
+        "ratioOnDarkest": 4.98,
+        "ratioOnBrightest": 4.66
+      },
+      {
+        "label": "spine · status stamp",
+        "sel": ".site-inspector--spine .site-state",
+        "fontSize": "10.24px",
+        "fontWeight": "650",
+        "glyphBoxes": 1,
+        "sampledPx": 260,
+        "textColor": "oklch(0.59 0.018 215)",
+        "textRgb": [
+          114,
+          128,
+          132
+        ],
+        "darkestBg": [
+          7,
+          11,
+          15
+        ],
+        "brightestBg": [
+          7,
+          11,
+          15
+        ],
+        "ratioOnDarkest": 4.83,
+        "ratioOnBrightest": 4.83
       }
     ],
     "beat-listen-staging@1280": {
@@ -2235,11 +2315,11 @@
         "fontWeight": "600",
         "glyphBoxes": 3,
         "sampledPx": 6950,
-        "textColor": "oklch(0.59 0.018 215)",
+        "textColor": "oklch(0.72 0.018 210)",
         "textRgb": [
-          114,
-          128,
-          132
+          152,
+          168,
+          171
         ],
         "darkestBg": [
           6,
@@ -2251,8 +2331,8 @@
           17,
           21
         ],
-        "ratioOnDarkest": 5,
-        "ratioOnBrightest": 4.66
+        "ratioOnDarkest": 8.3,
+        "ratioOnBrightest": 7.73
       },
       {
         "label": "inspector · surface heading",
@@ -2393,11 +2473,11 @@
         "fontWeight": "600",
         "glyphBoxes": 3,
         "sampledPx": 9110,
-        "textColor": "oklch(0.59 0.018 215)",
+        "textColor": "oklch(0.72 0.018 210)",
         "textRgb": [
-          114,
-          128,
-          132
+          152,
+          168,
+          171
         ],
         "darkestBg": [
           1,
@@ -2409,8 +2489,8 @@
           13,
           9
         ],
-        "ratioOnDarkest": 5.06,
-        "ratioOnBrightest": 4.72
+        "ratioOnDarkest": 8.39,
+        "ratioOnBrightest": 7.83
       },
       {
         "label": "inspector · surface heading",

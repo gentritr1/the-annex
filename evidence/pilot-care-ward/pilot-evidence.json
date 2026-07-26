@@ -1,6 +1,6 @@
 {
   "url": "http://127.0.0.1:3000/",
-  "capturedAt": "2026-07-25T16:29:44.204Z",
+  "capturedAt": "2026-07-26T21:26:27.296Z",
   "checks": [
     {
       "step": "[1280x800] care ward close read settles fully inside the fold",
@@ -48,14 +48,14 @@
         {
           "edge": "start",
           "treatment": "listen",
-          "x": 92.21875,
-          "y": 396.125
+          "x": 284.796875,
+          "y": 419.15625
         },
         {
           "edge": "end",
           "treatment": "pressure",
-          "x": 470.609375,
-          "y": 388.375
+          "x": 922.796875,
+          "y": 406.109375
         }
       ]
     },
@@ -124,10 +124,7 @@
         "filedCardInInspector": true,
         "zonesGone": 0,
         "beatMounted": false,
-        "railEvents": [
-          "2 events",
-          "2 events"
-        ]
+        "railEvents": []
       }
     },
     {
@@ -181,7 +178,7 @@
         "beatGone": true,
         "resultGone": true,
         "filedCard": true,
-        "focus": "site-record site-inspector site-record-complete",
+        "focus": "site-record site-inspector  site-record-complete",
         "plateTreatment": "listen",
         "footerCta": "Open memory lattice →"
       }
@@ -258,14 +255,14 @@
         {
           "edge": "start",
           "treatment": "listen",
-          "x": 33.890625,
-          "y": 424.796875
+          "x": 43.4921875,
+          "y": 338.078125
         },
         {
           "edge": "end",
           "treatment": "pressure",
-          "x": 346.78125,
-          "y": 418.40625
+          "x": 336.8203125,
+          "y": 332.078125
         }
       ]
     },
@@ -334,10 +331,7 @@
         "filedCardInInspector": true,
         "zonesGone": 0,
         "beatMounted": false,
-        "railEvents": [
-          "2 events",
-          "2 events"
-        ]
+        "railEvents": []
       }
     },
     {
@@ -391,7 +385,7 @@
         "beatGone": true,
         "resultGone": true,
         "filedCard": true,
-        "focus": "site-record site-inspector site-record-complete",
+        "focus": "site-record site-inspector  site-record-complete",
         "plateTreatment": "listen",
         "footerCta": "Open memory lattice →"
       }
@@ -508,10 +502,14 @@
       "detail": {
         "custodyRoom": true,
         "carrierControls": 3,
-        "inspectorControls": 0,
+        "inspectorControls": 1,
         "decorativeZones": 2,
         "sceneFirstLayer": false,
-        "detailSummon": false,
+        "detailSummon": true,
+        "summonsOnPlate": 0,
+        "summonsTotal": 1,
+        "summonInSpine": true,
+        "spinePresent": true,
         "previewTreatment": null,
         "plateDepth": true
       }
@@ -536,7 +534,7 @@
         "beatGone": true,
         "resultGone": true,
         "sitesFiled": "1 / 2sitesNeededmodel",
-        "railEvidence": "Case file1 evidence · 2 events+ | case | Evidence 1 | log",
+        "railEvidence": "",
         "filedRecordVisible": true
       }
     },
@@ -545,23 +543,17 @@
       "pass": true,
       "detail": {
         "careFiled": true,
-        "railEvidence": "Case file1 evidence · 2 events+ | case | Evidence 1 | log",
+        "railEvidence": "",
         "filedRecordVisible": true,
         "sitesFiled": "1 / 2sitesNeededmodel",
         "beatGone": true
       }
     },
     {
-      "step": "[1280x800 case-81] Case 81 opens on the ordinary inspector path",
-      "pass": true,
+      "step": "[1280x800 case-81] case 81 live flow",
+      "pass": false,
       "detail": {
-        "caseLabel": "AThe AnnexCMA–81–C",
-        "title": "Case 81 · investigation",
-        "inspectorMethodButtons": 2,
-        "sceneFirstLayer": false,
-        "detailSummon": false,
-        "previewTreatment": null,
-        "decorativeZones": 0
+        "skipped": "no seed save supplied; case 81 is gated behind a completed case-77 verdict"
       }
     },
     {
@@ -682,7 +674,7 @@
       "pass": true,
       "detail": {
         "tag": "SECTION",
-        "cls": "site-record site-inspector site-record-complete",
+        "cls": "site-record site-inspector  site-record-complete",
         "label": "BLocation in viewCare ward 12Filed77-A is awake, articulate, and aware"
       }
     }
@@ -720,8 +712,7 @@
     "/Users/gentlegen/Desktop/the-annex-mvp/evidence/pilot-care-ward/15-non-pilot-registry-1280x800.png",
     "/Users/gentlegen/Desktop/the-annex-mvp/evidence/pilot-care-ward/16-non-pilot-registry-advanced-1280x800.png",
     "/Users/gentlegen/Desktop/the-annex-mvp/evidence/pilot-care-ward/18-resume-mid-beat-1280x800.png",
-    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/pilot-care-ward/19-resume-after-beat-1280x800.png",
-    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/pilot-care-ward/17-case-81-1280x800.png"
+    "/Users/gentlegen/Desktop/the-annex-mvp/evidence/pilot-care-ward/19-resume-after-beat-1280x800.png"
   ],
   "ambient": {
     "rest": {
@@ -902,10 +893,10 @@
     {
       "step": "Enter (close the record)",
       "tag": "SECTION",
-      "cls": "site-record site-inspector site-record-complete",
+      "cls": "site-record site-inspector  site-record-complete",
       "label": "BLocation in viewCare ward 12Filed77-A is awake, articulate, and aware"
     }
   ],
-  "passed": 53,
-  "failed": 0
+  "passed": 52,
+  "failed": 1
 }

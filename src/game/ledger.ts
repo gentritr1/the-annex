@@ -7,7 +7,7 @@ import {
   type RecordEntry,
   type RecordVoiceGroup,
 } from './recordIndex'
-import type { GameEvent, GameState } from './types'
+import type { GameEvent, GameState, SiteId } from './types'
 
 // ══ THE LEDGER — the record read forwards, with the clerk's summary at its front
 //
@@ -340,4 +340,35 @@ export function buildLedger(state: GameState): Ledger {
   const carriedIn = index.filter((entry) => !claimed.has(entry.id))
 
   return { findings: buildFindings(state), carriedIn, moments, contradictions }
+}
+
+/**
+ * The join round 2 left owed (`docs/wave2-round2-report.md` §8.3): a LOCATION to
+ * the moment that closed it. Moments are keyed by event, and `entriesForEvent`
+ * was the only join available — so nothing could ask "where does this site's
+ * record live on the ledger?" without walking the whole book by hand.
+ *
+ * Resolves through the same precedent seam the engine commits through, so a
+ * precedent-overridden action is still attributed to its own location. Returns
+ * `undefined` for a location the run has not filed: by contract the ledger holds
+ * only what the run has put on the record, and an unfiled location has put
+ * nothing. Pass an already-built `ledger` to avoid rebuilding it per call.
+ */
+export function momentForSite(
+  state: GameState,
+  siteId: SiteId,
+  ledger: Ledger = buildLedger(state),
+): LedgerMoment | undefined {
+  const content = getCaseContent(state.caseId)
+  const filedHere = new Set(
+    state.completedActions.filter(
+      (actionId) => resolveFieldAction(content, actionId, state.precedents)?.siteId === siteId,
+    ),
+  )
+  if (filedHere.size === 0) return undefined
+  const event = [...state.events]
+    .sort((a, b) => a.order - b.order)
+    .find((item) => item.sourceType === 'field-action' && filedHere.has(item.sourceId))
+  if (!event) return undefined
+  return ledger.moments.find((moment) => moment.order === event.order)
 }

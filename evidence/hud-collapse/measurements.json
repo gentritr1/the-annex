@@ -1,6 +1,6 @@
 {
   "url": "http://127.0.0.1:3000/",
-  "capturedAt": "2026-07-26T20:28:30.250Z",
+  "capturedAt": "2026-07-26T21:18:42.932Z",
   "node": "v24.18.0",
   "checks": [
     {
@@ -1015,8 +1015,8 @@
             "w": 166,
             "h": 89,
             "top": 158,
-            "left": 581,
-            "right": 746
+            "left": 851,
+            "right": 1017
           },
           "hitsIntended": true,
           "hitClass": "casefile-summon-why"
@@ -1026,10 +1026,10 @@
           "present": true,
           "box": {
             "w": 135,
-            "h": 40,
+            "h": 44,
             "top": 158,
-            "left": 754,
-            "right": 889
+            "left": 1025,
+            "right": 1160
           },
           "hitsIntended": true,
           "hitClass": "scene-detail-summon"
@@ -1214,7 +1214,7 @@
           "present": true,
           "box": {
             "w": 124,
-            "h": 40,
+            "h": 44,
             "top": 232,
             "left": 242,
             "right": 365
@@ -1519,11 +1519,11 @@
       "pass": true,
       "detail": {
         "plate": {
-          "w": 889,
+          "w": 1160,
           "h": 476
         },
         "console": {
-          "w": 889,
+          "w": 1160,
           "h": 190
         },
         "sceneAbovePx": 286,
@@ -1537,16 +1537,16 @@
       "pass": true,
       "detail": {
         "plate": {
-          "w": 889,
+          "w": 1160,
           "h": 476
         },
         "console": {
-          "w": 889,
-          "h": 249
+          "w": 1160,
+          "h": 234
         },
-        "sceneAbovePx": 227,
+        "sceneAbovePx": 242,
         "maxHeight": "76%",
-        "naturalHeight": 248,
+        "naturalHeight": 233,
         "scrolls": false
       }
     },
@@ -1555,11 +1555,11 @@
       "pass": true,
       "detail": {
         "plate": {
-          "w": 889,
+          "w": 1160,
           "h": 476
         },
         "console": {
-          "w": 889,
+          "w": 1160,
           "h": 220
         },
         "sceneAbovePx": 256,
@@ -2139,8 +2139,8 @@
             "w": 166,
             "h": 89,
             "top": 158,
-            "left": 581,
-            "right": 746
+            "left": 851,
+            "right": 1017
           },
           "hitsIntended": true,
           "hitClass": "casefile-summon-why"
@@ -2150,10 +2150,10 @@
           "present": true,
           "box": {
             "w": 135,
-            "h": 40,
+            "h": 44,
             "top": 158,
-            "left": 754,
-            "right": 889
+            "left": 1025,
+            "right": 1160
           },
           "hitsIntended": true,
           "hitClass": "scene-detail-summon"
@@ -2251,7 +2251,7 @@
           "present": true,
           "box": {
             "w": 124,
-            "h": 40,
+            "h": 44,
             "top": 232,
             "left": 242,
             "right": 365
@@ -2414,11 +2414,11 @@
     "consoleProportions": {
       "Registry intake": {
         "plate": {
-          "w": 889,
+          "w": 1160,
           "h": 476
         },
         "console": {
-          "w": 889,
+          "w": 1160,
           "h": 190
         },
         "sceneAbovePx": 286,
@@ -2428,25 +2428,25 @@
       },
       "Maintenance spine": {
         "plate": {
-          "w": 889,
+          "w": 1160,
           "h": 476
         },
         "console": {
-          "w": 889,
-          "h": 249
+          "w": 1160,
+          "h": 234
         },
-        "sceneAbovePx": 227,
+        "sceneAbovePx": 242,
         "maxHeight": "76%",
-        "naturalHeight": 248,
+        "naturalHeight": 233,
         "scrolls": false
       },
       "The Small Archive": {
         "plate": {
-          "w": 889,
+          "w": 1160,
           "h": 476
         },
         "console": {
-          "w": 889,
+          "w": 1160,
           "h": 220
         },
         "sceneAbovePx": 256,

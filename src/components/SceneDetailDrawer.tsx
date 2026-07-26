@@ -20,6 +20,12 @@ interface SceneDetailDrawerProps {
   // from the same state the inspector's filed card reads.
   evidenceTitle?: string
   eventTitle?: string
+  // The one standing line the inspector prints for this phase, handed here while
+  // the inspector is collapsed to its spine (E1b). It is RELOCATED, never
+  // duplicated: the caller passes it only when the inspector is not printing it,
+  // so exactly one instance exists on screen at any moment. Undefined in every
+  // other state, which is every state the inspector is expanded in.
+  standingNote?: string
   settings: AccessibilitySettings
   onClose: () => void
 }
@@ -36,6 +42,7 @@ export function SceneDetailDrawer({
   completedAction,
   evidenceTitle,
   eventTitle,
+  standingNote,
   settings,
   onClose,
 }: SceneDetailDrawerProps) {
@@ -151,6 +158,10 @@ export function SceneDetailDrawer({
               </div>
               <ReactionQuotes reactions={completedAction.reactions} />
             </section>
+          ) : null}
+
+          {standingNote ? (
+            <p className="scene-detail-standing-note">{standingNote}</p>
           ) : null}
 
           <section className="scene-detail-methods" aria-label="Methods at this location">
