@@ -330,7 +330,10 @@ export function CaseRail({ state, queryTrail, onQuery }: CaseRailProps) {
                   <li key={entry.id}>
                     <h3 className="ledger-filing-title">{entry.title}</h3>
                     <p className="ledger-filing-body">{entry.body}</p>
-                    <p className="ledger-filing-cite">{entry.cite}</p>
+                    {/* SEAL PRESSURE (E6b). Everything in this block is a prior
+                        ruling carried in from another case, so every citation in
+                        it is a precedent citation — the impressed register. */}
+                    <p className="ledger-filing-cite ledger-seal">{entry.cite}</p>
                   </li>
                 ))}
               </ul>
@@ -353,7 +356,19 @@ export function CaseRail({ state, queryTrail, onQuery }: CaseRailProps) {
                         <li key={entry.id} data-filing={entry.kind}>
                           <p className="rail-label">{ledgerFilingLabels[entry.kind]}</p>
                           <h4 className="ledger-filing-title">{entry.title}</h4>
-                          <p className="ledger-filing-cite">{entry.cite}</p>
+                          {/* Only a precedent gets the seal. A filed exhibit or
+                              a closed location is the run's OWN paper; a carried
+                              ruling is the one line on this panel that arrives
+                              already stamped by another tribunal. */}
+                          <p
+                            className={
+                              entry.kind === 'precedent'
+                                ? 'ledger-filing-cite ledger-seal'
+                                : 'ledger-filing-cite'
+                            }
+                          >
+                            {entry.cite}
+                          </p>
                         </li>
                       ))}
                     </ul>
@@ -366,7 +381,16 @@ export function CaseRail({ state, queryTrail, onQuery }: CaseRailProps) {
                       without the other. Both halves are the authored strings. */}
                   {moment.contradictions.map((pair) => (
                     <div className="ledger-pair" key={pair.id}>
-                      <p className="ledger-pair-half">
+                      {/* E6b · TWO HANDS ON ONE PAGE. The claim is the
+                          registrar's entry — upright, fuller ink. The half that
+                          argues with it is the correction hand: an interrupted
+                          rule instead of a solid one, and the proofreader's mark
+                          on its own label. Both carriers are FORM, so the pair
+                          still reads as two hands in greyscale, in forced
+                          colours, and to a reader who cannot separate coral from
+                          grey — and both flatten under Easy Read, where the two
+                          authored words are all that distinguishes them. */}
+                      <p className="ledger-pair-half ledger-pair-claim">
                         <span className="rail-label">The claim</span>
                         {pair.claim}
                       </p>
@@ -374,7 +398,9 @@ export function CaseRail({ state, queryTrail, onQuery }: CaseRailProps) {
                         <span className="rail-label">Against it</span>
                         {pair.contradiction}
                       </p>
-                      <p className="ledger-filing-cite">{pair.cite}</p>
+                      {/* Tribunal-adjacent: this citation is what the tribunal
+                          weighs the pair by. Impressed, like a precedent. */}
+                      <p className="ledger-filing-cite ledger-seal">{pair.cite}</p>
                     </div>
                   ))}
 
@@ -417,8 +443,21 @@ export function CaseRail({ state, queryTrail, onQuery }: CaseRailProps) {
             </div>
           ) : (
             <ul className="evidence-list">
+              {/* E6b · DOCUMENT SEMANTICS. `data-status` carries the authored
+                  EvidenceStatus onto the row so the claim can be SET in the hand
+                  its status implies — a registrar's full ink for verified, a
+                  second-ink margin rule for disputed, an interrupted rule for
+                  anomaly, a quotation bracket for testimony. The chip above it
+                  still says the word, and the styling is purely additive: under
+                  Easy Read every treatment returns to the plain register and the
+                  word is all that is left, which is the redundancy contract the
+                  research names (`ui-patterns-deep-research.md:63`).
+
+                  The attribute is on the LI rather than a class on the P because
+                  the same status has to reach two children — the claim and the
+                  contradiction — without either of them re-deriving it. */}
               {evidence.map((item) => (
-                <li key={item.id}>
+                <li key={item.id} data-status={item.status}>
                   <div className="evidence-heading">
                     <span className={`evidence-status evidence-${item.status}`}>
                       {statusLabels[item.status]}
@@ -426,10 +465,13 @@ export function CaseRail({ state, queryTrail, onQuery }: CaseRailProps) {
                     <span className="evidence-source">{item.source}</span>
                   </div>
                   <h2>{item.title}</h2>
-                  <p>{item.claim}</p>
+                  <p className="evidence-claim">{item.claim}</p>
                   <details>
                     <summary>Show contradiction</summary>
-                    <p>{item.contradiction}</p>
+                    {/* The second hand, on the exhibit sheet. Same correction
+                        register as the ledger's AGAINST IT half, so one reader
+                        learns one mark and not two. */}
+                    <p className="evidence-contradiction">{item.contradiction}</p>
                   </details>
                 </li>
               ))}

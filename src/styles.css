@@ -12640,3 +12640,223 @@ p {
     height: var(--plate-zone-ring-size, 62px);
   }
 }
+
+/* ══ E6b · DOCUMENT SEMANTICS — the ink vocabulary ════════════════════════════
+   Pentiment's move, scoped to RECORD MODE and nowhere else: the way a line is
+   SET carries evidentiary meaning, so a status is inferred from the page before
+   the label confirms it. The research's own caveat is the design constraint —
+   stylized text without an escape hatch is the fourth failure mode
+   (`docs/research/ui-patterns-deep-research.md:63`), so Easy Read (shipped in
+   Wave 1, deliberately BEFORE this) flattens every rule below to the exact
+   register the surface had before this round, and the block at the end of this
+   file is the proof obligation that says so.
+
+   FOUR RULES THIS FAMILY OBEYS, and the reason for each:
+
+   1 · MEANING IS NEVER ONLY IN THE STYLING. Every treated element still carries
+       its authored word — the status chip over the claim, `The claim` / `Against
+       it` over the pair. Strip every declaration here and the surface still
+       says what it means. The styling confirms an inference; it is not the
+       inference (the third failure mode, `:61`).
+
+   2 · FORM BEFORE HUE. Each treatment is separated from its neighbours by a
+       BORDER STYLE (none / solid / dashed / double) and by ink weight, not by
+       colour. Two readers who cannot tell coral from amber still read four
+       different hands, and the forced-colors block below drops the hue entirely
+       without losing a single distinction.
+
+   3 · NO NEW FONT, NO NEW SIZE, NO NEW MOTION. Every rule is weight, indent,
+       rule-style or decoration on the system stacks already in use; no `--type-*`
+       token is read differently and none is retuned; nothing here animates,
+       because ink is static and the surface is summoned (everything it reports
+       has already happened).
+
+   4 · INK, NOT COSTUME. Each status treatment is at most TWO declarations past
+       the base. A treatment a reader has to decode is a costume; a treatment
+       that reads as how the clerk happened to write that line is ink.
+
+   Placed at the END of the sheet on purpose (the recorded R5 cascade hazard): a
+   rule dropped into a re-authored container can lose to source order, and every
+   selector below has to beat a base rule declared thousands of lines above it.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1 · THE EVIDENCE-STATUS HANDS ────────────────────────────────────────────
+   Four statuses, four hands, on the one surface that prints an exhibit's claim
+   in full. `[data-status]` sits on the row (CaseRail.tsx) so the same authored
+   value reaches the claim and the contradiction without either re-deriving it.
+
+   VERIFIED — the registrar's steady hand. Nothing marks it, because nothing
+   qualifies it: it is written up to full ink and left alone. Note this is the
+   one treatment that IMPROVES the row's contrast (--fog → --record); the other
+   three keep the base colour and are marked in the margin instead. */
+.evidence-list > li[data-status='verified'] > .evidence-claim {
+  color: var(--record);
+  font-weight: 500;
+}
+
+/* DISPUTED — the second-ink margin correction. A solid rule in the annotation
+   ink hangs in the gutter beside the claim: another hand has been here, and it
+   finished its stroke. */
+.evidence-list > li[data-status='disputed'] > .evidence-claim {
+  padding-left: 10px;
+  border-left: 2px solid var(--amber);
+}
+
+/* ANOMALY — the interrupted rule. The same gutter mark, broken: the record does
+   not run continuously through this line. (The brief offered a baseline waver as
+   the alternative; a waver on multi-line prose is a legibility cost paid by
+   every reader to signal one status, which is the exact trade Easy Read exists
+   to undo — so the interruption is carried by the rule, not by the baseline.) */
+.evidence-list > li[data-status='anomaly'] > .evidence-claim {
+  padding-left: 10px;
+  border-left: 2px dashed var(--coral);
+}
+
+/* TESTIMONY — a deposition excerpt, quoted. Indent plus the doubled rule that a
+   bound transcript prints beside speech: not the record's own assertion, but
+   something the record is repeating. */
+.evidence-list > li[data-status='testimony'] > .evidence-claim {
+  padding-left: 12px;
+  border-left: 3px double var(--line-strong);
+}
+
+/* ── 2 · THE CORRECTION HAND ──────────────────────────────────────────────────
+   One mark, learned once, used on both surfaces that print a contradiction: the
+   ledger's AGAINST IT half and the exhibit sheet's revealed contradiction. The
+   interrupted rule is the second hand's stroke — hurried, written after the
+   fact, in the margin of an entry that was already closed. */
+.ledger-pair-against {
+  border-left-style: dashed;
+}
+
+/* The proofreader's mark itself, on the two words that name the half. Kept to
+   the LABEL and off the prose: a wavy decoration under a running sentence is
+   noise every reader pays for, under two words it is a correction mark. */
+.ledger-pair-against .rail-label {
+  text-decoration: underline wavy var(--coral);
+  text-underline-offset: 4px;
+}
+
+/* The first hand, so the pair reads as two. The claim is the registrar's own
+   entry on the record's own rule — upright, one step fuller in ink than the
+   correction beside it. */
+.ledger-pair-claim {
+  font-weight: 500;
+}
+
+/* The exhibit sheet's contradiction block, in the same correction register. */
+.evidence-list > li[data-status] .evidence-contradiction {
+  border-left: 2px dashed var(--coral);
+}
+
+/* ── 3 · SEAL PRESSURE ────────────────────────────────────────────────────────
+   The citations a tribunal weighs rather than reads: a precedent carried in from
+   another case, and the citation under a contradiction pair. Both are already
+   the shipped mono caption; the seal adds the IMPRESSION — a pressed rectangle
+   around the line, the way a stamp leaves an edge.
+
+   It is authored as an inked box rather than as a letterpress text-shadow on
+   purpose, and the audit is the reason: a translucent bevel over a dark panel is
+   exactly the "translucent cleverness that fails under real play conditions"
+   the dark-mode failure mode names (`:65`). The pressure is carried by the
+   border and by MORE ink, not less — the line steps --fog-dim → --fog, so the
+   seal raises the row's contrast rather than spending it. */
+.ledger-seal {
+  display: inline-block;
+  padding: 3px 8px;
+  color: var(--fog);
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+}
+
+/* ── 4 · EASY READ FLATTENS ALL OF IT ─────────────────────────────────────────
+   THE REDUNDANCY CONTRACT. Every declaration above is undone here, back to the
+   value the element computed BEFORE this round — not to a value that merely
+   looks plain. That distinction is the whole gate: `scripts/evidence-document-
+   semantics.mjs --baseline` was run at the pre-round commit and its capture is
+   committed as `evidence/document-semantics/baseline-computed.json`; the same
+   script re-run afterwards asserts property-for-property equality against it,
+   and asserts separately that the PLAIN build moved (an equality that holds
+   because the treatment never applied proves nothing).
+
+   Two of these resets look redundant and are not. `color` has to be restated
+   because `.easy-read .rail-panel p` already promotes these lines to --record
+   and a treatment that set --record would otherwise be indistinguishable from
+   the flattening; `display` has to be restated because the seal makes a <p>
+   inline-block and only an explicit `block` puts it back. */
+.easy-read .evidence-list > li[data-status] > .evidence-claim {
+  padding-left: 0;
+  color: var(--record);
+  border-left: 0;
+  font-weight: 400;
+}
+
+.easy-read .evidence-list > li[data-status] .evidence-contradiction {
+  border-left: 0;
+}
+
+.easy-read .ledger-pair-claim {
+  font-weight: 400;
+}
+
+.easy-read .ledger-pair-against {
+  border-left-style: solid;
+}
+
+/* `text-underline-offset` is NOT part of the `text-decoration` shorthand, so
+   `text-decoration: none` leaves the 4px offset behind. Measured, not reasoned:
+   the baseline computes `auto`, and without the second line the equality gate
+   reports this element as the one thing Easy Read failed to flatten. */
+.easy-read .ledger-pair-against .rail-label {
+  text-decoration: none;
+  text-underline-offset: auto;
+}
+
+.easy-read .ledger-seal {
+  display: block;
+  padding: 0;
+  border: 0;
+}
+
+/* ── 5 · HIGH CONTRAST — form survives, hue does not ──────────────────────────
+   The brief's constraint, stated as a rule rather than a hope: the correction
+   hand must be distinguishable by MORE than hue. So high contrast keeps every
+   formal carrier — the border-styles stay none / solid / dashed / double, the
+   weights stay 500 vs 400, the indents stay — and every accent is replaced by
+   the neutral rule colour the mode already brightens. Four hands, no chroma.
+
+   Recorded while measuring this, NOT fixed here: the token overrides at the top
+   of this sheet are bound to `.annex-app`, `.deposition-portal` and
+   `.scene-detail-portal` — `.casefile-portal` is absent, so high contrast never
+   re-tokenises the case-file drawer at all. That is a pre-existing gap wider
+   than this item (it moves every colour on four panels and every row of the
+   contrast probe), and it is written up in docs/wave2-round4-report.md rather
+   than folded silently into a typography change. */
+.high-contrast .evidence-list > li[data-status='disputed'] > .evidence-claim,
+.high-contrast .evidence-list > li[data-status='anomaly'] > .evidence-claim,
+.high-contrast .evidence-list > li[data-status] .evidence-contradiction,
+.high-contrast .ledger-pair-against {
+  border-left-color: var(--line-strong);
+}
+
+.high-contrast .ledger-pair-against .rail-label {
+  text-decoration-color: currentColor;
+}
+
+/* ── 6 · FORCED COLORS — the system palette owns the page ─────────────────────
+   Borders and decorations are forced to the system's own ink; stating it keeps
+   the treatments from arriving at a Windows high-contrast theme still asking for
+   coral. The border STYLES are untouched, which is the point: every distinction
+   above survives a palette the page does not control. */
+@media (forced-colors: active) {
+  .evidence-list > li[data-status] > .evidence-claim,
+  .evidence-list > li[data-status] .evidence-contradiction,
+  .ledger-pair-against,
+  .ledger-seal {
+    border-color: currentColor;
+  }
+
+  .ledger-pair-against .rail-label {
+    text-decoration-color: currentColor;
+  }
+}

@@ -161,6 +161,40 @@ async function boot() {
   await waitFor(`!!document.querySelector('.site-switcher')`)
   await sleep(500)
 }
+// E6b. An authored Case 77 route admits ONE exhibit per closed location, so no
+// single filed run puts all four EvidenceStatus hands on one panel. The four
+// treatments are per-status CSS, and a probe that only ever sees the status the
+// walk happened to file would report the surface clean while three of its four
+// registers had never been sampled — the same blindness the round-2 ledger pass
+// found below the fold, in a new place.
+//
+// So the exhibit list is SEEDED and the seeding is disclosed: only `evidence` is
+// rewritten in the app's own save, to four real Case 77 exhibit ids (one per
+// status), and the run comes back through the app's own Continue path so
+// `decodeGameState` validates it. Every string and status on screen is authored
+// content; only the route to the state is seeded.
+const SEEDED_EXHIBIT_IDS = ['custody-chain', 'sensory-echo', 'contradictory-scar', 'sensor-omission']
+async function seedFourExhibitsAndResume() {
+  bootCounter += 1
+  const ok = await evaluate(`(() => {
+    try {
+      const raw = localStorage.getItem('the-annex.case-77.save.v1')
+      if (!raw) return false
+      const save = JSON.parse(raw)
+      save.evidence = ${JSON.stringify(SEEDED_EXHIBIT_IDS)}
+      localStorage.setItem('the-annex.case-77.save.v1', JSON.stringify(save))
+    } catch { return false }
+    window.__stale = true; return true })()`)
+  if (!ok) return false
+  await send('Page.navigate', { url: `${APP_URL}?boot=${bootCounter}` })
+  await waitFor(`window.__stale === undefined && document.readyState === 'complete'`)
+  if (!(await waitForText('button', 'Continue local case'))) return false
+  await click('button', 'Continue local case')
+  if (!(await waitFor(`!!document.querySelector('.site-switcher')`))) return false
+  await sleep(600)
+  return true
+}
+
 async function enterSite(name) {
   if (await evaluate(`!!document.querySelector('.world-return')`)) {
     await click('.world-return')
@@ -269,6 +303,23 @@ const TARGETS = JSON.stringify([
   ['.site-inspector--spine .site-state', 'spine · status stamp'],
   ['.site-spine-summon', 'spine · summon to the full text'],
   ['.scene-detail-standing-note', 'record mode · relocated standing line'],
+  // DOCUMENT SEMANTICS (E6b, Wave 2 round 4). ADDED targets, never a relaxed
+  // one. Each status hand is named SEPARATELY rather than measured through one
+  // `.evidence-claim` row: the four treatments are different declarations on
+  // different rows, one of them (verified) moves the row's own colour, and a
+  // single selector would have sampled whichever row happened to be first and
+  // reported the other three as measured when they never were. The seal is
+  // listed because it is the one treatment that CHANGES a citation's colour
+  // (--fog-dim → --fog) and puts a border around it, so the row it replaces is
+  // no longer the row the ledger block above measured.
+  [".evidence-list > li[data-status='verified'] > .evidence-claim", 'evidence · verified hand'],
+  [".evidence-list > li[data-status='disputed'] > .evidence-claim", 'evidence · disputed hand'],
+  [".evidence-list > li[data-status='anomaly'] > .evidence-claim", 'evidence · anomaly hand'],
+  [".evidence-list > li[data-status='testimony'] > .evidence-claim", 'evidence · testimony hand'],
+  ['.evidence-contradiction', 'evidence · correction block'],
+  ['.evidence-source', 'evidence · source citation'],
+  ['.ledger-seal', 'ledger · pressed seal'],
+  ['.ledger-pair-against', 'ledger · correction half'],
 ])
 
 const PREPARE = `(() => {
@@ -324,12 +375,55 @@ const PREPARE = `(() => {
     // a fixed 1.66:1 against --fog-dim, which is console text, not scene art.)
     // pointer-events is forced on for the hit test only: the caption sets it to
     // none, which would otherwise make elementFromPoint see straight through it.
+    //
+    // THE TEST IS PER-ROW, NOT PER-BOX-CENTRE, and that is a resolution fix
+    // rather than a relaxation. The centre-only version answered "is this line
+    // covered?" with one sample, so a line whose centre was clear but whose TOP
+    // ROWS sat under the sticky rail-tabs bar was sampled across the bar --
+    // including the active tab's amber underline. Measured, at 1920 on the two
+    // scrolled ledger surfaces: the ledger findings sentence reported bright bg
+    // [220, 147, 46] (= --amber) and 2.15 : 1 on the SAME glyph box that reads
+    // [4, 6, 7] and 17.13 : 1 at rest, three lines further down the same panel.
+    // The pixels above the bar's edge are the bar's, not the target's, and
+    // attributing them to the target is a fabricated failure of exactly the kind
+    // this file has twice been corrected for.
+    //
+    // QUALIFICATION IS UNCHANGED; ONLY THE SAMPLE NARROWS. The box still has to
+    // pass the ORIGINAL centre-point test to be measured at all, so no target
+    // that this probe used to reject is admitted by this edit and no target it
+    // used to choose is displaced. Once a box qualifies, the sampled band is
+    // clipped to the contiguous run of rows AROUND THAT CENTRE that still hit
+    // the target — the rows the occluder owns are simply not the target's
+    // pixels. A sample can therefore only shrink, never grow, and it can only
+    // shrink into pixels the centre test already declared readable.
+    //
+    // A first draft of this fix took the LONGEST clear run instead of the run
+    // containing the centre, and thereby let a box that was 90% covered qualify
+    // on a 2px sliver. That silently changed WHICH staged beat line the probe
+    // selected, and reported three brand-new failures (persona line 10.71 ->
+    // 3.42 : 1) that were an artifact of the new selection, not of the app.
+    // Recorded rather than deleted: an instrument edit that changes which
+    // element is measured is not a resolution fix, it is a different probe.
     const priorPE = el.style.pointerEvents
     el.style.pointerEvents = 'auto'
-    const visible = boxes.filter((b) => {
-      const hit = document.elementFromPoint(b.x + b.w / 2, b.y + b.h / 2)
-      return hit && (hit === el || el.contains(hit) || hit.contains(el))
-    })
+    const hitsTarget = (x, y) => {
+      const hit = document.elementFromPoint(x, y)
+      return !!hit && (hit === el || el.contains(hit) || hit.contains(el))
+    }
+    const visible = []
+    for (const b of boxes) {
+      const cx = b.x + b.w / 2
+      // The original test, verbatim: centre of the box.
+      if (!hitsTarget(cx, b.y + b.h / 2)) continue
+      const centreRow = Math.min(b.h - 1, Math.max(0, Math.floor(b.h / 2)))
+      let top = centreRow
+      while (top > 0 && hitsTarget(cx, b.y + top - 1 + 0.5)) top -= 1
+      let bottom = centreRow
+      while (bottom < b.h - 1 && hitsTarget(cx, b.y + bottom + 1 + 0.5)) bottom += 1
+      const h = bottom - top + 1
+      if (h < 2) continue
+      visible.push({ x: b.x, y: b.y + top, w: b.w, h })
+    }
     el.style.pointerEvents = priorPE
     if (!visible.length) continue
     boxes.length = 0
@@ -562,6 +656,44 @@ for (const [w, h] of [[1280, 800], [1920, 1080], [375, 812]]) {
     }
     await click('.casefile-close')
     await sleep(400)
+  }
+  // E6b. The evidence tab, carrying all four status hands and their correction
+  // blocks. Reached AFTER the ledger because it reloads the document (the seed
+  // goes through the app's own decoder); the lattice step below is unaffected,
+  // since a resumed run with one site filed and no model is exactly the state
+  // the lattice's purpose line exists for.
+  if (await seedFourExhibitsAndResume()) {
+    if (await click('.casefile-summon')) {
+      await sleep(700)
+      if (await click('#rail-tab-evidence')) {
+        await sleep(450)
+        // Every contradiction opened: a closed <details> is display:none, and a
+        // target with no glyph boxes reports as ABSENT rather than as measured.
+        await evaluate(`(() => {
+          for (const d of document.querySelectorAll('.rail-panel details')) d.open = true
+          return true })()`)
+        await sleep(320)
+        await probe('record-evidence', w, h)
+        // Four exhibits with their contradictions open are taller than the
+        // drawer at every width, so the last two hands are scrolled into the
+        // port and measured there — the round-2 below-the-fold scar, applied.
+        for (const [sel, name] of [
+          [".evidence-list > li[data-status='disputed']", 'record-evidence-disputed'],
+          [".evidence-list > li[data-status='anomaly']", 'record-evidence-anomaly'],
+        ]) {
+          const scrolled = await evaluate(`(() => {
+            const el = document.querySelector(${JSON.stringify(sel)})
+            if (!el) return false
+            el.scrollIntoView({ block: 'center' })
+            return true })()`)
+          if (!scrolled) continue
+          await sleep(400)
+          await probe(name, w, h)
+        }
+      }
+      await click('.casefile-close')
+      await sleep(400)
+    }
   }
   // W1-4. The lattice, reached the way a player reaches it — one site filed, no
   // model yet, which is exactly the state its purpose line exists for.
