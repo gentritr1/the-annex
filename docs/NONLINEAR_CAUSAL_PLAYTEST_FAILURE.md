@@ -10,7 +10,7 @@ The guarded browser pass stopped before committing refinement or evidence.
 
 ===== Install project dependencies =====
 
-added 250 packages, and audited 251 packages in 5s
+added 250 packages, and audited 251 packages in 4s
 
 64 packages are looking for funding
   run `npm fund` for details
@@ -27,6 +27,7 @@ Run `npm audit` for details.
 ===== Apply Care to Archive speculative-route refinement =====
 patched scripts/nonlinear-browser-playtest.ts
 patched scripts/nonlinear-browser-playtest.ts
+patched src/components/Investigation.tsx
 patched src/game/causal.ts
 patched src/game/causal.test.ts
 
@@ -44,32 +45,32 @@ patched src/game/causal.test.ts
 
 [1m[30m[46m RUN [49m[39m[22m [36mv4.1.10 [39m[90m/home/runner/work/the-annex/the-annex[39m
 
- [32m✓[39m src/game/persistence.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 36[2mms[22m[39m
- [32m✓[39m src/game/engine.test.ts [2m([22m[2m36 tests[22m[2m)[22m[32m 37[2mms[22m[39m
- [32m✓[39m src/game/content.test.ts [2m([22m[2m112 tests[22m[2m)[22m[32m 115[2mms[22m[39m
- [32m✓[39m src/ambience/audio.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 29[2mms[22m[39m
- [32m✓[39m src/game/room.test.ts [2m([22m[2m23 tests[22m[2m)[22m[32m 23[2mms[22m[39m
- [32m✓[39m src/game/ledger.test.ts [2m([22m[2m23 tests[22m[2m)[22m[32m 54[2mms[22m[39m
- [32m✓[39m src/game/recordIndex.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 52[2mms[22m[39m
- [32m✓[39m src/game/causal.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 29[2mms[22m[39m
- [32m✓[39m src/game/acousticShadow.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m src/game/persistence.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m src/game/engine.test.ts [2m([22m[2m36 tests[22m[2m)[22m[32m 46[2mms[22m[39m
+ [32m✓[39m src/game/content.test.ts [2m([22m[2m112 tests[22m[2m)[22m[32m 135[2mms[22m[39m
+ [32m✓[39m src/game/room.test.ts [2m([22m[2m23 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m src/game/ledger.test.ts [2m([22m[2m23 tests[22m[2m)[22m[32m 57[2mms[22m[39m
+ [32m✓[39m src/ambience/audio.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m src/game/recordIndex.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 63[2mms[22m[39m
+ [32m✓[39m src/game/causal.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m src/game/acousticShadow.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 20[2mms[22m[39m
  [32m✓[39m src/game/custodyRail.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 14[2mms[22m[39m
- [32m✓[39m src/game/siteRecordText.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 31[2mms[22m[39m
- [32m✓[39m src/game/sceneLabels.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m src/game/siteRecordText.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 24[2mms[22m[39m
  [32m✓[39m src/game/sceneState.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 9[2mms[22m[39m
- [32m✓[39m src/game/personaRecord.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 16[2mms[22m[39m
- [32m✓[39m src/game/beats.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 18[2mms[22m[39m
- [32m✓[39m src/components/SceneZone.commit.test.tsx [2m([22m[2m10 tests[22m[2m)[22m[32m 178[2mms[22m[39m
- [32m✓[39m src/components/PersonaPortrait.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 120[2mms[22m[39m
- [32m✓[39m src/game/fieldCta.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 10[2mms[22m[39m
- [32m✓[39m src/scene/previewTreatment.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 7[2mms[22m[39m
- [32m✓[39m src/game/persistence.roundtrip.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m src/game/sceneLabels.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/game/personaRecord.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m src/game/beats.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m src/components/SceneZone.commit.test.tsx [2m([22m[2m10 tests[22m[2m)[22m[32m 175[2mms[22m[39m
+ [32m✓[39m src/components/PersonaPortrait.test.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 83[2mms[22m[39m
+ [32m✓[39m src/game/fieldCta.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 11[2mms[22m[39m
  [32m✓[39m src/scene/rainPresence.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/scene/previewTreatment.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/game/persistence.roundtrip.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 9[2mms[22m[39m
 
 [2m Test Files [22m [1m[32m21 passed[39m[22m[90m (21)[39m
 [2m      Tests [22m [1m[32m365 passed[39m[22m[90m (365)[39m
-[2m   Start at [22m 17:00:43
-[2m   Duration [22m 4.13s[2m (transform 1.93s, setup 0ms, import 4.17s, tests 825ms, environment 3.33s)[22m
+[2m   Start at [22m 17:04:03
+[2m   Duration [22m 3.78s[2m (transform 1.58s, setup 0ms, import 3.47s, tests 783ms, environment 3.23s)[22m
 
 
 ===== Build production bundle =====
@@ -84,18 +85,18 @@ rendering chunks...
 computing gzip size...
 [2mdist/[22m[32mindex.html                           [39m[1m[2m  2.03 kB[22m[1m[22m[2m │ gzip:   0.78 kB[22m
 [2mdist/[22m[2massets/[22m[35mindex-jCWd5yDf.css            [39m[1m[2m198.35 kB[22m[1m[22m[2m │ gzip:  35.55 kB[22m
-[2mdist/[22m[2massets/[22m[36mindex-Bb865LXt.js             [39m[1m[33m529.99 kB[39m[22m[2m │ gzip: 157.06 kB[22m
-[2mdist/[22m[2massets/[22m[36mcreateAnnexWorld-DOO0DZnB.js  [39m[1m[33m533.05 kB[39m[22m[2m │ gzip: 136.57 kB[22m
+[2mdist/[22m[2massets/[22m[36mindex-C7NlYY7f.js             [39m[1m[33m529.99 kB[39m[22m[2m │ gzip: 157.06 kB[22m
+[2mdist/[22m[2massets/[22m[36mcreateAnnexWorld-0VcneRgn.js  [39m[1m[33m533.05 kB[39m[22m[2m │ gzip: 136.57 kB[22m
 [33m
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
-[32m✓ built in 2.97s[39m
+[32m✓ built in 2.62s[39m
 
 ===== Install browser harness =====
 
-added 3 packages, changed 27 packages, and audited 253 packages in 15s
+added 3 packages, changed 27 packages, and audited 253 packages in 27s
 
 64 packages are looking for funding
   run `npm fund` for details
@@ -111,13 +112,13 @@ Run `npm audit` for details.
 Installing dependencies...
 Switching to root user to install dependencies...
 Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
-Hit:3 https://packages.microsoft.com/repos/azure-cli noble InRelease
-Get:4 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+Hit:6 https://packages.microsoft.com/repos/azure-cli noble InRelease
+Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
 Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
-Get:5 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
-Get:6 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
 Get:8 https://dl.google.com/linux/chrome-stable/deb stable InRelease [2548 B]
-Get:7 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
 Get:9 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [226 kB]
 Get:10 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [261 kB]
 Get:11 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [11.7 kB]
@@ -131,22 +132,22 @@ Get:18 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Pac
 Get:19 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [308 kB]
 Get:20 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [45.4 kB]
 Get:21 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse Translation-en [12.3 kB]
-Get:23 https://dl.google.com/linux/chrome-stable/deb stable/main amd64 Packages [1412 B]
 Get:22 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [940 B]
-Get:24 http://azure.archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [5772 B]
-Get:25 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [32.5 kB]
-Get:26 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [12.6 kB]
-Get:27 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [897 kB]
-Get:28 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [198 kB]
-Get:29 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Components [46.4 kB]
-Get:30 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1199 kB]
-Get:31 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [239 kB]
-Get:32 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Components [76.3 kB]
-Get:33 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1273 kB]
-Get:34 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [290 kB]
-Get:35 http://azure.archive.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [40.3 kB]
-Get:36 http://azure.archive.ubuntu.com/ubuntu noble-security/multiverse Translation-en [10.6 kB]
-Fetched 11.0 MB in 1s (8007 kB/s)
+Get:23 http://azure.archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [5772 B]
+Get:24 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [32.5 kB]
+Get:25 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [12.6 kB]
+Get:26 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [897 kB]
+Get:27 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [198 kB]
+Get:28 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Components [46.4 kB]
+Get:29 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1199 kB]
+Get:30 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [239 kB]
+Get:31 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Components [76.3 kB]
+Get:32 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1273 kB]
+Get:33 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [290 kB]
+Get:34 http://azure.archive.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [40.3 kB]
+Get:35 http://azure.archive.ubuntu.com/ubuntu noble-security/multiverse Translation-en [10.6 kB]
+Get:36 https://dl.google.com/linux/chrome-stable/deb stable/main amd64 Packages [1412 B]
+Fetched 11.0 MB in 1s (8332 kB/s)
 Reading package lists...
 Reading package lists...
 Building dependency tree...
@@ -222,7 +223,7 @@ Get:7 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-encodings a
 Get:8 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-utils amd64 1:7.7+6build3 [94.4 kB]
 Get:9 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 xfonts-cyrillic all 1:1.0.5+nmu1 [384 kB]
 Get:10 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-scalable all 1:1.0.3-1.3 [304 kB]
-Fetched 21.1 MB in 2s (12.2 MB/s)
+Fetched 21.1 MB in 1s (17.7 MB/s)
 Selecting previously unselected package fonts-ipafont-gothic.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 202954 files and directories currently installed.)
 Preparing to unpack .../0-fonts-ipafont-gothic_00303-21ubuntu1_all.deb ...
@@ -321,17 +322,28 @@ node:internal/modules/run_main:123
     triggerUncaughtException(
     ^
 
-AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Address preserved|Mara/i. Input:
+AssertionError [ERR_ASSERTION]: Case 77 Care → Small Archive: console warning/error
++ actual - expected
 
-'D\nThe Small Archive\nIn view'
++ [
++   'warning: [.WebGL-0x159c0016b400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels',
++   'warning: [.WebGL-0x159c0016b400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels',
++   'warning: [.WebGL-0x159c0016b400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels'
++ ]
+- []
 
-    at run (/home/runner/work/the-annex/the-annex/scripts/nonlinear-browser-playtest.ts:429:14)
+    at finishRoute (/home/runner/work/the-annex/the-annex/scripts/nonlinear-browser-playtest.ts:359:10)
+    at async run (/home/runner/work/the-annex/the-annex/scripts/nonlinear-browser-playtest.ts:435:7)
     at async <anonymous> (/home/runner/work/the-annex/the-annex/scripts/nonlinear-browser-playtest.ts:843:1) {
-  generatedMessage: true,
+  generatedMessage: false,
   code: 'ERR_ASSERTION',
-  actual: 'D\nThe Small Archive\nIn view',
-  expected: /Address preserved|Mara/i,
-  operator: 'match',
+  actual: [
+    'warning: [.WebGL-0x159c0016b400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels',
+    'warning: [.WebGL-0x159c0016b400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels',
+    'warning: [.WebGL-0x159c0016b400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels'
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
   diff: 'simple'
 }
 
@@ -346,7 +358,7 @@ Node.js v22.23.1
 > vite --host 127.0.0.1 --port 4173
 
 
-  [32m[1mVITE[22m v7.3.6[39m  [2mready in [0m[1m192[22m[2m[0m ms[22m
+  [32m[1mVITE[22m v7.3.6[39m  [2mready in [0m[1m163[22m[2m[0m ms[22m
 
   [32m➜[39m  [1mLocal[22m:   [36mhttp://127.0.0.1:[1m4173[22m/[39m
 ```
