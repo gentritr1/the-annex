@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getCaseContent } from '../game/content'
 import {
   getFragmentKnowledge,
@@ -29,24 +29,20 @@ export function Reconstruction({
   const commitRef = useRef<HTMLButtonElement>(null)
   const anchorStates = getReconstructionAnchorStates(content, state)
   const speculativeFragmentIds = getSpeculativeFragmentIds(content, state)
-  const selectedStateKey = state.selectedFragments
-    .map((fragmentId) => `${fragmentId}:${anchorStates[fragmentId]}`)
-    .join('|')
 
-  const latticeFragments = useMemo(
-    () =>
-      fragments.map((fragment) =>
-        anchorStates[fragment.id] === 'unknown'
-          ? {
-              ...fragment,
-              timecode: '—',
-              title: 'Unknown anchor',
-              content: 'Decisive content remains withheld until a field action makes this fragment known.',
-              source: 'Source not yet encountered',
-            }
-          : fragment,
-      ),
-    [anchorStates, fragments],
+  // Four small authored records are cheaper and clearer to derive during render
+  // than to memoize around mutable case-state objects. The React compiler can then
+  // optimize the component without preserving a manual cache contract.
+  const latticeFragments = fragments.map((fragment) =>
+    anchorStates[fragment.id] === 'unknown'
+      ? {
+          ...fragment,
+          timecode: '—',
+          title: 'Unknown anchor',
+          content: 'Decisive content remains withheld until a field action makes this fragment known.',
+          source: 'Source not yet encountered',
+        }
+      : fragment,
   )
 
   const corroboratedFragmentIds = fragments
@@ -67,11 +63,6 @@ export function Reconstruction({
     validSelection &&
     (!requiresSpeculationAcknowledgement || speculationAcknowledged)
 
-  useEffect(() => {
-    setCommitArmed(false)
-    setSpeculationAcknowledged(false)
-  }, [selectedStateKey])
-
   // Same step-back gestures as the field/tribunal commit rows: pointer down
   // outside the commit button, Escape, or focus loss (onBlur) disarm silently.
   useEffect(() => {
@@ -90,6 +81,16 @@ export function Reconstruction({
       document.removeEventListener('keydown', onKeyDown)
     }
   }, [commitArmed])
+
+  function toggleFragment(fragmentId: FragmentId, selectable: boolean) {
+    if (!selectable) return
+    // Selection changes explicitly invalidate both acknowledgements. This avoids
+    // an effect-driven render cascade and makes the reset happen at the action
+    // that caused it.
+    setCommitArmed(false)
+    setSpeculationAcknowledged(false)
+    onToggleFragment(fragmentId)
+  }
 
   function commitReconstruction() {
     if (!canFile) return
@@ -156,9 +157,7 @@ export function Reconstruction({
                 aria-disabled={unknown ? 'true' : undefined}
                 data-knowledge={knowledge}
                 key={fragment.id}
-                onClick={() => {
-                  if (!unknown || selected) onToggleFragment(fragment.id)
-                }}
+                onClick={() => toggleFragment(fragment.id, !unknown || selected)}
               >
                 <span className="fragment-selector" aria-hidden="true">
                   {selected ? '✓' : unknown ? '×' : ''}
