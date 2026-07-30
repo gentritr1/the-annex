@@ -76,15 +76,21 @@ export function BeatStage({
   }, [held, holdMs, reducedMotion, shown, total])
 
   // Auto-advance is offered only for a beat this browser has already encountered.
-  // It flushes the transcript first, then closes on a distinct short timer so the
-  // final text remains perceptible and keyboard users can cancel the checkbox.
+  // Both transcript flush and closure are scheduled callbacks, not synchronous
+  // state changes inside the effect. That keeps the staged beat compatible with
+  // the React compiler while leaving a perceptible final transcript frame.
   useEffect(() => {
     if (!seen || !autoAdvance || held) return
-    if (shown < total) {
-      setShown(total)
-      return
-    }
-    const timer = window.setTimeout(completeNow, reducedMotion ? 0 : 520)
+    const timer = window.setTimeout(
+      () => {
+        if (shown < total) {
+          setShown(total)
+          return
+        }
+        completeNow()
+      },
+      shown < total ? 0 : reducedMotion ? 0 : 520,
+    )
     return () => window.clearTimeout(timer)
   }, [autoAdvance, completeNow, held, reducedMotion, seen, shown, total])
 
