@@ -20,14 +20,13 @@ To address all issues (including breaking changes), run:
 
 Run `npm audit` for details.
 
-===== Repair guarded UI codemod literal =====
+===== Repair guarded UI codemod literals =====
 
 ===== Check core codemod syntax =====
 
 ===== Check UI codemod syntax =====
-/home/runner/work/the-annex/the-annex/scripts/apply-nonlinear-ui.mjs:234
-  `                beatId={`${'${state.caseId}'}:field:${'${sceneBeat.actionId}'}`}
-  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/runner/work/the-annex/the-annex/scripts/apply-nonlinear-ui.mjs:822
+  `## Nonlinear causal gameplay pass (2026-07-30)
 
 SyntaxError: missing ) after argument list
     at checkSyntax (node:internal/main/check_syntax:74:5)
