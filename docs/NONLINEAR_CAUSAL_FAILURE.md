@@ -8,7 +8,7 @@ The guarded production pass stopped before committing implementation files.
 
 ===== Install dependencies =====
 
-added 250 packages, and audited 251 packages in 7s
+added 250 packages, and audited 251 packages in 6s
 
 64 packages are looking for funding
   run `npm fund` for details
@@ -21,6 +21,7 @@ To address all issues (including breaking changes), run:
 Run `npm audit` for details.
 
 ===== Repair guarded UI codemod literals =====
+repaired guarded UI codemod literals
 
 ===== Check core codemod syntax =====
 
