@@ -1,15 +1,15 @@
 name: Nonlinear causal bootstrap
 
 on:
-  pull_request:
-    branches: [main]
+  push:
+    branches: [codex/nonlinear-causal-pass]
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: nonlinear-causal-bootstrap-${{ github.ref }}
+  group: nonlinear-causal-bootstrap
   cancel-in-progress: false
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
       - name: Check out feature branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref || github.ref_name }}
+          ref: codex/nonlinear-causal-pass
           fetch-depth: 0
 
       - name: Set up Node
@@ -31,61 +31,77 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Repair guarded UI codemod literal
-        shell: python
+      - name: Apply, verify, and publish diagnostics or implementation
+        env:
+          BRANCH_NAME: codex/nonlinear-causal-pass
+        shell: bash
         run: |
-          from pathlib import Path
+          set -euo pipefail
+          LOG=/tmp/nonlinear-causal-bootstrap.log
+          : > "$LOG"
 
-          path = Path('scripts/apply-nonlinear-ui.mjs')
-          source = path.read_text()
-          before = "    setWorldLine(`${causalSiteState.title}. Procedural change acknowledged; ordinary methods are available.`)\n"
-          after = "    setWorldLine(causalSiteState.title + '. Procedural change acknowledged; ordinary methods are available.')\n"
-          count = source.count(before)
-          if count != 1:
-              raise SystemExit(f'expected exactly one UI literal repair target, found {count}')
-          path.write_text(source.replace(before, after))
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Validate guarded codemods
-        run: |
-          node --check scripts/apply-nonlinear-core.mjs
-          node --check scripts/apply-nonlinear-ui.mjs
+          fail_stage() {
+            local status="$1"
+            local stage="$2"
+            cp "$LOG" /tmp/nonlinear-causal-bootstrap.saved.log
+            git reset --hard HEAD
+            git clean -fd
+            mkdir -p docs
+            {
+              echo "# Nonlinear causal bootstrap failure"
+              echo
+              echo "The guarded production pass stopped before committing implementation files."
+              echo
+              echo "**Failed stage:** ${stage}"
+              echo
+              echo '```text'
+              tail -n 900 /tmp/nonlinear-causal-bootstrap.saved.log
+              echo '```'
+            } > docs/NONLINEAR_CAUSAL_FAILURE.md
+            git add docs/NONLINEAR_CAUSAL_FAILURE.md
+            git commit -m "Record nonlinear causal bootstrap failure"
+            git push origin "HEAD:${BRANCH_NAME}"
+            exit "$status"
+          }
 
-      - name: Apply canonical and UI changes
-        run: |
-          node scripts/apply-nonlinear-core.mjs
-          node scripts/apply-nonlinear-ui.mjs
+          run_stage() {
+            local stage="$1"
+            shift
+            echo | tee -a "$LOG"
+            echo "===== ${stage} =====" | tee -a "$LOG"
+            set +e
+            "$@" 2>&1 | tee -a "$LOG"
+            local status="${PIPESTATUS[0]}"
+            set -e
+            if [ "$status" -ne 0 ]; then
+              fail_stage "$status" "$stage"
+            fi
+          }
 
-      - name: Lint
-        run: npm run lint
+          run_stage "Install dependencies" npm ci
 
-      - name: Test
-        run: npm run test
+          run_stage "Repair guarded UI codemod literal" python -c "from pathlib import Path; p=Path('scripts/apply-nonlinear-ui.mjs'); s=p.read_text(); before=\"    setWorldLine(\`\${causalSiteState.title}. Procedural change acknowledged; ordinary methods are available.\`)\\n\"; after=\"    setWorldLine(causalSiteState.title + '. Procedural change acknowledged; ordinary methods are available.')\\n\"; count=s.count(before); count == 1 or (_ for _ in ()).throw(SystemExit(f'expected exactly one UI literal repair target, found {count}')); p.write_text(s.replace(before, after))"
 
-      - name: Build
-        run: npm run build
+          run_stage "Check core codemod syntax" node --check scripts/apply-nonlinear-core.mjs
+          run_stage "Check UI codemod syntax" node --check scripts/apply-nonlinear-ui.mjs
+          run_stage "Apply canonical changes" node scripts/apply-nonlinear-core.mjs
+          run_stage "Apply investigation and presentation changes" node scripts/apply-nonlinear-ui.mjs
+          run_stage "Lint" npm run lint
+          run_stage "Test" npm run test
+          run_stage "Build" npm run build
+          run_stage "Patch hygiene" git diff --check
 
-      - name: Check patch hygiene
-        run: git diff --check
-
-      - name: Remove one-shot bootstrap files
-        run: |
+          rm -f docs/NONLINEAR_CAUSAL_FAILURE.md
           rm scripts/apply-nonlinear-core.mjs
           rm scripts/apply-nonlinear-ui.mjs
           rm .github/workflows/nonlinear-causal-bootstrap.yml
 
-      - name: Commit verified implementation
-        env:
-          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           if git diff --cached --quiet; then
-            echo "No implementation changes were produced."
-            exit 1
+            fail_stage 1 "Commit verified implementation: no changes produced"
           fi
           git commit -m "Implement deterministic nonlinear causal gameplay"
           git push origin "HEAD:${BRANCH_NAME}"
