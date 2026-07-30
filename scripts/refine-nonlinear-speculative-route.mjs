@@ -36,6 +36,31 @@ replaceOnce(
 )
 
 replaceOnce(
+  'src/components/Investigation.tsx',
+  `                    <small>
+                      {filed
+                        ? outcome?.switcherLabel ?? 'Filed'
+                        : selected && presentationForRender.kind === 'concourse'
+                          ? 'Selected'
+                          : selected
+                            ? 'In view'
+                            : 'Available'}
+                    </small>
+`,
+  `                    <small>
+                      {outcome?.switcherLabel ??
+                        (filed
+                          ? 'Filed'
+                          : selected && presentationForRender.kind === 'concourse'
+                            ? 'Selected'
+                            : selected
+                              ? 'In view'
+                              : 'Available')}
+                    </small>
+`,
+)
+
+replaceOnce(
   'src/game/causal.ts',
   `    {
       fragmentId: 'registry-hash',
