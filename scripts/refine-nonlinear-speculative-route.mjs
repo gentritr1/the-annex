@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process'
 import { readFileSync, writeFileSync } from 'node:fs'
 
 function replaceOnce(path, before, after) {
@@ -10,6 +11,24 @@ function replaceOnce(path, before, after) {
   writeFileSync(path, source.slice(0, first) + after + source.slice(first + before.length))
   console.log(`patched ${path}`)
 }
+
+// The temporary harness is restored from the last known-good diagnostic commit
+// before any product edit. This keeps the recovery byte-for-byte auditable after
+// an overly broad repository edit replaced the file instead of one line.
+const harnessPath = 'scripts/nonlinear-browser-playtest.ts'
+const restoredHarness = execFileSync(
+  'git',
+  ['show', 'c0a8d410fa37b1954e604b5f36aaad7ae8204e71:scripts/nonlinear-browser-playtest.ts'],
+  { encoding: 'utf8' },
+)
+writeFileSync(harnessPath, restoredHarness)
+replaceOnce(
+  harnessPath,
+  `  let state = start81(mode === 'no-account' ? 'procedure' : 'care')
+`,
+  `  const state = start81(mode === 'no-account' ? 'procedure' : 'care')
+`,
+)
 
 replaceOnce(
   'src/game/causal.ts',
