@@ -29,6 +29,11 @@ replaceOnce(
   `  const state = start81(mode === 'no-account' ? 'procedure' : 'care')
 `,
 )
+replaceOnce(
+  harnessPath,
+  `#site-switch-care-ward[aria-current="true"]`,
+  `#site-switch-care-ward[aria-pressed="true"]`,
+)
 
 replaceOnce(
   'src/game/causal.ts',
