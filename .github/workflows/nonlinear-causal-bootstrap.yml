@@ -85,8 +85,10 @@ jobs:
           run_stage "Repair guarded UI codemod literals" python scripts/repair-nonlinear-ui.py
           run_stage "Check core codemod syntax" node --check scripts/apply-nonlinear-core.mjs
           run_stage "Check UI codemod syntax" node --check scripts/apply-nonlinear-ui.mjs
+          run_stage "Check test-route codemod syntax" node --check scripts/apply-nonlinear-test-routes.mjs
           run_stage "Apply canonical changes" node scripts/apply-nonlinear-core.mjs
           run_stage "Apply investigation and presentation changes" node scripts/apply-nonlinear-ui.mjs
+          run_stage "Apply valid legacy test routes" node scripts/apply-nonlinear-test-routes.mjs
           run_stage "Lint" npm run lint
           run_stage "Test" npm run test
           run_stage "Build" npm run build
@@ -95,6 +97,7 @@ jobs:
           rm -f docs/NONLINEAR_CAUSAL_FAILURE.md
           rm scripts/apply-nonlinear-core.mjs
           rm scripts/apply-nonlinear-ui.mjs
+          rm scripts/apply-nonlinear-test-routes.mjs
           rm scripts/repair-nonlinear-ui.py
           rm .github/workflows/nonlinear-causal-bootstrap.yml
 
