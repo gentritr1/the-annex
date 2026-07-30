@@ -10,7 +10,7 @@ permissions:
 
 concurrency:
   group: nonlinear-causal-bootstrap
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   apply-and-verify:
@@ -82,35 +82,7 @@ jobs:
           }
 
           run_stage "Install dependencies" npm ci
-
-          cat > /tmp/repair-nonlinear-ui.py <<'PY'
-          from pathlib import Path
-
-          path = Path('scripts/apply-nonlinear-ui.mjs')
-          source = path.read_text()
-          replacements = [
-              (
-                  """    setWorldLine(`${causalSiteState.title}. Procedural change acknowledged; ordinary methods are available.`)
-          """,
-                  """    setWorldLine(causalSiteState.title + '. Procedural change acknowledged; ordinary methods are available.')
-          """,
-              ),
-              (
-                  """  `                beatId={`${'${state.caseId}'}:field:${'${sceneBeat.actionId}'}`}
-          """,
-                  """  `                beatId={state.caseId + ':field:' + sceneBeat.actionId}
-          """,
-              ),
-          ]
-          for before, after in replacements:
-              count = source.count(before)
-              if count != 1:
-                  raise SystemExit(f'expected exactly one UI repair target, found {count}: {before!r}')
-              source = source.replace(before, after)
-          path.write_text(source)
-          PY
-          run_stage "Repair guarded UI codemod literals" python /tmp/repair-nonlinear-ui.py
-
+          run_stage "Repair guarded UI codemod literals" python scripts/repair-nonlinear-ui.py
           run_stage "Check core codemod syntax" node --check scripts/apply-nonlinear-core.mjs
           run_stage "Check UI codemod syntax" node --check scripts/apply-nonlinear-ui.mjs
           run_stage "Apply canonical changes" node scripts/apply-nonlinear-core.mjs
@@ -123,6 +95,7 @@ jobs:
           rm -f docs/NONLINEAR_CAUSAL_FAILURE.md
           rm scripts/apply-nonlinear-core.mjs
           rm scripts/apply-nonlinear-ui.mjs
+          rm scripts/repair-nonlinear-ui.py
           rm .github/workflows/nonlinear-causal-bootstrap.yml
 
           git add -A
