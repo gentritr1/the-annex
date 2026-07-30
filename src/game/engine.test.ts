@@ -27,8 +27,14 @@ function solveReconstruction(state = startInvestigation()) {
   if (next.completedSites.length === 0) {
     next = gameReducer(next, { type: 'COMMIT_FIELD_ACTION', actionId: 'authenticate-chain' })
   }
+  const careAnchor = next.completedActions.some(
+    (actionId) => actionId === 'listen-mara' || actionId === 'stress-test',
+  )
   next = gameReducer(next, { type: 'OPEN_RECONSTRUCTION' })
-  next = gameReducer(next, { type: 'TOGGLE_FRAGMENT', fragmentId: 'scar-sensation' })
+  next = gameReducer(next, {
+    type: 'TOGGLE_FRAGMENT',
+    fragmentId: careAnchor ? 'scar-sensation' : 'registry-hash',
+  })
   next = gameReducer(next, { type: 'TOGGLE_FRAGMENT', fragmentId: 'witness-account' })
   return gameReducer(next, { type: 'SUBMIT_RECONSTRUCTION' })
 }
@@ -372,10 +378,12 @@ describe('authored decision & reconstruction semantics (Case 81)', () => {
   it('gives Case 81 standing-deadlock a warning tone even when an anchor is corroborated', () => {
     let s = gameReducer(case77Debrief(), { type: 'START_CASE', caseId: 'case-81' })
     s = gameReducer(s, { type: 'SELECT_APPROACH', approachId: 'procedure' })
-    // Auditing the restoration log corroborates 'redacted-clause' (its links
-    // include 'restoration-log'), so the warning must come from the authored
-    // unresolvedTone flag, not the corroboratedAnchors === 0 fallback.
+    // The restoration log corroborates 'redacted-clause' and the counsel brief
+    // corroborates 'unscripted-answer'. With both anchors supported, the warning
+    // can come only from the authored unresolvedTone flag — never from a fallback
+    // for unsupported reconstruction evidence.
     s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'audit-restoration-log' })
+    s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'brief-city-counsel' })
     s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
     s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'redacted-clause' })
     s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'unscripted-answer' })
@@ -383,7 +391,7 @@ describe('authored decision & reconstruction semantics (Case 81)', () => {
 
     expect(s.reconstruction).toBe('standing-deadlock')
     const event = s.events.at(-1)
-    expect(event?.detail).toContain('1 of 2 anchors were corroborated')
+    expect(event?.detail).toContain('2 of 2 anchors were corroborated')
     expect(event?.tone).toBe('warning')
   })
 })

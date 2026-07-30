@@ -1,0 +1,169 @@
+name: Nonlinear causal browser playtest
+
+on:
+  push:
+    branches: [codex/nonlinear-causal-pass]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nonlinear-causal-browser-playtest
+  cancel-in-progress: true
+
+jobs:
+  verify-in-browser:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: codex/nonlinear-causal-pass
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Refine, verify, playtest, and publish evidence
+        env:
+          BRANCH_NAME: codex/nonlinear-causal-pass
+        shell: bash
+        run: |
+          set -euo pipefail
+          LOG=/tmp/nonlinear-causal-playtest.log
+          VITE_LOG=/tmp/nonlinear-causal-vite.log
+          : > "$LOG"
+          : > "$VITE_LOG"
+          SERVER_PID=""
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          stop_server() {
+            if [ -n "${SERVER_PID}" ] && kill -0 "${SERVER_PID}" 2>/dev/null; then
+              kill "${SERVER_PID}" || true
+              wait "${SERVER_PID}" 2>/dev/null || true
+            fi
+          }
+
+          fail_stage() {
+            local status="$1"
+            local stage="$2"
+            stop_server
+            cp "$LOG" /tmp/nonlinear-causal-playtest.saved.log
+            cp "$VITE_LOG" /tmp/nonlinear-causal-vite.saved.log
+            git reset --hard HEAD
+            git clean -fd
+            mkdir -p docs
+            {
+              echo "# Nonlinear causal browser-playtest failure"
+              echo
+              echo "The guarded browser pass stopped before committing refinement or evidence."
+              echo
+              echo "**Failed stage:** ${stage}"
+              echo
+              echo "## Stage log"
+              echo
+              echo '```text'
+              tail -n 1200 /tmp/nonlinear-causal-playtest.saved.log
+              echo '```'
+              echo
+              echo "## Vite log"
+              echo
+              echo '```text'
+              tail -n 400 /tmp/nonlinear-causal-vite.saved.log
+              echo '```'
+            } > docs/NONLINEAR_CAUSAL_PLAYTEST_FAILURE.md
+            git add docs/NONLINEAR_CAUSAL_PLAYTEST_FAILURE.md
+            git commit -m "Record nonlinear causal browser-playtest failure"
+            git push origin "HEAD:${BRANCH_NAME}"
+            exit "$status"
+          }
+
+          run_stage() {
+            local stage="$1"
+            shift
+            echo | tee -a "$LOG"
+            echo "===== ${stage} =====" | tee -a "$LOG"
+            set +e
+            "$@" 2>&1 | tee -a "$LOG"
+            local status="${PIPESTATUS[0]}"
+            set -e
+            if [ "$status" -ne 0 ]; then
+              fail_stage "$status" "$stage"
+            fi
+          }
+
+          run_stage "Install project dependencies" npm ci
+          run_stage "Check speculative-route refinement syntax" node --check scripts/refine-nonlinear-speculative-route.mjs
+          run_stage "Apply Care to Archive speculative-route refinement" node scripts/refine-nonlinear-speculative-route.mjs
+          run_stage "Lint production source" npm run lint
+          run_stage "Run full test suite" npm run test
+          run_stage "Build production bundle" npm run build
+          run_stage "Install browser harness" npm install --no-save --package-lock=false playwright tsx
+          run_stage "Install Chromium" npx playwright install --with-deps chromium
+
+          echo | tee -a "$LOG"
+          echo "===== Start Vite server =====" | tee -a "$LOG"
+          npm run dev -- --host 127.0.0.1 --port 4173 > "$VITE_LOG" 2>&1 &
+          SERVER_PID="$!"
+          ready=0
+          for _ in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then
+              ready=1
+              break
+            fi
+            sleep 1
+          done
+          if [ "$ready" -ne 1 ]; then
+            cat "$VITE_LOG" | tee -a "$LOG"
+            fail_stage 1 "Start Vite server"
+          fi
+
+          run_stage "Play clean routes in Chromium" env ANNEX_BASE_URL=http://127.0.0.1:4173 npx tsx scripts/nonlinear-browser-playtest.ts
+          stop_server
+          SERVER_PID=""
+
+          cat >> docs/playtest/nonlinear-causal/REPORT.md <<EOF
+
+          ## Automated gates
+
+          - \`npm run lint\`: **pass**
+          - \`npm run test\`: **pass**
+          - \`npm run build\`: **pass**
+          - Real Chromium/Vite route harness: **pass**
+          - Source commit before this evidence pass: \`${GITHUB_SHA}\`
+          EOF
+
+          cat >> docs/PROVENANCE.md <<'EOF'
+
+          ## Nonlinear causal browser verification artifacts (2026-07-30)
+
+          These files are verification evidence, not runtime game assets. They are never imported by the application bundle.
+
+          | Artifact | Source | Intended use | Review status |
+          |---|---|---|---|
+          | `docs/playtest/nonlinear-causal/*.png` | Deterministic Playwright Chromium screenshots of the local Vite build, generated from clean reducer-built saves | Prove opening staging, route-state changes, reconstruction knowledge, subject presence/absence, Counsel variants, trust support/objection, aftermath, replay controls, reduced motion, and portrait layouts | Generated only after lint, all tests, build, zero browser console/network/image errors, and layout assertions passed |
+          | `docs/playtest/nonlinear-causal/REPORT.md` | Browser harness measurements and assertions | Audit route, viewport, screenshot, diagnostics, and overflow evidence | Generated by the same failing-on-error harness; manually review before merge |
+          EOF
+
+          rm -f docs/NONLINEAR_CAUSAL_PLAYTEST_FAILURE.md
+          rm scripts/refine-nonlinear-speculative-route.mjs
+          rm scripts/nonlinear-browser-playtest.ts
+          rm .github/workflows/nonlinear-causal-playtest.yml
+
+          run_stage "Patch hygiene" git diff --check
+
+          git add -A
+          if git diff --cached --quiet; then
+            fail_stage 1 "Commit browser evidence: no changes produced"
+          fi
+          git commit -m "Verify nonlinear causal routes in Chromium"
+          git push origin "HEAD:${BRANCH_NAME}"

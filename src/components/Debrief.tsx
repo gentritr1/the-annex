@@ -6,6 +6,11 @@ import {
   getTensionLine,
   personas,
 } from '../game/content'
+import {
+  getReconstructionFacts,
+  resolveCausalChains,
+  resolveImmediateAftermath,
+} from '../game/causal'
 import { getTrustLabel } from '../game/engine'
 import { DebriefTableau } from '../scene/DebriefTableau'
 import type {
@@ -15,20 +20,17 @@ import type {
   GameState,
   SiteDefinition,
 } from '../game/types'
+import { ImmediateAftermath } from './ImmediateAftermath'
 import { PersonaPortrait } from './PersonaPortrait'
 
 interface DebriefProps {
   state: GameState
   onNextRun: () => void
-  // Cases this completed run may switch to; the run's verdict already carries as
-  // a precedent, so no confirmation is needed from the debrief.
   switchTargets: readonly CaseSwitchOption[]
   onSwitchCase: (caseId: string) => void
   onReturnToTitle: () => void
 }
 
-// For a visited site, the sibling action the auditor did not take carries the
-// counterfactual note. For an unvisited site, the site's own note stands in.
 function refusalNoteForSite(
   site: SiteDefinition,
   completedActions: readonly FieldActionId[],
@@ -59,11 +61,7 @@ export function Debrief({
     state.reconstruction && state.decision
       ? getTensionLine(state.caseId, state.reconstruction, state.decision)
       : null
-  // The revelation, authored per verdict path (and consent). Null when the case
-  // authors none for this state; the engine never sees it — it is view-only copy.
   const revelation = content.getRevelation?.(state) ?? null
-  // W4: the record now ends with the verdict just issued. If a different verdict
-  // was recorded for this case on an earlier run, this replay rewrote the ending.
   const recordEndsLine = getRecordEndsLine(state.caseId, state.precedents)
   const priorVerdict = getPriorVerdictForCase(state.caseId, state.previousRuns)
   const rewroteRecord = priorVerdict !== null && priorVerdict !== state.decision
@@ -71,9 +69,19 @@ export function Debrief({
     ? decisions.find((item) => item.id === priorVerdict)
     : undefined
   const tableauBackground = content.scene.layers.find((layer) => layer.raster)?.raster?.src ?? ''
+  const immediateAftermath = resolveImmediateAftermath(state)
+  const reconstructionFacts = getReconstructionFacts(state)
+  const speculativeFragments = (reconstructionFacts?.speculativeFragments ?? [])
+    .map((fragmentId) => content.fragments.find((fragment) => fragment.id === fragmentId))
+    .filter((fragment) => fragment !== undefined)
+  const resolvedChains = resolveCausalChains(state).filter((chain) => chain.phase === 'resolved')
 
   return (
     <article className="phase-page debrief-page">
+      {immediateAftermath && (
+        <ImmediateAftermath tableau={immediateAftermath} reducedMotion={state.settings.reducedMotion} />
+      )}
+
       <DebriefTableau
         backgroundSrc={tableauBackground}
         subjectImageSrc={content.caseFile.dossierImage?.src}
@@ -120,7 +128,34 @@ export function Debrief({
             <em>Filed model vs finding:</em> {tensionEcho}
           </p>
         ) : null}
+        {speculativeFragments.length > 0 && (
+          <p className="tension-echo speculative-echo" data-speculative-cost="true">
+            <em>Contested anchor retained:</em>{' '}
+            {speculativeFragments.map((fragment) => fragment.title).join(' · ')} entered the model as
+            known but unsupported. The objection remains part of the precedent; the anchor never
+            became corroborated by being repeated at the hearing.
+          </p>
+        )}
       </section>
+
+      {resolvedChains.length > 0 && (
+        <section className="debrief-section causal-route-debrief" aria-labelledby="causal-route-heading">
+          <div className="debrief-section-heading">
+            <span>Bounded causal route · {resolvedChains.length} remembered chain{resolvedChains.length === 1 ? '' : 's'}</span>
+            <h2 id="causal-route-heading">The record keeps the order in which the rooms changed.</h2>
+          </div>
+          <ol className="consequence-list">
+            {resolvedChains.map((chain, index) => (
+              <li key={chain.id} data-causal-chain={chain.id}>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <p>
+                  <strong>{chain.title}.</strong> {chain.detail} {chain.proceduralEffect}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
 
       {revelation ? (
         <section className="debrief-section revelation-section" aria-labelledby="revelation-heading">

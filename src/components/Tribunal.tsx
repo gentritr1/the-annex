@@ -1,7 +1,16 @@
-import { getCaseContent, getPrecedentLine, getTensionLine } from '../game/content'
+import { getCaseContent, getPrecedentLine, getTensionLine, personaName } from '../game/content'
+import {
+  getReconstructionFacts,
+  resolveCausalChains,
+  resolveCounselState,
+  resolveEllisDetail,
+  resolveHearingStanding,
+  resolveSubjectEncounter,
+} from '../game/causal'
 import { TribunalChamber } from '../scene/TribunalChamber'
 import type { DecisionId, GameState } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
+import { PersonaPortrait } from './PersonaPortrait'
 
 interface TribunalProps {
   state: GameState
@@ -10,15 +19,22 @@ interface TribunalProps {
 }
 
 export function Tribunal({ state, onDecide, onBack }: TribunalProps) {
-  const { decisions, reconstructionDefinitions, evidenceDefinitions, chrome } = getCaseContent(
-    state.caseId,
-  )
+  const content = getCaseContent(state.caseId)
+  const { decisions, reconstructionDefinitions, evidenceDefinitions, chrome, fragments } = content
   const reconstruction = reconstructionDefinitions.find((item) => item.id === state.reconstruction)
   const discoveredEvidence = evidenceDefinitions.filter((item) => state.evidence.includes(item.id))
   const filedModel = state.reconstruction
-  // Cross-case precedent: one authored line citing the player's ruling on the
-  // case this one follows. Null when the case cites none or none was recorded.
   const precedentLine = getPrecedentLine(state.caseId, state.precedents)
+  const subjectEncounter = resolveSubjectEncounter(state)
+  const hearingStanding = resolveHearingStanding(state)
+  const resolvedChains = resolveCausalChains(state).filter((chain) => chain.phase === 'resolved')
+  const reconstructionFacts = getReconstructionFacts(state)
+  const speculativeFragments = (reconstructionFacts?.speculativeFragments ?? [])
+    .map((fragmentId) => fragments.find((fragment) => fragment.id === fragmentId))
+    .filter((fragment) => fragment !== undefined)
+  const counselState =
+    state.completedSites.includes('counsel-office') ? resolveCounselState(state) : null
+  const ellisDetail = resolveEllisDetail(state)
   const tensionFor = (decisionId: DecisionId) =>
     filedModel ? (
       <>
@@ -40,6 +56,129 @@ export function Tribunal({ state, onDecide, onBack }: TribunalProps) {
         overrideAvailable={state.tribunalOverride}
         onBack={onBack}
       />
+
+      {subjectEncounter && (
+        <section
+          className="prehearing-subject"
+          data-subject-state={subjectEncounter.id}
+          aria-labelledby="prehearing-subject-heading"
+        >
+          <div>
+            <p>Pre-hearing encounter · non-evidentiary</p>
+            <h2 id="prehearing-subject-heading">
+              {subjectEncounter.consulted
+                ? `Temporary hearing address: ${subjectEncounter.temporaryName}`
+                : 'The subject chair is empty'}
+            </h2>
+          </div>
+          <p>{subjectEncounter.request}</p>
+          <blockquote>{subjectEncounter.ordinaryWant}</blockquote>
+          <strong>{subjectEncounter.staging}</strong>
+          <small>
+            This request is not evidence, does not establish personhood, and does not select a verdict.
+          </small>
+        </section>
+      )}
+
+      {counselState && (
+        <section
+          className="tribunal-counsel-state"
+          data-counsel-state={counselState.id}
+          data-security-pressure={counselState.securityPressure ? 'true' : undefined}
+          aria-labelledby="counsel-state-heading"
+        >
+          <div>
+            <p>Counsel Office route · live hearing state</p>
+            <h2 id="counsel-state-heading">{counselState.title}</h2>
+          </div>
+          <p>{counselState.liveObjection}</p>
+          <dl>
+            <div>
+              <dt>Recorder</dt>
+              <dd>{counselState.recorder}</dd>
+            </div>
+            <div>
+              <dt>Admissibility shutter</dt>
+              <dd>{counselState.shutter}</dd>
+            </div>
+            <div>
+              <dt>Occupancy</dt>
+              <dd>{counselState.occupants}</dd>
+            </div>
+          </dl>
+          {ellisDetail && <p className="ordinary-detail">{ellisDetail}</p>}
+        </section>
+      )}
+
+      {(resolvedChains.length > 0 || speculativeFragments.length > 0) && (
+        <section className="tribunal-route-memory" aria-labelledby="route-memory-heading">
+          <div>
+            <p>How the record arrived</p>
+            <h2 id="route-memory-heading">The hearing retains order and uncertainty</h2>
+          </div>
+          {resolvedChains.map((chain) => (
+            <article key={chain.id} data-causal-chain={chain.id}>
+              <strong>{chain.title}</strong>
+              <p>{chain.tribunalLine}</p>
+              <small>{chain.channels.join(' · ')}</small>
+            </article>
+          ))}
+          {speculativeFragments.length > 0 && (
+            <article className="speculative-objection" data-speculative-cost="true">
+              <strong>Live objection: unsupported reconstruction anchor</strong>
+              <p>
+                {speculativeFragments.map((fragment) => fragment.title).join(' · ')} remains known
+                but uncorroborated. It may frame the model; it may not be represented as admitted fact.
+              </p>
+            </article>
+          )}
+        </section>
+      )}
+
+      <section className="hearing-standing" aria-labelledby="hearing-standing-heading">
+        <div>
+          <p>Deterministic social consequence</p>
+          <h2 id="hearing-standing-heading">Support and objection</h2>
+          <small>{hearingStanding.tieRule}</small>
+        </div>
+        <div className="hearing-standing-grid">
+          <article data-role="support">
+            {hearingStanding.supporter ? (
+              <>
+                <PersonaPortrait personaId={hearingStanding.supporter} size="card" />
+                <strong>{personaName(hearingStanding.supporter)} volunteers support</strong>
+                <p>{hearingStanding.supportLine}</p>
+              </>
+            ) : (
+              <>
+                <strong>No NPC volunteers procedural support</strong>
+                <p>The route remains completable without a personal endorsement.</p>
+              </>
+            )}
+          </article>
+          <article data-role="objection">
+            {hearingStanding.objector ? (
+              <>
+                <PersonaPortrait personaId={hearingStanding.objector} size="card" />
+                <strong>{personaName(hearingStanding.objector)} files the objection</strong>
+                <p>{hearingStanding.objectionLine}</p>
+              </>
+            ) : (
+              <>
+                <strong>No personal objection is filed</strong>
+                <p>The evidentiary contradictions remain available below.</p>
+              </>
+            )}
+          </article>
+        </div>
+        {hearingStanding.exchange.length > 0 && (
+          <div className="npc-exchange" aria-label="NPCs address each other directly">
+            {hearingStanding.exchange.map((line) => (
+              <blockquote key={line}>{line}</blockquote>
+            ))}
+          </div>
+        )}
+      </section>
 
       <section className="tribunal-summary" aria-labelledby="summary-heading">
         <h2 id="summary-heading">Admitted record</h2>

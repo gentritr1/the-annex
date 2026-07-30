@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { getCaseContent } from '../game/content'
+import {
+  getFragmentKnowledge,
+  getReconstructionAnchorStates,
+  getSpeculativeFragmentIds,
+} from '../game/causal'
 import { MemoryLatticeStage } from '../scene/MemoryLatticeStage'
 import type { FragmentId, GameState } from '../game/types'
 import { purposeCopy, showsLatticePurpose } from './purposeCopy'
@@ -17,18 +22,46 @@ export function Reconstruction({
   onSubmit,
   onBack,
 }: ReconstructionProps) {
-  const { fragments, fragmentEvidenceLinks, evidenceDefinitions } = getCaseContent(state.caseId)
+  const content = getCaseContent(state.caseId)
+  const { fragments, evidenceDefinitions } = content
   const [commitArmed, setCommitArmed] = useState(false)
+  const [speculationAcknowledged, setSpeculationAcknowledged] = useState(false)
   const commitRef = useRef<HTMLButtonElement>(null)
+  const anchorStates = getReconstructionAnchorStates(content, state)
+  const speculativeFragmentIds = getSpeculativeFragmentIds(content, state)
+
+  // Four small authored records are cheaper and clearer to derive during render
+  // than to memoize around mutable case-state objects. The React compiler can then
+  // optimize the component without preserving a manual cache contract.
+  const latticeFragments = fragments.map((fragment) =>
+    anchorStates[fragment.id] === 'unknown'
+      ? {
+          ...fragment,
+          timecode: '—',
+          title: 'Unknown anchor',
+          content: 'Decisive content remains withheld until a field action makes this fragment known.',
+          source: 'Source not yet encountered',
+        }
+      : fragment,
+  )
+
   const corroboratedFragmentIds = fragments
-    .filter((fragment) =>
-      evidenceDefinitions.some(
-        (evidence) =>
-          state.evidence.includes(evidence.id) &&
-          fragmentEvidenceLinks[fragment.id].includes(evidence.id),
-      ),
-    )
+    .filter((fragment) => anchorStates[fragment.id] === 'corroborated')
     .map((fragment) => fragment.id)
+  const selectedCorroboratedCount = state.selectedFragments.filter(
+    (fragmentId) => anchorStates[fragmentId] === 'corroborated',
+  ).length
+  const selectionContainsUnknown = state.selectedFragments.some(
+    (fragmentId) => anchorStates[fragmentId] === 'unknown',
+  )
+  const requiresSpeculationAcknowledgement = speculativeFragmentIds.length > 0
+  const validSelection =
+    state.selectedFragments.length === 2 &&
+    selectedCorroboratedCount >= 1 &&
+    !selectionContainsUnknown
+  const canFile =
+    validSelection &&
+    (!requiresSpeculationAcknowledgement || speculationAcknowledged)
 
   // Same step-back gestures as the field/tribunal commit rows: pointer down
   // outside the commit button, Escape, or focus loss (onBlur) disarm silently.
@@ -49,7 +82,18 @@ export function Reconstruction({
     }
   }, [commitArmed])
 
+  function toggleFragment(fragmentId: FragmentId, selectable: boolean) {
+    if (!selectable) return
+    // Selection changes explicitly invalidate both acknowledgements. This avoids
+    // an effect-driven render cascade and makes the reset happen at the action
+    // that caused it.
+    setCommitArmed(false)
+    setSpeculationAcknowledged(false)
+    onToggleFragment(fragmentId)
+  }
+
   function commitReconstruction() {
+    if (!canFile) return
     if (!commitArmed) {
       setCommitArmed(true)
       return
@@ -65,25 +109,26 @@ export function Reconstruction({
         </button>
         <p className="case-code">Cognitive reconstruction · bounded model</p>
         <h1>Build one account from two anchors</h1>
-        <p>Pair two fragments. The filing preserves the contradiction between them.</p>
+        <p>Pair two known fragments. The filing preserves the contradiction between them.</p>
       </header>
 
-      {/* W1-4 · P2-F. The lattice states its rule and its cost and never its
-          purpose. Deliberately a SIBLING of the header, not a child of it:
-          `.lattice-header > p:last-child` carries the intro paragraph's width
-          and colour, and a new last child would silently steal them. Retires
-          the moment a model exists. */}
       {showsLatticePurpose(state) && <p className="lattice-purpose">{purposeCopy.lattice}</p>}
 
       <div className="lattice-rule" role="note">
         <span>Rule</span>
-        <p>Two anchors. Every pairing produces a different valid model.</p>
+        <p>Every pair produces a valid but incomplete model. Unsupported anchors remain contested.</p>
         <strong>{state.selectedFragments.length} / 2</strong>
+      </div>
+
+      <div className="lattice-knowledge-legend" aria-label="Fragment knowledge states">
+        <span data-knowledge="unknown">Unknown · decisive content withheld</span>
+        <span data-knowledge="known">Known · unsupported and speculative</span>
+        <span data-knowledge="corroborated">Corroborated · linked to admitted field evidence</span>
       </div>
 
       <div className="lattice-workspace">
         <MemoryLatticeStage
-          fragments={fragments}
+          fragments={latticeFragments}
           selectedFragments={state.selectedFragments}
           corroboratedFragmentIds={corroboratedFragmentIds}
         />
@@ -91,33 +136,45 @@ export function Reconstruction({
         <div className="fragment-list lattice-fragment-list" aria-label="Memory fragments">
           {fragments.map((fragment) => {
             const selected = state.selectedFragments.includes(fragment.id)
+            const knowledge = getFragmentKnowledge(content, state, fragment.id)
             const corroboratingEvidence = evidenceDefinitions.find(
               (evidence) =>
                 state.evidence.includes(evidence.id) &&
-                fragmentEvidenceLinks[fragment.id].includes(evidence.id),
+                content.fragmentEvidenceLinks[fragment.id].includes(evidence.id),
             )
+            const unknown = knowledge === 'unknown'
+            const stateLabel =
+              knowledge === 'corroborated'
+                ? `Corroborated by field: ${corroboratingEvidence?.title ?? 'admitted evidence'}`
+                : knowledge === 'known'
+                  ? 'Known but unsupported · selecting this anchor is speculative'
+                  : 'Unknown · full content remains withheld'
             return (
               <button
                 className={`fragment-row ${selected ? 'fragment-row-selected' : ''}`}
                 type="button"
                 aria-pressed={selected}
+                aria-disabled={unknown ? 'true' : undefined}
+                data-knowledge={knowledge}
                 key={fragment.id}
-                onClick={() => onToggleFragment(fragment.id)}
+                onClick={() => toggleFragment(fragment.id, !unknown || selected)}
               >
                 <span className="fragment-selector" aria-hidden="true">
-                  {selected ? '✓' : ''}
+                  {selected ? '✓' : unknown ? '×' : ''}
                 </span>
-                <span className="fragment-code">{fragment.timecode}</span>
+                <span className="fragment-code">{unknown ? '—' : fragment.timecode}</span>
                 <span className="fragment-body">
-                  <strong>{fragment.title}</strong>
-                  <span>{fragment.content}</span>
-                  <small>{fragment.source}</small>
+                  <strong>{unknown ? 'Unknown anchor' : fragment.title}</strong>
+                  <span>
+                    {unknown
+                      ? 'Continue the field investigation to make this anchor knowable.'
+                      : fragment.content}
+                  </span>
+                  <small>{unknown ? 'Source not yet encountered' : fragment.source}</small>
                   <span
-                    className={`fragment-evidence-state ${corroboratingEvidence ? 'fragment-corroborated' : ''}`}
+                    className={`fragment-evidence-state ${knowledge === 'corroborated' ? 'fragment-corroborated' : ''}`}
                   >
-                    {corroboratingEvidence
-                      ? `Corroborated by field: ${corroboratingEvidence.title}`
-                      : 'Not corroborated by your field route'}
+                    {stateLabel}
                   </span>
                 </span>
               </button>
@@ -126,13 +183,45 @@ export function Reconstruction({
         </div>
       </div>
 
+      {requiresSpeculationAcknowledgement && (
+        <section className="speculative-filing" role="note" aria-labelledby="speculative-heading">
+          <div>
+            <span>Hearing cost</span>
+            <h2 id="speculative-heading">One selected anchor is known but unsupported</h2>
+            <p>
+              The tribunal will retain it as speculative, invite an authored objection, and keep the
+              contested state in the debrief. It will never be displayed as corroborated evidence.
+            </p>
+          </div>
+          <label>
+            <input
+              type="checkbox"
+              checked={speculationAcknowledged}
+              onChange={(event) => {
+                setCommitArmed(false)
+                setSpeculationAcknowledged(event.currentTarget.checked)
+              }}
+            />
+            I acknowledge that this anchor remains contested.
+          </label>
+        </section>
+      )}
+
+      {!validSelection && state.selectedFragments.length === 2 && (
+        <p className="lattice-invalid" role="status">
+          A valid filing needs at least one corroborated anchor. Unknown anchors cannot be filed.
+        </p>
+      )}
+
       <footer className="phase-footer lattice-footer">
         <div className={`lattice-cost ${commitArmed ? 'lattice-cost-armed' : ''}`}>
           <strong>Filing is irreversible for this run.</strong>
-          <p>You can inspect another interpretation on the next loop.</p>
+          <p>
+            {requiresSpeculationAcknowledgement
+              ? 'The unsupported anchor will remain contested through the hearing and debrief.'
+              : 'You can inspect another interpretation on the next loop.'}
+          </p>
         </div>
-        {/* Same view-layer arm announcement as the field/tribunal rows; empty
-            at rest, so every arm announces and every disarm stays silent. */}
         <span className="sr-only" role="status" aria-live="polite">
           {commitArmed ? 'Reconstruction filing — select again to file.' : ''}
         </span>
@@ -143,7 +232,7 @@ export function Reconstruction({
           aria-pressed={commitArmed}
           onClick={commitReconstruction}
           onBlur={() => setCommitArmed(false)}
-          disabled={state.selectedFragments.length !== 2}
+          disabled={!canFile}
         >
           {commitArmed ? 'Confirm irreversible filing — select again to file' : 'File reconstruction'}{' '}
           <span aria-hidden="true">{commitArmed ? '✓' : '→'}</span>

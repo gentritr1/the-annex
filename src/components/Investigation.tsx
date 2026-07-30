@@ -2,6 +2,13 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { assembleBeats } from '../game/beats'
 import { getCaseContent, personaName, resolveFieldAction } from '../game/content'
+import {
+  getApproachOpening,
+  resolveCausalWorldOutcomes,
+  resolveCounselState,
+  resolveEllisDetail,
+  resolveSiteCausalState,
+} from '../game/causal'
 import { canEnterTribunal } from '../game/engine'
 import {
   acousticStepLabel,
@@ -192,18 +199,22 @@ export function Investigation({
   } = content
   const reconstruction = reconstructionDefinitions.find((item) => item.id === state.reconstruction)
   const reducedMotion = state.settings.reducedMotion
+  const opening = getApproachOpening(state)
+  const openingSite = sites.find((site) => site.id === opening?.initialSiteId)
   const initialSite =
-    sites.find((site) => !state.completedSites.includes(site.id)) ?? sites[0]!
+    (openingSite && !state.completedSites.includes(openingSite.id) ? openingSite : undefined) ??
+    sites.find((site) => !state.completedSites.includes(site.id)) ??
+    sites[0]!
   const [selectedSiteId, setSelectedSiteId] = useState<SiteId>(() => initialSite.id)
   const [osReducedMotion, setOsReducedMotion] = useState(prefersReducedMotion)
   const [osForcedColors, setOsForcedColors] = useState(forcedColorsActive)
   const [sideBySide, setSideBySide] = useState(sideBySideWorkspace)
   const [worldPresentation, setWorldPresentation] = useState<WorldPresentation>(() =>
-    scene.world
-      ? { kind: 'concourse' }
-      : initialSite.closeup
+    initialSite.closeup
       ? { kind: 'closeup', siteId: initialSite.id, origin: { x: 0.5, y: 0.5 } }
-      : { kind: 'map' },
+      : scene.world
+        ? { kind: 'concourse' }
+        : { kind: 'map' },
   )
   const [previewActionId, setPreviewActionId] = useState<FieldActionId | null>(null)
   // The room's decorative plate presentation (view-local; reset when the site
@@ -240,12 +251,22 @@ export function Investigation({
   // its altered portal is unmissable, then cleared to restore ordinary navigation.
   const [returnEmphasisSiteId, setReturnEmphasisSiteId] = useState<SiteId | null>(null)
   const returnEmphasisTimerRef = useRef<number | null>(null)
+  // A primed causal chain may require one explicit procedural acknowledgement
+  // before this room's ordinary interaction begins. The requirement is derived
+  // from canonical ordered actions; only this already-seen UI acknowledgement is
+  // view-local and repeatable after reload.
+  const [acknowledgedCausalStates, setAcknowledgedCausalStates] = useState<Set<string>>(
+    () => new Set(),
+  )
 
   // Resolved concourse alteration per room site, derived from the committed field
   // actions and each site's authored worldOutcome map. Content-driven: no site or
   // action id is named here. Consumed by the world stage, the switcher chips, and
   // the return announcement.
   const resolvedOutcomes = resolveSiteOutcomes(sites, state.completedActions)
+  for (const [siteId, outcome] of resolveCausalWorldOutcomes(state)) {
+    resolvedOutcomes.set(siteId, outcome)
+  }
 
   // The live stage wrapper, so both the open-transcript reveal and the witnessed-
   // refusal beat can bring the reacting room into view behind / after the modal.
@@ -585,6 +606,20 @@ export function Investigation({
   ].filter((requirement): requirement is string => requirement !== null)
   const gateRequirement = gateRequirements.join(' ')
   const selectedSite = sites.find((site) => site.id === selectedSiteId) ?? sites[0]!
+  const causalSiteState = resolveSiteCausalState(state, selectedSite.id)
+  const counselState = resolveCounselState(state)
+  const ellisDetail = resolveEllisDetail(state)
+  const causalGateRequired = Boolean(
+    causalSiteState?.phase === 'primed' && causalSiteState.channels.includes('procedural'),
+  )
+  const causalGateAcknowledged =
+    !causalGateRequired ||
+    (causalSiteState ? acknowledgedCausalStates.has(causalSiteState.id) : true)
+  function acknowledgeCausalState() {
+    if (!causalSiteState) return
+    setAcknowledgedCausalStates((current) => new Set(current).add(causalSiteState.id))
+    setWorldLine(causalSiteState.title + '. Procedural change acknowledged; ordinary methods are available.')
+  }
   const presentationForRender: WorldPresentation =
     sceneMotionReduced &&
     (worldPresentation.kind === 'travel' || worldPresentation.kind === 'arriving')
@@ -612,7 +647,7 @@ export function Investigation({
     !state.completedSites.includes(selectedSite.id)
       ? selectedSite.acousticShadow.acoustics[acousticPresentation.phase]
       : null
-  const effectiveAcoustic = acousticRoomTreatment ?? acousticTreatment
+  const effectiveAcoustic = causalSiteState?.acoustics ?? acousticRoomTreatment ?? acousticTreatment
 
   // Keep the audio graph synchronized from authored view data only. Returning to
   // the hub restores its treatment; leaving Investigation restores the dry bed.
@@ -726,7 +761,10 @@ export function Investigation({
   // The live buttons only mount on the SETTLED plate, so nothing is clickable over
   // an opening aperture and the two controls never overlap during the entry.
   const sceneFirstZonesLive =
-    sceneFirstPlate && presentationForRender.kind === 'closeup' && !selectedCompletedAction
+    sceneFirstPlate &&
+    presentationForRender.kind === 'closeup' &&
+    !selectedCompletedAction &&
+    causalGateAcknowledged
   // The room's console docks OVER the plate while the settled close read is on
   // screen and the ritual is still running. The moment the methods unlock the
   // console yields the plate to the two zones and returns to the inspector, and
@@ -831,11 +869,14 @@ export function Investigation({
     ([, delta]) => delta !== 0,
   )
 
-  const methodsVisible = !selectedCompletedAction && roomMethodsRevealed
+  const methodsVisible =
+    !selectedCompletedAction && roomMethodsRevealed && causalGateAcknowledged
   // The in-voice name of the room's current step while mid-ritual, so the footer
   // CTA can point at what the room is actually asking for (never "Choose a method"
   // while the ritual defers it). Null on a plain or terminal-phase site.
-  const ritualStepLabel = selectedSite.custodyRail
+  const ritualStepLabel = causalGateRequired && !causalGateAcknowledged
+    ? 'Acknowledge the changed room state'
+    : selectedSite.custodyRail
     ? custodyPresentation
       ? custodyStepLabel(custodyPresentation.phase)
       : null
@@ -1056,7 +1097,16 @@ export function Investigation({
   // through a portal into a host node the workspace owns, so docking the console
   // over the plate is a DOM move rather than a remount. Keyed by site: switching
   // location still resets the view-local ritual exactly as before.
-  const roomConsoleNode = selectedCompletedAction ? null : selectedSite.room ? (
+  const roomConsoleNode = selectedCompletedAction ? null : causalGateRequired && !causalGateAcknowledged ? (
+    <div className="causal-procedure-gate" role="note" data-causal-gate={causalSiteState?.id}>
+      <span>Changed affordance</span>
+      <strong>{causalSiteState?.title}</strong>
+      <p>{causalSiteState?.proceduralEffect}</p>
+      <button type="button" onClick={acknowledgeCausalState}>
+        Read the changed room, then continue <span aria-hidden="true">→</span>
+      </button>
+    </div>
+  ) : selectedSite.room ? (
     <ClassificationRoom
       key={selectedSite.id}
       room={selectedSite.room}
@@ -1165,6 +1215,40 @@ export function Investigation({
           </p>
         )}
       </header>
+
+      {opening && state.completedSites.length === 0 && (
+        <section
+          className="approach-opening"
+          data-approach={state.primaryApproach ?? undefined}
+          data-opening-site={opening.initialSiteId}
+          aria-labelledby="approach-opening-heading"
+        >
+          <div className="approach-opening-copy">
+            <p>{opening.kicker}</p>
+            <h2 id="approach-opening-heading">{opening.encounterTitle}</h2>
+            <span>{opening.encounterDetail}</span>
+          </div>
+          <dl>
+            <div>
+              <dt>First objective</dt>
+              <dd>{opening.objective}</dd>
+            </div>
+            <div>
+              <dt>Room state</dt>
+              <dd>{opening.environmentalCue}</dd>
+            </div>
+          </dl>
+          <div className="approach-opening-presence" aria-label="Opening presence">
+            {opening.personaIds.map((personaId) => (
+              <span key={personaId}>
+                <PersonaPortrait personaId={personaId} size="chip" />
+                {personaName(personaId)} present
+              </span>
+            ))}
+          </div>
+          <small>The remaining locations stay open after this authored beginning.</small>
+        </section>
+      )}
 
       <div className={`field-workspace ${inspectorSpine ? 'field-workspace--spine' : ''}`}>
         <section className="world-pane" aria-label="District navigation">
@@ -1301,6 +1385,7 @@ export function Investigation({
                 lines={sceneBeatLines}
                 reducedMotion={sceneMotionReduced}
                 held={sceneBeat.phase === 'done'}
+                beatId={state.caseId + ':field:' + sceneBeat.actionId}
                 onComplete={() =>
                   setSceneBeat((current) =>
                     current && current.phase === 'playing'
@@ -1473,6 +1558,66 @@ export function Investigation({
             <>
               <p className="site-description">{selectedSite.description}</p>
 
+              {causalSiteState && (
+                <section
+                  className="causal-site-state"
+                  data-causal-state={causalSiteState.id}
+                  data-causal-phase={causalSiteState.phase}
+                  aria-label="Persistent causal room state"
+                >
+                  <div>
+                    <span>{causalSiteState.phase === 'settled' ? 'Settled room' : 'Route consequence'}</span>
+                    <strong>{causalSiteState.title}</strong>
+                  </div>
+                  <p>{causalSiteState.detail}</p>
+                  <p className="causal-procedural-effect">{causalSiteState.proceduralEffect}</p>
+                  <ul className="causal-channels" aria-label="Changed consequence channels">
+                    {causalSiteState.channels.map((channel) => (
+                      <li key={channel}>{channel}</li>
+                    ))}
+                  </ul>
+                  {causalGateRequired && !causalGateAcknowledged && !roomSite && (
+                    <button type="button" onClick={acknowledgeCausalState}>
+                      Acknowledge changed procedure <span aria-hidden="true">→</span>
+                    </button>
+                  )}
+                </section>
+              )}
+
+              {counselState && counselState.siteId === selectedSite.id && (
+                <section
+                  className="counsel-variant"
+                  data-counsel-state={counselState.id}
+                  data-security-pressure={counselState.securityPressure ? 'true' : undefined}
+                  aria-labelledby="counsel-variant-heading"
+                >
+                  <div>
+                    <span>Counsel occupancy · deterministic from deposition</span>
+                    <h3 id="counsel-variant-heading">{counselState.title}</h3>
+                  </div>
+                  <p>{counselState.argument}</p>
+                  <dl>
+                    <div><dt>Recorder</dt><dd>{counselState.recorder}</dd></div>
+                    <div><dt>Shutter</dt><dd>{counselState.shutter}</dd></div>
+                    <div><dt>Presence</dt><dd>{counselState.occupants}</dd></div>
+                  </dl>
+                  <div className="counsel-advocates">
+                    {counselState.advocates.map((advocate) => (
+                      <article key={advocate.id}>
+                        <strong>{advocate.name}</strong>
+                        <p>{advocate.motive}</p>
+                        <small>{advocate.relationship}</small>
+                      </article>
+                    ))}
+                  </div>
+                  <blockquote>{counselState.liveObjection}</blockquote>
+                </section>
+              )}
+
+              {selectedCompletedAction &&
+                state.depositionRecord?.actionId === selectedCompletedAction.id &&
+                ellisDetail && <p className="ellis-ordinary-detail">{ellisDetail}</p>}
+
               {selectedCompletedAction ? (
             <>
               <div className="resolved-action">
@@ -1586,7 +1731,7 @@ export function Investigation({
                   full text of each.
                 </p>
               ) : null}
-              {sceneFirstPlate ? null : selectedActions.map((action) => {
+              {sceneFirstPlate || !causalGateAcknowledged ? null : selectedActions.map((action) => {
                 // A deposition entry opens its authored transcript interaction;
                 // its own final confirmation is the canonical commit.
                 const isDepositionEntry = Boolean(deposition?.entryActionIds.includes(action.id))

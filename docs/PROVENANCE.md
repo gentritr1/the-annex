@@ -370,3 +370,14 @@ step-down without visible blocking.
 Verified after `npm run build`: `dist/images/personas/` holds exactly the four
 WebPs at 43,762 bytes total, and **no persona PNG master reaches `dist/`** (the
 exact shape of the recorded 1.9 MB-PNG-in-deploy scar).
+
+## Nonlinear causal gameplay pass (2026-07-30)
+
+No new generated or externally sourced media was added for this pass.
+
+| Asset or layer | Source | Intended use | Review status |
+|---|---|---|---|
+| Case 81 deposition close-up reuse (public/images/case-81-deposition-annex.webp) | Existing approved and documented repository asset | Authored Procedure/Care opening staging; persistent witness chair, recorder, and admissibility-shutter location | Reuse only; prior readable-text, trademark, watermark, and composition review remains applicable |
+| Causal portal, shutter, trace, chair, drawer, card, and security states | New repository-authored React/CSS/SVG-compatible presentation; no raster generation | Display canonical ordered-action, deposition, alarm, trust, and verdict facts in the existing world and HUD | Code review and browser playtest required; no generated text or third-party marks |
+| Causal acoustic treatments | New authored numeric treatments consumed by the existing synthesized Web Audio graph | Communicate linked authority, security pressure, refusal, recorder, and room occlusion without decorative samples | Synthesized fallback only; no audio file, license, or external source |
+| Immediate aftermath tableaux | New repository-authored CSS geometry over existing scene language | Skippable expression of already-committed outcome facts before written debrief | Presentation-only; verified not to dispatch or mutate canonical state |

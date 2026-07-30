@@ -162,7 +162,7 @@ describe('buildFindings — the clerk’s summary', () => {
     states.push(state)
     state = gameReducer(state, { type: 'OPEN_RECONSTRUCTION' })
     state = gameReducer(state, { type: 'TOGGLE_FRAGMENT', fragmentId: 'scar-sensation' })
-    state = gameReducer(state, { type: 'TOGGLE_FRAGMENT', fragmentId: 'registry-hash' })
+    state = gameReducer(state, { type: 'TOGGLE_FRAGMENT', fragmentId: 'witness-account' })
     state = gameReducer(state, { type: 'SUBMIT_RECONSTRUCTION' })
     states.push(state)
     state = gameReducer(state, { type: 'COMMIT_FIELD_ACTION', actionId: 'authenticate-chain' })
