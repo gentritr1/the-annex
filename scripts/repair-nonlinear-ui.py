@@ -16,6 +16,10 @@ replacements = [
         """  `                beatId={state.caseId + ':field:' + sceneBeat.actionId}
 """,
     ),
+    (
+        """| Case 81 deposition close-up reuse (`public/images/case-81-deposition-annex.webp`) |""",
+        """| Case 81 deposition close-up reuse (public/images/case-81-deposition-annex.webp) |""",
+    ),
 ]
 
 for before, after in replacements:
