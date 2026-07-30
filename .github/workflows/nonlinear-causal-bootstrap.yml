@@ -83,7 +83,33 @@ jobs:
 
           run_stage "Install dependencies" npm ci
 
-          run_stage "Repair guarded UI codemod literal" python -c "from pathlib import Path; p=Path('scripts/apply-nonlinear-ui.mjs'); s=p.read_text(); before=\"    setWorldLine(\`\${causalSiteState.title}. Procedural change acknowledged; ordinary methods are available.\`)\\n\"; after=\"    setWorldLine(causalSiteState.title + '. Procedural change acknowledged; ordinary methods are available.')\\n\"; count=s.count(before); count == 1 or (_ for _ in ()).throw(SystemExit(f'expected exactly one UI literal repair target, found {count}')); p.write_text(s.replace(before, after))"
+          cat > /tmp/repair-nonlinear-ui.py <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/apply-nonlinear-ui.mjs')
+          source = path.read_text()
+          replacements = [
+              (
+                  """    setWorldLine(`${causalSiteState.title}. Procedural change acknowledged; ordinary methods are available.`)
+          """,
+                  """    setWorldLine(causalSiteState.title + '. Procedural change acknowledged; ordinary methods are available.')
+          """,
+              ),
+              (
+                  """  `                beatId={`${'${state.caseId}'}:field:${'${sceneBeat.actionId}'}`}
+          """,
+                  """  `                beatId={state.caseId + ':field:' + sceneBeat.actionId}
+          """,
+              ),
+          ]
+          for before, after in replacements:
+              count = source.count(before)
+              if count != 1:
+                  raise SystemExit(f'expected exactly one UI repair target, found {count}: {before!r}')
+              source = source.replace(before, after)
+          path.write_text(source)
+          PY
+          run_stage "Repair guarded UI codemod literals" python /tmp/repair-nonlinear-ui.py
 
           run_stage "Check core codemod syntax" node --check scripts/apply-nonlinear-core.mjs
           run_stage "Check UI codemod syntax" node --check scripts/apply-nonlinear-ui.mjs
