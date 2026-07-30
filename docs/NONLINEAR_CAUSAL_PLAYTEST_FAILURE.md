@@ -10,7 +10,7 @@ The guarded browser pass stopped before committing refinement or evidence.
 
 ===== Install project dependencies =====
 
-added 250 packages, and audited 251 packages in 5s
+added 250 packages, and audited 251 packages in 4s
 
 64 packages are looking for funding
   run `npm fund` for details
@@ -35,10 +35,9 @@ patched src/game/causal.test.ts
 
 
 /home/runner/work/the-annex/the-annex/scripts/nonlinear-browser-playtest.ts
-  201:7  error  'state' is never reassigned. Use 'const' instead  prefer-const
+  1:1  error  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
 
 ✖ 1 problem (1 error, 0 warnings)
-  1 error and 0 warnings potentially fixable with the `--fix` option.
 
 ```
 
