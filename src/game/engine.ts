@@ -6,6 +6,11 @@ import {
   personas,
   resolveFieldAction,
 } from './content'
+import {
+  getFragmentKnowledge,
+  getReconstructionAnchorStates,
+  getSpeculativeFragmentIds,
+} from './causal'
 // Save-schema constants live with the persistence layer (the single source of
 // truth). Importing them here keeps the version the engine stamps and the run
 // cap it enforces in lockstep with decode/migrate. persistence never imports
@@ -392,7 +397,18 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case 'TOGGLE_FRAGMENT': {
       if (state.phase !== 'reconstruction') return state
 
+      const content = getCaseContent(state.caseId)
+      if (!content.fragments.some((fragment) => fragment.id === action.fragmentId)) return state
       const alreadySelected = state.selectedFragments.includes(action.fragmentId)
+      // Deselecting an unknown legacy selection remains possible so an old save can
+      // recover. A new unknown selection is rejected before decisive copy can enter
+      // canonical state.
+      if (!alreadySelected && getFragmentKnowledge(content, state, action.fragmentId) === 'unknown') {
+        return {
+          ...state,
+          announcement: 'That anchor is still unknown. Continue the field investigation first.',
+        }
+      }
       if (!alreadySelected && state.selectedFragments.length >= 2) {
         return {
           ...state,
@@ -415,14 +431,33 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       if (state.phase !== 'reconstruction' || state.selectedFragments.length !== 2) return state
 
       const content = getCaseContent(state.caseId)
+      const anchorStates = getReconstructionAnchorStates(content, state)
+      const selectedKnowledge = state.selectedFragments.map((fragmentId) => anchorStates[fragmentId])
+      const corroboratedAnchors = selectedKnowledge.filter(
+        (knowledge) => knowledge === 'corroborated',
+      ).length
+      if (selectedKnowledge.includes('unknown') || corroboratedAnchors < 1) {
+        return {
+          ...state,
+          announcement:
+            'A filing needs two known anchors and at least one corroborated anchor. Unknown facts remain withheld.',
+        }
+      }
+
       const reconstructionId = content.getReconstructionForFragments(state.selectedFragments)
       const definition = content.reconstructionDefinitions.find((item) => item.id === reconstructionId)
       if (!definition) return state
-      const corroboratedAnchors = state.selectedFragments.filter((fragmentId) =>
-        content.fragmentEvidenceLinks[fragmentId].some((evidenceId) =>
-          state.evidence.includes(evidenceId),
-        ),
-      ).length
+      const speculativeFragments = getSpeculativeFragmentIds(content, state)
+      const selectedAnchorStates = Object.fromEntries(
+        state.selectedFragments.map((fragmentId) => [
+          fragmentId,
+          anchorStates[fragmentId] === 'corroborated' ? 'corroborated' : 'known',
+        ]),
+      ) as Record<string, 'known' | 'corroborated'>
+      const speculativeClause =
+        speculativeFragments.length > 0
+          ? ` ${speculativeFragments.length} unsupported anchor${speculativeFragments.length === 1 ? ' remains' : 's remain'} contested.`
+          : ''
 
       return {
         ...state,
@@ -435,12 +470,19 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           sourceType: 'reconstruction',
           sourceId: reconstructionId,
           title: `${definition.title} model filed`,
-          detail: `${definition.thesis} ${corroboratedAnchors} of 2 anchors were corroborated by your field record.${describeTrustDeltas(definition.trust)}`,
+          detail: `${definition.thesis} ${corroboratedAnchors} of 2 anchors were corroborated by your field record.${speculativeClause}${describeTrustDeltas(definition.trust)}`,
           tone:
-            definition.unresolvedTone || corroboratedAnchors === 0 ? 'warning' : 'positive',
+            definition.unresolvedTone || speculativeFragments.length > 0 ? 'warning' : 'positive',
           methodTags: ['puzzle'],
+          facts: {
+            speculativeFragments: [...speculativeFragments],
+            anchorStates: selectedAnchorStates,
+          },
         }),
-        announcement: `${definition.title} filed as evidence.`,
+        announcement:
+          speculativeFragments.length > 0
+            ? `${definition.title} filed with an unsupported anchor under objection.`
+            : `${definition.title} filed as evidence.`,
       }
     }
 

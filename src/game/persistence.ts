@@ -186,6 +186,27 @@ function isGameEvent(value: unknown, expectedOrder: number, sets: CaseIdSets): v
   if (value.sourceType === 'reconstruction' && !sets.reconstructions.has(value.sourceId)) return false
   if (value.sourceType === 'decision' && !sets.decisions.has(value.sourceId)) return false
 
+  // Optional schema-2 causal facts are deliberately narrow: only a filed
+  // reconstruction may carry them, every id must belong to this case, and an
+  // anchor can be recorded only as known or corroborated. Old events omit the
+  // field and continue to decode without a migration.
+  if (value.facts !== undefined) {
+    if (value.sourceType !== 'reconstruction' || !isRecord(value.facts)) return false
+    if (
+      value.facts.speculativeFragments !== undefined &&
+      !isUniqueArrayOf(value.facts.speculativeFragments, sets.fragments)
+    ) {
+      return false
+    }
+    if (value.facts.anchorStates !== undefined) {
+      if (!isRecord(value.facts.anchorStates)) return false
+      for (const [fragmentId, knowledge] of Object.entries(value.facts.anchorStates)) {
+        if (!sets.fragments.has(fragmentId)) return false
+        if (knowledge !== 'known' && knowledge !== 'corroborated') return false
+      }
+    }
+  }
+
   return true
 }
 

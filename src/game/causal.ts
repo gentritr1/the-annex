@@ -80,6 +80,7 @@ export interface CounselAdvocate {
 
 export interface CounselState {
   id: 'voluntary' | 'refused' | 'compelled' | 'unasked' | 'no-account'
+  siteId: SiteId
   title: string
   detail: string
   argument: string
@@ -1068,7 +1069,10 @@ export function resolveCounselState(state: GameState): CounselState | null {
     id = 'compelled'
   } else if (record) id = 'unasked'
 
-  const base: Record<CounselState['id'], Omit<CounselState, 'id' | 'advocates' | 'securityPressure'>> = {
+  const base: Record<
+    CounselState['id'],
+    Omit<CounselState, 'id' | 'siteId' | 'advocates' | 'securityPressure'>
+  > = {
     voluntary: {
       title: 'Voluntary protected use',
       detail:
@@ -1207,6 +1211,7 @@ export function resolveCounselState(state: GameState): CounselState | null {
     : ''
   return {
     id,
+    siteId: 'counsel-office',
     ...resolved,
     detail: `${resolved.detail}${pressureDetail}`,
     advocates: case81Advocates,

@@ -92,6 +92,14 @@ export interface AccessibilitySettings {
   subtitlePlate: boolean
 }
 
+export interface GameEventFacts {
+  // Reconstruction-only facts. Optional so schema-2 saves written before the
+  // nonlinear pass decode unchanged; when present they preserve the filed
+  // knowledge state without promoting speculation to evidence.
+  speculativeFragments?: FragmentId[]
+  anchorStates?: Record<FragmentId, 'known' | 'corroborated'>
+}
+
 export interface GameEvent {
   id: string
   order: number
@@ -101,6 +109,7 @@ export interface GameEvent {
   detail: string
   tone: 'neutral' | 'positive' | 'warning'
   methodTags: MethodTag[]
+  facts?: GameEventFacts
 }
 
 export interface RunSummary {

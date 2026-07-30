@@ -419,6 +419,19 @@ const sites: readonly SiteDefinition[] = [
     name: 'Deposition suite',
     description: 'Where 81-C is sworn — and where its account can be pressed until it parts from the record.',
     actionIds: ['take-sworn-statement', 'cross-examine-witness'],
+    closeup: {
+      // Reuses the approved deposition-annex master already documented in
+      // PROVENANCE.md. The methods remain in the transcript inspector; this plate
+      // supplies approach staging and a persistent recorder/shutter location.
+      src: '/images/case-81-deposition-annex.webp',
+      caption: 'Witness chair · recorder · admissibility shutter',
+      focalPoint: { x: 0.52, y: 0.56 },
+      zones: [
+        { actionId: 'take-sworn-statement', x: 0.43, y: 0.61 },
+        { actionId: 'cross-examine-witness', x: 0.65, y: 0.5 },
+      ],
+      atmosphere: 'argument-register',
+    },
     unvisitedNote:
       'You never opened the deposition suite. The witness was never sworn to you, and its account was never tested.',
   },
