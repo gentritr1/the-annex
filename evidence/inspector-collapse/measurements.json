@@ -1,6 +1,6 @@
 {
   "url": "http://127.0.0.1:3000/",
-  "capturedAt": "2026-07-26T23:04:25.282Z",
+  "capturedAt": "2026-07-27T08:54:04.852Z",
   "node": "v24.18.0",
   "before": {
     "inspectorWidth": 342.8,
@@ -361,7 +361,7 @@
       "step": "[always-mounted 1280x800] no sample shows a spine outside a settled close read",
       "pass": true,
       "detail": {
-        "samples": 15,
+        "samples": 16,
         "states": [
           "travel",
           "arriving",
@@ -374,7 +374,7 @@
       "step": "[always-mounted 1280x800] the description is on screen at every non-closeup sample",
       "pass": true,
       "detail": {
-        "checked": 14,
+        "checked": 15,
         "missing": 0
       }
     },
@@ -382,7 +382,7 @@
       "step": "[always-mounted 1280x800] exactly one room console instance at every sample",
       "pass": true,
       "detail": {
-        "samples": 15,
+        "samples": 16,
         "wrong": 0
       }
     },
@@ -986,7 +986,7 @@
       "step": "[always-mounted 1920x1080] no sample shows a spine outside a settled close read",
       "pass": true,
       "detail": {
-        "samples": 15,
+        "samples": 16,
         "states": [
           "travel",
           "arriving",
@@ -999,7 +999,7 @@
       "step": "[always-mounted 1920x1080] the description is on screen at every non-closeup sample",
       "pass": true,
       "detail": {
-        "checked": 14,
+        "checked": 15,
         "missing": 0
       }
     },
@@ -1007,7 +1007,7 @@
       "step": "[always-mounted 1920x1080] exactly one room console instance at every sample",
       "pass": true,
       "detail": {
-        "samples": 15,
+        "samples": 16,
         "wrong": 0
       }
     },
@@ -1432,7 +1432,7 @@
       "step": "[always-mounted 375x812] the description is on screen at every non-closeup sample",
       "pass": true,
       "detail": {
-        "checked": 14,
+        "checked": 15,
         "missing": 0
       }
     },

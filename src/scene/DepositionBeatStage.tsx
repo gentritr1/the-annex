@@ -9,9 +9,9 @@ interface DepositionBeatStageProps {
   route: 'sworn' | 'press'
   lastChoice: DepositionChoiceId | null
   consent: DepositionConsent | 'pending'
+  labels: readonly string[]
+  recordStatus: string
 }
-
-const BEAT_LABELS = ['Oath', 'Collapse', 'Fourth minute', 'Consent', 'Seal'] as const
 
 // A supplemental close-read of the deposition room. The transcript remains the
 // only control surface: this stage is pointer-inert, hidden from assistive tech,
@@ -25,6 +25,8 @@ export function DepositionBeatStage({
   route,
   lastChoice,
   consent,
+  labels,
+  recordStatus,
 }: DepositionBeatStageProps) {
   return (
     <div
@@ -53,7 +55,7 @@ export function DepositionBeatStage({
         </div>
         <div className="deposition-recorder">
           <span />
-          <strong>REC</strong>
+          <strong>RAW</strong>
         </div>
       </div>
 
@@ -67,7 +69,7 @@ export function DepositionBeatStage({
           {String(beatNumber).padStart(2, '0')} / {String(totalBeats).padStart(2, '0')}
         </span>
         <div className="deposition-beat-track">
-          {BEAT_LABELS.slice(0, totalBeats).map((label, index) => {
+          {labels.slice(0, totalBeats).map((label, index) => {
             const position = index + 1
             return (
               <span
@@ -84,8 +86,8 @@ export function DepositionBeatStage({
       </div>
 
       <div className="deposition-visual-caption">
-        <span>{route === 'press' ? 'Opposing examination' : 'Sworn account'}</span>
-        <strong>{BEAT_LABELS[beatNumber - 1] ?? 'Close'}</strong>
+        <span>{recordStatus}</span>
+        <strong>{labels[beatNumber - 1] ?? 'Close'}</strong>
       </div>
     </div>
   )

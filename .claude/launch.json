@@ -7,6 +7,13 @@
       "runtimeArgs": ["run", "dev"],
       "port": 3000,
       "autoPort": false
+    },
+    {
+      "name": "annex-next-level",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "/tmp/annex-next-level.IWVvc3", "run", "dev", "--", "--port", "4321", "--strictPort"],
+      "port": 4321,
+      "autoPort": false
     }
   ]
 }

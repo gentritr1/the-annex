@@ -1,0 +1,1336 @@
+/* ══ CINEMATIC GAMEPLAY HUD ══════════════════════════════════════════════════
+   Spatial investigations use the world as the page. Tribunal and consequence
+   records retain their scrollable evidence surfaces, but carry the same
+   persistent case/objective/status grammar through CinematicPhaseHud.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.annex-app--cinematic-phase .case-header {
+  background:
+    linear-gradient(90deg, oklch(0.035 0 0 / 0.98), oklch(0.07 0.006 235 / 0.96)),
+    var(--night);
+  border-bottom-color: oklch(0.78 0.11 190 / 0.24);
+}
+
+.annex-app--cinematic-phase .phase-status {
+  display: none;
+}
+
+.annex-app--cinematic-phase .tribunal-page,
+.annex-app--cinematic-phase .debrief-page {
+  width: min(100%, 1180px);
+  padding-top: 0;
+}
+
+.cinematic-phase-hud {
+  position: sticky;
+  z-index: 19;
+  top: var(--header-height);
+  min-height: 78px;
+  display: grid;
+  grid-template-columns: minmax(210px, 0.8fr) minmax(260px, 1.25fr) auto;
+  align-items: center;
+  gap: 24px;
+  margin: 0 0 22px;
+  padding: 13px 16px;
+  color: var(--record);
+  background: oklch(0.065 0.007 238 / 0.98);
+  border-bottom: 1px solid var(--line-strong);
+  isolation: isolate;
+}
+
+.cinematic-phase-hud::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--amber), var(--cyan) 58%, transparent);
+  opacity: 0.54;
+  pointer-events: none;
+}
+
+.cinematic-phase-hud-case,
+.cinematic-phase-hud-objective {
+  min-width: 0;
+}
+
+.cinematic-phase-hud-case p,
+.cinematic-phase-hud-objective > span,
+.cinematic-phase-hud-metrics dt {
+  margin: 0;
+  color: var(--fog);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-micro);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cinematic-phase-hud-case p {
+  color: var(--amber-soft);
+}
+
+.cinematic-phase-hud-case strong {
+  display: block;
+  margin-top: 3px;
+  overflow: hidden;
+  color: var(--record-bright);
+  font-size: var(--type-title);
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cinematic-phase-hud-objective {
+  padding-left: 15px;
+  border-left: 1px solid var(--line);
+}
+
+.cinematic-phase-hud-objective > span {
+  color: var(--cyan);
+}
+
+.cinematic-phase-hud-objective p {
+  max-width: 56ch;
+  margin: 3px 0 0;
+  color: var(--record);
+  font-size: var(--type-body);
+  line-height: 1.42;
+  text-wrap: pretty;
+}
+
+.cinematic-phase-hud-metrics {
+  display: flex;
+  align-items: stretch;
+  gap: 1px;
+  margin: 0;
+  background: var(--line);
+}
+
+.cinematic-phase-hud-metrics > div {
+  min-width: 64px;
+  max-width: 132px;
+  display: grid;
+  align-content: center;
+  gap: 3px;
+  padding: 8px 10px;
+  background: var(--night-soft);
+}
+
+.cinematic-phase-hud-metrics dd {
+  margin: 0;
+  overflow: hidden;
+  color: var(--record-bright);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-meta);
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cinematic-phase-hud-metrics [data-tone='open'] dd {
+  color: var(--cyan);
+}
+
+.cinematic-phase-hud-metrics [data-tone='warning'] dd {
+  color: var(--coral);
+}
+
+.annex-app--cinematic-phase.high-contrast .cinematic-phase-hud {
+  background: var(--night);
+  border: 2px solid var(--line-strong);
+}
+
+.annex-app--gameplay {
+  --hud-top: max(18px, env(safe-area-inset-top));
+  --hud-right: max(22px, env(safe-area-inset-right));
+  --hud-bottom: max(20px, env(safe-area-inset-bottom));
+  --hud-left: max(22px, env(safe-area-inset-left));
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  height: 100dvh;
+  min-height: 100svh;
+  overflow: hidden;
+  background: var(--night);
+}
+
+.annex-app--gameplay .case-header {
+  position: absolute;
+  z-index: 32;
+  inset: 0 0 auto;
+  height: 58px;
+  padding: 7px 14px;
+  background: linear-gradient(to bottom, oklch(0.03 0 0 / 0.82), transparent);
+  border: 0;
+  pointer-events: none;
+}
+
+.annex-app--gameplay .case-header .case-identity,
+.annex-app--gameplay .case-header .header-preferences {
+  pointer-events: auto;
+}
+
+.annex-app--gameplay .case-header .header-preferences {
+  grid-column: 3;
+}
+
+.annex-app--gameplay .case-header .phase-status {
+  display: none;
+}
+
+.annex-app--gameplay .brand-button {
+  width: 44px;
+  height: 44px;
+  justify-content: center;
+  border: 1px solid oklch(0.82 0.01 210 / 0.28);
+  border-radius: 50%;
+  background: oklch(0.04 0 0 / 0.7);
+  box-shadow: 0 8px 28px oklch(0 0 0 / 0.42);
+}
+
+.annex-app--gameplay .brand-button > span:last-child {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.annex-app--gameplay .brand-glyph {
+  width: auto;
+  height: auto;
+  color: var(--amber-soft);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-title);
+  font-weight: 800;
+}
+
+.annex-app--gameplay .header-preferences summary {
+  min-width: 72px;
+  justify-content: center;
+  color: var(--record);
+  background: oklch(0.04 0 0 / 0.74);
+  border: 1px solid oklch(0.82 0.01 210 / 0.26);
+  border-radius: 4px;
+  box-shadow: 0 8px 28px oklch(0 0 0 / 0.38);
+}
+
+.annex-app--gameplay .preferences-popover {
+  max-height: calc(100dvh - 72px);
+  overflow-y: auto;
+  background: oklch(0.09 0.008 240 / 0.97);
+  border: 1px solid var(--line-strong);
+  backdrop-filter: blur(14px);
+}
+
+.annex-app--gameplay .case-layout,
+.annex-app--gameplay .scene-column,
+.annex-app--gameplay .investigation-page--game-hud,
+.annex-app--gameplay .field-workspace,
+.annex-app--gameplay .world-pane,
+.annex-app--gameplay .world-view {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.annex-app--gameplay .case-layout,
+.annex-app--gameplay .scene-column {
+  display: block;
+}
+
+.annex-app--gameplay .investigation-page--game-hud {
+  display: block;
+  overflow: hidden;
+}
+
+.annex-app--gameplay .field-workspace {
+  display: block;
+}
+
+.annex-app--gameplay .world-pane {
+  display: block;
+  container-type: normal;
+}
+
+.annex-app--gameplay .world-view {
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+}
+
+.annex-app--gameplay .world-view::after {
+  content: '';
+  position: absolute;
+  z-index: 15;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, oklch(0.02 0 0 / 0.46), transparent 22%),
+    linear-gradient(to top, oklch(0.02 0 0 / 0.54), transparent 31%);
+  pointer-events: none;
+}
+
+.annex-app--gameplay .world-view > .annex-world-stage,
+.annex-app--gameplay .world-view > .site-closeup-stage {
+  border-radius: 0;
+}
+
+/* The spatial world portals are the sole location picker. The old web-page
+   switcher remains a non-spatial fallback only. */
+.annex-app--gameplay .site-switcher,
+.annex-app--gameplay .field-commandbar,
+.annex-app--gameplay .field-dock,
+.annex-app--gameplay .scene-summons,
+.annex-app--gameplay .world-return,
+.annex-app--gameplay .world-caption {
+  display: none;
+}
+
+/* The always-mounted record still hosts the room console between visits, but it
+   is not a second visible or focusable interface. The console host is reparented
+   into .room-console before it becomes interactive in the scene. */
+.annex-app--gameplay .site-inspector[data-gameplay-hidden='true'] {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  border: 0;
+}
+
+.game-hud {
+  position: absolute;
+  z-index: 20;
+  inset: 0;
+  color: var(--record);
+  pointer-events: none;
+  isolation: isolate;
+}
+
+.game-hud button {
+  pointer-events: auto;
+}
+
+.hud-vignette {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 48%, transparent 46%, oklch(0.02 0 0 / 0.24) 100%),
+    linear-gradient(90deg, oklch(0.02 0 0 / 0.38), transparent 20% 78%, oklch(0.02 0 0 / 0.28));
+  pointer-events: none;
+}
+
+.hud-case {
+  position: absolute;
+  top: var(--hud-top);
+  left: calc(var(--hud-left) + 58px);
+  width: min(46vw, 560px);
+  padding: 4px 0 14px 15px;
+  border-top: 1px solid oklch(0.86 0.08 78 / 0.5);
+  filter: drop-shadow(0 4px 18px oklch(0 0 0 / 0.82));
+}
+
+.hud-case::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -18px -42px -24px -24px;
+  background: radial-gradient(ellipse at 20% 20%, oklch(0.02 0 0 / 0.78), transparent 72%);
+  pointer-events: none;
+}
+
+.hud-kicker,
+.hud-objective > span,
+.hud-status dt,
+.hud-dialogue-kicker,
+.hud-location {
+  margin: 0;
+  color: var(--amber-soft);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-micro);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.hud-case h1 {
+  max-width: 24ch;
+  margin: 3px 0 12px;
+  color: var(--record-bright);
+  font-size: clamp(1.18rem, 2vw, 1.78rem);
+  font-weight: 650;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.hud-objective {
+  display: grid;
+  gap: 3px;
+}
+
+.hud-objective > span {
+  color: var(--cyan);
+}
+
+.hud-objective p {
+  max-width: 50ch;
+  margin: 0;
+  color: var(--record);
+  font-size: var(--type-body);
+  line-height: 1.45;
+  text-shadow: 0 2px 12px oklch(0 0 0 / 0.94);
+}
+
+.hud-objective-copy:focus-visible {
+  outline: 2px solid var(--amber-soft);
+  outline-offset: 3px;
+}
+
+.hud-status {
+  position: absolute;
+  top: calc(var(--hud-top) + 54px);
+  right: var(--hud-right);
+  width: min(31vw, 360px);
+  display: grid;
+  justify-items: end;
+  gap: 9px;
+  filter: drop-shadow(0 4px 18px oklch(0 0 0 / 0.82));
+}
+
+.hud-status dl {
+  display: flex;
+  gap: 1px;
+  margin: 0;
+  background: oklch(0.7 0.015 210 / 0.22);
+}
+
+.hud-status dl > div {
+  min-width: 82px;
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: baseline;
+  gap: 10px;
+  padding: 7px 10px;
+  background: oklch(0.04 0.006 235 / 0.82);
+}
+
+.hud-status dt {
+  color: var(--fog);
+}
+
+.hud-status dd {
+  margin: 0;
+  color: var(--record-bright);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-label);
+  font-weight: 800;
+}
+
+.hud-status .hud-status-risk dt,
+.hud-status .hud-status-risk dd {
+  color: var(--coral);
+}
+
+.hud-record-actions {
+  display: flex;
+  gap: 7px;
+}
+
+.hud-record-actions button {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px 7px 12px;
+  color: var(--record);
+  text-align: left;
+  background: oklch(0.04 0.006 235 / 0.82);
+  border: 1px solid oklch(0.82 0.01 210 / 0.28);
+  border-radius: 4px;
+  transition:
+    color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out),
+    background-color 160ms var(--ease-out);
+}
+
+.hud-record-actions button:hover {
+  color: var(--amber-soft);
+  background: oklch(0.12 0.018 70 / 0.9);
+  border-color: var(--amber);
+}
+
+.hud-record-actions button:disabled {
+  color: var(--fog);
+  background: oklch(0.04 0.006 235 / 0.74);
+  border-color: oklch(0.82 0.01 210 / 0.16);
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.hud-record-actions button > span {
+  font-size: var(--type-meta);
+  font-weight: 700;
+}
+
+.hud-record-actions kbd {
+  padding: 3px 5px;
+  color: var(--fog);
+  background: oklch(0.18 0.008 235 / 0.86);
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-micro);
+  line-height: 1;
+  box-shadow: inset 0 -1px oklch(0 0 0 / 0.5);
+}
+
+.hud-dialogue {
+  position: absolute;
+  bottom: var(--hud-bottom);
+  left: var(--hud-left);
+  width: min(53vw, 680px);
+  min-height: 112px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: end;
+  gap: 16px;
+  padding: 18px 24px 16px 0;
+  filter: drop-shadow(0 5px 24px oklch(0 0 0 / 0.88));
+}
+
+.hud-dialogue.hud-dialogue-no-portrait {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.hud-dialogue:focus-visible {
+  outline: 2px solid var(--amber-soft);
+  outline-offset: 4px;
+}
+
+.hud-dialogue::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -24px -80px -28px -34px;
+  background: linear-gradient(90deg, oklch(0.025 0 0 / 0.94), oklch(0.025 0 0 / 0.7) 68%, transparent);
+  pointer-events: none;
+}
+
+.hud-dialogue > .persona-portrait {
+  width: 82px;
+  border-color: oklch(0.86 0.08 78 / 0.52);
+  box-shadow: 0 0 0 1px oklch(0 0 0 / 0.62), 0 8px 24px oklch(0 0 0 / 0.62);
+}
+
+.hud-dialogue-kicker {
+  color: var(--fog);
+}
+
+.hud-dialogue h2 {
+  margin: 3px 0 7px;
+  color: var(--amber-soft);
+  font-size: var(--type-meta);
+  font-weight: 750;
+  letter-spacing: 0.04em;
+}
+
+.hud-dialogue-line {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--record-bright);
+  font-size: clamp(0.92rem, 1.35vw, 1.1rem);
+  font-weight: 430;
+  line-height: 1.52;
+  text-shadow: 0 2px 16px oklch(0 0 0 / 0.98);
+}
+
+/* The self-retiring first-run rule under the mandate. Held one step below the
+   authored line — amber-marked so it reads as a stamped notice rather than more
+   mandate prose, and capped at 58ch so the two-sentence budget rule wraps to at
+   most two lines inside the plate's own width. */
+.hud-dialogue-note {
+  max-width: 58ch;
+  margin: 9px 0 0;
+  padding-left: 10px;
+  color: var(--amber-soft);
+  border-left: 2px solid var(--amber);
+  font-size: var(--type-meta);
+  font-weight: 520;
+  line-height: 1.45;
+  text-shadow: 0 2px 16px oklch(0 0 0 / 0.98);
+}
+
+.hud-dialogue-progress {
+  margin-top: 13px;
+  display: grid;
+  grid-template-columns: minmax(54px, 112px) auto;
+  align-items: center;
+  gap: 9px;
+}
+
+.hud-dialogue-progress > span {
+  height: 1px;
+  background: linear-gradient(90deg, var(--amber), oklch(0.72 0.14 70 / 0.12));
+}
+
+.hud-dialogue-progress small {
+  color: var(--fog);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-micro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hud-dialogue-secret {
+  padding-left: 18px;
+  border-left: 2px solid var(--amber);
+}
+
+.hud-dialogue-secret::after {
+  content: '⌜ 04';
+  position: absolute;
+  top: 3px;
+  right: 26px;
+  color: var(--amber);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-micro);
+  letter-spacing: 0.12em;
+}
+
+.hud-dialogue-secret .hud-dialogue-kicker {
+  color: var(--amber-soft);
+}
+
+.hud-dialogue-secret h2 {
+  color: var(--cyan);
+}
+
+.hud-dialogue-secret .hud-dialogue-progress > span {
+  background: linear-gradient(90deg, var(--cyan), oklch(0.78 0.11 190 / 0.12));
+}
+
+.hud-prompts {
+  position: absolute;
+  right: var(--hud-right);
+  bottom: var(--hud-bottom);
+  width: min(33vw, 370px);
+  display: grid;
+  justify-items: stretch;
+  gap: 6px;
+  padding: 14px 0 10px 36px;
+  text-align: right;
+  filter: drop-shadow(0 5px 22px oklch(0 0 0 / 0.9));
+}
+
+.hud-prompts::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -30px -34px -30px -80px;
+  background: linear-gradient(270deg, oklch(0.025 0 0 / 0.9), oklch(0.025 0 0 / 0.48) 64%, transparent);
+  pointer-events: none;
+}
+
+.hud-location {
+  color: var(--cyan);
+}
+
+.hud-interaction-hint {
+  margin: 0 0 4px;
+  color: var(--record);
+  font-size: var(--type-body);
+  line-height: 1.4;
+}
+
+.hud-interaction-hint > span {
+  margin-right: 5px;
+  color: var(--amber);
+}
+
+.hud-prompt-actions {
+  display: grid;
+  gap: 5px;
+}
+
+.hud-prompt-actions button {
+  min-height: 46px;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  color: var(--record);
+  text-align: left;
+  background: oklch(0.04 0.006 235 / 0.82);
+  border: 1px solid oklch(0.82 0.01 210 / 0.26);
+  border-radius: 3px;
+  transition:
+    color 160ms var(--ease-out),
+    background-color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out),
+    transform 160ms var(--ease-out);
+}
+
+.hud-prompt-actions button:hover {
+  color: var(--record-bright);
+  background: oklch(0.13 0.014 235 / 0.94);
+  border-color: var(--record);
+  transform: translateX(-3px);
+}
+
+.hud-prompt-actions .hud-action-primary {
+  color: var(--night);
+  background: var(--amber-soft);
+  border-color: var(--amber-soft);
+}
+
+.hud-prompt-actions .hud-action-primary:hover {
+  color: var(--night);
+  background: var(--record-bright);
+  border-color: var(--record-bright);
+}
+
+.hud-action-index {
+  color: inherit;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-micro);
+  font-weight: 800;
+  opacity: 0.7;
+}
+
+/* The ordinal, once it is a live key, takes the record chips' cap vocabulary
+   (`Alt C` / `Alt E`) rather than inventing a second one. Own colours, because
+   this cap sits on a filled amber primary action as well as on a dark quiet one
+   and must stay a cap on both — `currentColor` on the amber button would print
+   a near-black chip. */
+.hud-action-index kbd {
+  display: inline-block;
+  min-width: 20px;
+  padding: 3px 5px;
+  color: var(--fog);
+  background: oklch(0.18 0.008 235 / 0.86);
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: var(--type-micro);
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  box-shadow: inset 0 -1px oklch(0 0 0 / 0.5);
+}
+
+.hud-prompt-actions .hud-action-primary .hud-action-index {
+  opacity: 1;
+}
+
+.game-hud[data-console-active='true'] .hud-dialogue {
+  display: none;
+}
+
+.game-hud[data-console-active='true'] .hud-prompts {
+  top: 46%;
+  bottom: auto;
+}
+
+.game-hud[data-console-active='true'] .hud-location,
+.game-hud[data-console-active='true'] .hud-interaction-hint {
+  display: none;
+}
+
+.annex-app--gameplay .scene-beat-lines {
+  right: auto;
+  bottom: 16%;
+  left: var(--hud-left);
+  width: min(48vw, 620px);
+  max-height: none;
+  padding: 16px 20px;
+  text-align: left;
+  transform: none;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+}
+
+.annex-app--gameplay .scene-beat-line--speaker {
+  justify-content: flex-start;
+}
+
+.annex-app--gameplay .scene-beat-advance {
+  right: var(--hud-right);
+  bottom: var(--hud-bottom);
+  left: auto;
+  min-height: 48px;
+  color: var(--night);
+  background: var(--amber-soft);
+  border-color: var(--amber-soft);
+  border-radius: 3px;
+  transform: none;
+}
+
+.annex-app--gameplay .scene-beat-hint {
+  right: var(--hud-right);
+  bottom: calc(var(--hud-bottom) + 60px);
+  left: auto;
+  transform: none;
+}
+
+.annex-app--gameplay .scene-result {
+  right: var(--hud-right);
+  bottom: var(--hud-bottom);
+  left: var(--hud-left);
+  border: 1px solid var(--line-strong);
+  border-top-color: var(--cyan);
+  border-radius: 4px;
+}
+
+.annex-app--gameplay .room-console {
+  right: max(14px, env(safe-area-inset-right));
+  bottom: max(14px, env(safe-area-inset-bottom));
+  left: max(14px, env(safe-area-inset-left));
+  max-height: 68%;
+  border: 1px solid var(--line-strong);
+  border-radius: 5px;
+}
+
+.annex-app--gameplay .storage-warning {
+  position: fixed;
+  z-index: 45;
+  top: 58px;
+  right: 0;
+  left: 0;
+}
+
+.annex-app--gameplay.high-contrast .hud-case,
+.annex-app--gameplay.high-contrast .hud-dialogue,
+.annex-app--gameplay.high-contrast .hud-prompts {
+  background: var(--night);
+  border: 2px solid var(--line-strong);
+  filter: none;
+}
+
+.annex-app--gameplay.high-contrast .hud-case::before,
+.annex-app--gameplay.high-contrast .hud-dialogue::before,
+.annex-app--gameplay.high-contrast .hud-prompts::before,
+.annex-app--gameplay.high-contrast .hud-vignette {
+  display: none;
+}
+
+.annex-app--gameplay.high-contrast .hud-dialogue,
+.annex-app--gameplay.high-contrast .hud-prompts {
+  padding: 14px;
+}
+
+.annex-app--gameplay.high-contrast .hud-status dl > div,
+.annex-app--gameplay.high-contrast .hud-record-actions button,
+.annex-app--gameplay.high-contrast .hud-prompt-actions button,
+.annex-app--gameplay.high-contrast .header-preferences summary {
+  color: var(--record-bright);
+  background: var(--night);
+  border-color: var(--line-strong);
+}
+
+.annex-app--gameplay.easy-read .hud-case,
+.annex-app--gameplay.easy-read .hud-dialogue,
+.annex-app--gameplay.easy-read .hud-prompts,
+.annex-app--gameplay.subtitle-plate .hud-dialogue {
+  background: oklch(0.05 0.004 240 / 0.96);
+}
+
+.annex-app--gameplay.reduce-motion *,
+.annex-app--gameplay.reduce-motion *::before,
+.annex-app--gameplay.reduce-motion *::after {
+  scroll-behavior: auto !important;
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .annex-app--gameplay *,
+  .annex-app--gameplay *::before,
+  .annex-app--gameplay *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .cinematic-phase-hud {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px 18px;
+  }
+
+  .cinematic-phase-hud-objective {
+    grid-column: 1;
+  }
+
+  .cinematic-phase-hud-metrics {
+    grid-row: 1 / span 2;
+    grid-column: 2;
+  }
+
+  .hud-case {
+    width: min(58vw, 500px);
+  }
+
+  .hud-status {
+    width: min(39vw, 330px);
+  }
+
+  .hud-status dl > div {
+    min-width: 70px;
+    grid-template-columns: 1fr;
+    gap: 2px;
+    text-align: right;
+  }
+
+  .hud-dialogue {
+    width: min(58vw, 580px);
+  }
+
+  .hud-prompts {
+    width: min(38vw, 330px);
+  }
+}
+
+@media (max-width: 700px) {
+  .annex-app--cinematic-phase .tribunal-page,
+  .annex-app--cinematic-phase .debrief-page {
+    padding-top: 0;
+  }
+
+  .cinematic-phase-hud {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    padding: 11px 12px 12px;
+  }
+
+  .cinematic-phase-hud-objective {
+    grid-column: 1;
+    padding: 9px 0 0;
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .cinematic-phase-hud-objective p {
+    font-size: var(--type-read);
+  }
+
+  .cinematic-phase-hud-metrics {
+    width: 100%;
+    display: grid;
+    grid-row: auto;
+    grid-column: 1;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .cinematic-phase-hud-metrics > div {
+    min-width: 0;
+    max-width: none;
+    padding: 7px 6px;
+  }
+
+  .cinematic-phase-hud-metrics dd {
+    font-size: var(--type-meta);
+  }
+
+  .annex-app--gameplay {
+    --hud-top: max(10px, env(safe-area-inset-top));
+    --hud-right: max(12px, env(safe-area-inset-right));
+    --hud-bottom: max(12px, env(safe-area-inset-bottom));
+    --hud-left: max(12px, env(safe-area-inset-left));
+  }
+
+  .annex-app--gameplay .case-header {
+    height: 54px;
+    padding: 5px 8px;
+  }
+
+  .annex-app--gameplay .header-preferences summary {
+    min-width: 64px;
+  }
+
+  .annex-app--gameplay .preferences-popover {
+    position: fixed;
+    top: 56px;
+    right: 8px;
+    width: min(300px, calc(100vw - 16px));
+    max-height: calc(100dvh - 64px);
+  }
+
+  .hud-case {
+    top: calc(var(--hud-top) + 48px);
+    left: var(--hud-left);
+    width: calc(100% - 152px);
+    min-width: 0;
+    padding: 2px 0 9px 10px;
+  }
+
+  .hud-case h1 {
+    max-width: 18ch;
+    margin-bottom: 7px;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .hud-objective p {
+    max-height: min(20dvh, 160px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    font-size: var(--type-meta);
+    overflow-wrap: anywhere;
+    pointer-events: auto;
+    touch-action: pan-y;
+  }
+
+  .hud-status {
+    top: calc(var(--hud-top) + 48px);
+    right: var(--hud-right);
+    width: 120px;
+    gap: 5px;
+  }
+
+  .hud-status dl {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hud-status dl > div {
+    min-width: 0;
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+    padding: 5px 7px;
+    text-align: left;
+  }
+
+  .hud-status .hud-status-risk {
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .hud-record-actions {
+    width: 100%;
+    display: grid;
+    gap: 4px;
+  }
+
+  .hud-record-actions button {
+    min-height: 44px;
+    justify-content: space-between;
+    padding: 6px 8px;
+  }
+
+  .hud-record-actions kbd {
+    display: none;
+  }
+
+  /* Same mechanism, same reason: a layout this narrow is a touch layout, and a
+     key cap on a device with no keyboard is the F1 lie in a new place. The
+     ordinal column goes with it — an empty 28px gutter is not a design. */
+  .hud-action-index {
+    display: none;
+  }
+
+  .hud-dialogue {
+    right: var(--hud-right);
+    bottom: calc(var(--hud-bottom) + 136px);
+    left: var(--hud-left);
+    width: auto;
+    min-height: 0;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 11px;
+    max-height: min(42dvh, 300px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    padding: 12px 10px;
+    background: linear-gradient(90deg, oklch(0.025 0 0 / 0.92), oklch(0.025 0 0 / 0.74));
+    border: 1px solid oklch(0.86 0.08 78 / 0.5);
+    pointer-events: auto;
+    touch-action: pan-y;
+  }
+
+  .hud-dialogue::before {
+    display: none;
+  }
+
+  .hud-dialogue > .persona-portrait {
+    width: 56px;
+  }
+
+  .hud-dialogue-line {
+    font-size: var(--type-read);
+    overflow-wrap: anywhere;
+  }
+
+  .annex-app--gameplay.large-text .hud-case h1,
+  .annex-app--gameplay.easy-read .hud-case h1 {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  .annex-app--gameplay.large-text .hud-objective p,
+  .annex-app--gameplay.easy-read .hud-objective p,
+  .annex-app--gameplay.large-text .hud-dialogue-line,
+  .annex-app--gameplay.easy-read .hud-dialogue-line {
+    display: block;
+    -webkit-line-clamp: unset;
+  }
+
+  .annex-app--gameplay.large-text .hud-dialogue,
+  .annex-app--gameplay.easy-read .hud-dialogue {
+    max-height: min(42dvh, 300px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    pointer-events: auto;
+    touch-action: pan-y;
+  }
+
+  /* The reader keeps its three object targets in the middle band of the
+     contained world. In enlarged-reading modes, bound the scrollable subtitle
+     plate below that band so it cannot hide or intercept those 48px targets. */
+  .annex-app--gameplay.large-text:has(.world-view--unnumbered-room) .hud-dialogue,
+  .annex-app--gameplay.easy-read:has(.world-view--unnumbered-room) .hud-dialogue {
+    max-height: min(15dvh, 132px);
+    scrollbar-gutter: stable;
+  }
+
+  /* Focus cameras can project the two inactive props behind the lower HUD.
+     Enlarged-reading modes use a stable, three-point accessibility band so
+     every object remains visible and touchable while the copy plate scrolls. */
+  .annex-app--gameplay.large-text:has(.world-view--unnumbered-room)
+    .unnumbered-room-point[data-placement='left'],
+  .annex-app--gameplay.easy-read:has(.world-view--unnumbered-room)
+    .unnumbered-room-point[data-placement='left'] {
+    top: 44% !important;
+    left: 13% !important;
+  }
+
+  .annex-app--gameplay.large-text:has(.world-view--unnumbered-room)
+    .unnumbered-room-point[data-placement='center'],
+  .annex-app--gameplay.easy-read:has(.world-view--unnumbered-room)
+    .unnumbered-room-point[data-placement='center'] {
+    top: 42% !important;
+    left: 50% !important;
+  }
+
+  .annex-app--gameplay.large-text:has(.world-view--unnumbered-room)
+    .unnumbered-room-point[data-placement='right'],
+  .annex-app--gameplay.easy-read:has(.world-view--unnumbered-room)
+    .unnumbered-room-point[data-placement='right'] {
+    top: 44% !important;
+    left: 87% !important;
+  }
+
+  .hud-dialogue-progress {
+    margin-top: 8px;
+  }
+
+  .hud-prompts {
+    right: var(--hud-right);
+    bottom: var(--hud-bottom);
+    left: var(--hud-left);
+    width: auto;
+    padding: 9px 0 0;
+    background: linear-gradient(to top, oklch(0.025 0 0 / 0.94), oklch(0.025 0 0 / 0.72));
+  }
+
+  .hud-prompts::before {
+    display: none;
+  }
+
+  .hud-prompt-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hud-prompt-actions button:nth-child(3):last-child {
+    grid-column: 1 / -1;
+  }
+
+  .hud-prompt-actions button:only-child {
+    grid-column: 1 / -1;
+  }
+
+  .hud-prompt-actions button {
+    min-height: 48px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .game-hud[data-console-active='true'] .hud-prompts {
+    top: calc(var(--hud-top) + 170px);
+    bottom: auto;
+  }
+
+  .game-hud[data-console-active='true'] .hud-record-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .game-hud:has(.hud-prompt-actions button:nth-child(3)) .hud-dialogue {
+    bottom: calc(var(--hud-bottom) + 196px);
+  }
+
+  .annex-app--gameplay.large-text:has(.world-view--unnumbered-room) .hud-dialogue,
+  .annex-app--gameplay.easy-read:has(.world-view--unnumbered-room) .hud-dialogue {
+    bottom: calc(var(--hud-bottom) + 260px);
+  }
+
+  .annex-app--gameplay .scene-beat-lines {
+    right: var(--hud-right);
+    bottom: 22%;
+    left: var(--hud-left);
+    width: auto;
+    max-height: none;
+  }
+
+  .annex-app--gameplay .scene-beat-advance {
+    right: var(--hud-right);
+    bottom: var(--hud-bottom);
+    min-height: 48px;
+  }
+
+  .annex-app--gameplay .scene-result {
+    right: var(--hud-right);
+    bottom: var(--hud-bottom);
+    left: var(--hud-left);
+    max-height: 42dvh;
+    overflow-y: auto;
+  }
+
+  .annex-app--gameplay .room-console {
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-height: 70%;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 8px 8px 0 0;
+  }
+}
+
+@media (max-height: 620px) and (orientation: landscape) {
+  .hud-case h1,
+  .hud-dialogue-kicker,
+  .hud-dialogue-progress,
+  .hud-location {
+    display: none;
+  }
+
+  .hud-case {
+    width: min(44vw, 500px);
+  }
+
+  .hud-dialogue {
+    width: min(48vw, 570px);
+    min-height: 0;
+    padding-block: 8px;
+  }
+
+  .hud-dialogue > .persona-portrait {
+    width: 56px;
+  }
+
+  .hud-prompts {
+    width: min(36vw, 340px);
+  }
+
+  .game-hud[data-console-active='true'] .hud-status {
+    display: none;
+  }
+
+  .game-hud[data-console-active='true'] .hud-prompts {
+    top: 62px;
+    width: min(34vw, 260px);
+  }
+}
+
+/* A suggested first threshold already states the mandate's next move. On a
+   short screen, retire only that duplicated Civic Mandate plate; every method,
+   review, result, consequence, and other authored dialogue stays visible. */
+@media (max-height: 650px) {
+  .game-hud[data-recommended-entry='true']
+    .hud-dialogue[data-dialogue-kind='civic-mandate'] {
+    display: none;
+  }
+
+  /* …unless the plate is carrying the first-run filing-budget notice, which is
+     stated nowhere else in the scene-first flow. The retire rule exists because
+     the plate DUPLICATES the suggested-threshold action; a plate carrying an
+     unduplicated rule is not the case that rule was measured for. The mandate
+     line itself still stands down, so the short screen gains one notice row, not
+     a whole plate. */
+  .game-hud[data-recommended-entry='true']
+    .hud-dialogue[data-dialogue-kind='civic-mandate'][data-dialogue-note='true'] {
+    /* Restores the base grid this media query's first rule turned off — the
+       civic mandate never carries a portrait, so it is the single-column form. */
+    display: grid;
+    min-height: 0;
+  }
+
+  .game-hud[data-recommended-entry='true']
+    .hud-dialogue[data-dialogue-kind='civic-mandate'][data-dialogue-note='true']
+    .hud-dialogue-line,
+  .game-hud[data-recommended-entry='true']
+    .hud-dialogue[data-dialogue-kind='civic-mandate'][data-dialogue-note='true']
+    .hud-dialogue-progress {
+    display: none;
+  }
+
+  .game-hud[data-recommended-entry='true']
+    .hud-dialogue[data-dialogue-kind='civic-mandate'][data-dialogue-note='true']
+    .hud-dialogue-note {
+    margin-top: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .hud-vignette,
+  .hud-case::before,
+  .hud-dialogue::before,
+  .hud-dialogue-secret::after,
+  .hud-prompts::before {
+    display: none;
+  }
+
+  .hud-case,
+  .hud-dialogue,
+  .hud-prompts,
+  .hud-status dl > div,
+  .hud-record-actions button,
+  .hud-prompt-actions button {
+    color: CanvasText;
+    background: Canvas;
+    border-color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .cinematic-phase-hud,
+  .cinematic-phase-hud-metrics > div {
+    color: CanvasText;
+    background: Canvas;
+    border-color: CanvasText;
+    forced-color-adjust: auto;
+  }
+}

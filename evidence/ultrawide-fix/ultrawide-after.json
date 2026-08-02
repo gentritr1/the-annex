@@ -2,7 +2,7 @@
   "url": "http://127.0.0.1:3000/",
   "label": "after",
   "baseline": false,
-  "capturedAt": "2026-07-26T23:10:07.045Z",
+  "capturedAt": "2026-07-27T09:05:17.956Z",
   "node": "v24.18.0",
   "floors": {
     "PHOTO_EPSILON_PX": 1,

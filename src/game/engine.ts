@@ -4,6 +4,7 @@ import {
   isRegisteredCase,
   methodLabels,
   personas,
+  resolveDepositionUse,
   resolveFieldAction,
 } from './content'
 // Save-schema constants live with the persistence layer (the single source of
@@ -13,14 +14,17 @@ import {
 import { CURRENT_SAVE_SCHEMA, MAX_PREVIOUS_RUNS } from './persistence'
 import type {
   AccessibilitySettings,
-  ApproachId,
-  DepositionConsent,
+  CaseDefinition,
+  FieldActionId,
+  FragmentDiscoveryDefinition,
   GameAction,
   GameEvent,
   GameState,
-  MethodTag,
+  FragmentId,
   PersonaId,
+  ReconstructionId,
   RunSummary,
+  SecretId,
 } from './types'
 
 export const defaultAccessibilitySettings: AccessibilitySettings = {
@@ -40,19 +44,14 @@ const emptyTrust: Record<PersonaId, number> = {
   archivist: 0,
 }
 
-const approachMethods: Record<ApproachId, MethodTag[]> = {
-  procedure: ['procedure'],
-  care: ['care', 'negotiation'],
-  covert: ['stealth'],
-  curiosity: ['puzzle'],
-}
-
 function createRunState(
   caseId: string,
   runNumber: number,
   previousRuns: RunSummary[],
   settings: AccessibilitySettings,
   precedents: Record<string, string> = {},
+  caseOutcomes: Record<string, Record<string, string>> = {},
+  discoveredSecretIds: SecretId[] = [],
 ): GameState {
   return {
     schemaVersion: CURRENT_SAVE_SCHEMA,
@@ -69,11 +68,19 @@ function createRunState(
     tribunalOverride: false,
     selectedFragments: [],
     reconstruction: null,
+    tribunalChoice: null,
     decision: null,
     depositionRecord: null,
     events: [],
     previousRuns,
     precedents: { ...precedents },
+    caseOutcomes: Object.fromEntries(
+      Object.entries(caseOutcomes).map(([outcomeCaseId, facts]) => [
+        outcomeCaseId,
+        { ...facts },
+      ]),
+    ),
+    discoveredSecretIds: [...discoveredSecretIds],
     settings: { ...settings },
     announcement: `${getCaseContent(caseId).label}, run ${runNumber}, opened.`,
   }
@@ -203,8 +210,245 @@ function buildRunResidue(previousRun: RunSummary | undefined): {
   return { trust, detail: methodDetail }
 }
 
+// Validate authored campaign exports at the engine boundary. A case either
+// produces every declared fact with an allowed value or its verdict is rejected;
+// the UI can submit only the verdict and authored tribunal choice, never facts.
+function resolveOutcomeFacts(
+  content: CaseDefinition,
+  state: GameState,
+  decisionId: string,
+): Record<string, string> | null {
+  const definitions = content.outcomeFactDefinitions ?? []
+  if (definitions.length === 0) return {}
+  if (!content.getOutcomeFacts) return null
+
+  const resolved = content.getOutcomeFacts(state, decisionId)
+  const allowedIds = new Set(definitions.map((definition) => definition.id))
+  if (Object.keys(resolved).some((factId) => !allowedIds.has(factId))) return null
+
+  const facts: Record<string, string> = {}
+  for (const definition of definitions) {
+    const value = resolved[definition.id]
+    if (!definition.values.some((option) => option.id === value)) return null
+    facts[definition.id] = value
+  }
+  return facts
+}
+
+// Filing capacity is a deterministic case rule, not a UI convention. Historical
+// saves may already contain more sites than a current case permits; they remain
+// readable and playable, but cannot add a new distinct site.
+export function hasFieldSiteCapacity(state: GameState): boolean {
+  return state.completedSites.length < getCaseContent(state.caseId).fieldSiteLimit
+}
+
+// Whether this exact site can enter the filed record now. A completed site is
+// intentionally false: it remains inspectable in presentation, but never gains
+// a second resolution path through the reducer.
+export function canCommitNewFieldSite(state: GameState, siteId: string): boolean {
+  return !state.completedSites.includes(siteId) && hasFieldSiteCapacity(state)
+}
+
 export function canEnterTribunal(state: GameState): boolean {
-  return state.completedSites.length >= 2 && state.reconstruction !== null
+  const { fieldSiteLimit } = getCaseContent(state.caseId)
+  return state.completedSites.length >= fieldSiteLimit && state.reconstruction !== null
+}
+
+// An anchor's epistemic status is derived only from the active case's authored
+// discovery records and the evidence currently filed in this run. It is never
+// persisted separately: that keeps historical saves serializable while making a
+// stale or cross-case fragment safe to display as unknown.
+export type FragmentKnowledge = 'unknown' | 'discovered' | 'corroborated'
+
+function discoveryIsFiled(state: GameState, discovery: FragmentDiscoveryDefinition): boolean {
+  if (discovery.actionId) return state.completedActions.includes(discovery.actionId)
+  return state.completedSites.includes(discovery.siteId)
+}
+
+// Source-aware discovery records currently established by the filed route. This
+// selector is the shared authority for the lattice, the filed result, and tests;
+// no component guesses that visiting a location must have revealed an anchor.
+export function getFiledFragmentDiscoveries(
+  state: GameState,
+  fragmentId: FragmentId,
+): readonly FragmentDiscoveryDefinition[] {
+  const content = getCaseContent(state.caseId)
+  return content.fragmentDiscoveries.filter(
+    (discovery) => discovery.fragmentId === fragmentId && discoveryIsFiled(state, discovery),
+  )
+}
+
+// The records that a successful action would add to the player-visible filed
+// result. The reducer calls this before appending the action, so a previously
+// established anchor is never announced as newly learned a second time.
+export function getNewFragmentDiscoveriesForAction(
+  state: GameState,
+  actionId: FieldActionId,
+): readonly FragmentDiscoveryDefinition[] {
+  const content = getCaseContent(state.caseId)
+  const action = content.fieldActions.find((item) => item.id === actionId)
+  if (!action) return []
+
+  const seenFragmentIds = new Set(
+    content.fragments
+      .filter((fragment) => getFiledFragmentDiscoveries(state, fragment.id).length > 0)
+      .map((fragment) => fragment.id),
+  )
+  const includedFragmentIds = new Set<FragmentId>()
+  return content.fragmentDiscoveries.filter((discovery) => {
+    const belongsToAction = discovery.actionId
+      ? discovery.actionId === actionId
+      : discovery.siteId === action.siteId
+    if (!belongsToAction || seenFragmentIds.has(discovery.fragmentId)) return false
+    if (includedFragmentIds.has(discovery.fragmentId)) return false
+    includedFragmentIds.add(discovery.fragmentId)
+    return true
+  })
+}
+
+function describeNewFragmentDiscoveries(
+  state: GameState,
+  actionId: FieldActionId,
+): string {
+  const content = getCaseContent(state.caseId)
+  const records = getNewFragmentDiscoveriesForAction(state, actionId)
+  if (records.length === 0) return ''
+  const lines = records.map((record) => {
+    const fragment = content.fragments.find((item) => item.id === record.fragmentId)
+    return `${fragment?.title ?? record.fragmentId} — ${record.source}: ${record.reveal}`
+  })
+  return ` Anchors revealed: ${lines.join(' ')}`
+}
+
+export function getFragmentKnowledge(
+  state: GameState,
+  fragmentId: FragmentId,
+): FragmentKnowledge {
+  const content = getCaseContent(state.caseId)
+  if (!content.fragments.some((fragment) => fragment.id === fragmentId)) return 'unknown'
+
+  const discovered = getFiledFragmentDiscoveries(state, fragmentId).length > 0
+  if (!discovered) return 'unknown'
+
+  const corroborated = (content.fragmentEvidenceLinks[fragmentId] ?? []).some((evidenceId) =>
+    state.evidence.includes(evidenceId),
+  )
+  return corroborated ? 'corroborated' : 'discovered'
+}
+
+// A model is meaningful only when it compares exactly two anchors the player has
+// actually encountered, with at least one anchor supported by this run's filed
+// evidence. `getReconstructionForFragments` is intentionally called only after
+// this gate; it remains the authored interpretation of a valid pair, not a
+// permissive validator for arbitrary ids.
+export function isValidReconstructionPair(
+  state: GameState,
+  fragmentIds: readonly FragmentId[],
+): boolean {
+  if (fragmentIds.length !== 2) return false
+
+  const [firstFragmentId, secondFragmentId] = fragmentIds
+  if (!firstFragmentId || !secondFragmentId || firstFragmentId === secondFragmentId) return false
+
+  const validFragmentIds = new Set(
+    getCaseContent(state.caseId).fragments.map((fragment) => fragment.id),
+  )
+  if (!validFragmentIds.has(firstFragmentId) || !validFragmentIds.has(secondFragmentId)) {
+    return false
+  }
+
+  const knowledge = [
+    getFragmentKnowledge(state, firstFragmentId),
+    getFragmentKnowledge(state, secondFragmentId),
+  ]
+  return (
+    knowledge.every((status) => status !== 'unknown') &&
+    knowledge.some((status) => status === 'corroborated')
+  )
+}
+
+export function canOpenReconstruction(state: GameState): boolean {
+  if (state.phase !== 'investigation' || state.reconstruction) return false
+
+  const content = getCaseContent(state.caseId)
+  if (state.completedSites.length < content.fieldSiteLimit) return false
+
+  const fragmentIds = content.fragments.map((fragment) => fragment.id)
+  for (let left = 0; left < fragmentIds.length; left += 1) {
+    for (let right = left + 1; right < fragmentIds.length; right += 1) {
+      const firstFragmentId = fragmentIds[left]
+      const secondFragmentId = fragmentIds[right]
+      if (
+        firstFragmentId &&
+        secondFragmentId &&
+        isValidReconstructionPair(state, [firstFragmentId, secondFragmentId])
+      ) {
+        return true
+      }
+    }
+  }
+
+  return false
+}
+
+export interface ReconstructionPreview {
+  modelId: ReconstructionId
+  title: string
+  thesis: string
+  limitation: string
+  corroboratedAnchors: number
+  supportStatus: 'one corroborated anchor' | 'two corroborated anchors'
+}
+
+// The reconstruction preview is intentionally sparse: it describes only the
+// argument the selected pair will file and the support already in the record.
+// Trust shifts, reactions, decision alignment, and outcomes remain undisclosed
+// until their own authored phase.
+export function getReconstructionPreview(
+  state: GameState,
+  fragmentIds: readonly FragmentId[] = state.selectedFragments,
+): ReconstructionPreview | null {
+  const content = getCaseContent(state.caseId)
+  if (state.completedSites.length < content.fieldSiteLimit) return null
+  if (!isValidReconstructionPair(state, fragmentIds)) return null
+
+  const modelId = content.getReconstructionForFragments(fragmentIds)
+  const definition = content.reconstructionDefinitions.find((item) => item.id === modelId)
+  if (!definition) return null
+
+  const corroboratedAnchors = fragmentIds.filter(
+    (fragmentId) => getFragmentKnowledge(state, fragmentId) === 'corroborated',
+  ).length
+  return {
+    modelId,
+    title: definition.title,
+    thesis: definition.thesis,
+    limitation: definition.limitation,
+    corroboratedAnchors,
+    supportStatus:
+      corroboratedAnchors === 2 ? 'two corroborated anchors' : 'one corroborated anchor',
+  }
+}
+
+export function hasDiscoveredSecret(state: GameState, secretId: SecretId): boolean {
+  return state.discoveredSecretIds.includes(secretId)
+}
+
+// Secrets are a deterministic campaign side-channel. This selector is the one
+// authority shared by reducer and UI: an authored item must belong to the active
+// case, permit the current phase, have its filed site (when any), and have every
+// prerequisite already retained. No clock, hover, random roll, or model proposal
+// can make one available.
+export function canDiscoverSecret(state: GameState, secretId: SecretId): boolean {
+  const definition = getCaseContent(state.caseId).secrets?.find(
+    (item) => item.id === secretId,
+  )
+  if (!definition || hasDiscoveredSecret(state, secretId)) return false
+  if (!definition.availablePhases.includes(state.phase)) return false
+  if (definition.siteId && !state.completedSites.includes(definition.siteId)) return false
+  return (definition.requiresSecretIds ?? []).every((requiredId) =>
+    hasDiscoveredSecret(state, requiredId),
+  )
 }
 
 export function getTrustLabel(value: number): string {
@@ -251,14 +495,14 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         phase: 'investigation',
         primaryApproach: approach.id,
         trust: applyTrust(applyTrust(state.trust, runResidue.trust), approach.trust),
-        methodTags: addUnique(state.methodTags, approachMethods[approach.id]),
+        methodTags: addUnique(state.methodTags, [...approach.methodTags]),
         events: appendEvent(state, {
           sourceType: 'approach',
           sourceId: approach.id,
           title: approach.title,
           detail: `${approach.description}${residue}${describeTrustDeltas(approach.trust)}${describeResidueDeltas(runResidue.trust)}`,
           tone: 'neutral',
-          methodTags: approachMethods[approach.id],
+          methodTags: [...approach.methodTags],
         }),
         announcement: `${approach.title}. Investigation sites are available.`,
       }
@@ -267,15 +511,22 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case 'COMMIT_FIELD_ACTION': {
       if (state.phase !== 'investigation') return state
 
+      const content = getCaseContent(state.caseId)
+      // An authored deposition entry must pass through the transcript resolver.
+      // A plain field commit would otherwise bypass the witness's use boundary.
+      if (content.deposition?.entryActionIds.includes(action.actionId)) return state
+
       // Resolve to the EFFECTIVE definition: a prior-case verdict may override
       // this action's alarm/hint/detail/reactions. Identity when no precedent
       // applies, so unaffected actions commit byte-for-byte as before.
       const definition = resolveFieldAction(
-        getCaseContent(state.caseId),
+        content,
         action.actionId,
         state.precedents,
       )
-      if (!definition || state.completedSites.includes(definition.siteId)) return state
+      if (!definition || !canCommitNewFieldSite(state, definition.siteId)) return state
+
+      const discoveredAnchors = describeNewFragmentDiscoveries(state, definition.id)
 
       const nextAlarm = Math.max(0, Math.min(3, state.alarm + definition.alarmDelta))
 
@@ -292,11 +543,25 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           sourceType: 'field-action',
           sourceId: definition.id,
           title: definition.eventTitle,
-          detail: `${definition.eventDetail}${describeTrustDeltas(definition.trust)}`,
+          detail: `${definition.eventDetail}${discoveredAnchors}${describeTrustDeltas(definition.trust)}`,
           tone: definition.alarmDelta > 0 ? 'warning' : 'neutral',
           methodTags: definition.methodTags,
         }),
-        announcement: `${definition.eventTitle}. New evidence added.`,
+        announcement: `${definition.eventTitle}. New evidence added${discoveredAnchors ? '; anchors added to the filed record.' : '.'}`,
+      }
+    }
+
+    case 'DISCOVER_SECRET': {
+      if (!canDiscoverSecret(state, action.secretId)) return state
+      const definition = getCaseContent(state.caseId).secrets?.find(
+        (item) => item.id === action.secretId,
+      )
+      if (!definition) return state
+
+      return {
+        ...state,
+        discoveredSecretIds: [...state.discoveredSecretIds, definition.id],
+        announcement: definition.announcement,
       }
     }
 
@@ -311,7 +576,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       // COMMIT_FIELD_ACTION, so a precedent that overrides an entry action's
       // alarm/detail would apply here too (identity for today's entry actions).
       const definition = resolveFieldAction(content, action.actionId, state.precedents)
-      if (!definition || state.completedSites.includes(definition.siteId)) return state
+      if (!definition || !canCommitNewFieldSite(state, definition.siteId)) return state
+
+      const discoveredAnchors = describeNewFragmentDiscoveries(state, definition.id)
 
       // The committed beats must match the authored skeleton one-for-one: same
       // count, and each choice valid for its beat. Validate and resolve each beat
@@ -324,10 +591,12 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         beatChoices.push(choice)
       }
 
-      // The witness's answer is authored per entry action; unasked stays 'unasked'.
-      const consent: DepositionConsent = action.askedConsent
-        ? deposition.consent.answers[action.actionId]?.consent ?? 'unasked'
-        : 'unasked'
+      const useResolution = resolveDepositionUse(
+        deposition,
+        action.actionId,
+        action.beats,
+        action.askedConsent,
+      )
 
       // Fold the base action, every beat choice, and the consent ask into one
       // delta map and one method-tag set — applied and reported once.
@@ -342,12 +611,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       ])
       const methodTags = addUnique(state.methodTags, committedMethodTags)
 
-      const consentClause = action.askedConsent
-        ? consent === 'yes'
-          ? 'Asked whether they wanted to give it, the witness said yes.'
-          : 'Asked whether they wanted to give it, the witness said no.'
-        : 'You never asked whether the witness wanted to give it.'
-      const transcriptDetail = `${beatChoices.map((choice) => choice.summary).join(' ')} ${consentClause}`
+      const transcriptDetail = `${beatChoices.map((choice) => choice.summary).join(' ')} ${useResolution.summary}`
 
       const nextAlarm = Math.max(0, Math.min(3, state.alarm + definition.alarmDelta))
 
@@ -364,45 +628,63 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           actionId: definition.id,
           beats: [...action.beats],
           askedConsent: action.askedConsent,
-          consent,
+          consent: useResolution.consent,
+          testimonyUse: useResolution.testimonyUse,
         },
         events: appendEvent(state, {
           sourceType: 'field-action',
           sourceId: definition.id,
           title: definition.eventTitle,
-          detail: `${transcriptDetail}${describeTrustDeltas(deltas)}`,
+          detail: `${transcriptDetail}${discoveredAnchors}${describeTrustDeltas(deltas)}`,
           tone: definition.alarmDelta > 0 ? 'warning' : 'neutral',
           methodTags: committedMethodTags,
         }),
-        announcement: `${definition.eventTitle}. Testimony recorded.`,
+        announcement: `${definition.eventTitle}. Testimony recorded${discoveredAnchors ? '; anchors added to the filed record.' : '.'}`,
       }
     }
 
     case 'OPEN_RECONSTRUCTION':
-      if (state.phase !== 'investigation' || state.reconstruction || state.completedSites.length === 0) {
-        return state
-      }
+      if (!canOpenReconstruction(state)) return state
       return {
         ...state,
         phase: 'reconstruction',
         selectedFragments: [],
-        announcement: 'Memory lattice opened. Select two anchors.',
+        announcement: 'Memory lattice opened. Select two known anchors.',
       }
 
     case 'TOGGLE_FRAGMENT': {
       if (state.phase !== 'reconstruction') return state
 
       const alreadySelected = state.selectedFragments.includes(action.fragmentId)
-      if (!alreadySelected && state.selectedFragments.length >= 2) {
+      // Always let legacy selections escape, even when an old or malformed save
+      // contains a foreign or now-sealed id. This branch deliberately runs
+      // before validation so it can only remove, never admit, such an anchor.
+      if (alreadySelected) {
+        const selectedFragments = state.selectedFragments.filter(
+          (fragmentId) => fragmentId !== action.fragmentId,
+        )
+        return {
+          ...state,
+          selectedFragments,
+          announcement: `${selectedFragments.length} of 2 anchors selected.`,
+        }
+      }
+
+      if (getFragmentKnowledge(state, action.fragmentId) === 'unknown') {
+        return {
+          ...state,
+          announcement: 'That anchor is sealed. File a listed location before selecting it.',
+        }
+      }
+
+      if (state.selectedFragments.length >= 2) {
         return {
           ...state,
           announcement: 'Two anchors are already selected. Remove one to change the model.',
         }
       }
 
-      const selectedFragments = alreadySelected
-        ? state.selectedFragments.filter((fragmentId) => fragmentId !== action.fragmentId)
-        : [...state.selectedFragments, action.fragmentId]
+      const selectedFragments = [...state.selectedFragments, action.fragmentId]
 
       return {
         ...state,
@@ -412,17 +694,21 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case 'SUBMIT_RECONSTRUCTION': {
-      if (state.phase !== 'reconstruction' || state.selectedFragments.length !== 2) return state
+      if (state.phase !== 'reconstruction') return state
+      const preview = getReconstructionPreview(state, state.selectedFragments)
+      if (!preview) {
+        return {
+          ...state,
+          announcement:
+            'Cannot file this reconstruction. Select two known anchors with at least one corroborated by your field record.',
+        }
+      }
 
       const content = getCaseContent(state.caseId)
-      const reconstructionId = content.getReconstructionForFragments(state.selectedFragments)
+      const reconstructionId = preview.modelId
       const definition = content.reconstructionDefinitions.find((item) => item.id === reconstructionId)
       if (!definition) return state
-      const corroboratedAnchors = state.selectedFragments.filter((fragmentId) =>
-        content.fragmentEvidenceLinks[fragmentId].some((evidenceId) =>
-          state.evidence.includes(evidenceId),
-        ),
-      ).length
+      const corroboratedAnchors = preview.corroboratedAnchors
 
       return {
         ...state,
@@ -460,12 +746,32 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         announcement: 'Returned to the field record.',
       }
 
+    case 'SET_TRIBUNAL_CHOICE': {
+      if (state.phase !== 'tribunal' || state.decision) return state
+      const definition = getCaseContent(state.caseId).tribunalChoice
+      if (!definition?.options.some((option) => option.id === action.choiceId)) return state
+      const option = definition.options.find((item) => item.id === action.choiceId)
+      return {
+        ...state,
+        tribunalChoice: action.choiceId,
+        announcement: option ? `${definition.legend}: ${option.label}.` : state.announcement,
+      }
+    }
+
     case 'DECIDE': {
       if (state.phase !== 'tribunal' || state.decision) return state
 
       const content = getCaseContent(state.caseId)
       const decision = content.decisions.find((item) => item.id === action.decisionId)
       if (!decision || (decision.requiresOverride && !state.tribunalOverride)) return state
+      if (
+        content.tribunalChoice &&
+        !content.tribunalChoice.options.some((option) => option.id === state.tribunalChoice)
+      ) {
+        return state
+      }
+      const outcomeFacts = resolveOutcomeFacts(content, state, decision.id)
+      if (!outcomeFacts) return state
 
       return {
         ...state,
@@ -473,6 +779,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         decision: decision.id,
         // Record this run's verdict as the case precedent for later runs/cases.
         precedents: { ...state.precedents, [state.caseId]: decision.id },
+        caseOutcomes: {
+          ...state.caseOutcomes,
+          [state.caseId]: outcomeFacts,
+        },
         methodTags: addUnique(state.methodTags, [...decision.methodTags]),
         events: appendEvent(state, {
           sourceType: 'decision',
@@ -500,6 +810,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         previousRuns,
         state.settings,
         state.precedents,
+        state.caseOutcomes,
+        state.discoveredSecretIds,
       )
     }
 
@@ -527,6 +839,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         previousRuns,
         state.settings,
         state.precedents,
+        state.caseOutcomes,
+        state.discoveredSecretIds,
       )
     }
 

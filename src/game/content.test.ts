@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  canEnterUnnumberedReadingRoom,
   getCaseContent,
   getPrecedentLine,
   getReactionsForSource,
@@ -7,9 +8,18 @@ import {
   getTensionLine,
   personas,
   registeredCaseIds,
+  registeredSecretIds,
+  registeredSecrets,
   resolveFieldAction,
+  unnumberedReadingRoom,
 } from './content'
-import { createInitialGameState } from './engine'
+import {
+  canOpenReconstruction,
+  createInitialGameState,
+  getFiledFragmentDiscoveries,
+  getFragmentKnowledge,
+  isValidReconstructionPair,
+} from './engine'
 import {
   ACOUSTIC_SHADOW_PHASES,
   ACOUSTIC_SHADOW_STAGES,
@@ -20,6 +30,7 @@ import {
 import type {
   AcousticExposure,
   CaseDefinition,
+  DepositionTestimonyUse,
   GameState,
   MethodTag,
   SceneAcousticTreatment,
@@ -55,16 +66,304 @@ const registeredCases: [string, CaseDefinition][] = registeredCaseIds.map((id) =
   getCaseContent(id),
 ])
 
+describe('Fourth Margin secret content integrity', () => {
+  const validPhases = new Set([
+    'landing',
+    'briefing',
+    'investigation',
+    'reconstruction',
+    'tribunal',
+    'debrief',
+  ])
+  const secretsById = new Map(
+    registeredSecrets.map(({ definition }) => [definition.id, definition]),
+  )
+
+  it('keeps campaign secret ids globally unique and every authored field legible', () => {
+    expectUnique(registeredSecretIds)
+    expect(registeredSecretIds).toEqual(
+      expect.arrayContaining([
+        'nietzsche-forgetting',
+        'schopenhauer-succession',
+        'reader-key-04',
+      ]),
+    )
+
+    registeredSecrets.forEach(({ caseId, definition }) => {
+      ;[
+        definition.id,
+        definition.title,
+        definition.body,
+        definition.counterline,
+        definition.location,
+        definition.announcement,
+      ].forEach((value) => expect(value.trim().length).toBeGreaterThan(0))
+
+      expect(['aphorism', 'key']).toContain(definition.kind)
+      expect(definition.availablePhases.length).toBeGreaterThan(0)
+      expectUnique(definition.availablePhases)
+      definition.availablePhases.forEach((phase) =>
+        expect(validPhases.has(phase)).toBe(true),
+      )
+
+      if (definition.siteId) {
+        expect(
+          getCaseContent(caseId).sites.some((site) => site.id === definition.siteId),
+        ).toBe(true)
+      }
+      if (definition.anchor) {
+        expect(definition.siteId).toBeDefined()
+        expect(definition.anchor.x).toBeGreaterThanOrEqual(0)
+        expect(definition.anchor.x).toBeLessThanOrEqual(1)
+        expect(definition.anchor.y).toBeGreaterThanOrEqual(0)
+        expect(definition.anchor.y).toBeLessThanOrEqual(1)
+      }
+      if (definition.compactAnchor) {
+        expect(definition.anchor).toBeDefined()
+        expect(definition.compactAnchor.x).toBeGreaterThanOrEqual(0)
+        expect(definition.compactAnchor.x).toBeLessThanOrEqual(1)
+        expect(definition.compactAnchor.y).toBeGreaterThanOrEqual(0)
+        expect(definition.compactAnchor.y).toBeLessThanOrEqual(1)
+      }
+
+      if (definition.kind === 'aphorism') {
+        expect(definition.attribution?.trim().length).toBeGreaterThan(0)
+        expect(definition.source?.trim().length).toBeGreaterThan(0)
+      } else {
+        expect(definition.attribution).toBeUndefined()
+        expect(definition.source).toBeUndefined()
+        expect(definition.requiresSecretIds?.length).toBeGreaterThan(0)
+      }
+    })
+  })
+
+  it('resolves every prerequisite and leaves no self-reference or dependency cycle', () => {
+    registeredSecrets.forEach(({ definition }) => {
+      expectUnique(definition.requiresSecretIds ?? [])
+      ;(definition.requiresSecretIds ?? []).forEach((requiredId) => {
+        expect(requiredId).not.toBe(definition.id)
+        expect(secretsById.has(requiredId)).toBe(true)
+      })
+    })
+
+    // Repeatedly admit definitions whose prerequisites are already admitted.
+    // Any mutually dependent cycle remains outside `resolved`.
+    const resolved = new Set<string>()
+    let changed = true
+    while (changed) {
+      changed = false
+      registeredSecrets.forEach(({ definition }) => {
+        if (
+          !resolved.has(definition.id) &&
+          (definition.requiresSecretIds ?? []).every((requiredId) =>
+            resolved.has(requiredId),
+          )
+        ) {
+          resolved.add(definition.id)
+          changed = true
+        }
+      })
+    }
+
+    expect(resolved).toEqual(new Set(registeredSecretIds))
+  })
+
+  it('authors Reader Key 04 as the explicit compound reward for both quotations', () => {
+    const key = secretsById.get('reader-key-04')
+    expect(key?.kind).toBe('key')
+    expect(key?.availablePhases).toEqual(['debrief'])
+    expect(key?.requiresSecretIds).toEqual([
+      'nietzsche-forgetting',
+      'schopenhauer-succession',
+    ])
+  })
+})
+
+describe('Unnumbered Reading Room content integrity', () => {
+  it('registers one complete entry anchor for each bounded world kind', () => {
+    expect(unnumberedReadingRoom.entryAnchors).toHaveLength(2)
+    expectUnique(unnumberedReadingRoom.entryAnchors.map((anchor) => anchor.id))
+    expect(unnumberedReadingRoom.entryAnchors.map((anchor) => anchor.worldKind)).toEqual([
+      'concourse',
+      'deposition-annex',
+    ])
+
+    const registeredWorldKinds = registeredCaseIds.flatMap((caseId) => {
+      const kind = getCaseContent(caseId).scene.world?.kind
+      return kind ? [kind] : []
+    })
+    expect(new Set(unnumberedReadingRoom.entryAnchors.map((anchor) => anchor.worldKind))).toEqual(
+      new Set(registeredWorldKinds),
+    )
+
+    unnumberedReadingRoom.entryAnchors.forEach((anchor) => {
+      expectFiniteVector3(anchor.position)
+      expectFiniteVector3(anchor.camera.position)
+      expectFiniteVector3(anchor.camera.target)
+      expect(Number.isFinite(anchor.rotationY)).toBe(true)
+      Object.values(anchor.posterAnchor).forEach((coordinate) => {
+        expect(Number.isFinite(coordinate)).toBe(true)
+        expect(coordinate).toBeGreaterThanOrEqual(0)
+        expect(coordinate).toBeLessThanOrEqual(1)
+      })
+      expect(anchor.label.trim().length).toBeGreaterThan(0)
+      expect(anchor.accessibleLabel.trim().length).toBeGreaterThan(0)
+    })
+  })
+
+  it('authors exactly three independent, spatially complete reading points', () => {
+    const points = unnumberedReadingRoom.readingPoints
+    expect(points).toHaveLength(3)
+    expectUnique(points.map((point) => point.id))
+    expect(points.map((point) => point.placement)).toEqual(['left', 'center', 'right'])
+    expectUnique(points.map((point) => point.markerGlyph))
+    points.forEach((point) => {
+      expect(point.markerGlyph.trim().length).toBeGreaterThan(0)
+      expect(point.markerGlyph).not.toMatch(/\d/)
+    })
+    expect(points.map((point) => point.title)).toEqual([
+      'THE BOOK THAT OPENS',
+      'THE TWO ORDERS',
+      'THE UNPRESSED PROMISE',
+    ])
+
+    const interactionIds = points.flatMap((point) =>
+      point.interactions.map((interaction) => interaction.id),
+    )
+    expectUnique(interactionIds)
+
+    points.forEach((point) => {
+      expectFiniteVector3(point.position)
+      expectFiniteVector3(point.camera.position)
+      expectFiniteVector3(point.camera.target)
+      expectBoundedAcoustics(point.acoustics)
+      Object.values(point.posterAnchor).forEach((coordinate) => {
+        expect(Number.isFinite(coordinate)).toBe(true)
+        expect(coordinate).toBeGreaterThanOrEqual(0)
+        expect(coordinate).toBeLessThanOrEqual(1)
+      })
+      ;[
+        point.id,
+        point.title,
+        point.meta,
+        point.inspection,
+        point.archivistNote,
+      ].forEach((copy) => expect(copy.trim().length).toBeGreaterThan(0))
+      if (point.machineMarking !== undefined) {
+        expect(point.machineMarking.trim().length).toBeGreaterThan(0)
+      }
+      if (point.draftingPrompt !== undefined) {
+        expect(point.draftingPrompt.trim().length).toBeGreaterThan(0)
+      }
+      expect(point.interactions.length).toBeGreaterThan(0)
+      point.interactions.forEach((interaction) => {
+        expect(interaction.id.trim().length).toBeGreaterThan(0)
+        expect(interaction.label.trim().length).toBeGreaterThan(0)
+        expect(interaction.response.trim().length).toBeGreaterThan(0)
+      })
+    })
+
+    expect(points.map((point) => point.interactions.length)).toEqual([1, 3, 1])
+  })
+
+  it('keeps all room-level authored copy complete and exact', () => {
+    Object.values(unnumberedReadingRoom.room).forEach((dimension) => {
+      expect(Number.isFinite(dimension)).toBe(true)
+      expect(dimension).toBeGreaterThan(0)
+    })
+    expectFiniteVector3(unnumberedReadingRoom.homeCamera.position)
+    expectFiniteVector3(unnumberedReadingRoom.homeCamera.target)
+    expectBoundedAcoustics(unnumberedReadingRoom.acoustics)
+    expect(unnumberedReadingRoom.travelMs).toBeGreaterThan(0)
+
+    expect(unnumberedReadingRoom.title).toBe('UNNUMBERED READING ROOM')
+    expect(unnumberedReadingRoom.subtitle).toBe('Not evidence · no filing channel')
+    expect(unnumberedReadingRoom.entryAction).toBe(
+      'Turn Reader Key 04 · enter the unnumbered reader',
+    )
+    expect(unnumberedReadingRoom.transitionIn).toEqual([
+      'Reader Key 04 enters the unnumbered slot.',
+      'The wall withdraws by the width of a book.',
+    ])
+    expect(unnumberedReadingRoom.archivistCard).toBe(
+      'There are three places to read. I did not put arrows between them. The window remembers one minute of rain; it is not a way out.',
+    )
+    expect(unnumberedReadingRoom.hudObjective).toBe(
+      'Read any object · leave at any time',
+    )
+    expect(unnumberedReadingRoom.accessibleIntroduction).toMatch(
+      /three independent reading points.+any order.+enters evidence/i,
+    )
+    expect(unnumberedReadingRoom.accessibleIntroduction).toContain(
+      'A false window shows a recorded civic skyline.',
+    )
+    expect(unnumberedReadingRoom.completion).toEqual({
+      visual: 'All three lamps remain on. None becomes the room’s center.',
+      accessible: 'All three reading points are open. No record was added.',
+    })
+    expect(unnumberedReadingRoom.exit).toEqual({
+      label: 'Return to the filed world',
+      transition:
+        'The key comes free. The wall closes without assigning the room a number.',
+    })
+  })
+
+  it('uses Reader Key 04 as its sole, global, pure unlock projection', () => {
+    expect(unnumberedReadingRoom.requiredSecretId).toBe('reader-key-04')
+    expect(registeredSecretIds).toContain(unnumberedReadingRoom.requiredSecretId)
+
+    const locked = createInitialGameState()
+    const otherMarginOnly: GameState = {
+      ...locked,
+      discoveredSecretIds: ['nietzsche-forgetting'],
+    }
+    const unlocked: GameState = {
+      ...locked,
+      caseId: 'case-81',
+      phase: 'investigation',
+      discoveredSecretIds: ['reader-key-04'],
+    }
+    const before = JSON.stringify(unlocked)
+
+    expect(canEnterUnnumberedReadingRoom(locked)).toBe(false)
+    expect(canEnterUnnumberedReadingRoom(otherMarginOnly)).toBe(false)
+    expect(canEnterUnnumberedReadingRoom(unlocked)).toBe(true)
+    expect(JSON.stringify(unlocked)).toBe(before)
+  })
+
+  it('declares player-chosen order, an always-present exit, and no canonical reward', () => {
+    expect(unnumberedReadingRoom.navigation).toEqual({
+      readingPointOrder: 'player-chosen',
+      showProgressCounter: false,
+      exitAvailability: 'always',
+    })
+    expect(unnumberedReadingRoom.stateContract).toEqual({
+      pointState: 'view-local',
+      mutatesGameState: false,
+      entersEvidence: false,
+      grantsCaseReward: false,
+      writesRunHistory: false,
+    })
+
+    const readingPointIds = unnumberedReadingRoom.readingPoints.map((point) => point.id)
+    readingPointIds.forEach((pointId) => {
+      expect(registeredSecretIds).not.toContain(pointId)
+    })
+  })
+})
+
 describe.each(registeredCases)('%s content integrity', (caseId, content) => {
   const {
     approaches,
     fieldActions,
     evidenceDefinitions,
     fragments,
+    fragmentDiscoveries,
     fragmentEvidenceLinks,
     reconstructionDefinitions,
     decisions,
     sites,
+    fieldSiteLimit,
     getReconstructionForFragments,
   } = content
 
@@ -78,6 +377,7 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
     // holds decisions × reconstructions consistent per case.
     expect(decisions.length).toBeGreaterThanOrEqual(4)
     expect(approaches).toHaveLength(4)
+    expect(fieldSiteLimit).toBe(2)
     sites.forEach((site) => expect(site.actionIds).toHaveLength(2))
   })
 
@@ -89,6 +389,41 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
     expectUnique(decisions.map((item) => item.id))
     expectUnique(sites.map((item) => item.id))
     expectUnique(approaches.map((item) => item.id))
+  })
+
+  it('keeps every opening approach suggestion on a site in this case', () => {
+    const siteIds = new Set(sites.map((site) => site.id))
+    approaches.forEach((approach) => {
+      expect(siteIds.has(approach.suggestedSiteId), approach.id).toBe(true)
+      expect(approach.methodTags.length, approach.id).toBeGreaterThan(0)
+      expectUnique(approach.methodTags)
+    })
+  })
+
+  it('exports exactly three compact, fully enumerated campaign facts', () => {
+    const definitions = content.outcomeFactDefinitions ?? []
+    expect(definitions).toHaveLength(3)
+    expect(content.getOutcomeFacts).toBeTypeOf('function')
+    expectUnique(definitions.map((definition) => definition.id))
+    definitions.forEach((definition) => {
+      expect(definition.label.trim().length).toBeGreaterThan(0)
+      expect(definition.values.length).toBeGreaterThan(0)
+      expectUnique(definition.values.map((value) => value.id))
+      definition.values.forEach((value) => expect(value.label.trim().length).toBeGreaterThan(0))
+    })
+  })
+
+  it('keeps an optional tribunal question internally complete', () => {
+    const question = content.tribunalChoice
+    if (!question) return
+    expect(question.legend.trim().length).toBeGreaterThan(0)
+    expect(question.prompt.trim().length).toBeGreaterThan(0)
+    expect(question.options.length).toBeGreaterThan(1)
+    expectUnique(question.options.map((option) => option.id))
+    question.options.forEach((option) => {
+      expect(option.label.trim().length).toBeGreaterThan(0)
+      expect(option.description.trim().length).toBeGreaterThan(0)
+    })
   })
 
   it('references every field action from exactly one matching site', () => {
@@ -136,6 +471,40 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
 
   it('flags exactly one reconstruction with the unresolved (warning) tone', () => {
     expect(reconstructionDefinitions.filter((model) => model.unresolvedTone)).toHaveLength(1)
+    reconstructionDefinitions.forEach((model) =>
+      expect(model.limitation.trim().length, model.id).toBeGreaterThan(0),
+    )
+  })
+
+  it('keeps the authored subject hearing non-evidentiary and pure', () => {
+    expect(content.getSubjectHearingPresence).toBeTypeOf('function')
+    const isCase81 = caseId === 'case-81'
+    const state: GameState = {
+      ...createInitialGameState(),
+      caseId,
+      phase: 'tribunal',
+      completedSites: [isCase81 ? 'deposition-suite' : 'care-ward'],
+      completedActions: [isCase81 ? 'take-sworn-statement' : 'listen-mara'],
+      depositionRecord: isCase81
+        ? {
+            actionId: 'take-sworn-statement',
+            beats: ['let-it-stand', 'let-it-stand'],
+            askedConsent: true,
+            consent: 'yes',
+            testimonyUse: 'voluntary-office',
+          }
+        : null,
+    }
+    const before = JSON.stringify(state)
+    const legalFactsBefore = content.getOutcomeFacts?.(state, decisions[0]!.id)
+    const presence = content.getSubjectHearingPresence?.(state)
+    const legalFactsAfter = content.getOutcomeFacts?.(state, decisions[0]!.id)
+
+    expect(presence?.speaker.trim().length).toBeGreaterThan(0)
+    expect(presence?.status.trim().length).toBeGreaterThan(0)
+    expect(presence?.lines.length).toBeGreaterThanOrEqual(2)
+    expect(JSON.stringify(state)).toBe(before)
+    expect(legalFactsAfter).toEqual(legalFactsBefore)
   })
 
   it('resolves every authored evidence reference', () => {
@@ -152,6 +521,102 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
       expect(links.length).toBeGreaterThan(0)
       links.forEach((evidenceId) => expect(evidenceIds.has(evidenceId)).toBe(true))
     })
+  })
+
+  it('keeps every fragment discovery source local, action-specific, and complete', () => {
+    const fragmentIds = new Set(fragments.map((item) => item.id))
+    const siteIds = new Set(sites.map((site) => site.id))
+    const actionsById = new Map(fieldActions.map((action) => [action.id, action]))
+    const discoveriesByFragment = new Map<string, number>()
+    const discoveryKeys = new Set<string>()
+
+    fragmentDiscoveries.forEach((discovery) => {
+      expect(fragmentIds.has(discovery.fragmentId)).toBe(true)
+      expect(siteIds.has(discovery.siteId)).toBe(true)
+      expect(discovery.actionId).toBeDefined()
+      expect(discovery.source.trim().length).toBeGreaterThan(0)
+      expect(discovery.reveal.trim().length).toBeGreaterThan(0)
+
+      const action = actionsById.get(discovery.actionId!)
+      expect(action).toBeDefined()
+      expect(action?.siteId).toBe(discovery.siteId)
+
+      const key = `${discovery.fragmentId}:${discovery.siteId}:${discovery.actionId}`
+      expect(discoveryKeys.has(key)).toBe(false)
+      discoveryKeys.add(key)
+      discoveriesByFragment.set(
+        discovery.fragmentId,
+        (discoveriesByFragment.get(discovery.fragmentId) ?? 0) + 1,
+      )
+    })
+
+    expect(new Set(discoveriesByFragment.keys())).toEqual(fragmentIds)
+    discoveriesByFragment.forEach((count) => expect(count).toBeGreaterThan(0))
+  })
+
+  it('keeps every two-site action combination reconstructable through known, corroborated anchors', () => {
+    for (let leftSiteIndex = 0; leftSiteIndex < sites.length; leftSiteIndex += 1) {
+      for (let rightSiteIndex = leftSiteIndex + 1; rightSiteIndex < sites.length; rightSiteIndex += 1) {
+        const leftSite = sites[leftSiteIndex]
+        const rightSite = sites[rightSiteIndex]
+        if (!leftSite || !rightSite) continue
+
+        const leftActions = fieldActions.filter((action) => action.siteId === leftSite.id)
+        const rightActions = fieldActions.filter((action) => action.siteId === rightSite.id)
+        leftActions.forEach((leftAction) => {
+          rightActions.forEach((rightAction) => {
+            const state: GameState = {
+              ...createInitialGameState(),
+              caseId,
+              phase: 'investigation',
+              completedSites: [leftSite.id, rightSite.id],
+              completedActions: [leftAction.id, rightAction.id],
+              evidence: [leftAction.evidenceId, rightAction.evidenceId],
+            }
+            const knowledgeById = new Map(
+              fragments.map((fragment) => [
+                fragment.id,
+                getFragmentKnowledge(state, fragment.id),
+              ]),
+            )
+            const knownFragmentIds = fragments
+              .filter((fragment) => knowledgeById.get(fragment.id) !== 'unknown')
+              .map((fragment) => fragment.id)
+            const corroboratedFragmentIds = fragments
+              .filter((fragment) => knowledgeById.get(fragment.id) === 'corroborated')
+              .map((fragment) => fragment.id)
+            const validPairExists = knownFragmentIds.some((firstFragmentId, leftIndex) =>
+              knownFragmentIds.slice(leftIndex + 1).some((secondFragmentId) =>
+                isValidReconstructionPair(state, [firstFragmentId, secondFragmentId]),
+              ),
+            )
+
+            expect(
+              knownFragmentIds.length,
+              `${caseId}: ${leftAction.id} + ${rightAction.id} must reveal two anchors`,
+            ).toBeGreaterThanOrEqual(2)
+            expect(
+              corroboratedFragmentIds.length,
+              `${caseId}: ${leftAction.id} + ${rightAction.id} must corroborate an anchor`,
+            ).toBeGreaterThanOrEqual(1)
+            expect(validPairExists).toBe(true)
+            expect(canOpenReconstruction(state)).toBe(true)
+
+            ;[leftAction, rightAction].forEach((action) => {
+              const discoveries = fragments.flatMap((fragment) =>
+                getFiledFragmentDiscoveries(state, fragment.id).filter(
+                  (discovery) => discovery.actionId === action.id,
+                ),
+              )
+              expect(
+                discoveries.length,
+                `${caseId}: ${action.id} must file authored anchor discoveries`,
+              ).toBeGreaterThan(0)
+            })
+          })
+        })
+      }
+    }
   })
 
   it('produces the same reconstruction regardless of anchor order', () => {
@@ -531,6 +996,17 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
     expectFiniteVector3(world.homeCamera.target)
     expectBoundedAcoustics(world.acoustics)
 
+    const worldAssets = [
+      world.posterSrc,
+      world.concreteSrc,
+      world.terrazzoSrc,
+      world.bronzeSrc,
+      world.featurePlateSrc,
+    ]
+    worldAssets.forEach((src) => {
+      expect(src).toMatch(/^\/images\/.+\.webp$/)
+    })
+
     const portalSiteIds = world.portals.map((portal) => portal.siteId)
     expectUnique(portalSiteIds)
     expect(new Set(portalSiteIds)).toEqual(new Set(sites.map((site) => site.id)))
@@ -710,21 +1186,33 @@ describe.each(registeredCases)('%s content integrity', (caseId, content) => {
 })
 
 describe('bounded spatial world coverage', () => {
-  it('progressively enhances Case 77 and leaves Case 81 on its authored non-WebGL scene', () => {
-    expect(getCaseContent('case-77').scene.world).toBeDefined()
-    expect(getCaseContent('case-81').scene.world).toBeUndefined()
+  it('progressively enhances both cases with explicit, distinct world variants', () => {
+    expect(getCaseContent('case-77').scene.world?.kind).toBe('concourse')
+    expect(getCaseContent('case-81').scene.world?.kind).toBe('deposition-annex')
   })
 
-  it('gives the Case 77 hub and every registered threshold a distinct acoustic perspective', () => {
-    const world = getCaseContent('case-77').scene.world
-    expect(world).toBeDefined()
-    if (!world) return
+  it.each(['case-77', 'case-81'])(
+    'gives %s and every registered threshold a distinct acoustic perspective',
+    (caseId) => {
+      const world = getCaseContent(caseId).scene.world
+      expect(world).toBeDefined()
+      if (!world) return
 
-    const treatments = [world.acoustics, ...world.portals.map((portal) => portal.acoustics)]
-    expect(treatments).toHaveLength(world.portals.length + 1)
-    expect(new Set(treatments.map((treatment) => JSON.stringify(treatment))).size).toBe(
-      treatments.length,
-    )
+      const treatments = [world.acoustics, ...world.portals.map((portal) => portal.acoustics)]
+      expect(treatments).toHaveLength(world.portals.length + 1)
+      expect(new Set(treatments.map((treatment) => JSON.stringify(treatment))).size).toBe(
+        treatments.length,
+      )
+    },
+  )
+
+  it('keeps Case 81 dry-dust copy and its own tribunal/world plates', () => {
+    const content = getCaseContent('case-81')
+    expect(content.chrome.worldAriaLabel).toMatch(/dust/i)
+    expect(content.chrome.worldCaption.join(' ')).toMatch(/dust/i)
+    expect(content.chrome.worldCaption.join(' ')).not.toMatch(/rain|precipitation/i)
+    expect(content.chrome.tribunalBackdropSrc).toBe('/images/case-81-deposition-annex.webp')
+    expect(content.scene.world?.featurePlateSrc).toBe('/images/ellis-marne-scene.webp')
   })
 })
 
@@ -804,12 +1292,16 @@ describe('scene-first opt-in stays scoped to the verified locations', () => {
       .map((site) => `${caseId}/${site.id}`),
   )
 
-  it('is authored on exactly the verified Case 77 locations', () => {
+  it('is authored on exactly the verified spatial-world locations', () => {
     expect([...sceneFirstSites].sort()).toEqual([
       'case-77/care-ward',
       'case-77/maintenance',
       'case-77/registry',
       'case-77/small-archive',
+      'case-81/counsel-office',
+      'case-81/deposition-suite',
+      'case-81/records-annex',
+      'case-81/restoration-lab',
     ])
   })
 
@@ -836,23 +1328,19 @@ describe('scene-first opt-in stays scoped to the verified locations', () => {
     })
   })
 
-  it('binds every anchored method to exactly one ambient treatment token', () => {
+  it('does not bind Care Ward methods to moralized ambient treatment tokens', () => {
     const site = getCaseContent('case-77').sites.find((item) => item.id === 'care-ward')!
-    const treatments = site.closeup?.previewTreatment?.actionTreatments ?? {}
-    expect(Object.keys(treatments).sort()).toEqual([...site.actionIds].sort())
-    // Two methods must not preview the same room, or the preview says nothing.
-    expect(new Set(Object.values(treatments)).size).toBe(site.actionIds.length)
+    expect(site.closeup?.previewTreatment).toBeUndefined()
+    expect(site.closeup?.rainPresence).toBeUndefined()
   })
 
-  // The generalized ambient state-sets are authored atmosphere art, not a default:
-  // only the location whose art was authored for them carries the map.
-  it('authors previewTreatment on exactly the one location whose atmosphere drives it', () => {
+  it('ships no method-graded preview treatment in the skeptical revision', () => {
     const withTreatment = registeredCases.flatMap(([caseId, content]) =>
       content.sites
         .filter((site) => site.closeup?.previewTreatment)
         .map((site) => `${caseId}/${site.id}`),
     )
-    expect(withTreatment).toEqual(['case-77/care-ward'])
+    expect(withTreatment).toEqual([])
   })
 })
 
@@ -1002,6 +1490,34 @@ describe('cross-case precedent line', () => {
     expect(getPrecedentLine('case-81', {})).toBeNull()
     // Case 77 cites no earlier case.
     expect(getPrecedentLine('case-77', { 'case-77': 'certify-continuity' })).toBeNull()
+  })
+
+  it('distinguishes a case-specific Vale ruling from a general precedent', () => {
+    const precedents = { 'case-77': 'charter-new-person' }
+    const individual = getPrecedentLine('case-81', precedents, {
+      'case-77': { continuityScope: 'individual' },
+    })
+    const general = getPrecedentLine('case-81', precedents, {
+      'case-77': { continuityScope: 'general' },
+    })
+
+    expect(individual).toMatch(/one new person/i)
+    expect(individual).toMatch(/does not seat this witness/i)
+    expect(general).toMatch(/general precedent/i)
+    expect(general).toMatch(/Ellis/i)
+    expect(individual).not.toBe(general)
+  })
+
+  it('treats missing or unknown legacy continuity scope conservatively', () => {
+    const precedents = { 'case-77': 'certify-continuity' }
+    const missing = getPrecedentLine('case-81', precedents)
+    const unknown = getPrecedentLine('case-81', precedents, {
+      'case-77': { continuityScope: 'unknown' },
+    })
+
+    expect(missing).toBe(unknown)
+    expect(missing).toMatch(/scope|general rule/i)
+    expect(missing).not.toMatch(/made continuity a general precedent/i)
   })
 })
 
@@ -1158,40 +1674,165 @@ describe.each(registeredCases)('%s carries no placeholder text', (_caseId, conte
   })
 })
 
-describe('consent branches the Case 81 debrief reflections', () => {
+describe('Case 81 testimony boundaries', () => {
   const content = getCaseContent('case-81')
 
-  function case81State(consent: 'yes' | 'no' | 'unasked', decision: string): GameState {
+  function case81State(testimonyUse: DepositionTestimonyUse, decision: string): GameState {
+    const consent =
+      testimonyUse === 'voluntary-office' || testimonyUse === 'protected-hand'
+        ? 'yes'
+        : testimonyUse === 'unasked' || testimonyUse === 'unknown'
+          ? 'unasked'
+          : 'no'
     return {
       ...createInitialGameState(),
       caseId: 'case-81',
       decision,
       depositionRecord: {
         actionId: 'take-sworn-statement',
-        beats: ['corroborate', 'corroborate', 'corroborate'],
-        askedConsent: consent !== 'unasked',
+        beats: ['let-it-stand', 'let-it-stand'],
+        askedConsent: testimonyUse !== 'unasked' && testimonyUse !== 'unknown',
         consent,
+        testimonyUse,
       },
     }
   }
 
-  it('certifying a witness who said no reads differently than one who said yes', () => {
-    const yes = content.getPersonaReflection('shepherd', case81State('yes', 'certify-witness'))
-    const no = content.getPersonaReflection('shepherd', case81State('no', 'certify-witness'))
-    expect(yes).not.toBe(no)
-    // The refusal must be legible in the "said no" line.
-    expect(no.toLowerCase()).toContain('no')
+  it('authors two statement beats and four exact stage labels', () => {
+    expect(content.deposition?.statementBeats).toHaveLength(2)
+    expect(content.deposition?.stageLabels).toEqual(['Identity', 'Terms', 'Use', 'File'])
+    content.deposition?.statementBeats.forEach((beat) => {
+      expect(beat.choices.map((choice) => choice.id)).toEqual([
+        'let-it-stand',
+        'interrupt',
+        'corroborate',
+      ])
+      beat.choices.forEach((choice) => expect(choice.tag?.trim()).toBeTruthy())
+    })
   })
 
-  it('striking the testimony branches the archivist on whether Ellis chose to speak', () => {
-    const spoke = content.getPersonaReflection('archivist', case81State('yes', 'strike-testimony'))
-    const silent = content.getPersonaReflection('archivist', case81State('no', 'strike-testimony'))
-    const unasked = content.getPersonaReflection(
-      'archivist',
-      case81State('unasked', 'strike-testimony'),
+  it('resolves use from stable terms, not the entry route', () => {
+    const deposition = content.deposition!
+    deposition.entryActionIds.forEach((actionId) => {
+      expect(
+        deposition.resolveUse({
+          actionId,
+          beats: ['let-it-stand', 'let-it-stand'],
+          askedConsent: true,
+        }).testimonyUse,
+      ).toBe('voluntary-office')
+      expect(
+        deposition.resolveUse({
+          actionId,
+          beats: ['corroborate', 'corroborate'],
+          askedConsent: true,
+        }).testimonyUse,
+      ).toBe('protected-hand')
+      expect(
+        deposition.resolveUse({
+          actionId,
+          beats: ['let-it-stand', 'interrupt'],
+          askedConsent: true,
+        }).testimonyUse,
+      ).toBe('refused')
+      expect(
+        deposition.resolveUse({
+          actionId,
+          beats: ['interrupt', 'interrupt'],
+          askedConsent: true,
+        }).testimonyUse,
+      ).toBe('compelled')
+      expect(
+        deposition.resolveUse({
+          actionId,
+          beats: ['interrupt', 'interrupt'],
+          askedConsent: false,
+        }).testimonyUse,
+      ).toBe('unasked')
+    })
+  })
+
+  it('never describes testimony as admitted, held, tainted, or struck when no account exists', () => {
+    const noRecord: GameState = {
+      ...createInitialGameState(),
+      caseId: 'case-81',
+      depositionRecord: null,
+    }
+
+    content.decisions.forEach((decision) => {
+      const channels = content.getLegalChannels?.(decision.id, noRecord) ?? []
+      const testimony = channels.find((channel) => channel.id === 'commissioned-testimony')
+      expect(testimony?.status).toBe('No account filed')
+      expect(testimony?.status).not.toMatch(/admitted|held|tainted|struck/i)
+
+      const copy = content.getDecisionCopy?.(decision.id, noRecord)
+      expect(copy).toBeDefined()
+      expect(`${copy?.description} ${copy?.cost}`).toMatch(
+        /no (?:provisional )?account|no (?:commissioned )?testimony|none was recorded/i,
+      )
+      expect(`${copy?.description} ${copy?.cost}`).not.toMatch(
+        /\b(?:admits?|holds?|strikes?) (?:the )?(?:commissioned |provisional )?(?:account|testimony)\b/i,
+      )
+    })
+  })
+
+  it('keeps authored decision copy and legal channels unchanged when an account exists', () => {
+    content.decisions.forEach((decision) => {
+      const state = case81State('voluntary-office', decision.id)
+      expect(content.getDecisionCopy?.(decision.id, state)).toEqual({
+        description: decision.description,
+        cost: decision.cost,
+      })
+      expect(content.getLegalChannels?.(decision.id, state)).toEqual(decision.legalChannels)
+    })
+  })
+
+  it('keeps every model/finding tension bounded to personhood when no account was taken', () => {
+    const noRecord: GameState = {
+      ...createInitialGameState(),
+      caseId: 'case-81',
+      depositionRecord: null,
+    }
+
+    content.reconstructionDefinitions.forEach((model) => {
+      content.decisions.forEach((decision) => {
+        const bounded = content.getReconstructionDecisionTension?.(
+          model.id,
+          decision.id,
+          noRecord,
+        )
+        expect(bounded).toMatch(/No account was taken/i)
+
+        const recordedState = case81State('voluntary-office', decision.id)
+        expect(
+          content.getReconstructionDecisionTension?.(
+            model.id,
+            decision.id,
+            recordedState,
+          ),
+        ).toBe(content.reconstructionDecisionTensions[model.id]?.[decision.id])
+      })
+    })
+  })
+
+  it('certifying refused use reads differently from voluntary office use', () => {
+    const voluntary = content.getPersonaReflection(
+      'shepherd',
+      case81State('voluntary-office', 'certify-witness'),
     )
-    expect(spoke).not.toBe(silent)
-    expect(silent).toBe(unasked)
+    const refused = content.getPersonaReflection(
+      'shepherd',
+      case81State('refused', 'certify-witness'),
+    )
+    expect(voluntary).not.toBe(refused)
+    expect(refused.toLowerCase()).toContain('refused')
+    expect(refused).toContain('The law changed. Their answer did not.')
+  })
+
+  it('makes the strike-testimony office-level loss permanent in this proceeding', () => {
+    const strike = content.decisions.find((decision) => decision.id === 'strike-testimony')
+    expect(strike?.cost).toMatch(/never bind the Directorate in this proceeding/i)
+    expect(strike?.cost).toMatch(/cannot restore office-level liability here/i)
   })
 
   it('a null deposition record (no deposition taken) falls through to the generic lines', () => {
@@ -1206,43 +1847,60 @@ describe('consent branches the Case 81 debrief reflections', () => {
   })
 })
 
-describe('the fourth-minute revelation (Case 81)', () => {
+describe('the bounded fourth-minute revelation (Case 81)', () => {
   const content = getCaseContent('case-81')
 
-  function revelationFor(decision: string, consent: 'yes' | 'no' | 'unasked' | null): string | null {
+  function revelationFor(
+    decision: string,
+    testimonyUse: DepositionTestimonyUse | null,
+  ): string | null {
     const state: GameState = {
       ...createInitialGameState(),
       caseId: 'case-81',
       decision,
       depositionRecord:
-        consent === null
+        testimonyUse === null
           ? null
           : {
               actionId: 'take-sworn-statement',
-              beats: ['corroborate', 'corroborate', 'corroborate'],
-              askedConsent: consent !== 'unasked',
-              consent,
+              beats: ['let-it-stand', 'let-it-stand'],
+              askedConsent: testimonyUse !== 'unasked' && testimonyUse !== 'unknown',
+              consent:
+                testimonyUse === 'voluntary-office' || testimonyUse === 'protected-hand'
+                  ? 'yes'
+                  : testimonyUse === 'unasked' || testimonyUse === 'unknown'
+                    ? 'unasked'
+                    : 'no',
+              testimonyUse,
             },
     }
     return content.getRevelation?.(state) ?? null
   }
 
-  it('names the office on every verdict path but never the hand', () => {
+  it('never identifies the individual behind the hand on any verdict/use path', () => {
     const decisions = content.decisions.map((d) => d.id)
+    const uses: (DepositionTestimonyUse | null)[] = [
+      null,
+      'voluntary-office',
+      'protected-hand',
+      'refused',
+      'unasked',
+      'compelled',
+      'unknown',
+    ]
     decisions.forEach((decision) => {
-      const line = revelationFor(decision, decision === 'strike-testimony' ? 'yes' : null)
-      expect(line).not.toBeNull()
-      expect(line).toContain('Continuity Directorate')
+      uses.forEach((use) => {
+        const line = revelationFor(decision, use)
+        expect(line).not.toBeNull()
+        expect(line).toMatch(/unidentified|no individual is identified/i)
+      })
     })
   })
 
-  it('lands the person-vs-office hook only when the freed witness chose to speak', () => {
-    const spoke = revelationFor('strike-testimony', 'yes')
-    const silent = revelationFor('strike-testimony', 'no')
-    expect(spoke).toContain('Case 84')
-    expect(spoke).not.toBe(silent)
-    // A silent, freed witness costs the record its account, and does not name.
-    expect(silent).not.toContain('Case 84')
+  it('does not manufacture an office link when Ellis was skipped', () => {
+    const skipped = revelationFor('certify-witness', null)
+    expect(skipped).toContain('No provisional account was taken')
+    expect(skipped).toContain('not established')
   })
 
   it('returns null before a verdict is issued', () => {
@@ -1300,13 +1958,9 @@ describe('site close-read pilots', () => {
       'listen-mara',
       'stress-test',
     ])
-    expect(ward?.closeup?.rainPresence).toEqual({
-      matteSrc: '/images/site-scenes/care-ward-rain-memory.jpg',
-      actionTreatments: {
-        'listen-mara': 'listening',
-        'stress-test': 'pressure',
-      },
-    })
+    expect(ward?.closeup?.atmosphere).toBe('rain-reflection')
+    expect(ward?.closeup?.previewTreatment).toBeUndefined()
+    expect(ward?.closeup?.rainPresence).toBeUndefined()
   })
 
   it('ships the Case 77 Maintenance Spine environment as an optimized plate', () => {

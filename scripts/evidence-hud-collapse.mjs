@@ -377,6 +377,14 @@ async function bootFreshRun(seed) {
       throw new Error('briefing did not render')
     }
     await click('.choice-row')
+    // The briefing route card is a DRAFT, not a commit: selecting it opens an
+    // approach-review block whose "Begin audit" button is the only control that
+    // enters the investigation. A harness that clicked only the card stalled on
+    // the briefing and reported "investigation did not render" for every pass.
+    if (!(await waitFor(`!!document.querySelector('.briefing-approach-review .button-primary')`))) {
+      throw new Error('briefing approach review did not render')
+    }
+    await click('.briefing-approach-review .button-primary')
   }
   if (!(await waitFor(`!!document.querySelector('.site-switcher')`))) {
     throw new Error('investigation did not render')

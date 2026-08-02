@@ -3,7 +3,7 @@
 | Asset | Source | Purpose | Status |
 |---|---|---|---|
 | `docs/assets/civic-archive-original.png` | Generated with OpenAI built-in image generation on 2026-07-19 from an original abstract art brief | Case 77 city panorama and atmosphere | Look-development master; kept out of the shipped bundle, retained as source of truth; human review required before commercial production |
-| `public/images/civic-archive.webp` | Locally encoded from the generated PNG master at quality 82 | Responsive browser delivery of the same panorama (the only artwork shipped in `dist/`) | Derived optimization; PNG master retained in `docs/assets/` |
+| `public/images/civic-archive.webp` | Locally encoded from the generated PNG master at quality 82 | Responsive browser delivery of the original civic-archive panorama, subsequently reused by the ambience and false-window treatments recorded below | Derived optimization; PNG master retained in `docs/assets/` |
 | `public/favicon.svg` | Authored in repository | Prototype favicon | Original code-native asset |
 | `public/ambience.html` | Authored in-session on 2026-07-19; no external assets, fonts, or network requests — all visuals are hand-written CSS gradients, inline SVG, and canvas 2D | Atmosphere-only ambience layer (rain + parallax depth scene, five persona sigils, presence idle/pulse treatments); its hero plane is a CSS stand-in with a marked plug point where `public/images/civic-archive.webp` replaces it on integration | Original code-native asset; contains no game logic — integrated into React surfaces (`src/ambience/`) in commits since; retained as the extraction reference |
 | `public/case-81.html` | Authored in-session on 2026-07-19; zero external assets, fonts, or network requests — all visuals are hand-written SVG, CSS gradients, and canvas 2D | Case 81 Deposition Annex scene: layer-registered stack, scene manifest, six state treatments, hotspot overlay; background layer carries the generated raster (same-origin) with a scrim and CSS fallback | Original code-native asset; presentation only — host reducer owns state |
@@ -247,6 +247,60 @@ QA result: all four PNG masters and all three WebP derivatives were inspected at
 
 The four existing Case 77 close-read plates remain the canonical portal views and were deliberately not regenerated or duplicated: `public/images/site-scenes/maintenance-spine.webp`, `public/images/site-scenes/care-ward-12.webp`, `public/images/site-scenes/registry-intake.webp`, and `public/images/site-scenes/small-archive.webp`.
 
+### Case 77 concourse ambience extension
+
+Generated 2026-07-30 as two separate `stylized-concept` calls in OpenAI built-in image-generation tool mode. The approved concourse mock and palette were supplied only as material-language and mood references; neither output copies their layout. The selected built-in outputs were preserved at:
+
+- Smoked civic bronze: `/Users/gentlegen/.codex/generated_images/019fb1a2-68e5-7ba3-8396-e12448cbf1ad/call_tMcNhE0hdvGIlox6kh9vnoU8.png`
+- Stormwell vista: `/Users/gentlegen/.codex/generated_images/019fb1a2-68e5-7ba3-8396-e12448cbf1ad/call_ob1d6eqnPWmjbRf834ZoSl7s.png`
+
+Smoked-civic-bronze generation prompt (exact):
+
+```text
+Use case: stylized-concept
+Asset type: square production material master for a real-time WebGL civic-archive environment
+Input images: Image 1 is the approved palette and material-language reference; Image 2 is the approved concourse mood reference. Use them only for restrained municipal material language, scale, darkness, and lived-in severity. Do not reproduce either image's board, typography, objects, portals, room layout, lighting arrangement, or composition.
+Primary request: Create one clean, square, edge-to-edge, seamless-looking smoked civic bronze / blackened brass material master.
+Scene/backdrop: a single uninterrupted metal surface filling the entire square canvas.
+Subject: charcoal-black smoked bronze with faint brown-black brass undertones, restrained oxidized wear in graphite and umber-gray, fine age-softened machining grain, and very subtle shallow stepped-fan neo-deco scoring. The scoring is sparse, low-contrast, partly worn away, distributed without a central emblem, and reads as an old municipal fabrication convention rather than ornament.
+Style/medium: production-ready stylized realism for a premium narrative game's physically based environment material; tactile, controlled, severe, believable at architectural scale.
+Composition/framing: strict flat orthographic front view, square crop, uniform material scale, no perspective, no object silhouette, no central focal point; edges should repeat plausibly in a 2x2 tile test. Any score lines approaching an edge must remain understated and visually compatible with repetition.
+Lighting/mood: flat orthographic diffuse neutral illumination, perfectly even, with as little baked lighting as possible.
+Color palette: smoked near-black, blue-charcoal, graphite, blackened brass, muted umber-gray oxidation only.
+Materials/textures: matte-to-satin aged metal, fine micro-pitting, restrained rubbed high points, subtle oxidation embedded in the surface, shallow engraved stepped-fan linework with softened wear.
+Constraints: material fills every pixel; no frame, border, margin, swatch presentation, labels, text, letters, numbers, logos, symbols, seals, emblems, heraldry, pictograms, centered medallion, standalone fan icon, perspective, horizon, floor plane, panels, joints, bolts, rivets, handles, objects, directional highlights, reflections, cast shadows, ambient-occlusion corners, vignette, gradient, dramatic corrosion, dents, gouges, cracks, bullet marks, fingerprints, graffiti, grime streaks, water droplets, watermark.
+Avoid: bright amber, cyan, coral, red, orange-gold, green verdigris, purple, magenta, neon, polished gold, copper spectacle, decorative wallpaper symmetry, obvious repeating stamp patterns, dramatic damage, high-frequency photographic noise.
+```
+
+Stormwell-vista generation prompt (exact):
+
+```text
+Use case: stylized-concept
+Asset type: wide cinematic environment plate for a real-time 3D civic-archive concourse
+Input images: Image 1 is the approved concourse mood/material reference; Image 2 is the approved palette/material-language reference. Inherit only their rain-dark municipal credibility, restrained near-black material language, tactile age, and quiet institutional mood. Create a new location, camera, silhouette, and composition. Do not copy the concourse room, four portals, central plinth, palette-board layout, swatches, labels, or lighting arrangement.
+Primary request: Create a production-ready 16:9 vista of a recessed stormwater-memory-cooling well seen through a broad sheet of thick pressure glass. The location is unique municipal neo-deco brutalism: a civic infrastructure chamber built to cool dense archive machinery with collected rainwater, severe and humane rather than futuristic spectacle.
+Scene/backdrop: Beyond the glass, an oppressive vertical shaft drops through many dark municipal levels. Massive offset concrete fins, narrow maintenance ledges, submerged pressure baffles, deep rainwater runnels, overflow lips, and distant compact archive heat-exchange infrastructure recede into fog and darkness. Thin water channels descend irregularly along soot-dark concrete; a low black reservoir is only partly visible far below. Condensation haze and slight optical thickness imply heavy safety glass, but include no baked window frame or mullions.
+Subject: the vertical stormwell itself, with distant archive cooling assemblies integrated into the shaft walls; no single machine or light is a hero object.
+Style/medium: cinematic industrial realism, premium narrative-game environment plate, physically plausible water-control and archive-cooling infrastructure, restrained civic neo-deco geometry fused with monolithic brutalism, tactile and lived-in, not glossy science fiction.
+Composition/framing: wide 16:9 horizontal plate, eye-level view facing into the recessed glass aperture with a subtle downward read into great depth. Use layered asymmetry and offset vertical masses rather than bilateral symmetry. Keep the central 35% quiet, dark, and low-detail behind future real-time mullions; keep the outermost 12% on both sides quiet and low-contrast behind a future 3D frame. Important depth cues and infrastructure should sit in the intermediate left and right thirds without touching the image edges. No built-in border, window frame, foreground railing, or central focal emblem.
+Lighting/mood: midnight during sustained rain, oppressive depth, watchful stillness. Sparse dim neutral fog-white service fixtures at widely separated levels; soft gray reflected water light only. No colored route light, no strong glow, no theatrical beams, no lightning.
+Color palette: near-black, blue-charcoal, graphite concrete, blackened steel, smoked bronze traces, fog gray, dirty neutral white. No amber, cyan, coral, red, orange, green, purple, or magenta accents.
+Materials/textures: saturated poured concrete, blackened structural steel, oxidized dark bronze fittings, thick optically imperfect pressure glass, narrow mineral water trails, matte archive exchanger housings, diffuse mist and condensation. Wetness is controlled and physically plausible, without mirror floors or glittering droplets.
+Constraints: no people, silhouettes, faces, bodies, hands, uniforms, vehicles, creatures, readable text, letters, numbers, logos, brands, seals, emblems, symbols, signage, posters, UI, HUD, floating screens, holograms, watermark, copied franchise architecture, recognizable franchise mimicry, neon spectacle, purple-magenta, glossy spaceship panels, fantasy ornament, steampunk clutter, giant gears, pipes-everywhere cliché, art-deco sunburst emblem, statues, throne, altar, city skyline, four-door hub, central plinth, conventional corridor, room full of windows, lens flare, excessive bloom, dramatic explosion, catastrophic damage, broken glass, blood, weapons, or overt horror.
+Runtime compositing constraint: this plate will sit behind real 3D pressure-glass mullions and framing, so preserve calm dark values through the center and all edges and do not bake any frame, mullion, caption, marker, or interaction highlight into the image.
+```
+
+Saved masters and runtime transforms:
+
+- `docs/assets/world/case77-concourse/smoked-civic-bronze-original.png`: byte-for-byte copy of the 1254×1254 built-in output; 2,974,413 bytes.
+- `public/images/world/case77/smoked-civic-bronze.webp`: Lanczos-resized to 1024×1024 with FFmpeg, then encoded with `cwebp` 1.5.0 at quality 84, method 6, and sharp YUV conversion; 200,442 bytes.
+- `docs/assets/world/case77-concourse/stormwell-vista-original.png`: byte-for-byte copy of the 1672×941 built-in output; 1,945,276 bytes.
+- `public/images/world/case77/stormwell-vista.webp`: Lanczos-resized to 1600×900 with FFmpeg, then encoded with `cwebp` 1.5.0 at quality 84, method 6, and sharp YUV conversion; 65,306 bytes.
+
+Intended use: the bronze is a repeating smoked-metal architectural material for the Case 77 real-time concourse; the stormwell is a quiet non-interactive depth plate behind real 3D pressure glass and mullions. Both are presentation-only and must never encode or mutate canonical game state.
+
+QA: both PNG masters and both WebP derivatives were inspected at full frame. The bronze contains no object, text, emblem, bright semantic accent, perspective, or dramatic damage. A temporary 2048×2048 2×2 repeat sheet made from the decoded runtime WebP was inspected at `/private/tmp/case77-smoked-civic-bronze-2x2.png`; it shows no hard edge discontinuity, with feature repetition visible only at the deliberately aggressive stress scale. The stormwell remains person-free, neutral-lit, free of text/logos/franchise mimicry and purple-magenta, and preserves quiet dark center and edge zones for the real-time framing. No concrete defect was found, so neither asset was retried.
+
 ### Persona roster portraits (painterly noir)
 
 Four portraits, one per presence, generated 2026-07-25 with **Higgsfield Nano
@@ -370,3 +424,86 @@ step-down without visible blocking.
 Verified after `npm run build`: `dist/images/personas/` holds exactly the four
 WebPs at 43,762 bytes total, and **no persona PNG master reaches `dist/`** (the
 exact shape of the recorded 1.9 MB-PNG-in-deploy scar).
+
+### Case 77 cinematic HUD north-star
+
+- **File:** `docs/assets/hud/case77-cinematic-hud-approved.png`
+- **Source:** generated 2026-07-30 with OpenAI’s built-in image generation tool
+  during the cinematic-HUD design gate; copied byte-for-byte from the generated
+  output (`1,839,120` bytes).
+- **Generation brief:** a high-fidelity 16:9 desktop gameplay-HUD north star for
+  The Annex, with a full-screen rain-dark civic archive, compact case identity
+  and objective at upper-left, restrained case/evidence status at upper-right,
+  four in-world threshold markers, authored cinematic speaker dialogue at
+  lower-left, and contextual interaction prompts at lower-right. The brief
+  required original municipal civic-deco/brutalist art direction, readable local
+  text plates, minimal perimeter chrome, and no copied franchise logos,
+  terminology, characters, props, or interface assets.
+- **Intended use:** internal visual target and review artifact only. It is not
+  shipped by the runtime and encodes no canonical game state. The implementation
+  recreates its composition with semantic React controls, authored content, and
+  the existing real-time world rather than compositing the raster over gameplay.
+- **Review:** approved by the user before implementation. Confirmed as a
+  world-first layout with upper-left objective, upper-right record status,
+  lower-left dialogue, lower-right prompts, and no persistent dashboard column.
+
+### The Fourth Margin — quotation and text provenance
+
+Implemented 2026-07-30 as authored text and semantic React/CSS controls. **No image,
+audio, model-generated, or other external asset was created or added for this system.**
+The visible `04` bracket, cinematic reveal, Case File entries, and Reader Key presentation
+are code-native. The two in-world answers and all Reader Key copy are original Annex
+writing authored in this repository.
+
+| In-game item | Verified edition | Exact intended use |
+|---|---|---|
+| `nietzsche-forgetting` | Friedrich Nietzsche, *Thoughts Out of Season, Part II*, “The Use and Abuse of History,” § I, translated by Adrian Collins, T. N. Foulis, 1909. [Project Gutenberg eBook 38226](https://www.gutenberg.org/ebooks/38226). | Optional Case 77 Fourth Margin reading at Registry Intake’s filed audit mirror. The game reproduces: “Thus even a happy life is possible without remembrance, as the beast shows: but life in any true sense is absolutely impossible without forgetfulness.” It is paired with an original in-world counter-reading and is explicitly retained outside evidence. |
+| `schopenhauer-succession` | Arthur Schopenhauer, *The World as Will and Idea*, Vol. II, Ch. XV, “On the Essential Imperfections of the Intellect,” translated by R. B. Haldane and J. Kemp, sixth edition, Kegan Paul, Trench, Trübner & Co., 1909. [Project Gutenberg eBook 40097](https://www.gutenberg.org/ebooks/40097). | Optional Case 81 Fourth Margin reading at the Restoration Lab’s filed under-bench register. The game reproduces: “The intellect apprehends only successively, and in order to grasp one thing must let another go.” Its original Annex counter-reading may resolve from Ellis’s recorded use boundary while Case 81 is active; it does not change that boundary. |
+
+Project Gutenberg’s metadata marks both eBooks **public domain in the USA**. That
+designation is jurisdiction-specific, not a worldwide commercial clearance. Before a
+commercial release outside the United States, verify the copyright status of each 1909
+English translation in every target territory; if clearance is uncertain, replace it
+with a separately cleared or original in-house translation and update this ledger. No
+modern copyrighted translation was consulted or copied for the shipped wording.
+
+The `reader-key-04` object is wholly original Annex content. It is assembled only through
+an explicit Case File claim after both quotation fragments are retained and the Case 81
+verdict has closed. Its `I` and `XV` stamps refer to the cited section and chapter. Its
+line `TERMS BEFORE NAMES · PROTECTION NOT YET FILED.` is a bounded Case 84 teaser, not a
+quotation, evidence item, legal promise, outcome export, or identification of the hand
+behind the fourth-minute seal.
+
+### The Unnumbered Reading Room — text and procedural-set provenance
+
+Authored in-session on 2026-07-30 as original Annex copy and static presentation data in
+`src/game/content.ts`. **No new image, audio, font, model-generated texture, quotation,
+or other external asset was created for the room.** Its intended visual construction is
+code-native geometry and semantic HTML/CSS, with any material reuse limited to the
+already recorded Annex world assets above. The same authored copy is intended for the
+WebGL presentation and its reduced-motion/WebGL-unavailable fallback.
+
+The 3D observation slit reuses `public/images/civic-archive.webp`—the locally encoded
+generated panorama recorded in the first row of this ledger—as a distant, texture-backed
+skyline vista behind modeled glass, mullions, frame, furniture, and reading objects. This
+is the standard distant-scenery role of a game-world backdrop; it is not an interaction
+plate and does not replace the room geometry. In-world it is a false window holding one
+recorded minute of rain, not a literal exterior view. That conceit adds ambience only: it
+establishes no canonical geography, case fact, evidence, reward, or route out of the room.
+
+The three reading-point objects are original fictional set dressing:
+
+- `book-that-opens` is a repaired public-gardening guide with transit stubs, blue thread,
+  lunch paper, balcony-bean diagrams, and a coriander seed. It is a tangential human
+  trace, not a quotation or a statement of case fact.
+- `two-orders` reuses the already sourced I and XV Fourth Margin slips. It adds no
+  philosopher text: every arrangement response and the Small Archivist's note are
+  original Annex writing, and none declares a preferred reading.
+- `unpressed-promise` is an original blank form carrying `NOT FILED · NO LEGAL FORCE`
+  and the drafting prompt `WHAT MAY THIS ROOM PROMISE BEFORE A NAME IS ASKED?`. It is a
+  thematic Case 84 teaser only, not a source identity, protection promise, legal term,
+  evidence item, or imported draft fact.
+
+Reader Key 04 is the room's sole persisted input. Entry, camera focus, opened reading
+points, local object arrangements, completion copy, and exit are presentation-only and
+produce no evidence, reward, campaign fact, precedent, or run-history record.

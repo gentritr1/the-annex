@@ -1,10 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import type {
+  AuthoritySignal,
   SceneWorldDefinition,
   SiteDefinition,
   SiteId,
   SiteWorldOutcome,
+  UnnumberedReadingRoomDefinition,
 } from '../game/types'
 import type { AnnexWorldHandle } from './createAnnexWorld'
 import { containedPosterAnchor } from './posterProjection'
@@ -14,10 +16,15 @@ interface AnnexWorldStageProps {
   sites: readonly SiteDefinition[]
   completedSiteIds: readonly SiteId[]
   selectedSiteId?: SiteId
+  // A fresh-run opening approach may recommend a portal. It is deliberately
+  // separate from selectedSiteId so recommendation never previews, selects, or
+  // moves the camera.
+  recommendedSiteId?: SiteId
   active: boolean
   reducedMotion: boolean
   alarmLevel: number
-  // Resolved concourse alteration per site (content-driven; may be empty). A site
+  authoritySignal: AuthoritySignal
+  // Resolved hub alteration per site (content-driven; may be empty). A site
   // with an entry gains an outcome-specific portal treatment in this DOM layer and
   // in the WebGL layer, and its label/aria-label carry the authored outcome line.
   resolvedOutcomes: ReadonlyMap<SiteId, SiteWorldOutcome>
@@ -25,6 +32,11 @@ interface AnnexWorldStageProps {
   // an actual return from its resolved room. Undefined at rest. Reduced motion never
   // sets it (the persistent outcome treatment is already strong on its own).
   returnEmphasisSiteId?: SiteId
+  // Optional Fourth Margin threshold. The Reader Key capability is resolved by
+  // the caller; this stage only mirrors the resulting presentation state.
+  secretRoom?: UnnumberedReadingRoomDefinition
+  secretRoomAvailable?: boolean
+  onSecretRoomActivate?: (sourceElement: HTMLButtonElement) => void
   onPortalActivate: (siteId: SiteId, sourceElement: HTMLButtonElement) => void
 }
 
@@ -113,20 +125,25 @@ function portalIndex(sites: readonly SiteDefinition[], siteId: SiteId): string {
 }
 
 /**
- * Progressive enhancement for the Case 77 concourse. The approved poster and
- * the real DOM location switcher remain complete without WebGL; this layer adds
- * a bounded pointer view and never owns canonical game state.
+ * Progressive enhancement for an authored bounded world. Its poster and real
+ * DOM location switcher remain complete without WebGL; this layer adds a
+ * pointer-view environment and never owns canonical game state.
  */
 export function AnnexWorldStage({
   world,
   sites,
   completedSiteIds,
   selectedSiteId,
+  recommendedSiteId,
   active,
   reducedMotion,
   alarmLevel,
+  authoritySignal,
   resolvedOutcomes,
   returnEmphasisSiteId,
+  secretRoom,
+  secretRoomAvailable = false,
+  onSecretRoomActivate,
   onPortalActivate,
 }: AnnexWorldStageProps) {
   const rootRef = useRef<HTMLDivElement>(null)
@@ -135,7 +152,9 @@ export function AnnexWorldStage({
   const selectedRef = useRef(selectedSiteId)
   const completedRef = useRef(completedSiteIds)
   const alarmRef = useRef(alarmLevel)
+  const authoritySignalRef = useRef(authoritySignal)
   const outcomesRef = useRef(resolvedOutcomes)
+  const secretRoomAvailableRef = useRef(secretRoomAvailable)
   const [rendererState, setRendererState] = useState<RendererState>('poster')
   const [loopRunning, setLoopRunning] = useState(false)
 
@@ -156,6 +175,7 @@ export function AnnexWorldStage({
           root,
           world,
           sites,
+          secretRoom,
           portalButtons: portalButtonsRef.current,
           signal: abort.signal,
           onContextLost: () => {
@@ -182,7 +202,9 @@ export function AnnexWorldStage({
         handle.setSelection(selectedRef.current)
         handle.setCompleted(completedRef.current)
         handle.setAlarm(alarmRef.current)
+        handle.setAuthoritySignal(authoritySignalRef.current)
         handle.setResolvedOutcomes(outcomesRef.current)
+        handle.setSecretRoomAvailable(secretRoomAvailableRef.current)
         setRendererState('webgl')
       })
       .catch((error: unknown) => {
@@ -199,7 +221,7 @@ export function AnnexWorldStage({
       handleRef.current = null
       queueMicrotask(() => setRendererState('poster'))
     }
-  }, [active, reducedMotion, sites, world])
+  }, [active, reducedMotion, secretRoom, sites, world])
 
   useEffect(() => {
     selectedRef.current = selectedSiteId
@@ -217,6 +239,11 @@ export function AnnexWorldStage({
   }, [alarmLevel])
 
   useEffect(() => {
+    authoritySignalRef.current = authoritySignal
+    handleRef.current?.setAuthoritySignal(authoritySignal)
+  }, [authoritySignal])
+
+  useEffect(() => {
     outcomesRef.current = resolvedOutcomes
     handleRef.current?.setResolvedOutcomes(resolvedOutcomes)
   }, [resolvedOutcomes])
@@ -224,6 +251,11 @@ export function AnnexWorldStage({
   useEffect(() => {
     handleRef.current?.setReturnEmphasis(returnEmphasisSiteId)
   }, [returnEmphasisSiteId])
+
+  useEffect(() => {
+    secretRoomAvailableRef.current = secretRoomAvailable
+    handleRef.current?.setSecretRoomAvailable(secretRoomAvailable)
+  }, [secretRoomAvailable])
 
   useLayoutEffect(() => {
     if (rendererState === 'webgl') {
@@ -238,13 +270,21 @@ export function AnnexWorldStage({
   const webglVisible = effectiveRendererState === 'webgl'
   const posterOpacity = webglVisible ? 0 : 1
   const alarmTier = Math.max(0, Math.min(3, Math.round(alarmLevel)))
+  const secretRoomEntry = secretRoom?.entryAnchors.find(
+    (entry) => entry.worldKind === world.kind,
+  )
+  const secretRoomDoorLive = Boolean(
+    active && secretRoomAvailable && secretRoomEntry && onSecretRoomActivate,
+  )
 
   return (
     <div
       className="annex-world-stage"
       data-active={active ? 'true' : 'false'}
       data-alarm={alarmTier}
+      data-authority-signal={authoritySignal}
       data-renderer={effectiveRendererState}
+      data-world-kind={world.kind}
       data-world-loop={active && !reducedMotion && loopRunning ? 'running' : 'idle'}
       ref={rootRef}
       style={rootStyle}
@@ -277,12 +317,20 @@ export function AnnexWorldStage({
       />
       <div
         className="annex-world-portals"
+        aria-hidden={active ? undefined : true}
         style={{ ...fullLayerStyle, zIndex: 2, pointerEvents: 'none' }}
       >
         {world.portals.map((portal) => {
           const filed = completedSiteIds.includes(portal.siteId)
           const selected = selectedSiteId === portal.siteId
+          const recommended = recommendedSiteId === portal.siteId
           const outcome = resolvedOutcomes.get(portal.siteId)
+          const signalApplies =
+            authoritySignal === 'linked'
+              ? world.authoritySignal?.linkedSiteIds.includes(portal.siteId)
+              : authoritySignal === 'forged'
+                ? world.authoritySignal?.forgedSiteId === portal.siteId
+                : false
           // An outcome-specific accent overrides the generic filed colour: warm
           // amber for the opened outcome, cooled fog for the barred/sealed one.
           const outcomeColor = outcome
@@ -290,8 +338,20 @@ export function AnnexWorldStage({
               ? 'var(--amber-soft)'
               : 'var(--fog-dim)'
             : undefined
+          const signalColor =
+            signalApplies && authoritySignal === 'linked'
+              ? 'var(--cyan)'
+              : signalApplies && authoritySignal === 'forged'
+                ? 'var(--coral)'
+                : undefined
           const color =
-            outcomeColor ?? (filed ? 'var(--cyan)' : selected ? 'var(--amber-soft)' : 'var(--record)')
+            outcomeColor ??
+            signalColor ??
+            (filed
+              ? 'var(--cyan)'
+              : recommended || selected
+                ? 'var(--amber-soft)'
+                : 'var(--record)')
           const liftLabel = portal.posterAnchor.x > 0.55 && portal.posterAnchor.x < 0.8
           const raiseLabel = liftLabel || portal.posterAnchor.x < 0.25
           const lowerRightLabel = portal.posterAnchor.x > 0.8
@@ -301,18 +361,34 @@ export function AnnexWorldStage({
           // The label carries the authored outcome line once filed; the aria-label
           // appends it so the alteration is perceivable non-visually too.
           const labelText = outcome ? outcome.portalLabel : name
-          const ariaLabel = outcome ? `Enter ${name}. ${outcome.portalLabel}` : `Enter ${name}`
+          const signalLabel =
+            signalApplies && authoritySignal === 'linked'
+              ? ' Authority-family link active.'
+              : signalApplies && authoritySignal === 'forged'
+                ? ' Illicit credential back-trace active.'
+                : ''
+          const recommendationLabel = recommended
+            ? ' Suggested by your opening approach.'
+            : ''
+          const ariaLabel = `${
+            outcome ? `Enter ${name}. ${outcome.portalLabel}` : `Enter ${name}`
+          }${signalLabel}${recommendationLabel}`
           return (
             <button
               type="button"
               className="annex-world-portal"
               data-filed={filed ? 'true' : undefined}
               data-selected={selected ? 'true' : undefined}
+              data-recommended={recommended ? 'true' : undefined}
+              data-recommendation={recommended ? 'opening-approach' : undefined}
               data-site={portal.siteId}
               data-outcome={outcome?.outcomeId}
               data-outcome-variant={outcome?.variant}
+              data-authority-signal={signalApplies ? authoritySignal : undefined}
               data-return-emphasis={returnEmphasisSiteId === portal.siteId ? 'true' : undefined}
               aria-label={ariaLabel}
+              disabled={!active}
+              tabIndex={active ? undefined : -1}
               key={portal.siteId}
               ref={(element) => {
                 if (element) portalButtonsRef.current.set(portal.siteId, element)
@@ -396,6 +472,46 @@ export function AnnexWorldStage({
             </button>
           )
         })}
+        {secretRoomDoorLive && secretRoom && secretRoomEntry && onSecretRoomActivate ? (
+          <button
+            type="button"
+            className="annex-world-portal annex-world-secret-room"
+            data-secret-room={secretRoom.id}
+            data-entry-anchor={secretRoomEntry.id}
+            aria-label={secretRoomEntry.accessibleLabel}
+            title={secretRoomEntry.label}
+            onClick={(event) => onSecretRoomActivate(event.currentTarget)}
+            style={{
+              ...portalButtonStyle,
+              ...containedPosterAnchor(secretRoomEntry.posterAnchor),
+              color: 'var(--amber-soft)',
+              opacity: 1,
+              pointerEvents: 'auto',
+            }}
+          >
+            <span
+              className="annex-world-portal-ring annex-world-secret-room-ring"
+              style={{
+                ...portalRingStyle,
+                borderColor: 'var(--amber-soft)',
+                background: 'oklch(0.13 0.025 78 / 0.62)',
+              }}
+            >
+              <span className="annex-world-portal-code" style={portalCodeStyle}>
+                04
+              </span>
+            </span>
+            <span
+              className="annex-world-portal-label annex-world-secret-room-label"
+              style={{
+                ...portalLabelStyle,
+                color: 'var(--amber-soft)',
+              }}
+            >
+              {secretRoomEntry.label}
+            </span>
+          </button>
+        ) : null}
       </div>
     </div>
   )

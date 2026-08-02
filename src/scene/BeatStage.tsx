@@ -28,6 +28,36 @@ function renderedText(line: BeatLine): string {
   return line.kind === 'speaker' ? `${personaName(line.speaker)} —` : line.text
 }
 
+function currentVisualLineIndices(
+  lines: readonly BeatLine[],
+  visible: number,
+): ReadonlySet<number> {
+  const revealed = lines.slice(0, visible)
+  let latestSpeakerIndex = -1
+
+  for (let index = revealed.length - 1; index >= 0; index -= 1) {
+    if (revealed[index]?.kind === 'speaker') {
+      latestSpeakerIndex = index
+      break
+    }
+  }
+
+  if (latestSpeakerIndex === -1) {
+    const firstCurrentIndex = Math.max(0, revealed.length - 2)
+    return new Set(
+      revealed.slice(firstCurrentIndex).map((_, offset) => firstCurrentIndex + offset),
+    )
+  }
+
+  const spokenAfterHeader = revealed
+    .map((line, index) => ({ line, index }))
+    .filter(({ line, index }) => index > latestSpeakerIndex && line.kind !== 'speaker')
+    .slice(-2)
+    .map(({ index }) => index)
+
+  return new Set([latestSpeakerIndex, ...spokenAfterHeader])
+}
+
 // The staged reveal that performs over the scene after a method is filed. It is
 // presentational only: it reads assembled authored lines, owns a view-local
 // reveal index, and reports completion upward. It never dispatches, never defers
@@ -58,6 +88,9 @@ export function BeatStage({
   const complete = visible >= total
   const currentText = shown > 0 && shown <= total ? renderedText(lines[shown - 1]!) : ''
   const holdMs = beatHoldMs(currentText)
+  const currentVisualLines = reducedMotion
+    ? new Set(lines.slice(0, visible).map((_, index) => index))
+    : currentVisualLineIndices(lines, visible)
 
   function advance() {
     if (shown < total) {
@@ -133,15 +166,20 @@ export function BeatStage({
           <span key={`${index}-${line.kind}`}>{renderedText(line)} </span>
         ))}
       </p>
-      {/* Only revealed lines are mounted, so the stanza grows upward from a fixed
-          bottom exactly as the approved prototype does. Each line's entry is a
-          fill-mode-less animation whose RESTING style is the fully visible one:
-          if the animation is suppressed or never runs, the line is still there
-          (the opacity-strand scar — no reveal is carried by a held-open frame). */}
+      {/* Every revealed line stays mounted for the live transcript contract, but
+          the visual plate keeps the current speaker plus their latest two lines.
+          Older clauses leave cleanly instead of being partially clipped behind
+          a fade. Reduced motion keeps the complete revealed stanza visible. */}
       <div className="scene-beat-lines" aria-hidden="true">
         {lines.slice(0, visible).map((line, index) => (
           <p
-            className={`scene-beat-line scene-beat-line--${line.kind}`}
+            className={[
+              'scene-beat-line',
+              `scene-beat-line--${line.kind}`,
+              currentVisualLines.has(index) ? null : 'scene-beat-line--history',
+            ]
+              .filter(Boolean)
+              .join(' ')}
             data-speaker={line.kind === 'subject' ? undefined : line.speaker}
             key={`${index}-${line.kind}`}
           >

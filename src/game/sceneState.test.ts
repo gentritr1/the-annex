@@ -36,41 +36,41 @@ describe('sceneStateFor', () => {
     })
   })
 
-  it('presses when a coercive deposition entry is open and corroborates otherwise (Case 81)', () => {
+  it('keeps the room neutral while either raw-record entry is open (Case 81)', () => {
     const content = getCaseContent('case-81')
     const deposition = content.deposition
     expect(deposition).toBeDefined()
     if (!deposition) return
 
-    const isCoercive = (id: string) =>
-      Boolean(content.fieldActions.find((action) => action.id === id)?.methodTags.includes('coercion'))
-    const coercive = deposition.entryActionIds.find(isCoercive)
-    const plain = deposition.entryActionIds.find((id) => !isCoercive(id))
-    expect(coercive).toBeDefined()
-    expect(plain).toBeDefined()
-
     const state = stateFor('case-81')
-    expect(sceneStateFor(state, { surface: 'investigation', openDepositionEntry: coercive })).toBe(
-      'press',
-    )
-    expect(sceneStateFor(state, { surface: 'investigation', openDepositionEntry: plain })).toBe(
-      'corroborate',
-    )
+    deposition.entryActionIds.forEach((entryActionId) => {
+      expect(
+        sceneStateFor(state, {
+          surface: 'investigation',
+          openDepositionEntry: entryActionId,
+        }),
+      ).toBe('neutral')
+    })
   })
 
   it('holds refusal after a committed deposition where the witness said no (Case 81)', () => {
     const refusedRecord: DepositionRecord = {
       actionId: 'cross-examine-witness',
-      beats: ['let-it-stand', 'let-it-stand', 'let-it-stand'],
+      beats: ['let-it-stand', 'interrupt'],
       askedConsent: true,
       consent: 'no',
+      testimonyUse: 'refused',
     }
     const refused = stateFor('case-81', { depositionRecord: refusedRecord })
     expect(sceneStateFor(refused, { surface: 'investigation' })).toBe('refusal')
 
     // A committed deposition with consent yes/unasked does not hold refusal.
     const consented = stateFor('case-81', {
-      depositionRecord: { ...refusedRecord, consent: 'yes' },
+      depositionRecord: {
+        ...refusedRecord,
+        consent: 'yes',
+        testimonyUse: 'voluntary-office',
+      },
     })
     expect(sceneStateFor(consented, { surface: 'investigation' })).toBe('neutral')
   })
@@ -107,40 +107,38 @@ describe('witnessed-refusal beat trigger', () => {
     })
   })
 
-  it('resolves committed consent from the authored answer, or unasked when declined', () => {
+  it('resolves committed consent from the exact use request and chosen terms', () => {
     const deposition = getCaseContent('case-81').deposition
     expect(deposition).toBeDefined()
     if (!deposition) return
 
-    // Find an entry action whose authored answer refuses, and one that consents.
-    const entries = deposition.entryActionIds
-    const refusedEntry = entries.find((id) => deposition.consent.answers[id]?.consent === 'no')
-    const consentedEntry = entries.find((id) => deposition.consent.answers[id]?.consent === 'yes')
-    expect(refusedEntry).toBeDefined()
-    if (!refusedEntry) return
+    const entry = deposition.entryActionIds[0]!
+    const refusedBeats = ['interrupt', 'interrupt'] as const
+    const voluntaryBeats = ['let-it-stand', 'let-it-stand'] as const
 
-    // Asking surfaces the authored answer; declining always persists 'unasked'.
-    expect(resolveCommitConsent(deposition, refusedEntry, true)).toBe('no')
-    expect(resolveCommitConsent(deposition, refusedEntry, false)).toBe('unasked')
-    if (consentedEntry) {
-      expect(resolveCommitConsent(deposition, consentedEntry, true)).toBe('yes')
-    }
+    expect(resolveCommitConsent(deposition, entry, refusedBeats, true)).toBe('no')
+    expect(resolveCommitConsent(deposition, entry, refusedBeats, false)).toBe('unasked')
+    expect(resolveCommitConsent(deposition, entry, voluntaryBeats, true)).toBe('yes')
 
     // The beat fires on the refused-and-asked commit, and NOT when the same entry
     // is committed without asking (unasked) — proving it keys off the commit, not
     // any standing refusal.
-    expect(witnessesRefusalOnCommit(resolveCommitConsent(deposition, refusedEntry, true))).toBe(true)
-    expect(witnessesRefusalOnCommit(resolveCommitConsent(deposition, refusedEntry, false))).toBe(
-      false,
-    )
+    expect(
+      witnessesRefusalOnCommit(resolveCommitConsent(deposition, entry, refusedBeats, true)),
+    ).toBe(true)
+    expect(
+      witnessesRefusalOnCommit(resolveCommitConsent(deposition, entry, refusedBeats, false)),
+    ).toBe(false)
   })
 
   it('a deposition-less case never resolves to a refusal commit', () => {
     const deposition = getCaseContent('case-77').deposition
     expect(deposition).toBeUndefined()
     // With no deposition, any commit resolves to unasked → the beat never fires.
-    expect(witnessesRefusalOnCommit(resolveCommitConsent(deposition, 'take-sworn-statement', true))).toBe(
-      false,
-    )
+    expect(
+      witnessesRefusalOnCommit(
+        resolveCommitConsent(deposition, 'take-sworn-statement', [], true),
+      ),
+    ).toBe(false)
   })
 })

@@ -31,8 +31,9 @@ export interface FieldCtaState {
   tribunalReady: boolean
   // A memory reconstruction has been filed.
   reconstructionFiled: boolean
-  // How many field sites have been filed.
-  completedSitesCount: number
+  // The engine-owned reconstruction gate. This replaces a site-count proxy so
+  // the CTA never promises a lattice that cannot open from the known anchors.
+  canOpenReconstruction: boolean
   // Whether the two canonical methods are on screen for the selected site. In this
   // game the site inspector is always mounted, so the methods aren't gated behind a
   // separate "enter the site" step — they're gated behind the close-read ritual (or
@@ -50,8 +51,8 @@ export function fieldCta(state: FieldCtaState): FieldCta | null {
     return { kind: 'tribunal', label: 'Enter tribunal' }
   }
 
-  // 2 — at least one site is filed but no model yet: the lattice is the next step.
-  if (state.completedSitesCount >= 1 && !state.reconstructionFiled) {
+  // 2 — the engine can open a valid lattice from the currently known anchors.
+  if (state.canOpenReconstruction) {
     return { kind: 'reconstruction', label: 'Open memory lattice' }
   }
 

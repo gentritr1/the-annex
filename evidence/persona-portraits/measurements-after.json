@@ -1,7 +1,7 @@
 {
   "mode": "after",
   "url": "http://127.0.0.1:3000/",
-  "capturedAt": "2026-07-26T22:42:24.338Z",
+  "capturedAt": "2026-07-27T09:00:44.710Z",
   "node": "v24.18.0",
   "checks": [
     {
@@ -382,7 +382,7 @@
         {
           "plated": false,
           "hasImg": false,
-          "markOpacity": "0.767031",
+          "markOpacity": "0.763764",
           "markAnimation": "ambience-breathe",
           "rowHeight": 58
         },
@@ -534,7 +534,7 @@
         {
           "plated": false,
           "hasImg": false,
-          "markOpacity": "0.767069",
+          "markOpacity": "0.763888",
           "markAnimation": "ambience-breathe",
           "rowHeight": 58
         },
@@ -1284,7 +1284,7 @@
       {
         "plated": false,
         "hasImg": false,
-        "markOpacity": "0.767031",
+        "markOpacity": "0.763764",
         "markAnimation": "ambience-breathe",
         "rowHeight": 58
       },
@@ -1497,7 +1497,7 @@
       {
         "plated": false,
         "hasImg": false,
-        "markOpacity": "0.767069",
+        "markOpacity": "0.763888",
         "markAnimation": "ambience-breathe",
         "rowHeight": 58
       },

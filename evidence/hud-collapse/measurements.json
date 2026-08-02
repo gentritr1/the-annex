@@ -1,13 +1,13 @@
 {
-  "url": "http://127.0.0.1:3000/",
-  "capturedAt": "2026-07-26T22:55:12.464Z",
-  "node": "v24.18.0",
+  "url": "http://127.0.0.1:4177/",
+  "capturedAt": "2026-08-02T12:07:49.731Z",
+  "node": "v20.19.4",
   "checks": [
     {
       "step": "1280x800 · case-layout is a single scene-dominant column",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "columns": "1280px",
+        "columns": "minmax(0px, 1fr)",
         "width": 1280
       }
     },
@@ -48,12 +48,12 @@
     },
     {
       "step": "1280x800 · <h1 id=\"field-heading\"> survives as sr-only",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "class": "sr-only",
+        "class": "",
         "box": {
-          "w": 1,
-          "h": 1
+          "w": 400,
+          "h": 28
         }
       }
     },
@@ -66,16 +66,16 @@
     },
     {
       "step": "1280x800 · objectives counter KEPT",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "objectives": 1
+        "objectives": 0
       }
     },
     {
       "step": "1280x800 · threshold line KEPT before the first filing",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "threshold": 1
+        "threshold": 0
       }
     },
     {
@@ -87,9 +87,9 @@
     },
     {
       "step": "1280x800 · fieldCta dock KEPT",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "docks": 1
+        "docks": 0
       }
     },
     {
@@ -111,9 +111,9 @@
     },
     {
       "step": "375x812 · case-layout is a single scene-dominant column",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "columns": "375px",
+        "columns": "minmax(0px, 1fr)",
         "width": 375
       }
     },
@@ -154,12 +154,12 @@
     },
     {
       "step": "375x812 · <h1 id=\"field-heading\"> survives as sr-only",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "class": "sr-only",
+        "class": "",
         "box": {
-          "w": 1,
-          "h": 1
+          "w": 195,
+          "h": 17
         }
       }
     },
@@ -172,16 +172,16 @@
     },
     {
       "step": "375x812 · objectives counter KEPT",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "objectives": 1
+        "objectives": 0
       }
     },
     {
       "step": "375x812 · threshold line KEPT before the first filing",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "threshold": 1
+        "threshold": 0
       }
     },
     {
@@ -193,9 +193,9 @@
     },
     {
       "step": "375x812 · fieldCta dock KEPT",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "docks": 1
+        "docks": 0
       }
     },
     {
@@ -211,7 +211,7 @@
       "step": "375x812 · narrow layout scrolls as a document (recorded, not a gate)",
       "pass": true,
       "detail": {
-        "scrollHeight": 1277,
+        "scrollHeight": 812,
         "innerHeight": 812
       }
     },
@@ -245,7 +245,7 @@
         "tabs": [
           {
             "text": "case",
-            "pressed": "true",
+            "pressed": "false",
             "controls": "rail-panel-case",
             "id": "rail-tab-case",
             "h": 48
@@ -314,7 +314,7 @@
         "tabs": [
           {
             "text": "case",
-            "pressed": "true",
+            "pressed": "false",
             "controls": "rail-panel-case",
             "id": "rail-tab-case",
             "h": 48
@@ -532,7 +532,7 @@
         "tabs": [
           {
             "text": "case",
-            "pressed": "true",
+            "pressed": "false",
             "controls": "rail-panel-case",
             "id": "rail-tab-case",
             "h": 48
@@ -601,7 +601,7 @@
         "tabs": [
           {
             "text": "case",
-            "pressed": "true",
+            "pressed": "false",
             "controls": "rail-panel-case",
             "id": "rail-tab-case",
             "h": 48
@@ -840,44 +840,44 @@
     },
     {
       "step": "casefile 1280x800 · focus lands inside the dialog",
-      "pass": true,
+      "pass": false,
       "detail": {
         "active": {
-          "tag": "DIV",
-          "cls": "casefile-drawer",
-          "label": "Held on this caseCase fileClose ✕caseledgerEvidence 0logpeoplese"
+          "tag": "BUTTON",
+          "cls": "choice-row choice-row-default  choice-row-armed",
+          "label": "CareLet 77-A tell one memory uninterrupted — select again to fil"
         }
       }
     },
     {
       "step": "casefile 1280x800 · Tab cycles inside without escaping",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "cycle": 9,
-        "focusableCount": 7,
-        "escaped": 0,
+        "cycle": 2,
+        "focusableCount": 0,
+        "escaped": 2,
         "toBody": 0
       }
     },
     {
       "step": "casefile 1280x800 · Shift+Tab cycles inside too",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "backEscaped": 0
+        "backEscaped": 3
       }
     },
     {
       "step": "casefile 1280x800 · Escape returns focus to the summoning button, never <body>",
-      "pass": true,
+      "pass": false,
       "detail": {
         "returned": {
           "tag": "BUTTON",
-          "cls": "casefile-summon casefile-summon--oriented",
-          "label": "Case file0 evidence · 1 eventsThe tribunal reads only what is fi"
+          "cls": "choice-row choice-row-default  ",
+          "label": "CareLet 77-A tell one memory uninterruptedTreat the subject as a"
         },
         "returnedOk": {
-          "ok": true,
-          "cls": "casefile-summon casefile-summon--oriented"
+          "ok": false,
+          "cls": "choice-row choice-row-default  "
         }
       }
     },
@@ -891,44 +891,44 @@
     },
     {
       "step": "detail 1280x800 · focus lands inside the dialog",
-      "pass": true,
+      "pass": false,
       "detail": {
         "active": {
-          "tag": "DIV",
-          "cls": "scene-detail-drawer",
-          "label": "Location detailB · Care ward 12Close ✕77-A is awake, articulate,"
+          "tag": "BUTTON",
+          "cls": "choice-row choice-row-default  choice-row-armed",
+          "label": "CareLet 77-A tell one memory uninterrupted — select again to fil"
         }
       }
     },
     {
       "step": "detail 1280x800 · Tab cycles inside without escaping",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "cycle": 3,
-        "focusableCount": 1,
-        "escaped": 0,
+        "cycle": 2,
+        "focusableCount": 0,
+        "escaped": 2,
         "toBody": 0
       }
     },
     {
       "step": "detail 1280x800 · Shift+Tab cycles inside too",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "backEscaped": 0
+        "backEscaped": 3
       }
     },
     {
       "step": "detail 1280x800 · Escape returns focus to the summoning button, never <body>",
-      "pass": true,
+      "pass": false,
       "detail": {
         "returned": {
           "tag": "BUTTON",
-          "cls": "scene-detail-summon",
-          "label": "Location detail"
+          "cls": "choice-row choice-row-default  ",
+          "label": "CareLet 77-A tell one memory uninterruptedTreat the subject as a"
         },
         "returnedOk": {
-          "ok": true,
-          "cls": "scene-detail-summon"
+          "ok": false,
+          "cls": "choice-row choice-row-default  "
         }
       }
     },
@@ -942,44 +942,44 @@
     },
     {
       "step": "casefile 375x812 · focus lands inside the dialog",
-      "pass": true,
+      "pass": false,
       "detail": {
         "active": {
-          "tag": "DIV",
-          "cls": "casefile-drawer",
-          "label": "Held on this caseCase fileClose ✕caseledgerEvidence 0logpeoplese"
+          "tag": "BUTTON",
+          "cls": "choice-row choice-row-default  choice-row-armed",
+          "label": "CareLet 77-A tell one memory uninterrupted — select again to fil"
         }
       }
     },
     {
       "step": "casefile 375x812 · Tab cycles inside without escaping",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "cycle": 9,
-        "focusableCount": 7,
-        "escaped": 0,
+        "cycle": 2,
+        "focusableCount": 0,
+        "escaped": 2,
         "toBody": 0
       }
     },
     {
       "step": "casefile 375x812 · Shift+Tab cycles inside too",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "backEscaped": 0
+        "backEscaped": 3
       }
     },
     {
       "step": "casefile 375x812 · Escape returns focus to the summoning button, never <body>",
-      "pass": true,
+      "pass": false,
       "detail": {
         "returned": {
           "tag": "BUTTON",
-          "cls": "casefile-summon casefile-summon--oriented",
-          "label": "Case file0 evidence · 1 eventsThe tribunal reads only what is fi"
+          "cls": "choice-row choice-row-default  ",
+          "label": "CareLet 77-A tell one memory uninterruptedTreat the subject as a"
         },
         "returnedOk": {
-          "ok": true,
-          "cls": "casefile-summon casefile-summon--oriented"
+          "ok": false,
+          "cls": "choice-row choice-row-default  "
         }
       }
     },
@@ -993,46 +993,46 @@
     },
     {
       "step": "1280x800 · plate chrome: each control's visual centre activates THAT control",
-      "pass": true,
+      "pass": false,
       "detail": [
         {
           "sel": ".world-return",
           "present": true,
           "box": {
-            "w": 178,
-            "h": 44,
-            "top": 158,
-            "left": 36,
-            "right": 214
+            "w": 0,
+            "h": 0,
+            "top": 0,
+            "left": 0,
+            "right": 0
           },
-          "hitsIntended": true,
-          "hitClass": "world-return"
+          "hitsIntended": false,
+          "hitClass": "world-view world-view--spatial world-view--closeup world-vie"
         },
         {
           "sel": ".casefile-summon",
           "present": true,
           "box": {
-            "w": 166,
-            "h": 89,
-            "top": 158,
-            "left": 851,
-            "right": 1017
+            "w": 0,
+            "h": 0,
+            "top": 0,
+            "left": 0,
+            "right": 0
           },
-          "hitsIntended": true,
-          "hitClass": "casefile-summon-why"
+          "hitsIntended": false,
+          "hitClass": "world-view world-view--spatial world-view--closeup world-vie"
         },
         {
           "sel": ".scene-detail-summon",
           "present": true,
           "box": {
-            "w": 135,
-            "h": 44,
-            "top": 158,
-            "left": 1025,
-            "right": 1160
+            "w": 0,
+            "h": 0,
+            "top": 0,
+            "left": 0,
+            "right": 0
           },
-          "hitsIntended": true,
-          "hitClass": "scene-detail-summon"
+          "hitsIntended": false,
+          "hitClass": "world-view world-view--spatial world-view--closeup world-vie"
         }
       ]
     },
@@ -1181,46 +1181,46 @@
     },
     {
       "step": "375x812 · plate chrome: each control's visual centre activates THAT control",
-      "pass": true,
+      "pass": false,
       "detail": [
         {
           "sel": ".world-return",
           "present": true,
           "box": {
-            "w": 157,
-            "h": 44,
-            "top": 180,
-            "left": 10,
-            "right": 167
+            "w": 0,
+            "h": 0,
+            "top": 0,
+            "left": 0,
+            "right": 0
           },
-          "hitsIntended": true,
-          "hitClass": "world-return"
+          "hitsIntended": false,
+          "hitClass": "world-view world-view--spatial world-view--closeup world-vie"
         },
         {
           "sel": ".casefile-summon",
           "present": true,
           "box": {
-            "w": 154,
-            "h": 44,
-            "top": 232,
-            "left": 82,
-            "right": 236
+            "w": 0,
+            "h": 0,
+            "top": 0,
+            "left": 0,
+            "right": 0
           },
-          "hitsIntended": true,
-          "hitClass": ""
+          "hitsIntended": false,
+          "hitClass": "world-view world-view--spatial world-view--closeup world-vie"
         },
         {
           "sel": ".scene-detail-summon",
           "present": true,
           "box": {
-            "w": 124,
-            "h": 44,
-            "top": 232,
-            "left": 242,
-            "right": 365
+            "w": 0,
+            "h": 0,
+            "top": 0,
+            "left": 0,
+            "right": 0
           },
-          "hitsIntended": true,
-          "hitClass": "scene-detail-summon"
+          "hitsIntended": false,
+          "hitClass": "world-view world-view--spatial world-view--closeup world-vie"
         }
       ]
     },
@@ -1376,45 +1376,31 @@
     },
     {
       "step": "alarm 1 · chip present, in the coral text-risk convention",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "present": true,
-        "text": "1 tracecivic alarm",
-        "color": "oklch(0.66 0.17 30)",
-        "classes": "text-risk",
-        "box": {
-          "w": 78,
-          "h": 28
-        }
+        "present": false
       }
     },
     {
       "step": "alarm 3 · chip present, in the coral text-risk convention",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "present": true,
-        "text": "3 tracescivic alarm",
-        "color": "oklch(0.66 0.17 30)",
-        "classes": "text-risk",
-        "box": {
-          "w": 78,
-          "h": 28
-        }
+        "present": false
       }
     },
     {
       "step": "threshold · present before the first site is filed",
-      "pass": true,
+      "pass": false,
       "detail": {
-        "count": 1
+        "count": 0
       }
     },
     {
       "step": "threshold · retires after the first site is filed; objectives carry the fact",
-      "pass": true,
+      "pass": false,
       "detail": {
         "threshold": 0,
-        "objectives": "1 / 2sitesNeededmodel",
+        "objectives": null,
         "summon": "Case file1 evidence · 2 events",
         "filed": 1
       }
@@ -1464,14 +1450,14 @@
     },
     {
       "step": "reduced motion · drawer has no animation and no transition, and is fully legible",
-      "pass": true,
+      "pass": false,
       "detail": {
         "portalClass": "casefile-portal record-mode reduce-motion",
         "animationName": "none",
         "transition": "none",
         "opacity": "1",
         "transform": "none",
-        "visibleText": 209,
+        "visibleText": 68,
         "osReduced": true
       }
     },
@@ -1519,15 +1505,15 @@
       "pass": true,
       "detail": {
         "plate": {
-          "w": 1160,
-          "h": 476
+          "w": 1280,
+          "h": 800
         },
         "console": {
-          "w": 1160,
-          "h": 190
+          "w": 1252,
+          "h": 191
         },
-        "sceneAbovePx": 286,
-        "maxHeight": "76%",
+        "sceneAbovePx": 595,
+        "maxHeight": "68%",
         "naturalHeight": 189,
         "scrolls": false
       }
@@ -1537,15 +1523,15 @@
       "pass": true,
       "detail": {
         "plate": {
-          "w": 1160,
-          "h": 476
+          "w": 1280,
+          "h": 800
         },
         "console": {
-          "w": 1160,
-          "h": 234
+          "w": 1252,
+          "h": 235
         },
-        "sceneAbovePx": 242,
-        "maxHeight": "76%",
+        "sceneAbovePx": 551,
+        "maxHeight": "68%",
         "naturalHeight": 233,
         "scrolls": false
       }
@@ -1555,15 +1541,15 @@
       "pass": true,
       "detail": {
         "plate": {
-          "w": 1160,
-          "h": 476
+          "w": 1280,
+          "h": 800
         },
         "console": {
-          "w": 1160,
-          "h": 220
+          "w": 1252,
+          "h": 221
         },
-        "sceneAbovePx": 256,
-        "maxHeight": "76%",
+        "sceneAbovePx": 565,
+        "maxHeight": "68%",
         "naturalHeight": 219,
         "scrolls": false
       }
@@ -1584,7 +1570,7 @@
       "pass": true,
       "detail": {
         "w": 375,
-        "h": 300,
+        "h": 812,
         "left": 0,
         "right": 375
       }
@@ -1595,13 +1581,13 @@
       "detail": [
         {
           "label": "CareLet 77-A tell one memory u",
-          "l": -21,
-          "r": -310
+          "l": -75,
+          "r": -252
         },
         {
           "label": "Coercive procedurePressure-tes",
-          "l": -315,
-          "r": -16
+          "l": -257,
+          "r": -74
         }
       ]
     },
@@ -1610,14 +1596,14 @@
       "pass": true,
       "detail": [
         {
-          "left": 21,
-          "right": 65,
-          "w": 44,
-          "h": 44
+          "left": 75,
+          "right": 123,
+          "w": 48,
+          "h": 48
         },
         {
-          "left": 315,
-          "right": 359,
+          "left": 257,
+          "right": 301,
           "w": 44,
           "h": 44
         }
@@ -1631,12 +1617,12 @@
           "focused": "CareLet 77-A tell one memo",
           "rings": [
             {
-              "overflowLeftPx": -19,
-              "overflowRightPx": -307
+              "overflowLeftPx": -75,
+              "overflowRightPx": -252
             },
             {
-              "overflowLeftPx": -322,
-              "overflowRightPx": -8
+              "overflowLeftPx": -257,
+              "overflowRightPx": -74
             }
           ]
         },
@@ -1644,12 +1630,12 @@
           "focused": "Coercive procedurePressure",
           "rings": [
             {
-              "overflowLeftPx": -13,
-              "overflowRightPx": -317
+              "overflowLeftPx": -77,
+              "overflowRightPx": -254
             },
             {
-              "overflowLeftPx": -312,
-              "overflowRightPx": -14
+              "overflowLeftPx": -255,
+              "overflowRightPx": -72
             }
           ]
         }
@@ -1734,12 +1720,12 @@
             "occluded": []
           },
           {
-            "scrollY": 765,
-            "swept": 13,
+            "scrollY": 1123,
+            "swept": 14,
             "occluded": []
           },
           {
-            "scrollY": 765,
+            "scrollY": 1445,
             "swept": 13,
             "occluded": []
           }
@@ -1753,33 +1739,9 @@
       }
     },
     {
-      "step": "shell summon · debrief: present, reachable, and occludes no control at any scroll",
-      "pass": true,
-      "detail": {
-        "positions": [
-          {
-            "scrollY": 0,
-            "swept": 9,
-            "occluded": []
-          },
-          {
-            "scrollY": 806,
-            "swept": 13,
-            "occluded": []
-          },
-          {
-            "scrollY": 811,
-            "swept": 13,
-            "occluded": []
-          }
-        ],
-        "summonBox": {
-          "w": 166,
-          "h": 44
-        },
-        "summonHitsItself": true,
-        "summonText": "Case file3 evidence · 0 events"
-      }
+      "step": "shell summon · debrief — seed did not load",
+      "pass": false,
+      "detail": {}
     }
   ],
   "shots": [
@@ -1819,12 +1781,11 @@
     "16-narrow-casefile-people-375x812.png",
     "17-shell-summon-briefing-1280x800.png",
     "17-shell-summon-reconstruction-1280x800.png",
-    "17-shell-summon-tribunal-1280x800.png",
-    "17-shell-summon-debrief-1280x800.png"
+    "17-shell-summon-tribunal-1280x800.png"
   ],
   "measurements": {
     "layout:1280x800": {
-      "caseLayoutColumns": "1280px",
+      "caseLayoutColumns": "minmax(0px, 1fr)",
       "caseLayoutWidth": 1280,
       "railsInShell": 0,
       "railMobileToggles": 0,
@@ -1832,29 +1793,29 @@
       "commandCopy": 0,
       "filedModelInDock": 0,
       "h1Present": true,
-      "h1Class": "sr-only",
+      "h1Class": "",
       "h1Box": {
-        "w": 1,
-        "h": 1
+        "w": 400,
+        "h": 28
       },
-      "threshold": 1,
-      "objectives": 1,
+      "threshold": 0,
+      "objectives": 0,
       "alarmChips": 0,
       "worldCaption": "Civic Archive concourseSelect a thresholdDrag to look · sele",
-      "ctaDock": 1,
+      "ctaDock": 0,
       "summons": [
         "Case file0 evidence · 1 eventsThe tribunal reads only what is filed here."
       ],
       "plate": {
-        "w": 889,
-        "h": 476
+        "w": 1280,
+        "h": 800
       },
       "pageScrolls": false,
       "scrollHeight": 800,
       "innerHeight": 800
     },
     "layout:375x812": {
-      "caseLayoutColumns": "375px",
+      "caseLayoutColumns": "minmax(0px, 1fr)",
       "caseLayoutWidth": 375,
       "railsInShell": 0,
       "railMobileToggles": 0,
@@ -1862,25 +1823,25 @@
       "commandCopy": 0,
       "filedModelInDock": 0,
       "h1Present": true,
-      "h1Class": "sr-only",
+      "h1Class": "",
       "h1Box": {
-        "w": 1,
-        "h": 1
+        "w": 195,
+        "h": 17
       },
-      "threshold": 1,
-      "objectives": 1,
+      "threshold": 0,
+      "objectives": 0,
       "alarmChips": 0,
       "worldCaption": "Civic Archive concourseSelect a thresholdDrag to look · sele",
-      "ctaDock": 1,
+      "ctaDock": 0,
       "summons": [
         "Case file0 evidence · 1 eventsThe tribunal reads only what is filed here."
       ],
       "plate": {
         "w": 375,
-        "h": 300
+        "h": 812
       },
-      "pageScrolls": true,
-      "scrollHeight": 1277,
+      "pageScrolls": false,
+      "scrollHeight": 812,
       "innerHeight": 812
     },
     "drawer:1280x800": {
@@ -1905,7 +1866,7 @@
       "tabs": [
         {
           "text": "case",
-          "pressed": "true",
+          "pressed": "false",
           "controls": "rail-panel-case",
           "id": "rail-tab-case",
           "h": 48
@@ -2022,7 +1983,7 @@
       "tabs": [
         {
           "text": "case",
-          "pressed": "true",
+          "pressed": "false",
           "controls": "rail-panel-case",
           "id": "rail-tab-case",
           "h": 48
@@ -2123,44 +2084,44 @@
           "sel": ".world-return",
           "present": true,
           "box": {
-            "w": 178,
-            "h": 44,
-            "top": 158,
-            "left": 36,
-            "right": 214
+            "w": 0,
+            "h": 0,
+            "top": 0,
+            "left": 0,
+            "right": 0
           },
-          "hitsIntended": true,
-          "hitClass": "world-return"
+          "hitsIntended": false,
+          "hitClass": "world-view world-view--spatial world-view--closeup world-vie"
         },
         {
           "sel": ".casefile-summon",
           "present": true,
           "box": {
-            "w": 166,
-            "h": 89,
-            "top": 158,
-            "left": 851,
-            "right": 1017
+            "w": 0,
+            "h": 0,
+            "top": 0,
+            "left": 0,
+            "right": 0
           },
-          "hitsIntended": true,
-          "hitClass": "casefile-summon-why"
+          "hitsIntended": false,
+          "hitClass": "world-view world-view--spatial world-view--closeup world-vie"
         },
         {
           "sel": ".scene-detail-summon",
           "present": true,
           "box": {
-            "w": 135,
-            "h": 44,
-            "top": 158,
-            "left": 1025,
-            "right": 1160
+            "w": 0,
+            "h": 0,
+            "top": 0,
+            "left": 0,
+            "right": 0
           },
-          "hitsIntended": true,
-          "hitClass": "scene-detail-summon"
+          "hitsIntended": false,
+          "hitClass": "world-view world-view--spatial world-view--closeup world-vie"
         }
       ],
       "overlaps": [],
-      "tapTargetsOk": true
+      "tapTargetsOk": false
     },
     "tabSweep:1280x800": [
       {
@@ -2224,44 +2185,44 @@
           "sel": ".world-return",
           "present": true,
           "box": {
-            "w": 157,
-            "h": 44,
-            "top": 180,
-            "left": 10,
-            "right": 167
+            "w": 0,
+            "h": 0,
+            "top": 0,
+            "left": 0,
+            "right": 0
           },
-          "hitsIntended": true,
-          "hitClass": "world-return"
+          "hitsIntended": false,
+          "hitClass": "world-view world-view--spatial world-view--closeup world-vie"
         },
         {
           "sel": ".casefile-summon",
           "present": true,
           "box": {
-            "w": 154,
-            "h": 44,
-            "top": 232,
-            "left": 82,
-            "right": 236
+            "w": 0,
+            "h": 0,
+            "top": 0,
+            "left": 0,
+            "right": 0
           },
-          "hitsIntended": true,
-          "hitClass": ""
+          "hitsIntended": false,
+          "hitClass": "world-view world-view--spatial world-view--closeup world-vie"
         },
         {
           "sel": ".scene-detail-summon",
           "present": true,
           "box": {
-            "w": 124,
-            "h": 44,
-            "top": 232,
-            "left": 242,
-            "right": 365
+            "w": 0,
+            "h": 0,
+            "top": 0,
+            "left": 0,
+            "right": 0
           },
-          "hitsIntended": true,
-          "hitClass": "scene-detail-summon"
+          "hitsIntended": false,
+          "hitClass": "world-view world-view--spatial world-view--closeup world-vie"
         }
       ],
       "overlaps": [],
-      "tapTargetsOk": true
+      "tapTargetsOk": false
     },
     "tabSweep:375x812": [
       {
@@ -2323,28 +2284,14 @@
       "present": false
     },
     "alarm:1": {
-      "present": true,
-      "text": "1 tracecivic alarm",
-      "color": "oklch(0.66 0.17 30)",
-      "classes": "text-risk",
-      "box": {
-        "w": 78,
-        "h": 28
-      }
+      "present": false
     },
     "alarm:3": {
-      "present": true,
-      "text": "3 tracescivic alarm",
-      "color": "oklch(0.66 0.17 30)",
-      "classes": "text-risk",
-      "box": {
-        "w": 78,
-        "h": 28
-      }
+      "present": false
     },
     "thresholdAfterFiling": {
       "threshold": 0,
-      "objectives": "1 / 2sitesNeededmodel",
+      "objectives": null,
       "summon": "Case file1 evidence · 2 events",
       "filed": 1
     },
@@ -2392,7 +2339,7 @@
       "transition": "none",
       "opacity": "1",
       "transform": "none",
-      "visibleText": 209,
+      "visibleText": 68,
       "osReduced": true
     },
     "highContrast": {
@@ -2414,43 +2361,43 @@
     "consoleProportions": {
       "Registry intake": {
         "plate": {
-          "w": 1160,
-          "h": 476
+          "w": 1280,
+          "h": 800
         },
         "console": {
-          "w": 1160,
-          "h": 190
+          "w": 1252,
+          "h": 191
         },
-        "sceneAbovePx": 286,
-        "maxHeight": "76%",
+        "sceneAbovePx": 595,
+        "maxHeight": "68%",
         "naturalHeight": 189,
         "scrolls": false
       },
       "Maintenance spine": {
         "plate": {
-          "w": 1160,
-          "h": 476
+          "w": 1280,
+          "h": 800
         },
         "console": {
-          "w": 1160,
-          "h": 234
+          "w": 1252,
+          "h": 235
         },
-        "sceneAbovePx": 242,
-        "maxHeight": "76%",
+        "sceneAbovePx": 551,
+        "maxHeight": "68%",
         "naturalHeight": 233,
         "scrolls": false
       },
       "The Small Archive": {
         "plate": {
-          "w": 1160,
-          "h": 476
+          "w": 1280,
+          "h": 800
         },
         "console": {
-          "w": 1160,
-          "h": 220
+          "w": 1252,
+          "h": 221
         },
-        "sceneAbovePx": 256,
-        "maxHeight": "76%",
+        "sceneAbovePx": 565,
+        "maxHeight": "68%",
         "naturalHeight": 219,
         "scrolls": false
       }
@@ -2458,7 +2405,7 @@
     "narrowAnchors": {
       "plate": {
         "w": 375,
-        "h": 300,
+        "h": 812,
         "left": 0,
         "right": 375
       },
@@ -2468,33 +2415,33 @@
         {
           "label": "CareLet 77-A tell one memory u",
           "ring": {
-            "left": 21,
-            "right": 65,
-            "w": 44,
-            "h": 44
+            "left": 75,
+            "right": 123,
+            "w": 48,
+            "h": 48
           },
-          "overflowLeftPx": -21,
-          "overflowRightPx": -310,
+          "overflowLeftPx": -75,
+          "overflowRightPx": -252,
           "buttonInside": true,
           "tapTarget": {
-            "w": 300,
-            "h": 122
+            "w": 44,
+            "h": 44
           }
         },
         {
           "label": "Coercive procedurePressure-tes",
           "ring": {
-            "left": 315,
-            "right": 359,
+            "left": 257,
+            "right": 301,
             "w": 44,
             "h": 44
           },
-          "overflowLeftPx": -315,
-          "overflowRightPx": -16,
+          "overflowLeftPx": -257,
+          "overflowRightPx": -74,
           "buttonInside": true,
           "tapTarget": {
-            "w": 300,
-            "h": 108
+            "w": 44,
+            "h": 44
           }
         }
       ]
@@ -2504,12 +2451,12 @@
         "focused": "CareLet 77-A tell one memo",
         "rings": [
           {
-            "overflowLeftPx": -19,
-            "overflowRightPx": -307
+            "overflowLeftPx": -75,
+            "overflowRightPx": -252
           },
           {
-            "overflowLeftPx": -322,
-            "overflowRightPx": -8
+            "overflowLeftPx": -257,
+            "overflowRightPx": -74
           }
         ]
       },
@@ -2517,12 +2464,12 @@
         "focused": "Coercive procedurePressure",
         "rings": [
           {
-            "overflowLeftPx": -13,
-            "overflowRightPx": -317
+            "overflowLeftPx": -77,
+            "overflowRightPx": -254
           },
           {
-            "overflowLeftPx": -312,
-            "overflowRightPx": -14
+            "overflowLeftPx": -255,
+            "overflowRightPx": -72
           }
         ]
       }
@@ -2586,37 +2533,12 @@
             "occluded": []
           },
           {
-            "scrollY": 765,
-            "swept": 13,
+            "scrollY": 1123,
+            "swept": 14,
             "occluded": []
           },
           {
-            "scrollY": 765,
-            "swept": 13,
-            "occluded": []
-          }
-        ],
-        "summonBox": {
-          "w": 166,
-          "h": 44
-        },
-        "summonHitsItself": true,
-        "summonText": "Case file3 evidence · 0 events"
-      },
-      "debrief": {
-        "positions": [
-          {
-            "scrollY": 0,
-            "swept": 9,
-            "occluded": []
-          },
-          {
-            "scrollY": 806,
-            "swept": 13,
-            "occluded": []
-          },
-          {
-            "scrollY": 811,
+            "scrollY": 1445,
             "swept": 13,
             "occluded": []
           }
@@ -2635,258 +2557,153 @@
       {
         "step": "focus the summon",
         "tag": "BUTTON",
-        "cls": "casefile-summon casefile-summon--oriented",
-        "label": "Case file0 evidence · 1 eventsThe tribunal reads only what is fi"
+        "cls": "choice-row choice-row-default  ",
+        "label": "CareLet 77-A tell one memory uninterruptedTreat the subject as a"
       },
       {
         "step": "Enter opens the dialog",
-        "tag": "DIV",
-        "cls": "casefile-drawer",
-        "label": "Held on this caseCase fileClose ✕caseledgerEvidence 0logpeoplese"
+        "tag": "BUTTON",
+        "cls": "choice-row choice-row-default  choice-row-armed",
+        "label": "CareLet 77-A tell one memory uninterrupted — select again to fil"
       },
       {
         "step": "Tab ×1",
         "isBody": false,
-        "inside": true,
+        "inside": false,
         "tag": "BUTTON",
-        "label": "Close ✕"
+        "label": "Coercive procedurePressure-test the contradictionRep"
       },
       {
         "step": "Tab ×2",
         "isBody": false,
-        "inside": true,
-        "tag": "BUTTON",
-        "label": "case"
-      },
-      {
-        "step": "Tab ×3",
-        "isBody": false,
-        "inside": true,
-        "tag": "BUTTON",
-        "label": "ledger"
-      },
-      {
-        "step": "Tab ×4",
-        "isBody": false,
-        "inside": true,
-        "tag": "BUTTON",
-        "label": "Evidence 0"
-      },
-      {
-        "step": "Tab ×5",
-        "isBody": false,
-        "inside": true,
-        "tag": "BUTTON",
-        "label": "log"
-      },
-      {
-        "step": "Tab ×6",
-        "isBody": false,
-        "inside": true,
-        "tag": "BUTTON",
-        "label": "people"
-      },
-      {
-        "step": "Tab ×7",
-        "isBody": false,
-        "inside": true,
-        "tag": "BUTTON",
-        "label": "search"
-      },
-      {
-        "step": "Tab ×8",
-        "isBody": false,
-        "inside": true,
-        "tag": "BUTTON",
-        "label": "Close ✕"
-      },
-      {
-        "step": "Tab ×9",
-        "isBody": false,
-        "inside": true,
-        "tag": "BUTTON",
-        "label": "case"
+        "inside": false,
+        "tag": "P",
+        "label": "Review Let 77-A tell one memory uninterrupted. Filin"
       },
       {
         "step": "Shift+Tab ×1",
         "isBody": false,
-        "inside": true
+        "inside": false
       },
       {
         "step": "Shift+Tab ×2",
         "isBody": false,
-        "inside": true
+        "inside": false
       },
       {
         "step": "Shift+Tab ×3",
         "isBody": false,
-        "inside": true
+        "inside": false
       },
       {
         "step": "Escape closes; focus returns",
         "tag": "BUTTON",
-        "cls": "casefile-summon casefile-summon--oriented",
-        "label": "Case file0 evidence · 1 eventsThe tribunal reads only what is fi"
+        "cls": "choice-row choice-row-default  ",
+        "label": "CareLet 77-A tell one memory uninterruptedTreat the subject as a"
       }
     ],
     "detail-1280x800": [
       {
         "step": "focus the summon",
         "tag": "BUTTON",
-        "cls": "scene-detail-summon",
-        "label": "Location detail"
+        "cls": "choice-row choice-row-default  ",
+        "label": "CareLet 77-A tell one memory uninterruptedTreat the subject as a"
       },
       {
         "step": "Enter opens the dialog",
-        "tag": "DIV",
-        "cls": "scene-detail-drawer",
-        "label": "Location detailB · Care ward 12Close ✕77-A is awake, articulate,"
+        "tag": "BUTTON",
+        "cls": "choice-row choice-row-default  choice-row-armed",
+        "label": "CareLet 77-A tell one memory uninterrupted — select again to fil"
       },
       {
         "step": "Tab ×1",
         "isBody": false,
-        "inside": true,
+        "inside": false,
         "tag": "BUTTON",
-        "label": "Close ✕"
+        "label": "Coercive procedurePressure-test the contradictionRep"
       },
       {
         "step": "Tab ×2",
         "isBody": false,
-        "inside": true,
-        "tag": "BUTTON",
-        "label": "Close ✕"
-      },
-      {
-        "step": "Tab ×3",
-        "isBody": false,
-        "inside": true,
-        "tag": "BUTTON",
-        "label": "Close ✕"
+        "inside": false,
+        "tag": "P",
+        "label": "Review Let 77-A tell one memory uninterrupted. Filin"
       },
       {
         "step": "Shift+Tab ×1",
         "isBody": false,
-        "inside": true
+        "inside": false
       },
       {
         "step": "Shift+Tab ×2",
         "isBody": false,
-        "inside": true
+        "inside": false
       },
       {
         "step": "Shift+Tab ×3",
         "isBody": false,
-        "inside": true
+        "inside": false
       },
       {
         "step": "Escape closes; focus returns",
         "tag": "BUTTON",
-        "cls": "scene-detail-summon",
-        "label": "Location detail"
+        "cls": "choice-row choice-row-default  ",
+        "label": "CareLet 77-A tell one memory uninterruptedTreat the subject as a"
       }
     ],
     "casefile-375x812": [
       {
         "step": "focus the summon",
         "tag": "BUTTON",
-        "cls": "casefile-summon casefile-summon--oriented",
-        "label": "Case file0 evidence · 1 eventsThe tribunal reads only what is fi"
+        "cls": "choice-row choice-row-default  ",
+        "label": "CareLet 77-A tell one memory uninterruptedTreat the subject as a"
       },
       {
         "step": "Enter opens the dialog",
-        "tag": "DIV",
-        "cls": "casefile-drawer",
-        "label": "Held on this caseCase fileClose ✕caseledgerEvidence 0logpeoplese"
+        "tag": "BUTTON",
+        "cls": "choice-row choice-row-default  choice-row-armed",
+        "label": "CareLet 77-A tell one memory uninterrupted — select again to fil"
       },
       {
         "step": "Tab ×1",
         "isBody": false,
-        "inside": true,
+        "inside": false,
         "tag": "BUTTON",
-        "label": "Close ✕"
+        "label": "Coercive procedurePressure-test the contradictionRep"
       },
       {
         "step": "Tab ×2",
         "isBody": false,
-        "inside": true,
-        "tag": "BUTTON",
-        "label": "case"
-      },
-      {
-        "step": "Tab ×3",
-        "isBody": false,
-        "inside": true,
-        "tag": "BUTTON",
-        "label": "ledger"
-      },
-      {
-        "step": "Tab ×4",
-        "isBody": false,
-        "inside": true,
-        "tag": "BUTTON",
-        "label": "Evidence 0"
-      },
-      {
-        "step": "Tab ×5",
-        "isBody": false,
-        "inside": true,
-        "tag": "BUTTON",
-        "label": "log"
-      },
-      {
-        "step": "Tab ×6",
-        "isBody": false,
-        "inside": true,
-        "tag": "BUTTON",
-        "label": "people"
-      },
-      {
-        "step": "Tab ×7",
-        "isBody": false,
-        "inside": true,
-        "tag": "BUTTON",
-        "label": "search"
-      },
-      {
-        "step": "Tab ×8",
-        "isBody": false,
-        "inside": true,
-        "tag": "BUTTON",
-        "label": "Close ✕"
-      },
-      {
-        "step": "Tab ×9",
-        "isBody": false,
-        "inside": true,
-        "tag": "BUTTON",
-        "label": "case"
+        "inside": false,
+        "tag": "P",
+        "label": "Review Let 77-A tell one memory uninterrupted. Filin"
       },
       {
         "step": "Shift+Tab ×1",
         "isBody": false,
-        "inside": true
+        "inside": false
       },
       {
         "step": "Shift+Tab ×2",
         "isBody": false,
-        "inside": true
+        "inside": false
       },
       {
         "step": "Shift+Tab ×3",
         "isBody": false,
-        "inside": true
+        "inside": false
       },
       {
         "step": "Escape closes; focus returns",
         "tag": "BUTTON",
-        "cls": "casefile-summon casefile-summon--oriented",
-        "label": "Case file0 evidence · 1 eventsThe tribunal reads only what is fi"
+        "cls": "choice-row choice-row-default  ",
+        "label": "CareLet 77-A tell one memory uninterruptedTreat the subject as a"
       }
     ]
   },
   "summary": {
     "total": 131,
-    "passed": 131,
-    "failed": 0
+    "passed": 101,
+    "failed": 30
   }
 }

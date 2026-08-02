@@ -68,22 +68,19 @@
   --label-tracking: 0.06em;
 }
 
-/* The same eight roles, one notch down, on a phone. Before the scale existed the
-   narrow layout carried its density in a scatter of per-selector overrides inside
-   the breakpoint blocks below; consolidating the sizes collapsed those, which put
-   ~12% more glyph area on a 375px screen than the layout had before. The band
-   carries the density now, in one place, so a narrow screen is a decision about
-   the scale rather than a decision about forty selectors. Display sizes are not
-   stepped: the hero IS the hierarchy on a small screen. */
+/* Phone text stays readable at handheld distance. Compact system roles share a
+   14px floor; hierarchy comes from weight, color, and spacing instead of reducing
+   status copy below a comfortable narrative-game size. */
 @media (max-width: 700px) {
   :root {
-    --type-micro: 0.62rem; /*  9.92px */
-    --type-label: 0.67rem; /* 10.72px */
-    --type-meta: 0.73rem;  /* 11.68px */
-    --type-body: 0.79rem;  /* 12.64px */
-    --type-read: 0.85rem;  /*  13.6px */
-    --type-title: 1rem;    /*    16px */
-    --type-scene: 1.28rem; /* 20.48px */
+    --type-micro: 0.875rem; /* 14px */
+    --type-label: 0.875rem; /* 14px */
+    --type-meta: 0.875rem;  /* 14px */
+    --type-body: 0.9375rem; /* 15px */
+    --type-read: 1rem;      /* 16px */
+    --type-title: 1.125rem; /* 18px */
+    --type-scene: 1.375rem; /* 22px */
+    --label-tracking: 0.04em;
   }
 }
 
@@ -177,7 +174,8 @@ p {
 
 .annex-app.high-contrast,
 .deposition-portal.high-contrast,
-.scene-detail-portal.high-contrast {
+.scene-detail-portal.high-contrast,
+.casefile-portal.high-contrast {
   --concrete: oklch(0.11 0 0);
   --raised: oklch(0.19 0 0);
   --raised-hover: oklch(0.24 0 0);
@@ -942,6 +940,45 @@ p {
   line-height: 1.58;
 }
 
+.briefing-approach-card {
+  min-width: 0;
+}
+
+.briefing-approach-card-selected .choice-row {
+  background: var(--cyan-deep);
+  box-shadow: inset 0 0 0 1px var(--cyan);
+}
+
+.briefing-approach-card-selected .choice-effects {
+  color: var(--record);
+}
+
+.briefing-approach-review {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--concrete);
+  border: 1px solid var(--cyan);
+  border-radius: 8px;
+}
+
+.briefing-approach-review h3,
+.briefing-approach-review p {
+  margin: 0;
+}
+
+.briefing-approach-review p {
+  color: var(--fog);
+  font-size: var(--type-meta);
+  line-height: 1.5;
+}
+
+.briefing-approach-review .button {
+  justify-self: start;
+  margin-top: 4px;
+}
+
 @media (min-width: 841px) {
   .briefing-body-grid {
     display: grid;
@@ -1005,6 +1042,10 @@ p {
     padding: 16px;
     background: var(--night-soft);
     border: 0;
+  }
+
+  .briefing-choice-list .briefing-approach-card {
+    min-height: 176px;
   }
 
   .briefing-choice-list .choice-row:hover {
@@ -1143,6 +1184,15 @@ p {
   background: var(--raised);
 }
 
+.choice-row:disabled {
+  cursor: not-allowed;
+  opacity: 0.46;
+}
+
+.choice-row:disabled:hover {
+  background: transparent;
+}
+
 /* Armed commit: the row fills warm and gains an amber frame + leading bar. The
    frame is an inset box-shadow, not an outline, so it never competes with the
    global button:focus-visible ring. The .site-inspector / media-query overrides
@@ -1223,6 +1273,10 @@ p {
   color: var(--coral);
 }
 
+.choice-copy {
+  display: contents;
+}
+
 .choice-body {
   min-width: 0;
   display: grid;
@@ -1253,6 +1307,10 @@ p {
   color: var(--fog-dim);
   font-size: var(--type-meta);
   line-height: 1.4;
+}
+
+.choice-body > span.choice-effects {
+  max-width: none;
 }
 
 /* THE COMPACT DENSITY. One rule, six surfaces: the inspector's action list, the
@@ -1372,9 +1430,9 @@ p {
   display: none;
 }
 
-/* Case 77's bounded concourse is a progressive enhancement over its approved
-   poster. Three owns the canvas; these layers keep the live and fallback views
-   in the same civic-material language without putting gameplay state in WebGL. */
+/* Each bounded world progressively enhances its approved poster. Three owns the
+   canvas; these layers keep live and fallback views in the same civic-material
+   language without putting gameplay state in WebGL. */
 .world-view--spatial {
   background: var(--night);
 }
@@ -1480,11 +1538,20 @@ p {
 
 .annex-world-portal:hover .annex-world-portal-label,
 .annex-world-portal:focus-visible .annex-world-portal-label,
-.annex-world-portal[data-selected='true'] .annex-world-portal-label {
+.annex-world-portal[data-selected='true'] .annex-world-portal-label,
+.annex-world-portal[data-recommended='true'] .annex-world-portal-label {
   opacity: 1;
   visibility: visible;
   transform: translateX(-50%) translateY(0);
   transition-delay: 0s;
+}
+
+/* A fresh opening approach names one available threshold without claiming it as
+   selected. The visible name makes the recommendation legible to touch users
+   too; the semantic wording remains on the portal's accessible label. */
+.annex-world-portal[data-recommended='true'] .annex-world-portal-ring {
+  transform: scale(1.08);
+  background: oklch(0.12 0.024 70 / 0.58);
 }
 
 .annex-world-portal[data-filed='true'] .annex-world-portal-ring {
@@ -1492,7 +1559,7 @@ p {
 }
 
 @media (hover: none), (pointer: coarse) {
-  .annex-world-portal:not([data-selected='true']):not(:focus-visible) .annex-world-portal-label {
+  .annex-world-portal:not([data-selected='true']):not([data-recommended='true']):not(:focus-visible) .annex-world-portal-label {
     opacity: 0;
     visibility: hidden;
     transform: translateX(-50%) translateY(-4px);
@@ -3500,6 +3567,13 @@ p {
   line-height: 1.4;
 }
 
+.field-omitted-sites {
+  margin: 8px 0 0;
+  color: var(--fog-dim);
+  font-size: var(--type-meta);
+  line-height: 1.4;
+}
+
 .field-objectives {
   display: flex;
   align-items: stretch;
@@ -3745,6 +3819,15 @@ p {
 
 .state-filed {
   color: var(--cyan);
+}
+
+.site-filing-limit {
+  margin: 0;
+  padding: 16px 4px;
+  color: var(--fog);
+  font-size: var(--type-read);
+  line-height: 1.5;
+  border-top: 1px solid var(--line);
 }
 
 .site-description {
@@ -4118,6 +4201,48 @@ p {
   margin-top: 24px;
 }
 
+.reconstruction-preview {
+  max-width: 760px;
+  display: grid;
+  gap: 8px;
+  margin: 20px 0 0;
+  padding: 16px 18px;
+  background: var(--concrete);
+  border: 1px solid var(--cyan);
+  border-radius: 8px;
+}
+
+.reconstruction-preview h2,
+.reconstruction-preview p {
+  margin: 0;
+}
+
+.reconstruction-preview h2 {
+  color: var(--record-bright);
+  font-size: var(--type-scene);
+  line-height: 1.2;
+}
+
+.reconstruction-preview > p:not(.section-context) {
+  color: var(--fog);
+  line-height: 1.5;
+}
+
+.reconstruction-preview-limitation {
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.reconstruction-preview-limitation strong {
+  color: var(--record);
+}
+
+.reconstruction-preview-support {
+  color: var(--cyan) !important;
+  font-size: var(--type-meta);
+  font-weight: 650;
+}
+
 /* The reconstruction is a place, not a list backdrop. The plate is supplemental
    and aria-described as one image; the adjacent fragment rows remain the only
    controls and carry every instruction, source, and corroboration state. */
@@ -4307,7 +4432,7 @@ p {
   background: oklch(0.09 0 0 / 0.74);
 }
 
-.memory-anchor-node.is-corroborated .memory-anchor-beacon::after {
+.memory-anchor-corroborated .memory-anchor-beacon::after {
   content: '';
   display: block;
   width: 6px;
@@ -4315,6 +4440,19 @@ p {
   margin: 5px;
   border-radius: 50%;
   background: var(--cyan);
+}
+
+/* Knowledge has a visible geometry as well as a colour. A filed-but-unverified
+   anchor remains a square outline; a sealed anchor is a dashed diamond. */
+.memory-anchor-discovered .memory-anchor-beacon {
+  border-radius: 4px;
+  border-style: dashed;
+}
+
+.memory-anchor-unknown .memory-anchor-beacon {
+  border-radius: 0;
+  border-style: dashed;
+  transform: rotate(45deg);
 }
 
 .memory-anchor-label {
@@ -4335,6 +4473,17 @@ p {
   color: inherit;
   font-size: var(--type-label);
   line-height: 1.2;
+}
+
+.memory-anchor-label small {
+  color: var(--fog-dim);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-micro);
+  line-height: 1.2;
+}
+
+.memory-anchor-corroborated .memory-anchor-label small {
+  color: var(--cyan);
 }
 
 .memory-anchor-node.is-selected {
@@ -4467,6 +4616,18 @@ p {
   background: var(--concrete);
 }
 
+.fragment-row:disabled,
+.fragment-row:disabled:hover {
+  color: var(--fog);
+  background: transparent;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.fragment-row[data-fragment-knowledge='unknown'] {
+  border-bottom-style: dashed;
+}
+
 .fragment-row-selected {
   background: var(--cyan-deep);
 }
@@ -4484,12 +4645,37 @@ p {
   border-radius: 4px;
 }
 
+.fragment-row-discovered .fragment-selector {
+  border-style: dashed;
+  border-radius: 2px;
+}
+
+.fragment-row-unknown .fragment-selector {
+  border-style: dashed;
+  border-radius: 0;
+  transform: rotate(45deg);
+}
+
 .fragment-row-selected .fragment-selector {
   color: var(--night);
   background: var(--cyan);
   border-color: var(--cyan);
   font-size: var(--type-label);
   font-weight: 900;
+}
+
+.fragment-row-unknown .fragment-selector,
+.fragment-row-unknown.fragment-row-selected .fragment-selector {
+  font-size: 0;
+}
+
+.fragment-row-unknown.fragment-row-selected .fragment-selector::after {
+  content: '−';
+  display: block;
+  color: var(--night);
+  font-size: var(--type-label);
+  font-weight: 900;
+  transform: rotate(-45deg);
 }
 
 .fragment-code {
@@ -4521,6 +4707,11 @@ p {
   font-size: var(--type-label);
 }
 
+.fragment-body .fragment-discovery-source {
+  color: var(--cyan);
+  line-height: 1.35;
+}
+
 .fragment-body > .fragment-evidence-state {
   width: fit-content;
   margin-top: 5px;
@@ -4535,6 +4726,16 @@ p {
 .fragment-body > .fragment-corroborated {
   color: var(--cyan);
   background: var(--cyan-deep);
+}
+
+.fragment-body > .fragment-discovered {
+  color: var(--record);
+  border: 1px dashed var(--line-strong);
+}
+
+.fragment-body > .fragment-unknown {
+  color: var(--fog);
+  border: 1px dashed var(--line);
 }
 
 .phase-footer {
@@ -4567,6 +4768,45 @@ p {
 
 .tribunal-page {
   max-width: 1120px;
+}
+
+.subject-hearing-presence {
+  max-width: 760px;
+  margin: 22px 0;
+  padding: 16px 18px;
+  color: var(--record);
+  background: var(--concrete);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+}
+
+.subject-hearing-presence > p:first-child {
+  margin: 0 0 7px;
+  color: var(--cyan);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-label);
+  font-weight: 700;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.subject-hearing-presence h2 {
+  margin: 0 0 10px;
+  color: var(--record-bright);
+  font-size: var(--type-title);
+}
+
+.subject-hearing-presence h2 span {
+  margin-left: 8px;
+  color: var(--fog);
+  font-size: var(--type-meta);
+  font-weight: 500;
+}
+
+.subject-hearing-presence > p:not(:first-child) {
+  margin: 6px 0 0;
+  color: var(--fog);
+  line-height: 1.5;
 }
 
 .tribunal-chamber {
@@ -4744,7 +4984,9 @@ p {
   z-index: 4;
   top: 86px;
   right: 28px;
-  min-height: 40px;
+  /* 44px is the touch floor, not a target — review caught this at 40px while the
+     probe's label already promised ≥44. Keep min-height and padding in agreement. */
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -4768,6 +5010,27 @@ p {
 
 #decision-heading {
   scroll-margin-top: calc(var(--header-height) + 16px);
+}
+
+/* The "Review findings ↓" cue scrolls THIS box, so the offset that keeps the
+   sticky header off the decision belongs here too. */
+.tribunal-decision-section {
+  scroll-margin-top: calc(var(--header-height) + 16px);
+}
+
+/* Step 1 / Step 2. The tribunal is two moves — declare the reach, then file the
+   finding — and the second is `disabled` until the first is answered. Numbering
+   them makes that ordering visible at the controls instead of only in the helper
+   sentence 1,350px below the top of the phase. Mono caps, the same register the
+   scroll cue and the case codes already use. */
+.tribunal-step-mark {
+  margin: 0 0 6px;
+  color: var(--amber-soft);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-micro);
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 @keyframes tribunal-camera-settle {
@@ -4839,7 +5102,7 @@ p {
 
 .tribunal-summary dl {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 0;
   margin: 0;
 }
@@ -4866,6 +5129,206 @@ p {
   color: var(--record);
   font-size: var(--type-body);
   font-weight: 700;
+}
+
+.tribunal-objection {
+  margin: 18px 0 0;
+  padding: 16px 18px;
+  background: oklch(0.72 0.14 70 / 0.045);
+  border: 1px solid var(--line);
+  border-top-color: var(--amber);
+}
+
+.tribunal-objection span {
+  color: var(--amber-soft);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tribunal-objection p {
+  max-width: 76ch;
+  margin: 7px 0 0;
+  color: var(--record);
+  font-size: var(--type-read);
+  line-height: 1.55;
+}
+
+.tribunal-filing-question {
+  margin-top: 26px;
+  border-block: 1px solid var(--line);
+}
+
+.tribunal-filing-question fieldset {
+  margin: 0;
+  padding: 18px 0;
+  border: 0;
+}
+
+/* The fieldset owns the block padding; the step mark sits above it and would
+   otherwise touch this section's top rule. */
+.tribunal-filing-question .tribunal-step-mark {
+  margin-top: 16px;
+}
+
+.tribunal-filing-question legend {
+  color: var(--record-bright);
+  font-size: var(--type-title);
+  font-weight: 750;
+}
+
+.tribunal-filing-question fieldset > p {
+  margin: 6px 0 16px;
+  color: var(--fog);
+}
+
+.tribunal-choice-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--line);
+}
+
+.tribunal-choice-options label {
+  min-height: 96px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  padding: 16px;
+  cursor: pointer;
+}
+
+.tribunal-choice-options label + label {
+  border-left: 1px solid var(--line);
+}
+
+.tribunal-choice-options label:has(input:checked) {
+  background: var(--raised);
+  box-shadow: inset 0 -2px 0 var(--amber);
+}
+
+.tribunal-choice-options input {
+  margin-top: 4px;
+  accent-color: var(--amber);
+}
+
+.tribunal-choice-options span {
+  display: grid;
+  gap: 5px;
+}
+
+.tribunal-choice-options strong {
+  color: var(--record);
+}
+
+.tribunal-choice-options small {
+  color: var(--fog);
+  font-size: var(--type-meta);
+  line-height: 1.45;
+}
+
+.legal-channels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  border: 1px solid var(--line);
+}
+
+.legal-channels > div,
+.legal-channels--compact > span {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+  padding: 10px 12px;
+}
+
+.legal-channels > div + div,
+.legal-channels--compact > span + span {
+  border-left: 1px solid var(--line);
+}
+
+.legal-channels dt,
+.legal-channel-label {
+  color: var(--fog-dim);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-micro);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.legal-channels dd,
+.legal-channel-status {
+  margin: 0;
+  color: var(--record);
+  font-size: var(--type-meta);
+  font-weight: 700;
+}
+
+.legal-channels [data-tone='forced'] dd,
+.legal-channels [data-tone='forced'] .legal-channel-status {
+  color: var(--coral);
+}
+
+.legal-channels [data-tone='open'] dd,
+.legal-channels [data-tone='open'] .legal-channel-status {
+  color: var(--cyan);
+}
+
+.legal-channels--compact {
+  display: grid;
+  margin-top: 5px;
+}
+
+.debrief-legal-force {
+  margin-top: 22px;
+}
+
+.debrief-legal-force h3 {
+  margin: 0 0 10px;
+  font-size: var(--type-read);
+}
+
+.outcome-facts dl {
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+
+.outcome-facts dl > div {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.42fr) 1fr;
+  gap: 18px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.outcome-facts dt {
+  color: var(--fog-dim);
+}
+
+.outcome-facts dd {
+  margin: 0;
+  color: var(--record);
+  font-weight: 700;
+}
+
+@media (max-width: 700px) {
+  .tribunal-choice-options,
+  .legal-channels {
+    grid-template-columns: 1fr;
+  }
+
+  .tribunal-choice-options label + label,
+  .legal-channels > div + div,
+  .legal-channels--compact > span + span {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .outcome-facts dl > div {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
 }
 
 .tribunal-contradictions {
@@ -5611,6 +6074,15 @@ p {
   font-size: var(--type-meta);
 }
 
+.rail-omitted-sites {
+  margin: -4px 0 0;
+  padding: 0 0 18px;
+  color: var(--fog-dim);
+  font-size: var(--type-meta);
+  line-height: 1.45;
+  border-bottom: 1px solid var(--line);
+}
+
 .text-risk {
   color: var(--coral) !important;
 }
@@ -5787,6 +6259,162 @@ p {
   border-radius: 999px;
   font-size: var(--type-micro);
   font-weight: 700;
+}
+
+.fourth-margin-index {
+  position: relative;
+  padding-left: 14px;
+  border-left: 1px solid oklch(0.82 0.12 74 / 0.6);
+}
+
+.fourth-margin-index::before {
+  content: '04';
+  position: absolute;
+  top: 20px;
+  right: 0;
+  color: oklch(0.78 0.1 190 / 0.5);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-micro);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.fourth-margin-index > h2 {
+  max-width: 28ch;
+  padding-right: 30px;
+  color: var(--record-bright);
+}
+
+.fourth-margin-entries {
+  margin-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.fourth-margin-entry {
+  border-bottom: 1px solid var(--line);
+}
+
+.fourth-margin-entry summary {
+  min-height: 48px;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 4px;
+  color: var(--record);
+  font-size: var(--type-meta);
+  font-weight: 760;
+  cursor: pointer;
+  list-style: none;
+}
+
+.fourth-margin-entry summary::-webkit-details-marker {
+  display: none;
+}
+
+.fourth-margin-entry summary > span {
+  color: var(--amber-soft);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-label);
+  letter-spacing: -0.04em;
+}
+
+.fourth-margin-entry summary::after {
+  content: '+';
+  grid-column: 3;
+  color: var(--fog);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.fourth-margin-entry[open] summary::after {
+  content: '−';
+}
+
+.fourth-margin-entry-body {
+  padding: 0 4px 17px 39px;
+}
+
+.fourth-margin-entry blockquote,
+.fourth-margin-object {
+  margin: 0 0 10px;
+  color: var(--record-bright);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: var(--type-read);
+  line-height: 1.55;
+}
+
+.fourth-margin-attribution,
+.fourth-margin-source,
+.fourth-margin-location {
+  margin: 3px 0;
+  color: var(--fog);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-micro);
+  line-height: 1.45;
+}
+
+.fourth-margin-source,
+.fourth-margin-location {
+  color: var(--fog-dim);
+}
+
+.fourth-margin-counterline {
+  margin: 13px 0 9px;
+  padding: 9px 11px;
+  color: var(--record);
+  background: oklch(0.14 0.012 235 / 0.7);
+  border-left: 2px solid var(--cyan);
+  font-size: var(--type-meta);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.fourth-margin-key-claim {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.fourth-margin-key-claim p {
+  margin: 0;
+  color: var(--fog);
+  font-size: var(--type-label);
+  line-height: 1.5;
+}
+
+.fourth-margin-key-claim button {
+  min-height: 48px;
+  padding: 10px 12px;
+  color: var(--night);
+  text-align: left;
+  background: var(--amber-soft);
+  border: 1px solid var(--amber-soft);
+  border-radius: 2px;
+  font-size: var(--type-meta);
+  font-weight: 800;
+}
+
+.fourth-margin-key-claim button[aria-disabled='true'] {
+  color: var(--fog);
+  background: transparent;
+  border-color: var(--line-strong);
+  cursor: default;
+}
+
+.easy-read .fourth-margin-entry blockquote,
+.easy-read .fourth-margin-object,
+.easy-read .fourth-margin-counterline {
+  font-family: inherit;
+  font-style: normal;
+}
+
+.high-contrast .fourth-margin-index,
+.high-contrast .fourth-margin-entry,
+.high-contrast .fourth-margin-counterline,
+.high-contrast .fourth-margin-key-claim button {
+  color: var(--record-bright);
+  background: var(--night);
+  border-color: var(--record-bright);
 }
 
 .rail-empty {
@@ -7543,7 +8171,7 @@ p {
    file. The four presences are not subjects — they are the people who speak to
    you about one — so they get their own frame and their own caption vocabulary
    while sharing the border/backing/radius values, and the two read as one world.
-   MATTED, NEVER BLENDED: an <img> inside a bordered frame over --night-soft, no
+   MATTED, NEVER BLENDED: an image plate inside a bordered frame over --night-soft, no
    mix-blend-mode and no screen composite (the Ellis raster-ghosting scar).
    NO FILTER AT REST: the palette is painted into the plate (painterly noir), so
    the registry filter values below appear only on the high-contrast path.
@@ -8249,37 +8877,6 @@ p {
   filter: brightness(0.29) contrast(1.22) saturate(0.5);
 }
 
-.deposition-beat-stage[data-consent='yes'] .deposition-close-light {
-  background:
-    radial-gradient(38% 84% at 34% 18%, oklch(0.78 0.11 190 / 0.26), transparent 70%),
-    radial-gradient(22% 52% at 70% 38%, oklch(0.72 0.14 70 / 0.12), transparent 72%);
-}
-
-.deposition-beat-stage[data-consent='no'] .deposition-close-figure {
-  filter: brightness(0.98) contrast(1.08) saturate(0.62);
-  transform: translate3d(12vw, 0, 0) scale(1.12);
-}
-
-.deposition-beat-stage[data-consent='no'] .deposition-close-light,
-.deposition-beat-stage[data-route='press'][data-choice='interrupt'] .deposition-close-light {
-  background:
-    radial-gradient(36% 82% at 38% 20%, oklch(0.66 0.17 30 / 0.16), transparent 72%),
-    radial-gradient(28% 64% at 68% 42%, oklch(0.78 0.11 190 / 0.08), transparent 72%);
-}
-
-.deposition-beat-stage[data-consent='unasked'] .deposition-close-figure {
-  opacity: 0.66;
-  transform: translate3d(-4vw, 0, 0) scale(0.98);
-}
-
-.deposition-beat-stage[data-choice='corroborate'] .deposition-close-geometry {
-  opacity: 0.42;
-}
-
-.deposition-beat-stage[data-choice='interrupt'] .deposition-close-room img {
-  filter: brightness(0.37) contrast(1.24) saturate(0.58);
-}
-
 .deposition-tray {
   position: fixed;
   z-index: 40;
@@ -8462,11 +9059,25 @@ p {
 }
 
 .deposition-consent-summary {
+  display: grid;
+  gap: 3px;
   margin: 0;
   padding: 0;
   color: var(--fog);
   font-size: var(--type-body);
   line-height: 1.45;
+}
+
+.deposition-consent-summary span {
+  color: var(--fog-dim);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-micro);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.deposition-consent-summary strong {
+  color: var(--record-bright);
 }
 
 .deposition-footer {
@@ -9650,8 +10261,8 @@ p {
   padding: 9px 12px;
   background: var(--concrete);
   border: 1px solid var(--line-strong);
-  border-left: 3px solid var(--cyan-deep);
   border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--cyan-deep);
 }
 .as-reading:focus-visible {
   outline: 2px solid var(--cyan);
@@ -9799,9 +10410,9 @@ p {
   font-size: var(--type-label);
   line-height: 1.3;
   color: var(--fog);
-  border-left: 2px solid oklch(0.72 0.14 70 / 0.5);
+  border: 1px solid oklch(0.72 0.14 70 / 0.28);
   background: oklch(0.72 0.14 70 / 0.05);
-  border-radius: 0 4px 4px 0;
+  border-radius: 4px;
 }
 
 /* The unlocked methods reuse ChoiceButton — stacked label over full-width body so
@@ -10047,6 +10658,226 @@ p {
   transform: scale(1.026);
 }
 
+/* A filed close-read plate settles at 1.018; the Fourth Margin's interactive
+   sibling must ride that same camera or its bracket drifts off the authored
+   prop. Letterboxed layouts lock both layers below. */
+.scene-zones-live[data-resolved='true'] .scene-zones-live-projection {
+  transform: scale(1.018);
+}
+
+/* ── The Fourth Margin: one optional, persistent mark on a filed plate ───── */
+
+.fourth-margin-layer {
+  z-index: 8;
+}
+
+.fourth-margin-anchor {
+  position: absolute;
+  z-index: 4;
+  top: var(--fourth-margin-y);
+  left: var(--fourth-margin-x);
+  width: 0;
+  height: 0;
+  pointer-events: auto;
+}
+
+.fourth-margin-marker {
+  position: absolute;
+  top: -24px;
+  left: -24px;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--amber-soft);
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.fourth-margin-marker::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid oklch(0.86 0.12 76 / 0.42);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px oklch(0.02 0 0 / 0.84);
+  pointer-events: none;
+}
+
+.fourth-margin-marker:not([data-discovered='true'])::before {
+  animation: fourth-margin-glint 720ms var(--ease-out) 4;
+}
+
+.fourth-margin-bracket {
+  position: relative;
+  width: 23px;
+  height: 23px;
+  display: grid;
+  place-items: center;
+  color: var(--amber-soft);
+  background: oklch(0.035 0.004 235 / 0.76);
+  border-top: 2px solid var(--amber-soft);
+  border-left: 2px solid var(--amber-soft);
+  filter: drop-shadow(0 1px 0 oklch(0 0 0 / 0.96));
+  transition:
+    color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out),
+    transform 160ms var(--ease-out);
+}
+
+.fourth-margin-bracket::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 9px;
+  height: 9px;
+  border-right: 2px solid var(--cyan);
+  border-bottom: 2px solid var(--cyan);
+}
+
+.fourth-margin-bracket > span {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.58rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.fourth-margin-marker-label {
+  position: absolute;
+  bottom: 38px;
+  left: 50%;
+  width: max-content;
+  max-width: 160px;
+  display: grid;
+  gap: 2px;
+  padding: 7px 9px;
+  color: var(--record-bright);
+  text-align: left;
+  background: oklch(0.035 0.004 235 / 0.94);
+  border: 1px solid oklch(0.86 0.12 76 / 0.5);
+  border-left-color: var(--amber);
+  border-radius: 2px;
+  box-shadow: 0 8px 22px oklch(0 0 0 / 0.5);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: var(--type-micro);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 5px);
+  transition:
+    opacity 150ms var(--ease-out),
+    transform 150ms var(--ease-out);
+}
+
+.fourth-margin-marker-label small {
+  color: var(--cyan);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+}
+
+.fourth-margin-marker:hover .fourth-margin-bracket,
+.fourth-margin-marker:focus-visible .fourth-margin-bracket,
+.fourth-margin-layer[data-revealed='true'] .fourth-margin-bracket {
+  color: var(--record-bright);
+  border-color: var(--record-bright);
+  transform: rotate(-2deg) scale(1.08);
+}
+
+.fourth-margin-marker:hover .fourth-margin-marker-label,
+.fourth-margin-marker:focus-visible .fourth-margin-marker-label {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.fourth-margin-marker:focus-visible {
+  outline: 2px solid var(--record-bright);
+  outline-offset: 3px;
+}
+
+.fourth-margin-marker[data-discovered='true']::before {
+  border-style: dashed;
+  border-color: oklch(0.78 0.1 190 / 0.52);
+}
+
+@keyframes fourth-margin-glint {
+  0%,
+  100% {
+    opacity: 0.28;
+    transform: scale(0.82);
+  }
+  48% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+.reduce-motion .fourth-margin-marker::before,
+.reduce-motion .fourth-margin-bracket,
+.reduce-motion .fourth-margin-marker-label {
+  animation: none !important;
+  transition: none !important;
+}
+
+.high-contrast .fourth-margin-marker::before,
+.high-contrast .fourth-margin-bracket,
+.high-contrast .fourth-margin-bracket::after {
+  color: var(--record-bright);
+  background: var(--night);
+  border-color: var(--record-bright);
+  box-shadow: none;
+  filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fourth-margin-marker::before,
+  .fourth-margin-bracket,
+  .fourth-margin-marker-label {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .fourth-margin-marker-label {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (max-width: 700px) {
+  .fourth-margin-marker-label {
+    right: auto;
+    left: 50%;
+    text-align: center;
+  }
+}
+
+@media (forced-colors: active) {
+  .fourth-margin-marker,
+  .fourth-margin-bracket,
+  .fourth-margin-marker-label {
+    color: ButtonText;
+    background: ButtonFace;
+    border-color: ButtonText;
+    forced-color-adjust: auto;
+  }
+
+  .fourth-margin-marker::before,
+  .fourth-margin-bracket::after {
+    border-color: Highlight;
+    box-shadow: none;
+  }
+}
+
 /* ── One zone: the canonical ChoiceButton, wearing a ring ──────────────────── */
 
 /* A zero-size anchor point at the authored coordinate. The ring is pinned to it
@@ -10115,89 +10946,61 @@ p {
   border-color: oklch(0.88 0.1 200 / 0.92);
 }
 
-/* The wrapped canonical button. Its semantics, arm/confirm two-step, disarm
-   gestures and commit path are untouched; only its box is restyled.
-
-   POINTER SURFACE: the button's caption box is wide enough that two anchors on
-   the same plate can overlap — and the later zone in DOM order then wins the hit
-   test, so a click on ONE ring's centre could arm the OTHER method. The box is
-   therefore pointer-transparent and a ring-sized region is re-enabled below, so
-   a zone's pointer surface is exactly the mark it draws. Keyboard is untouched
-   (pointer-events has no bearing on it), and hovering the region still matches
-   `.choice-row:hover`, since a pseudo-element's hits belong to its element. */
+/* The wrapped canonical button. Its real layout box is exactly the visible ring,
+   so browser hit testing, touch, focus and automated pointer activation all
+   share one reliable surface. The wide caption overflows from a pointer-
+   transparent child; neighbouring captions can never steal the ring's click. */
 .scene-zone .choice-row {
   position: absolute;
   z-index: 2;
-  pointer-events: none;
-  /* Top edge 45px above the anchor, so the 62px ring (centred on the anchor)
-     sits inside the button's own hit area with 14px of padding above it. */
-  top: -36px;
-  left: 0;
-  width: min(42cqw, 250px);
-  min-height: 44px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  justify-items: center;
-  align-items: start;
-  gap: 3px;
-  /* 5px above the ring + 62px ring + 4px breathing room */
-  padding: 71px 8px 6px;
+  top: -31px;
+  left: -31px;
+  width: 62px;
+  height: 62px;
+  min-height: 62px;
+  display: block;
+  padding: 0;
   border: 0;
   background: transparent;
   text-align: center;
-  transform: translateX(-50%);
-}
-
-/* The re-enabled pointer region, laid exactly over the ring. The offsets are the
-   inverse of the box's own placement: the button sits `top:-36px` from the
-   anchor and is translated by the edge percentage, so the anchor is 36px down
-   and that same percentage across. 62px square — above the 44px minimum. */
-.scene-zone .choice-row::before {
-  content: '';
-  position: absolute;
-  z-index: 1;
-  top: 36px;
-  left: 50%;
-  width: 62px;
-  height: 62px;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
   pointer-events: auto;
   cursor: pointer;
 }
 
-.scene-zone[data-edge='start'] .choice-row::before {
-  left: 28%;
-}
-
-.scene-zone[data-edge='end'] .choice-row::before {
-  left: 72%;
-}
-
-.scene-zone[data-vertical='low'] .choice-row::before {
-  top: auto;
-  bottom: 36px;
-  transform: translate(-50%, 50%);
+/* `display: contents` keeps ChoiceButton's ordinary three-column layout
+   everywhere else. Inside a scene zone, the same copy becomes an overflowing
+   caption beneath the fixed-size button without enlarging its hit box. */
+.scene-zone .choice-copy {
+  display: grid;
+  position: absolute;
+  top: 68px;
+  left: 50%;
+  width: min(42cqw, 250px);
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  align-items: start;
+  gap: 3px;
+  transform: translateX(-50%);
+  pointer-events: none;
 }
 
 /* A low anchor captions UPWARD. Same box, same paddings, mirrored: the ring
    stays exactly on its prop and the pre-commit cost stays on the plate at the
    one moment it has to be readable. Declared at (0,2,0), matching the rule it
    overrides, and after it, so source order settles it. */
-.scene-zone[data-vertical='low'] .choice-row {
+.scene-zone[data-vertical='low'] .choice-copy {
   top: auto;
-  bottom: -36px;
+  bottom: 68px;
   align-items: end;
-  padding: 6px 8px 71px;
 }
 
 /* At the plate's edges the caption slides inboard instead of being cropped. The
    ring never moves: only this box does. */
-.scene-zone[data-edge='start'] .choice-row {
+.scene-zone[data-edge='start'] .choice-copy {
   transform: translateX(-28%);
 }
 
-.scene-zone[data-edge='end'] .choice-row {
+.scene-zone[data-edge='end'] .choice-copy {
   transform: translateX(-72%);
 }
 
@@ -10567,11 +11370,26 @@ p {
   animation: scene-beat-line-in 420ms var(--ease-out);
 }
 
+/* The spoken transcript remains mounted, while the cinematic plate presents a
+   clean current exchange. Older lines disappear between beats instead of being
+   left half-painted under the former clipping veil. */
+.scene-beat-line--history {
+  display: none;
+}
+
+.scene-beat-lines::before {
+  display: none;
+}
+
 /* Easy Read: the halo goes, because the plate above is now doing that job
    properly and a shadow on flattened text is decoration pretending to be
    contrast. High contrast already removes it for the same reason. */
 .easy-read .scene-beat-line {
   text-shadow: none;
+}
+
+.easy-read .scene-beat-line--history {
+  display: block;
 }
 
 @keyframes scene-beat-line-in {
@@ -10646,8 +11464,8 @@ p {
 
 .scene-beat-line--persona,
 .subtitle-preview-line--persona {
-  color: oklch(0.88 0.012 210 / 0.94);
-  font-size: var(--type-read);
+  color: var(--record);
+  font-size: var(--type-title);
   font-weight: 400;
   line-height: 1.5;
 }
@@ -10826,6 +11644,7 @@ p {
 /* The case file, summoned — with its two live counts as its own preview, which
    is what keeps a hidden surface from feeling hidden. */
 .casefile-summon {
+  position: relative;
   min-height: 44px;
   display: grid;
   gap: 1px;
@@ -10858,6 +11677,31 @@ p {
   white-space: nowrap;
 }
 
+.casefile-summon-margin {
+  position: absolute;
+  top: -8px;
+  right: -7px;
+  min-width: 31px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  padding: 0 5px;
+  color: var(--night);
+  background: var(--amber-soft);
+  border: 1px solid var(--night);
+  border-radius: 2px;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+}
+
+.high-contrast .casefile-summon-margin {
+  color: var(--night);
+  background: var(--record-bright);
+  border-color: var(--record-bright);
+}
+
 .casefile-summon:hover strong {
   color: var(--record-bright);
 }
@@ -10873,6 +11717,52 @@ p {
   z-index: 30;
   right: 20px;
   bottom: 20px;
+}
+
+/* A short phone has a clear header center lane between the Annex control and
+   Access. Keep the shell summon in that lane instead of covering the lower
+   record, and retain its full accessible name while only the visual preview
+   lines collapse. The fixed control therefore needs no extra page-space reserve. */
+@media (max-width: 700px) and (max-height: 650px) {
+  .casefile-summon.casefile-summon--shell {
+    top: max(10px, env(safe-area-inset-top));
+    right: max(80px, calc(env(safe-area-inset-right) + 76px));
+    bottom: auto;
+    min-height: 44px;
+    padding: 6px 7px;
+  }
+
+  .casefile-summon.casefile-summon--shell > small {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Larger text leaves too little horizontal room for three wordmarks at the
+     320px floor. Keep the complete Annex name in the button's accessible name,
+     collapse only its visual copy to the established 44px mark, and give the
+     enlarged Access label a full 8px lane beside Case File. */
+  html.annex-large-text .case-header .brand-button {
+    width: 44px;
+    justify-content: center;
+    gap: 0;
+  }
+
+  html.annex-large-text .case-header .brand-button > span:last-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  html.annex-large-text .casefile-summon.casefile-summon--shell {
+    right: max(88px, calc(env(safe-area-inset-right) + 84px));
+  }
 }
 
 /* ── The summoned case file ───────────────────────────────────────────────────
@@ -11163,38 +12053,21 @@ p {
      here instead (only one is ever shown at a time, so two wide captions can
      never collide) and the ring shrinks to buy the last few pixels. */
   .scene-zone .choice-row {
-    top: -28px;
-    width: min(84cqw, 300px);
-    grid-template-columns: minmax(0, 1fr);
-    min-height: 44px;
-    gap: 3px;
-    padding: 54px 6px 6px;
-  }
-
-  .scene-zone[data-vertical='low'] .choice-row {
-    top: auto;
-    bottom: -28px;
-    padding: 6px 6px 54px;
-  }
-
-  /* The narrow ring is 44px and the box is offset by 28px / 8% / 92%. */
-  .scene-zone .choice-row::before {
-    top: 28px;
+    top: -22px;
+    left: -22px;
     width: 44px;
     height: 44px;
+    min-height: 44px;
   }
 
-  .scene-zone[data-edge='start'] .choice-row::before {
-    left: 8%;
+  .scene-zone .choice-copy {
+    top: 50px;
+    width: min(84cqw, 300px);
   }
 
-  .scene-zone[data-edge='end'] .choice-row::before {
-    left: 92%;
-  }
-
-  .scene-zone[data-vertical='low'] .choice-row::before {
+  .scene-zone[data-vertical='low'] .choice-copy {
     top: auto;
-    bottom: 28px;
+    bottom: 50px;
   }
 
   .scene-zone .choice-row.choice-row-armed {
@@ -11211,11 +12084,11 @@ p {
   /* The narrow plate crops hard: at this width the anchors sit within ~35px of
      the plate edge, so the caption box is aligned to the ring instead of centred
      on it. The RING still never moves. */
-  .scene-zone[data-edge='start'] .choice-row {
+  .scene-zone[data-edge='start'] .choice-copy {
     transform: translateX(-8%);
   }
 
-  .scene-zone[data-edge='end'] .choice-row {
+  .scene-zone[data-edge='end'] .choice-copy {
     transform: translateX(-92%);
   }
 
@@ -11236,6 +12109,41 @@ p {
 
   .scene-zone .choice-body small {
     max-width: 46ch;
+  }
+
+  /* Once the HUD owns final review, the full on-plate caption has nowhere safe
+     to sit on a phone: it can be cropped by the close read or compete with the
+     File/Cancel scope. Keep the button's complete text in the accessibility
+     tree, retire only its visual box, and leave the authored ring as the
+     spatial confirmation marker. */
+  .annex-app--gameplay
+    .world-view--scene-confirmation
+    .scene-zone[data-armed='true']
+    .choice-copy {
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .annex-app--gameplay
+    .scene-zones-live[data-confirmation-active='true']
+    .scene-zone[data-armed='true']
+    .scene-zone-ring {
+    border-color: var(--amber-soft);
+    box-shadow:
+      0 0 0 2px var(--amber),
+      0 0 16px oklch(0.72 0.14 70 / 0.5);
+  }
+
+  /* This explicit state mirrors the existing :has() treatment for engines
+     without that selector, so one active ring stays legible on touch devices. */
+  .annex-app--gameplay
+    .scene-zones-live[data-confirmation-active='true']
+    .scene-zone:not([data-armed='true']) {
+    opacity: 0.28;
   }
 
   .scene-beat-lines {
@@ -11588,6 +12496,14 @@ p {
   box-shadow: 0 0 0 2px var(--amber-soft);
 }
 
+.high-contrast
+  .scene-zones-live[data-confirmation-active='true']
+  .scene-zone[data-armed='true']
+  .scene-zone-ring {
+  border-color: var(--amber-soft);
+  box-shadow: 0 0 0 2px var(--amber-soft);
+}
+
 .high-contrast .scene-beat-line,
 .high-contrast .scene-result-evidence,
 .high-contrast .scene-zone .choice-method,
@@ -11622,9 +12538,21 @@ p {
     box-shadow: none;
   }
 
+  .scene-zones-live[data-confirmation-active='true']
+    .scene-zone[data-armed='true']
+    .scene-zone-ring {
+    border-color: Highlight;
+    box-shadow: none;
+  }
+
   /* Every method stays fully legible: the armed ring is the state cue, not a
      brightness difference the forced palette would flatten anyway. */
   .scene-zones-live:has(.choice-row-armed) .scene-zone:not(:has(.choice-row-armed)) {
+    opacity: 1;
+  }
+
+  .scene-zones-live[data-confirmation-active='true']
+    .scene-zone:not([data-armed='true']) {
     opacity: 1;
   }
 
@@ -12594,7 +13522,8 @@ p {
      untouched. Both layers are pinned together, for the same reason as above. */
   .site-closeup-stage[data-emphasis='true'] .site-closeup-projection,
   .site-closeup-stage[data-resolved='true'] .site-closeup-projection,
-  .scene-zones-live[data-emphasis='true'] .scene-zones-live-projection {
+  .scene-zones-live[data-emphasis='true'] .scene-zones-live-projection,
+  .scene-zones-live[data-resolved='true'] .scene-zones-live-projection {
     transform: none;
   }
 
@@ -12638,6 +13567,123 @@ p {
     left: calc(var(--plate-zone-ring-size, 62px) / -2);
     width: var(--plate-zone-ring-size, 62px);
     height: var(--plate-zone-ring-size, 62px);
+  }
+}
+
+/* ── Reader Key 04 · optional unnumbered room ───────────────────────────────
+   The concealed door and its room are presentation-only spatial routes. Their
+   semantic controls remain DOM buttons; these rules add a distinct, intimate
+   material register without turning the room into another filed site. */
+.world-view--unnumbered-room {
+  background: oklch(0.065 0.008 72);
+}
+
+.unnumbered-room-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.unnumbered-room-stage::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  background:
+    linear-gradient(180deg, oklch(0.04 0.008 70 / 0.16), transparent 24% 72%, oklch(0.03 0.005 70 / 0.28)),
+    radial-gradient(ellipse at 50% 58%, transparent 32%, oklch(0.035 0.006 70 / 0.2) 92%);
+  box-shadow:
+    inset 0 0 72px oklch(0.02 0.004 70 / 0.28),
+    inset 0 -1px var(--line-strong);
+  pointer-events: none;
+}
+
+.unnumbered-room-point {
+  transition:
+    color 160ms var(--ease-out),
+    filter 160ms var(--ease-out);
+}
+
+.unnumbered-room-point:hover,
+.unnumbered-room-point:focus-visible,
+.unnumbered-room-point[data-active='true'] {
+  filter: brightness(1.16);
+}
+
+.unnumbered-room-point[data-opened='true'] .unnumbered-room-point-ring {
+  box-shadow:
+    inset 0 0 0 4px oklch(0.08 0.008 70 / 0.58),
+    0 0 0 2px currentColor,
+    0 0 24px color-mix(in oklch, currentColor 32%, transparent) !important;
+}
+
+.annex-world-secret-room .annex-world-secret-room-ring {
+  box-shadow:
+    inset 0 0 0 5px oklch(0.09 0 0 / 0.48),
+    0 0 0 1px oklch(0.86 0.08 78 / 0.32),
+    0 0 24px oklch(0.82 0.1 78 / 0.2);
+}
+
+.annex-world-secret-room .annex-world-secret-room-label {
+  text-transform: none;
+}
+
+.high-contrast .unnumbered-room-stage,
+.high-contrast .unnumbered-room-point-ring,
+.high-contrast .unnumbered-room-point-label {
+  background: var(--night) !important;
+}
+
+.reduce-motion .unnumbered-room-point,
+.reduce-motion .unnumbered-room-stage > div {
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .unnumbered-room-point,
+  .unnumbered-room-stage > div {
+    transition: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .unnumbered-room-stage,
+  .unnumbered-room-point-ring,
+  .unnumbered-room-point-label {
+    color: CanvasText !important;
+    background: Canvas !important;
+    border-color: CanvasText !important;
+    forced-color-adjust: auto;
+  }
+}
+
+@media (max-width: 700px) {
+  /* Three full object titles overlap on a phone. Keep every 48px marked
+     target visible, then reveal one title at attention instead of clipping or
+     shrinking it below the game's readable type floor. */
+  .unnumbered-room-point-label {
+    display: none !important;
+    top: auto !important;
+    bottom: 51px;
+    width: 132px !important;
+    max-width: 132px !important;
+    white-space: normal !important;
+  }
+
+  .unnumbered-room-point[data-placement='left'] .unnumbered-room-point-label {
+    left: calc(50% + 58px) !important;
+  }
+
+  .unnumbered-room-point[data-placement='right'] .unnumbered-room-point-label {
+    left: calc(50% - 58px) !important;
+  }
+
+  .unnumbered-room-point:hover .unnumbered-room-point-label,
+  .unnumbered-room-point:focus-visible .unnumbered-room-point-label,
+  .unnumbered-room-point[data-active='true'] .unnumbered-room-point-label {
+    display: block !important;
   }
 }
 
@@ -12858,5 +13904,54 @@ p {
 
   .ledger-pair-against .rail-label {
     text-decoration-color: currentColor;
+  }
+}
+
+/* Cover-cropped portrait plates can place a source-image coordinate outside the
+   visible frame. On compact screens the authored fallback is viewport-relative,
+   keeping the 48px discovery route on the same visible prop cluster and clear of
+   the lower HUD. Wide layouts continue to use exact source-image projection. */
+@media (max-width: 700px) {
+  .scene-zones-live.fourth-margin-layer .scene-zones-live-cover {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: none;
+  }
+
+  .scene-zones-live.fourth-margin-layer[data-resolved='true']
+    .scene-zones-live-projection {
+    transform: none;
+  }
+
+  .fourth-margin-anchor {
+    top: var(--fourth-margin-compact-y);
+    left: var(--fourth-margin-compact-x);
+  }
+}
+
+/* The full-screen gameplay HUD makes a portrait close read much taller than its
+   16:9 source. Cover projection can therefore place a source-space method
+   outside the touch viewport. Ordinary live filing methods use a compact,
+   viewport-relative middle band instead: every authored 0..1 anchor stays in
+   the visible, HUD-clear area, while wide screens retain the source-aligned
+   projection above. Fourth Margin keeps its own authored compact fallback. */
+@media (max-width: 700px) {
+  .scene-zones-live:not(.fourth-margin-layer) .scene-zones-live-cover {
+    top: 31%;
+    /* A 24px side rail keeps even a 0 / 1 authored anchor's 44px target
+       entirely on screen; wider phones gain a proportional breathing room. */
+    left: max(24px, 6%);
+    width: calc(100% - 2 * max(24px, 6%));
+    height: 28%;
+    transform: none;
+  }
+
+  /* A source-space focus scale could push an otherwise in-view compact target
+     back under the HUD, so compact methods communicate attention through their
+     existing ring treatment rather than moving their touch surface. */
+  .scene-zones-live:not(.fourth-margin-layer) .scene-zones-live-projection {
+    transform: none;
   }
 }

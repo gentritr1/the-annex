@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { getCaseContent } from '../game/content'
+import {
+  getFiledFragmentDiscoveries,
+  getFragmentKnowledge,
+  getReconstructionPreview,
+  type FragmentKnowledge,
+} from '../game/engine'
 import { MemoryLatticeStage } from '../scene/MemoryLatticeStage'
 import type { FragmentId, GameState } from '../game/types'
 import { purposeCopy, showsLatticePurpose } from './purposeCopy'
@@ -17,18 +23,18 @@ export function Reconstruction({
   onSubmit,
   onBack,
 }: ReconstructionProps) {
-  const { fragments, fragmentEvidenceLinks, evidenceDefinitions } = getCaseContent(state.caseId)
+  const {
+    fragments,
+    fragmentEvidenceLinks,
+    evidenceDefinitions,
+  } = getCaseContent(state.caseId)
   const [commitArmed, setCommitArmed] = useState(false)
   const commitRef = useRef<HTMLButtonElement>(null)
-  const corroboratedFragmentIds = fragments
-    .filter((fragment) =>
-      evidenceDefinitions.some(
-        (evidence) =>
-          state.evidence.includes(evidence.id) &&
-          fragmentEvidenceLinks[fragment.id].includes(evidence.id),
-      ),
-    )
-    .map((fragment) => fragment.id)
+  const fragmentKnowledgeById = Object.fromEntries(
+    fragments.map((fragment) => [fragment.id, getFragmentKnowledge(state, fragment.id)]),
+  ) as Readonly<Record<FragmentId, FragmentKnowledge>>
+  const preview = getReconstructionPreview(state, state.selectedFragments)
+  const validPair = preview !== null
 
   // Same step-back gestures as the field/tribunal commit rows: pointer down
   // outside the commit button, Escape, or focus loss (onBlur) disarm silently.
@@ -50,6 +56,7 @@ export function Reconstruction({
   }, [commitArmed])
 
   function commitReconstruction() {
+    if (!validPair) return
     if (!commitArmed) {
       setCommitArmed(true)
       return
@@ -65,7 +72,7 @@ export function Reconstruction({
         </button>
         <p className="case-code">Cognitive reconstruction · bounded model</p>
         <h1>Build one account from two anchors</h1>
-        <p>Pair two fragments. The filing preserves the contradiction between them.</p>
+        <p>Pair two known fragments. The filing preserves the contradiction between them.</p>
       </header>
 
       {/* W1-4 · P2-F. The lattice states its rule and its cost and never its
@@ -77,7 +84,7 @@ export function Reconstruction({
 
       <div className="lattice-rule" role="note">
         <span>Rule</span>
-        <p>Two anchors. Every pairing produces a different valid model.</p>
+        <p>Two known anchors. At least one corroborated. Pairings may converge.</p>
         <strong>{state.selectedFragments.length} / 2</strong>
       </div>
 
@@ -85,39 +92,70 @@ export function Reconstruction({
         <MemoryLatticeStage
           fragments={fragments}
           selectedFragments={state.selectedFragments}
-          corroboratedFragmentIds={corroboratedFragmentIds}
+          fragmentKnowledgeById={fragmentKnowledgeById}
         />
 
         <div className="fragment-list lattice-fragment-list" aria-label="Memory fragments">
           {fragments.map((fragment) => {
             const selected = state.selectedFragments.includes(fragment.id)
+            const knowledge = fragmentKnowledgeById[fragment.id]
             const corroboratingEvidence = evidenceDefinitions.find(
               (evidence) =>
+                knowledge === 'corroborated' &&
                 state.evidence.includes(evidence.id) &&
                 fragmentEvidenceLinks[fragment.id].includes(evidence.id),
             )
+            const discoveryRecords = getFiledFragmentDiscoveries(state, fragment.id)
+            const discoverySources = discoveryRecords.map((record) => record.source)
+            const stateDescription =
+              knowledge === 'corroborated'
+                ? `Corroborated by field evidence: ${corroboratingEvidence?.title ?? 'filed evidence'}.`
+                : knowledge === 'discovered'
+                  ? `Known through ${discoverySources.join(' and ')}. Not corroborated by your field record.`
+                  : selected
+                    ? 'Sealed / unknown. This stale selection remains available only so you can remove it.'
+                    : 'Sealed / unknown. File a listed location before selecting this anchor.'
+            const buttonLabel =
+              knowledge === 'unknown'
+                ? selected
+                  ? 'Sealed unknown anchor selected. Select again to remove it.'
+                  : 'Sealed unknown anchor. File a listed location before selecting it.'
+                : `${fragment.title}. ${stateDescription}`
             return (
               <button
-                className={`fragment-row ${selected ? 'fragment-row-selected' : ''}`}
+                className={`fragment-row fragment-row-${knowledge} ${selected ? 'fragment-row-selected' : ''}`}
                 type="button"
                 aria-pressed={selected}
+                aria-label={buttonLabel}
+                data-fragment-id={fragment.id}
+                data-fragment-knowledge={knowledge}
                 key={fragment.id}
                 onClick={() => onToggleFragment(fragment.id)}
+                disabled={!selected && knowledge === 'unknown'}
               >
                 <span className="fragment-selector" aria-hidden="true">
                   {selected ? '✓' : ''}
                 </span>
-                <span className="fragment-code">{fragment.timecode}</span>
+                <span className="fragment-code">
+                  {knowledge === 'unknown' ? 'SEALED' : fragment.timecode}
+                </span>
                 <span className="fragment-body">
-                  <strong>{fragment.title}</strong>
-                  <span>{fragment.content}</span>
-                  <small>{fragment.source}</small>
+                  <strong>{knowledge === 'unknown' ? 'Unknown anchor' : fragment.title}</strong>
+                  <span>
+                    {knowledge === 'unknown'
+                      ? 'Its timecode, account, and source remain sealed.'
+                      : fragment.content}
+                  </span>
+                  <small>{knowledge === 'unknown' ? 'Source sealed' : fragment.source}</small>
+                  {knowledge !== 'unknown' && discoveryRecords.length > 0 && (
+                    <small className="fragment-discovery-source">
+                      Filed source: {discoverySources.join(' · ')}
+                    </small>
+                  )}
                   <span
-                    className={`fragment-evidence-state ${corroboratingEvidence ? 'fragment-corroborated' : ''}`}
+                    className={`fragment-evidence-state fragment-${knowledge}`}
                   >
-                    {corroboratingEvidence
-                      ? `Corroborated by field: ${corroboratingEvidence.title}`
-                      : 'Not corroborated by your field route'}
+                    {stateDescription}
                   </span>
                 </span>
               </button>
@@ -125,6 +163,24 @@ export function Reconstruction({
           })}
         </div>
       </div>
+
+      {preview ? (
+        <section
+          className="reconstruction-preview"
+          data-reconstruction-preview={preview.modelId}
+          aria-labelledby="reconstruction-preview-heading"
+        >
+          <p className="section-context">Argument this pair will file</p>
+          <h2 id="reconstruction-preview-heading">{preview.title}</h2>
+          <p>{preview.thesis}</p>
+          <p className="reconstruction-preview-limitation">
+            <strong>Limitation:</strong> {preview.limitation}
+          </p>
+          <p className="reconstruction-preview-support">
+            Support: {preview.corroboratedAnchors} of 2 anchors corroborated · {preview.supportStatus}.
+          </p>
+        </section>
+      ) : null}
 
       <footer className="phase-footer lattice-footer">
         <div className={`lattice-cost ${commitArmed ? 'lattice-cost-armed' : ''}`}>
@@ -143,9 +199,13 @@ export function Reconstruction({
           aria-pressed={commitArmed}
           onClick={commitReconstruction}
           onBlur={() => setCommitArmed(false)}
-          disabled={state.selectedFragments.length !== 2}
+          disabled={!validPair}
         >
-          {commitArmed ? 'Confirm irreversible filing — select again to file' : 'File reconstruction'}{' '}
+          {commitArmed
+            ? `Confirm ${preview?.title ?? 'reconstruction'} filing — select again to file`
+            : preview
+              ? `File ${preview.title} model`
+              : 'File reconstruction'}{' '}
           <span aria-hidden="true">{commitArmed ? '✓' : '→'}</span>
         </button>
       </footer>

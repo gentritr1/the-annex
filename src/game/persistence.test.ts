@@ -299,6 +299,11 @@ describe('migrateRawSave (v1 -> current)', () => {
       // Optional-tolerated: a pre-deposition save has no record; decode normalizes
       // the absent field to null. Progress is otherwise untouched.
       depositionRecord: null,
+      tribunalChoice: null,
+      caseOutcomes: {},
+      // Campaign marginalia did not exist in v1; strict decode normalizes the
+      // absent collection without inventing a discovery.
+      discoveredSecretIds: [],
       // A v1 save's settings predate ambientSound, easyRead and subtitlePlate;
       // decode normalizes all three to false.
       settings: { ...v1Settings, ambientSound: false, easyRead: false, subtitlePlate: false },
@@ -322,6 +327,15 @@ describe('migrateRawSave (v1 -> current)', () => {
       caseId: 'case-77',
       precedents: { 'case-77': 'certify-continuity' },
       depositionRecord: null,
+      tribunalChoice: null,
+      caseOutcomes: {
+        'case-77': {
+          valeContact: 'unknown',
+          authorityLink77: 'not-proven',
+          continuityScope: 'unknown',
+        },
+      },
+      discoveredSecretIds: [],
       // A v1 save's settings predate ambientSound, easyRead and subtitlePlate;
       // decode normalizes all three to false.
       settings: { ...v1Settings, ambientSound: false, easyRead: false, subtitlePlate: false },
@@ -338,7 +352,7 @@ describe('migrateRawSave (v1 -> current)', () => {
   })
 
   it('rejects unknown, future, downgrade, and missing schema versions', () => {
-    expect(migrateRawSave({ ...v1MidInvestigation, schemaVersion: 3 })).toBeNull()
+    expect(migrateRawSave({ ...v1MidInvestigation, schemaVersion: CURRENT_SAVE_SCHEMA + 1 })).toBeNull()
     expect(migrateRawSave({ ...v1MidInvestigation, schemaVersion: 0 })).toBeNull()
     expect(migrateRawSave({ ...v1MidInvestigation, schemaVersion: 'x' })).toBeNull()
     expect(migrateRawSave({ phase: 'investigation', runNumber: 1 })).toBeNull()
@@ -353,17 +367,18 @@ describe('migrateRawSave (v1 -> current)', () => {
   })
 })
 
-describe('v2 encode/decode round-trip', () => {
+describe('v3 encode/decode round-trip', () => {
   it('encodes a played reducer state at the current schema and decodes to an equal state', () => {
     let s = gameReducer(createInitialGameState(), { type: 'START_NEW' })
     s = gameReducer(s, { type: 'SELECT_APPROACH', approachId: 'care' })
     s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
-    s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
-    s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'scar-sensation' })
-    s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'witness-account' })
-    s = gameReducer(s, { type: 'SUBMIT_RECONSTRUCTION' })
     s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'authenticate-chain' })
+    s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
+    s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'witness-account' })
+    s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'registry-hash' })
+    s = gameReducer(s, { type: 'SUBMIT_RECONSTRUCTION' })
     s = gameReducer(s, { type: 'ENTER_TRIBUNAL' })
+    s = gameReducer(s, { type: 'SET_TRIBUNAL_CHOICE', choiceId: 'individual' })
     s = gameReducer(s, { type: 'DECIDE', decisionId: 'certify-continuity' })
     s = gameReducer(s, { type: 'START_NEXT_RUN' })
     const state = gameReducer(s, { type: 'SELECT_APPROACH', approachId: 'procedure' })
@@ -379,12 +394,13 @@ describe('v2 encode/decode round-trip', () => {
     let s = gameReducer(createInitialGameState(), { type: 'START_NEW' })
     s = gameReducer(s, { type: 'SELECT_APPROACH', approachId: 'care' })
     s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
-    s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
-    s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'scar-sensation' })
-    s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'witness-account' })
-    s = gameReducer(s, { type: 'SUBMIT_RECONSTRUCTION' })
     s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'authenticate-chain' })
+    s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
+    s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'witness-account' })
+    s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'registry-hash' })
+    s = gameReducer(s, { type: 'SUBMIT_RECONSTRUCTION' })
     s = gameReducer(s, { type: 'ENTER_TRIBUNAL' })
+    s = gameReducer(s, { type: 'SET_TRIBUNAL_CHOICE', choiceId: 'individual' })
     s = gameReducer(s, { type: 'DECIDE', decisionId: 'certify-continuity' })
     const next = gameReducer(s, { type: 'START_NEXT_RUN' })
 
@@ -399,6 +415,49 @@ describe('v2 encode/decode round-trip', () => {
     expect(decoded?.previousRuns).toHaveLength(1)
     expect(decoded?.previousRuns[0]?.caseId).toBeUndefined()
   })
+
+  it('migrates a valid v2 snapshot without inventing campaign facts', () => {
+    const current = JSON.parse(JSON.stringify(validInvestigationState())) as Record<string, unknown>
+    const v2: Record<string, unknown> = { ...current, schemaVersion: 2 }
+    delete v2.tribunalChoice
+    delete v2.caseOutcomes
+    delete v2.discoveredSecretIds
+
+    const migrated = migrateRawSave(v2) as Record<string, unknown>
+    expect(migrated).toMatchObject({
+      schemaVersion: CURRENT_SAVE_SCHEMA,
+      tribunalChoice: null,
+      caseOutcomes: {},
+    })
+    expect(decodeGameState(migrated)).toEqual(validInvestigationState())
+  })
+
+  it('marks completed v2 case facts unknown instead of inferring old routes or consent', () => {
+    const current = JSON.parse(JSON.stringify(playCase81ToDebrief())) as Record<string, unknown>
+    const v2: Record<string, unknown> = { ...current, schemaVersion: 2 }
+    delete v2.tribunalChoice
+    delete v2.caseOutcomes
+    const legacyDeposition = {
+      ...(v2.depositionRecord as Record<string, unknown>),
+    }
+    delete legacyDeposition.testimonyUse
+    v2.depositionRecord = legacyDeposition
+
+    const decoded = decodeGameState(migrateRawSave(v2))
+    expect(decoded?.depositionRecord?.testimonyUse).toBe('unknown')
+    expect(decoded?.caseOutcomes).toEqual({
+      'case-77': {
+        valeContact: 'unknown',
+        authorityLink77: 'not-proven',
+        continuityScope: 'unknown',
+      },
+      'case-81': {
+        testimonyUse81: 'unknown',
+        officeLink81: 'unknown',
+        ellisPublicStanding: 'unknown',
+      },
+    })
+  })
 })
 
 // Build a Case 81 state through the shared engine: a completed Case 77 run, then
@@ -407,24 +466,113 @@ function playCase81ToDebrief(): GameState {
   let s = gameReducer(createInitialGameState(), { type: 'START_NEW' })
   s = gameReducer(s, { type: 'SELECT_APPROACH', approachId: 'care' })
   s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
-  s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
-  s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'scar-sensation' })
-  s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'witness-account' })
-  s = gameReducer(s, { type: 'SUBMIT_RECONSTRUCTION' })
   s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'authenticate-chain' })
+  s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
+  s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'witness-account' })
+  s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'registry-hash' })
+  s = gameReducer(s, { type: 'SUBMIT_RECONSTRUCTION' })
   s = gameReducer(s, { type: 'ENTER_TRIBUNAL' })
+  s = gameReducer(s, { type: 'SET_TRIBUNAL_CHOICE', choiceId: 'general' })
   s = gameReducer(s, { type: 'DECIDE', decisionId: 'charter-new-person' })
   s = gameReducer(s, { type: 'START_CASE', caseId: 'case-81' })
   s = gameReducer(s, { type: 'SELECT_APPROACH', approachId: 'procedure' })
-  s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'take-sworn-statement' })
+  s = gameReducer(s, {
+    type: 'COMMIT_DEPOSITION',
+    actionId: 'take-sworn-statement',
+    beats: ['let-it-stand', 'let-it-stand'],
+    askedConsent: true,
+  })
+  s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'pull-service-record' })
   s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
   s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'oath-cadence' })
   s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'unscripted-answer' })
   s = gameReducer(s, { type: 'SUBMIT_RECONSTRUCTION' })
-  s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'pull-service-record' })
   s = gameReducer(s, { type: 'ENTER_TRIBUNAL' })
   return gameReducer(s, { type: 'DECIDE', decisionId: 'certify-witness' })
 }
+
+describe('Fourth Margin persistence (optional-tolerated)', () => {
+  it('normalizes a pre-feature current save with no discovery field to an empty collection', () => {
+    const state = validInvestigationState()
+    const encoded = JSON.parse(JSON.stringify(state)) as Record<string, unknown>
+    delete encoded.discoveredSecretIds
+
+    expect(decodeGameState(encoded)).toEqual({
+      ...state,
+      discoveredSecretIds: [],
+    })
+  })
+
+  it('round-trips both quotations and the explicitly claimed Reader Key', () => {
+    const state: GameState = {
+      ...playCase81ToDebrief(),
+      discoveredSecretIds: [
+        'nietzsche-forgetting',
+        'schopenhauer-succession',
+        'reader-key-04',
+      ],
+    }
+    const encoded = JSON.parse(JSON.stringify(state)) as unknown
+
+    expect(decodeGameState(migrateRawSave(encoded))).toEqual(state)
+  })
+
+  it('rejects malformed, duplicate, and unknown discovery collections', () => {
+    const encoded = JSON.parse(
+      JSON.stringify(validInvestigationState()),
+    ) as Record<string, unknown>
+    const malformedCollections: unknown[] = [
+      'nietzsche-forgetting',
+      null,
+      [42],
+      ['nietzsche-forgetting', 'nietzsche-forgetting'],
+      ['not-authored'],
+    ]
+
+    malformedCollections.forEach((discoveredSecretIds) => {
+      expect(
+        decodeGameState({
+          ...encoded,
+          discoveredSecretIds,
+        }),
+      ).toBeNull()
+    })
+  })
+
+  it('rejects a forged compound key unless every authored prerequisite is present', () => {
+    const encoded = JSON.parse(
+      JSON.stringify(playCase81ToDebrief()),
+    ) as Record<string, unknown>
+
+    ;[
+      ['reader-key-04'],
+      ['nietzsche-forgetting', 'reader-key-04'],
+      ['schopenhauer-succession', 'reader-key-04'],
+    ].forEach((discoveredSecretIds) => {
+      expect(
+        decodeGameState({
+          ...encoded,
+          discoveredSecretIds,
+        }),
+      ).toBeNull()
+    })
+
+    expect(
+      decodeGameState({
+        ...encoded,
+        discoveredSecretIds: [
+          'nietzsche-forgetting',
+          'schopenhauer-succession',
+          'reader-key-04',
+        ],
+      })?.discoveredSecretIds,
+    ).toEqual([
+      'nietzsche-forgetting',
+      'schopenhauer-succession',
+      'reader-key-04',
+    ])
+  })
+})
 
 describe('multi-case persistence', () => {
   it('round-trips a Case 81 reducer state through encode/decode', () => {
@@ -434,6 +582,18 @@ describe('multi-case persistence', () => {
     expect(state.precedents).toEqual({
       'case-77': 'charter-new-person',
       'case-81': 'certify-witness',
+    })
+    expect(state.caseOutcomes).toEqual({
+      'case-77': {
+        valeContact: 'consulted',
+        authorityLink77: 'not-proven',
+        continuityScope: 'general',
+      },
+      'case-81': {
+        testimonyUse81: 'voluntary-office',
+        officeLink81: 'admissible',
+        ellisPublicStanding: 'witness',
+      },
     })
 
     const encoded = JSON.parse(JSON.stringify(state)) as { schemaVersion: number }
@@ -455,6 +615,107 @@ describe('multi-case persistence', () => {
     encoded.evidence = ['custody-chain']
     expect(decodeGameState(encoded)).toBeNull()
   })
+
+  it('rejects unknown, incomplete, and invalid campaign outcome facts', () => {
+    const encoded = JSON.parse(JSON.stringify(playCase81ToDebrief())) as Record<string, unknown>
+    const outcomes = encoded.caseOutcomes as Record<string, Record<string, string>>
+
+    expect(
+      decodeGameState({
+        ...encoded,
+        caseOutcomes: {
+          ...outcomes,
+          'case-999': { inventedFact: 'invented-value' },
+        },
+      }),
+    ).toBeNull()
+
+    expect(
+      decodeGameState({
+        ...encoded,
+        caseOutcomes: {
+          ...outcomes,
+          'case-77': {
+            valeContact: 'consulted',
+            authorityLink77: 'not-proven',
+          },
+        },
+      }),
+    ).toBeNull()
+
+    expect(
+      decodeGameState({
+        ...encoded,
+        caseOutcomes: {
+          ...outcomes,
+          'case-81': {
+            ...outcomes['case-81'],
+            officeLink81: 'secretly-proven',
+          },
+        },
+      }),
+    ).toBeNull()
+  })
+
+  it('rejects precedent keys and decisions outside their authored case contracts', () => {
+    const encoded = JSON.parse(JSON.stringify(playCase81ToDebrief())) as Record<string, unknown>
+    const precedents = encoded.precedents as Record<string, string>
+
+    expect(
+      decodeGameState({
+        ...encoded,
+        precedents: {
+          ...precedents,
+          'case-999': 'invented-verdict',
+        },
+      }),
+    ).toBeNull()
+
+    expect(
+      decodeGameState({
+        ...encoded,
+        precedents: {
+          ...precedents,
+          // A real Case 81 decision is still invalid as a Case 77 precedent.
+          'case-77': 'certify-witness',
+        },
+      }),
+    ).toBeNull()
+  })
+
+  it('requires precedents, outcomes, and the active completed decision to agree', () => {
+    const encoded = JSON.parse(JSON.stringify(playCase81ToDebrief())) as Record<string, unknown>
+    const precedents = encoded.precedents as Record<string, string>
+    const outcomes = encoded.caseOutcomes as Record<string, Record<string, string>>
+
+    expect(
+      decodeGameState({
+        ...encoded,
+        caseOutcomes: {
+          'case-77': outcomes['case-77'],
+        },
+      }),
+    ).toBeNull()
+
+    expect(
+      decodeGameState({
+        ...encoded,
+        precedents: {
+          'case-77': precedents['case-77'],
+        },
+      }),
+    ).toBeNull()
+
+    expect(
+      decodeGameState({
+        ...encoded,
+        precedents: {
+          ...precedents,
+          'case-81': 'reject-standing',
+        },
+      }),
+    ).toBeNull()
+  })
 })
 
 // A Case 81 state whose deposition site was resolved through the transcript, so
@@ -463,19 +724,20 @@ function playCase81WithDeposition(): GameState {
   let s = gameReducer(createInitialGameState(), { type: 'START_NEW' })
   s = gameReducer(s, { type: 'SELECT_APPROACH', approachId: 'care' })
   s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
-  s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
-  s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'scar-sensation' })
-  s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'witness-account' })
-  s = gameReducer(s, { type: 'SUBMIT_RECONSTRUCTION' })
   s = gameReducer(s, { type: 'COMMIT_FIELD_ACTION', actionId: 'authenticate-chain' })
+  s = gameReducer(s, { type: 'OPEN_RECONSTRUCTION' })
+  s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'witness-account' })
+  s = gameReducer(s, { type: 'TOGGLE_FRAGMENT', fragmentId: 'registry-hash' })
+  s = gameReducer(s, { type: 'SUBMIT_RECONSTRUCTION' })
   s = gameReducer(s, { type: 'ENTER_TRIBUNAL' })
+  s = gameReducer(s, { type: 'SET_TRIBUNAL_CHOICE', choiceId: 'individual' })
   s = gameReducer(s, { type: 'DECIDE', decisionId: 'charter-new-person' })
   s = gameReducer(s, { type: 'START_CASE', caseId: 'case-81' })
   s = gameReducer(s, { type: 'SELECT_APPROACH', approachId: 'care' })
   return gameReducer(s, {
     type: 'COMMIT_DEPOSITION',
     actionId: 'take-sworn-statement',
-    beats: ['corroborate', 'let-it-stand', 'corroborate'],
+    beats: ['corroborate', 'let-it-stand'],
     askedConsent: true,
   })
 }
@@ -485,9 +747,10 @@ describe('deposition record persistence (optional-tolerated)', () => {
     const state = playCase81WithDeposition()
     expect(state.depositionRecord).toEqual({
       actionId: 'take-sworn-statement',
-      beats: ['corroborate', 'let-it-stand', 'corroborate'],
+      beats: ['corroborate', 'let-it-stand'],
       askedConsent: true,
       consent: 'yes',
+      testimonyUse: 'voluntary-office',
     })
 
     const encoded = JSON.parse(JSON.stringify(state)) as { schemaVersion: number }
@@ -504,6 +767,28 @@ describe('deposition record persistence (optional-tolerated)', () => {
     expect(decodedAbsent).not.toBeNull()
     expect(decodedAbsent?.depositionRecord).toBeNull()
 
+    // A v2 deposition lacked the explicit legal-use boundary. Keep the raw
+    // history but mark that boundary unknown rather than reverse-engineering it.
+    const legacyRecord = {
+      ...encoded,
+      depositionRecord: {
+        actionId: 'take-sworn-statement',
+        beats: ['corroborate', 'let-it-stand', 'corroborate'],
+        askedConsent: true,
+        consent: 'yes',
+      },
+    }
+    const decodedLegacy = decodeGameState(legacyRecord)
+    expect(decodedLegacy?.depositionRecord).toEqual({
+      ...legacyRecord.depositionRecord,
+      testimonyUse: 'unknown',
+    })
+    // Once normalized and saved as v3, the unknown sentinel must retain the old
+    // beat trace on every later load rather than becoming self-invalidating.
+    expect(
+      decodeGameState(JSON.parse(JSON.stringify(decodedLegacy)) as unknown),
+    ).toEqual(decodedLegacy)
+
     // Present but with an invalid consent value rejects the whole save.
     const malformed = {
       ...encoded,
@@ -515,5 +800,82 @@ describe('deposition record persistence (optional-tolerated)', () => {
       },
     }
     expect(decodeGameState(malformed)).toBeNull()
+
+    const malformedUse = {
+      ...encoded,
+      depositionRecord: {
+        ...(encoded.depositionRecord as Record<string, unknown>),
+        testimonyUse: 'permission-by-vibes',
+      },
+    }
+    expect(decodeGameState(malformedUse)).toBeNull()
+  })
+
+  it('requires a present deposition to match the active case and completed action', () => {
+    const encoded = JSON.parse(JSON.stringify(playCase81WithDeposition())) as Record<string, unknown>
+    const record = encoded.depositionRecord as Record<string, unknown>
+
+    expect(
+      decodeGameState({
+        ...encoded,
+        depositionRecord: {
+          ...record,
+          // Valid deposition entry, but not the one this run completed.
+          actionId: 'cross-examine-witness',
+        },
+      }),
+    ).toBeNull()
+
+    expect(
+      decodeGameState({
+        ...encoded,
+        depositionRecord: {
+          ...record,
+          // A Case 81 field action, but not an authored deposition entry.
+          actionId: 'pull-service-record',
+        },
+      }),
+    ).toBeNull()
+
+    let case77 = gameReducer(createInitialGameState(), { type: 'START_NEW' })
+    case77 = gameReducer(case77, { type: 'SELECT_APPROACH', approachId: 'care' })
+    case77 = gameReducer(case77, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
+    expect(
+      decodeGameState({
+        ...JSON.parse(JSON.stringify(case77)),
+        depositionRecord: {
+          actionId: 'listen-mara',
+          beats: ['let-it-stand'],
+          askedConsent: false,
+          consent: 'unasked',
+          testimonyUse: 'unasked',
+        },
+      }),
+    ).toBeNull()
+  })
+
+  it('rejects an explicit current use boundary that disagrees with the authored resolver', () => {
+    const encoded = JSON.parse(JSON.stringify(playCase81WithDeposition())) as Record<string, unknown>
+    const record = encoded.depositionRecord as Record<string, unknown>
+
+    expect(
+      decodeGameState({
+        ...encoded,
+        depositionRecord: {
+          ...record,
+          testimonyUse: 'refused',
+        },
+      }),
+    ).toBeNull()
+
+    expect(
+      decodeGameState({
+        ...encoded,
+        depositionRecord: {
+          ...record,
+          consent: 'no',
+        },
+      }),
+    ).toBeNull()
   })
 })

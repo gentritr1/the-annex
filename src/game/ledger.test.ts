@@ -18,13 +18,13 @@ function startInvestigation(approachId: ApproachId = 'care') {
   return gameReducer(briefing, { type: 'SELECT_APPROACH', approachId })
 }
 
-/** One site filed, one model filed — something in every bucket but the precedent. */
+/** Two sites and one model filed — something in every bucket but the precedent. */
 function midRun(): GameState {
   let state = startInvestigation()
   state = gameReducer(state, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
   state = gameReducer(state, { type: 'COMMIT_FIELD_ACTION', actionId: 'authenticate-chain' })
   state = gameReducer(state, { type: 'OPEN_RECONSTRUCTION' })
-  state = gameReducer(state, { type: 'TOGGLE_FRAGMENT', fragmentId: 'scar-sensation' })
+  state = gameReducer(state, { type: 'TOGGLE_FRAGMENT', fragmentId: 'witness-account' })
   state = gameReducer(state, { type: 'TOGGLE_FRAGMENT', fragmentId: 'registry-hash' })
   return gameReducer(state, { type: 'SUBMIT_RECONSTRUCTION' })
 }
@@ -160,12 +160,12 @@ describe('buildFindings — the clerk’s summary', () => {
     states.push(state)
     state = gameReducer(state, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
     states.push(state)
+    state = gameReducer(state, { type: 'COMMIT_FIELD_ACTION', actionId: 'authenticate-chain' })
+    states.push(state)
     state = gameReducer(state, { type: 'OPEN_RECONSTRUCTION' })
-    state = gameReducer(state, { type: 'TOGGLE_FRAGMENT', fragmentId: 'scar-sensation' })
+    state = gameReducer(state, { type: 'TOGGLE_FRAGMENT', fragmentId: 'witness-account' })
     state = gameReducer(state, { type: 'TOGGLE_FRAGMENT', fragmentId: 'registry-hash' })
     state = gameReducer(state, { type: 'SUBMIT_RECONSTRUCTION' })
-    states.push(state)
-    state = gameReducer(state, { type: 'COMMIT_FIELD_ACTION', actionId: 'authenticate-chain' })
     states.push(state)
 
     // The walk must actually cross the gate, or this test proves nothing.
@@ -174,10 +174,10 @@ describe('buildFindings — the clerk’s summary', () => {
       const line = buildFindings(step).find((finding) => finding.id === 'finding:threshold')!
       expect(line.text.startsWith('The tribunal will hear')).toBe(canEnterTribunal(step))
     }
-    // The mid-walk state with a model but one site names exactly what is missing.
-    const modelOnly = buildFindings(states[2]!).find((f) => f.id === 'finding:threshold')!
-    expect(modelOnly.text).toBe(
-      'The tribunal will not hear this record yet: one more location must be closed.',
+    // Two closed sites alone still name the remaining model requirement.
+    const sitesOnly = buildFindings(states[2]!).find((f) => f.id === 'finding:threshold')!
+    expect(sitesOnly.text).toBe(
+      'The tribunal will not hear this record yet: a memory model must be filed.',
     )
   })
 

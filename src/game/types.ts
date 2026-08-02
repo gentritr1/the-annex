@@ -45,6 +45,11 @@ export type ReconstructionId = string
 
 export type DecisionId = string
 
+// Campaign-level marginalia ids. Unlike evidence and actions, these survive
+// case crossings without entering the legal record. The registered secret
+// definitions validate the open string vocabulary at runtime.
+export type SecretId = string
+
 // The deposition interaction grammar (Case 81's unique verb). These are a fixed
 // shared vocabulary — like MethodTag / ApproachId — not per-case content ids, so
 // the engine may reference them without becoming case-specific. Any case that
@@ -53,6 +58,18 @@ export type DecisionId = string
 export type DepositionChoiceId = 'let-it-stand' | 'interrupt' | 'corroborate'
 
 export type DepositionConsent = 'yes' | 'no' | 'unasked'
+
+// What legal use the witness authorized for the recorded account. This is kept
+// separate from the yes/no consent bit because the same "yes" can authorize an
+// office-level account or a protected disclosure, while a historical save may
+// contain consent without enough information to reconstruct either boundary.
+export type DepositionTestimonyUse =
+  | 'voluntary-office'
+  | 'protected-hand'
+  | 'refused'
+  | 'unasked'
+  | 'compelled'
+  | 'unknown'
 
 // The persisted trace of a committed deposition: which entry action opened it,
 // the per-beat choices, whether the consent question was asked, and — derived
@@ -64,6 +81,7 @@ export interface DepositionRecord {
   beats: DepositionChoiceId[]
   askedConsent: boolean
   consent: DepositionConsent
+  testimonyUse: DepositionTestimonyUse
 }
 
 export interface AccessibilitySettings {
@@ -121,9 +139,9 @@ export interface RunSummary {
 export interface GameState {
   // Persisted save-schema version. Bumped only via the migration pipeline in
   // persistence.ts; the runtime source of truth is CURRENT_SAVE_SCHEMA there.
-  schemaVersion: 2
-  // Which case this run belongs to. Always 'case-77' today; introduced in v2 so
-  // the upcoming multi-case expansion (Case 81) can move the schema only once.
+  schemaVersion: 3
+  // Which registered case this run belongs to. Introduced in v2; both Case 77
+  // and Case 81 now run through the same deterministic engine.
   caseId: string
   phase: GamePhase
   runNumber: number
@@ -137,6 +155,9 @@ export interface GameState {
   tribunalOverride: boolean
   selectedFragments: FragmentId[]
   reconstruction: ReconstructionId | null
+  // The active case's one authored tribunal question, when it has one. Reset for
+  // each run and validated against the case bundle before a verdict may commit.
+  tribunalChoice: string | null
   decision: DecisionId | null
   // The committed deposition transcript, or null when the case has no deposition,
   // its deposition site was resolved by a plain field action, or none was taken.
@@ -148,6 +169,15 @@ export interface GameState {
   // Empty until a run reaches a verdict. Carried across runs; read by future
   // cases that branch on a prior verdict.
   precedents: Record<string, string>
+  // caseId -> the compact authored facts produced by the latest completed run.
+  // This is deliberately not a full play trace: future cases consume only the
+  // handful of facts each case explicitly exports.
+  caseOutcomes: Record<string, Record<string, string>>
+  // Optional discoveries held beside the record in the Fourth Margin. They are
+  // campaign memory, not evidence: the reducer is their sole writer, and no
+  // legal resolver reads them. Optional-tolerated by persistence so historical
+  // schema-v3 saves load with an empty margin.
+  discoveredSecretIds: SecretId[]
   settings: AccessibilitySettings
   announcement: string
 }
@@ -157,6 +187,10 @@ export type GameAction =
   | { type: 'RESTORE'; state: GameState }
   | { type: 'SELECT_APPROACH'; approachId: ApproachId }
   | { type: 'COMMIT_FIELD_ACTION'; actionId: FieldActionId }
+  // Retain one authored Fourth Margin item. The engine validates case, phase,
+  // site completion, prerequisites, and uniqueness before appending the id.
+  // This action may change only discoveredSecretIds and announcement.
+  | { type: 'DISCOVER_SECRET'; secretId: SecretId }
   // Commit a deposition transcript. Resolves the underlying field action (the
   // deposition's entry action) exactly as COMMIT_FIELD_ACTION would — files the
   // site, adds its evidence — and additionally applies the beat-derived trust and
@@ -175,6 +209,7 @@ export type GameAction =
   | { type: 'SUBMIT_RECONSTRUCTION' }
   | { type: 'ENTER_TRIBUNAL' }
   | { type: 'RETURN_TO_INVESTIGATION' }
+  | { type: 'SET_TRIBUNAL_CHOICE'; choiceId: string }
   | { type: 'DECIDE'; decisionId: DecisionId }
   | { type: 'START_NEXT_RUN' }
   // Begin a fresh run of a DIFFERENT registered case, carrying precedents,
@@ -230,8 +265,16 @@ export interface ApproachDefinition {
   id: ApproachId
   title: string
   method: string
+  // The exact method memory retained when this opening approach is committed.
+  // Kept authored beside the visible approach label so briefing review can show
+  // the same tags the reducer records; no route is hidden behind a generic map.
+  methodTags: readonly MethodTag[]
   description: string
   consequence: string
+  // The opening approach can recommend one authored location before any filing.
+  // This is content-only direction for the presentation layer; it never changes
+  // the player's selected site, camera, or canonical route.
+  suggestedSiteId: SiteId
   trust: Partial<Record<PersonaId, number>>
 }
 
@@ -277,6 +320,44 @@ export interface FieldActionDefinition {
   // assembleBeats() falls back to the eventDetail clauses + reactions above, so
   // every action still stages without authoring anything. Presentation only.
   beat?: readonly FieldActionBeat[]
+}
+
+// ── The Fourth Margin (campaign marginalia, explicitly not evidence) ─────────
+// A secret is authored inside one CaseDefinition and claimed through the same
+// deterministic reducer regardless of whether it is a quotation found on a
+// settled close-read plate or a key assembled later in the case file.
+export interface SecretDefinition {
+  id: SecretId
+  kind: 'aphorism' | 'key'
+  title: string
+  body: string
+  // Full bibliographic attribution for public-domain quotations. Keys are
+  // Annex-authored objects and deliberately carry no philosopher attribution.
+  attribution?: string
+  source?: string
+  // A short in-world answer written beside the artifact. This is interpretation,
+  // never the game's verdict; cases may refine it from current canonical state.
+  counterline: string
+  getCounterline?: (state: GameState) => string
+  location: string
+  announcement: string
+  availablePhases: readonly GamePhase[]
+  // Plate discoveries are offered only after this site has been filed.
+  siteId?: SiteId
+  anchor?: {
+    x: number
+    y: number
+  }
+  // A viewport-relative fallback for narrow, cover-cropped closeups where the
+  // source-image coordinate would sit outside the visible frame. Presentation
+  // only: it moves the discovery target, never the canonical discovery rule.
+  compactAnchor?: {
+    x: number
+    y: number
+  }
+  // Keys and later compound finds may require earlier discoveries. The graph is
+  // validated structurally in content.test.ts and again at save decode.
+  requiresSecretIds?: readonly SecretId[]
 }
 
 // ── Classification room (the Small Archive's "filing" verb) ──────────────────
@@ -703,10 +784,26 @@ export interface FragmentDefinition {
   source: string
 }
 
+// The exact moment an anchor becomes known. A discovery can be site-wide only
+// when its source is available regardless of the selected method; otherwise the
+// action id makes the route-specific source explicit. These records are authored
+// content, never persisted: completed actions/sites remain the deterministic
+// source of truth for whether an anchor is currently known.
+export interface FragmentDiscoveryDefinition {
+  fragmentId: FragmentId
+  siteId: SiteId
+  actionId?: FieldActionId
+  source: string
+  reveal: string
+}
+
 export interface ReconstructionDefinition {
   id: ReconstructionId
   title: string
   thesis: string
+  // The model's own bounded claim, shown before filing. This is authored
+  // interpretation, not a trust forecast or verdict recommendation.
+  limitation: string
   evidenceId: EvidenceId
   trust: Partial<Record<PersonaId, number>>
   // Authored flag (was inferred from Case 77's 'unresolved-composite' id inside
@@ -733,6 +830,16 @@ export interface DecisionDefinition {
   illicit: boolean
   methodTags: readonly MethodTag[]
   tone: GameEvent['tone']
+  // Optional paired legal effects shown together at filing and debrief. Case 81
+  // uses these to keep personhood and testimony use visibly independent.
+  legalChannels?: readonly LegalChannelDefinition[]
+}
+
+export interface LegalChannelDefinition {
+  id: string
+  label: string
+  status: string
+  tone: 'open' | 'closed' | 'held' | 'forced'
 }
 
 // A diegetic registry photograph a case may attach to its case-file surfaces
@@ -773,6 +880,9 @@ export interface WorldLabel {
 export interface CaseChrome {
   // Briefing scene coordinates (decorative, aria-hidden).
   briefingCoordinates: string
+  // Optional case-authored plate behind the tribunal chamber. Cases without one
+  // retain the shared chamber fallback in the presentation layer.
+  tribunalBackdropSrc?: string
   // Investigation world-view: the map's aria-label, its positioned annotations,
   // and the two-line caption beneath it.
   worldAriaLabel: string
@@ -785,6 +895,12 @@ export interface CaseChrome {
   tribunalHeadline: string
   tribunalIntro: string
   lockedDecisionHint: string
+  // A single live counterparty intervention in the hearing. It is deliberately
+  // not a generic response minigame: the player hears the objection, then files.
+  tribunalCounterparty?: {
+    speaker: string
+    line: string
+  }
 }
 
 // When a case cites a prior case's verdict at its tribunal. `caseId` names the
@@ -792,6 +908,12 @@ export interface CaseChrome {
 export interface PrecedentSource {
   caseId: string
   lines: Readonly<Record<DecisionId, string>>
+  // A compact prior-case fact may change whether the same verdict is binding,
+  // persuasive, or historically unclear without overloading `precedents`.
+  outcomeVariant?: {
+    factId: string
+    lines: Readonly<Record<string, Readonly<Record<DecisionId, string>>>>
+  }
 }
 
 // ── Cross-case precedent EFFECTS (a prior verdict changes playable field copy) ─
@@ -828,6 +950,9 @@ export interface PrecedentEffect {
 export interface DepositionChoiceDefinition {
   id: DepositionChoiceId
   label: string
+  // Beat-specific verb shown above the choice. The stable choice id remains the
+  // saved grammar; the authored tag says what that verb means in this moment.
+  tag?: string
   detail: string
   trust: Partial<Record<PersonaId, number>>
   methodTags: readonly MethodTag[]
@@ -857,7 +982,23 @@ export interface DepositionConsentDefinition {
     trust: Partial<Record<PersonaId, number>>
     methodTags: readonly MethodTag[]
   }
-  answers: Readonly<Record<FieldActionId, { consent: 'yes' | 'no'; line: string }>>
+  // Retained as an optional compatibility surface for other authored
+  // depositions. New interactions should resolve the exact requested use via
+  // DepositionDefinition.resolveUse instead of fixing consent to an entry route.
+  answers?: Readonly<Record<FieldActionId, { consent: 'yes' | 'no'; line: string }>>
+}
+
+export interface DepositionUseRequest {
+  actionId: FieldActionId
+  beats: readonly DepositionChoiceId[]
+  askedConsent: boolean
+}
+
+export interface DepositionUseResolution {
+  consent: DepositionConsent
+  testimonyUse: DepositionTestimonyUse
+  line: string
+  summary: string
 }
 
 // A whole deposition: the entry actions that open it, the statement beats (1..N),
@@ -868,6 +1009,11 @@ export interface DepositionDefinition {
   statementBeats: readonly DepositionBeatDefinition[]
   consent: DepositionConsentDefinition
   closing: Readonly<Record<FieldActionId, string>>
+  // One label for each statement beat, followed by the use request and close.
+  stageLabels: readonly string[]
+  // Authored legal boundary. The engine calls this pure resolver only after it
+  // has validated the entry action and every beat choice.
+  resolveUse: (request: DepositionUseRequest) => DepositionUseResolution
 }
 
 // ── Scene direction (2.5D diorama / flat map) ────────────────────────────────
@@ -1054,20 +1200,123 @@ export interface SceneWorldPortal {
   acoustics: SceneAcousticTreatment
 }
 
+export type SceneWorldKind = 'concourse' | 'deposition-annex'
+
+export type AuthoritySignal = 'none' | 'linked' | 'forged'
+
 // Presentation-only authored data for a bounded WebGL place. It is deliberately
 // small: simple geometry, explicit camera poses, and raster paths. No world field
 // is persisted and no renderer is allowed to dispatch game actions directly.
 export interface SceneWorldDefinition {
-  kind: 'concourse'
+  // The renderer uses one explicit authored variant rather than inferring a
+  // place from case ids, captions, or asset paths. Both variants keep the same
+  // deterministic portal/camera contract while receiving distinct architecture,
+  // materials, lighting, and central environmental storytelling.
+  kind: SceneWorldKind
   posterSrc: string
   concreteSrc: string
   terrazzoSrc: string
+  // Material and view plates for the authored civic-deco set dressing. These
+  // remain presentation-only raster inputs; they never enter persisted state.
+  bronzeSrc: string
+  featurePlateSrc: string
   room: { width: number; depth: number; height: number }
   homeCamera: SceneWorldCamera
   acoustics: SceneAcousticTreatment
   travelMs: number
   caption: { title: string; detail: string }
   portals: readonly SceneWorldPortal[]
+  // One factual, reactive cross-site signal. It names exact authored actions so
+  // the world can display a link or illicit back-trace without inferring meaning
+  // from generic method tags, trust, or colour.
+  authoritySignal?: {
+    linkedActionIds: readonly [FieldActionId, FieldActionId]
+    linkedSiteIds: readonly [SiteId, SiteId]
+    forgedActionId: FieldActionId
+    forgedSiteId: SiteId
+  }
+}
+
+// ── Unnumbered Reading Room (global, presentation-only marginalia) ──────────
+// Reader Key 04 is the room's only canonical input. Entering the room, choosing
+// a reading point, arranging its object, and leaving are view-local operations:
+// none has a GameAction, persisted field, evidence id, reward, or run-history
+// representation. These definitions hold geometry and copy together so WebGL
+// and semantic fallbacks expose the same optional experience.
+
+export interface UnnumberedReadingRoomInteraction {
+  id: string
+  label: string
+  response: string
+}
+
+export interface UnnumberedReadingPointDefinition {
+  id: string
+  placement: 'left' | 'center' | 'right'
+  // A nonordinal object mark. The room deliberately has no numbered route.
+  markerGlyph: string
+  position: SceneVector3
+  // Normalized fallback coordinate. The semantic control remains available
+  // when WebGL is loading, unavailable, or suppressed by accessibility settings.
+  posterAnchor: { x: number; y: number }
+  camera: SceneWorldCamera
+  acoustics: SceneAcousticTreatment
+  title: string
+  meta: string
+  inspection: string
+  archivistNote: string
+  machineMarking?: string
+  draftingPrompt?: string
+  interactions: readonly UnnumberedReadingRoomInteraction[]
+}
+
+export interface UnnumberedReadingRoomEntryAnchor {
+  id: string
+  worldKind: SceneWorldKind
+  position: SceneVector3
+  rotationY: number
+  posterAnchor: { x: number; y: number }
+  camera: SceneWorldCamera
+  label: string
+  accessibleLabel: string
+}
+
+export interface UnnumberedReadingRoomDefinition {
+  id: string
+  requiredSecretId: SecretId
+  room: { width: number; depth: number; height: number }
+  homeCamera: SceneWorldCamera
+  acoustics: SceneAcousticTreatment
+  travelMs: number
+  entryAnchors: readonly UnnumberedReadingRoomEntryAnchor[]
+  title: string
+  subtitle: string
+  entryAction: string
+  transitionIn: readonly [string, string]
+  archivistCard: string
+  hudObjective: string
+  accessibleIntroduction: string
+  completion: {
+    visual: string
+    accessible: string
+  }
+  exit: {
+    label: string
+    transition: string
+  }
+  navigation: {
+    readingPointOrder: 'player-chosen'
+    showProgressCounter: false
+    exitAvailability: 'always'
+  }
+  stateContract: {
+    pointState: 'view-local'
+    mutatesGameState: false
+    entersEvidence: false
+    grantsCaseReward: false
+    writesRunHistory: false
+  }
+  readingPoints: readonly UnnumberedReadingPointDefinition[]
 }
 
 // One civic-alarm tier of atmosphere, in ABSOLUTE authored values (no
@@ -1111,6 +1360,51 @@ export interface SceneDefinition {
   alarm?: readonly [SceneAlarmTier, SceneAlarmTier, SceneAlarmTier, SceneAlarmTier]
 }
 
+export interface TribunalChoiceDefinition {
+  id: string
+  legend: string
+  prompt: string
+  options: readonly {
+    id: string
+    label: string
+    description: string
+  }[]
+}
+
+export interface OutcomeFactDefinition {
+  id: string
+  label: string
+  values: readonly {
+    id: string
+    label: string
+  }[]
+}
+
+export interface TribunalSignal {
+  label: string
+  value: string
+  tone?: 'neutral' | 'positive' | 'warning'
+}
+
+export interface TribunalObjection {
+  speaker: string
+  line: string
+}
+
+// A subject may be present at the hearing without becoming another evidentiary
+// input. This is read-only authored presence: neither the engine nor tribunal
+// decisions may use it to mutate, unlock, or suppress a legal finding.
+export interface SubjectHearingPresence {
+  speaker: string
+  status: string
+  lines: readonly string[]
+}
+
+export interface DecisionCopyDefinition {
+  description: string
+  cost: string
+}
+
 // A complete, self-contained dossier the engine and components resolve through
 // GameState.caseId. Personas and the method vocabulary stay global (same cast,
 // same verbs across every case); everything case-specific lives here.
@@ -1120,23 +1414,75 @@ export interface CaseDefinition {
   label: string
   caseFile: CaseFile
   chrome: CaseChrome
+  // The number of distinct field sites that may enter this run's filed record.
+  // This is content-authored but enforced exclusively by engine selectors and
+  // reducer branches; historical saves may legitimately exceed it.
+  fieldSiteLimit: number
   approaches: readonly ApproachDefinition[]
   evidenceDefinitions: readonly EvidenceDefinition[]
   fieldActions: readonly FieldActionDefinition[]
   sites: readonly SiteDefinition[]
   fragments: readonly FragmentDefinition[]
+  // An anchor becomes known only through one of these explicitly sourced
+  // discoveries. This remains deliberately separate from fragmentEvidenceLinks:
+  // learning an anchor exists is not the same as corroborating what it says.
+  fragmentDiscoveries: readonly FragmentDiscoveryDefinition[]
   fragmentEvidenceLinks: Readonly<Record<FragmentId, readonly EvidenceId[]>>
   reconstructionDefinitions: readonly ReconstructionDefinition[]
   decisions: readonly DecisionDefinition[]
+  // Optional authored marginalia. These sit outside evidence, the event log,
+  // search, trust, alarms, outcomes, and tribunal access.
+  secrets?: readonly SecretDefinition[]
+  // Optional state-derived legal effects. The authored decision remains the
+  // baseline; cases use this pure resolver when a channel depends on whether a
+  // record actually exists (for example, testimony cannot be admitted when no
+  // deposition was filed).
+  getLegalChannels?: (
+    decisionId: DecisionId,
+    state: GameState,
+  ) => readonly LegalChannelDefinition[]
+  // Optional state-derived hearing copy. This keeps descriptions and costs in
+  // sync with legal channels when an authored fact changes what a ruling can do.
+  getDecisionCopy?: (
+    decisionId: DecisionId,
+    state: GameState,
+  ) => DecisionCopyDefinition | undefined
+  // An optional case-specific filing question answered once at the tribunal.
+  tribunalChoice?: TribunalChoiceDefinition
+  // The deliberately small campaign-state contract exported by a completed run.
+  outcomeFactDefinitions?: readonly OutcomeFactDefinition[]
+  getOutcomeFacts?: (
+    state: GameState,
+    decisionId: DecisionId,
+  ) => Readonly<Record<string, string>>
+  // Read-only, state-derived hearing material. It never mutates canonical state.
+  getTribunalSignals?: (state: GameState) => readonly TribunalSignal[]
+  getTribunalObjection?: (state: GameState) => TribunalObjection | null
+  // Optional subject presence immediately before tribunal findings. This is
+  // explicitly non-evidentiary and has no reducer action or unlock effect.
+  getSubjectHearingPresence?: (state: GameState) => SubjectHearingPresence | null
   // Which model two anchors resolve to. Pure, order-independent.
   getReconstructionForFragments: (fragmentIds: readonly FragmentId[]) => ReconstructionId
   // One authored line for every reconstruction × decision pairing.
   reconstructionDecisionTensions: Readonly<Record<ReconstructionId, Record<DecisionId, string>>>
+  // Optional state-derived tension copy for cases where a missing record changes
+  // what the same model/finding pairing can truthfully claim.
+  getReconstructionDecisionTension?: (
+    reconstructionId: ReconstructionId,
+    decisionId: DecisionId,
+    state: GameState,
+  ) => string
   // The Mirror's briefing aside for the prior run's decision (keyed by THIS
   // case's decision ids; the reader picks the map of the prior run's case).
   mirrorBriefingAsides: Readonly<Record<DecisionId, string>>
   // Debrief consequence lines, keyed by this case's decision ids.
   decisionConsequences: Readonly<Record<DecisionId, readonly string[]>>
+  // Optional state-derived debrief consequences when the same legal finding has
+  // materially different force depending on which record actually exists.
+  getDecisionConsequences?: (
+    decisionId: DecisionId,
+    state: GameState,
+  ) => readonly string[]
   // Debrief persona reflection, given the resolved run state.
   getPersonaReflection: (personaId: PersonaId, state: GameState) => string
   // Optional cross-case precedent citation shown at this case's tribunal.

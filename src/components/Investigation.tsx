@@ -1,8 +1,20 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { assembleBeats } from '../game/beats'
-import { getCaseContent, personaName, resolveFieldAction } from '../game/content'
-import { canEnterTribunal } from '../game/engine'
+import {
+  canEnterUnnumberedReadingRoom,
+  getCaseContent,
+  personaName,
+  resolveFieldAction,
+  unnumberedReadingRoom,
+} from '../game/content'
+import {
+  canDiscoverSecret,
+  canEnterTribunal,
+  canOpenReconstruction,
+  hasFieldSiteCapacity,
+  hasDiscoveredSecret,
+} from '../game/engine'
 import {
   acousticStepLabel,
   classificationStepLabel,
@@ -22,8 +34,10 @@ import {
 import { SiteCloseupStage } from '../scene/SiteCloseupStage'
 import { resolveCommitConsent, sceneStateFor, witnessesRefusalOnCommit } from '../scene/sceneState'
 import { AnnexWorldStage } from '../world/AnnexWorldStage'
+import { UnnumberedRoomStage } from '../world/UnnumberedRoomStage'
 import type {
   AcousticShadowPlateState,
+  AuthoritySignal,
   CustodyRailPlateState,
   DepositionChoiceId,
   FieldActionId,
@@ -31,19 +45,27 @@ import type {
   PersonaId,
   RoomPlateState,
   SceneAcousticTreatment,
+  SecretId,
   SiteId,
 } from '../game/types'
 import { AcousticShadowRoom } from './AcousticShadowRoom'
 import { CaseFileSummon } from './CaseFileDrawer'
 import { ChoiceButton } from './ChoiceButton'
+import {
+  CinematicHud,
+  type CinematicHudAction,
+  type CinematicHudDialogue,
+} from './CinematicHud'
 import { ClassificationRoom } from './ClassificationRoom'
 import { CustodyRailRoom } from './CustodyRailRoom'
 import { Deposition } from './Deposition'
+import { FourthMarginMarker } from './FourthMarginMarker'
 import { PersonaPortrait } from './PersonaPortrait'
 import { purposeCopy, showsFieldPurpose, showsSiteCost } from './purposeCopy'
 import { ReactionQuotes } from './ReactionQuotes'
 import { SceneDetailDrawer } from './SceneDetailDrawer'
 import { SceneZone } from './SceneZone'
+import type { RailTab } from './CaseRail'
 
 interface InvestigationProps {
   state: GameState
@@ -52,7 +74,11 @@ interface InvestigationProps {
   // enforce the mutual exclusivity with the location-detail drawer: exactly one
   // aria-modal dialog is ever over the plate.
   caseFileOpen: boolean
-  onCaseFileOpenChange: (open: boolean) => void
+  onCaseFileOpenChange: (open: boolean, initialTab?: RailTab) => void
+  // The location-detail drawer portals outside the app shell, so its open state
+  // is lifted to App with the other modal surfaces for a complete inert boundary.
+  detailDrawerOpen?: boolean
+  onDetailDrawerOpenChange?: (open: boolean) => void
   // Which deposition entry action, if any, has its transcript open. Lifted to App
   // so the ambient-audio scene state reads the same value (view-local otherwise).
   depositionEntry: FieldActionId | null
@@ -61,6 +87,7 @@ interface InvestigationProps {
   // handle. It never dispatches or writes canonical/persisted game state.
   onAcousticTreatmentChange: (treatment: SceneAcousticTreatment | null) => void
   onCommitAction: (actionId: FieldActionId) => void
+  onDiscoverSecret: (secretId: SecretId) => void
   onCommitDeposition: (
     actionId: FieldActionId,
     beats: DepositionChoiceId[],
@@ -80,6 +107,17 @@ function focusSiteCard(siteId: SiteId, reducedMotion: boolean) {
   card.focus({ preventScroll: true })
 }
 
+function focusSpatialGameplayControl(siteId: SiteId) {
+  const target =
+    document.querySelector<HTMLElement>('.room-console button:not([disabled])') ??
+    document.querySelector<HTMLElement>('.scene-zones-live .choice-row') ??
+    document.querySelector<HTMLElement>('.fourth-margin-marker') ??
+    document.querySelector<HTMLElement>('[data-hud-primary="true"]') ??
+    document.querySelector<HTMLElement>('.hud-prompt-actions button') ??
+    document.querySelector<HTMLElement>(`.annex-world-portal[data-site="${siteId}"]`)
+  target?.focus({ preventScroll: true })
+}
+
 // Whether a meaningful band of the stage already sits within the viewport. Used to
 // keep the witnessed-refusal beat's scroll a no-op guard: while a transcript is
 // open the tray docks below the stage, so the stage is already in view and a
@@ -93,7 +131,8 @@ function stageInView(el: HTMLElement | null): boolean {
 
 // The one in-voice line the witnessed-refusal beat announces (aria-live). Curly
 // punctuation, ≤ 90 chars. It names what just became permanent: the room holds it.
-const WITNESS_REFUSAL_LINE = 'The room dims. Ellis Marne’s “no” stays in it.'
+const WITNESS_REFUSAL_LINE =
+  'Ellis closes the packet. The raw recorder marks the requested use refused.'
 
 // How long the witnessed-refusal beat holds the stage in view before handing focus
 // to the filed card, so the refusal treatment has time to ramp. Reduced motion
@@ -172,16 +211,21 @@ export function Investigation({
   state,
   caseFileOpen,
   onCaseFileOpenChange,
+  detailDrawerOpen = false,
+  onDetailDrawerOpenChange = () => undefined,
   depositionEntry,
   onDepositionEntryChange,
   onAcousticTreatmentChange,
   onCommitAction,
+  onDiscoverSecret,
   onCommitDeposition,
   onOpenReconstruction,
   onEnterTribunal,
 }: InvestigationProps) {
   const content = getCaseContent(state.caseId)
   const {
+    caseFile,
+    approaches,
     sites,
     fieldActions,
     evidenceDefinitions,
@@ -206,6 +250,19 @@ export function Investigation({
       : { kind: 'map' },
   )
   const [previewActionId, setPreviewActionId] = useState<FieldActionId | null>(null)
+  // The scene method's final-review state is deliberately view-local. It lets
+  // the zone and the HUD describe one pending commit without adding a new engine
+  // transition or persisting a provisional decision.
+  const [armedSceneActionId, setArmedSceneActionId] = useState<FieldActionId | null>(null)
+  // Keep the actual method control that opened the HUD review. This is not a
+  // general focus stack: it exists only for the one controlled scene filing
+  // dismissal that otherwise loses its focused HUD button when that action
+  // unmounts.
+  const armedSceneMethodRef = useRef<{
+    actionId: FieldActionId
+    element: HTMLButtonElement
+  } | null>(null)
+  const sceneFocusRestoreRequestedRef = useRef(false)
   // The room's decorative plate presentation (view-local; reset when the site
   // changes). Drives the close-read plate's drawer/refusal/aperture/log stagecraft.
   const [roomPresentation, setRoomPresentation] = useState<RoomPlateState | null>(null)
@@ -221,8 +278,22 @@ export function Investigation({
   // are view-local: nothing here is dispatched, saved, or read by the engine, and
   // a reload mid-beat simply resumes at the already-filed record.
   const [sceneBeat, setSceneBeat] = useState<SceneBeatState | null>(null)
+  // Canonical discovery is reducer-owned; this only remembers which retained
+  // mark currently occupies the inline cinematic dialogue.
+  const [activeSecretId, setActiveSecretId] = useState<SecretId | null>(null)
+  // Reader Key 04 is canonical; the room it opens is intentionally not. Entry,
+  // point order, object handling, and held lamps remain presentation-local so
+  // this detour can add story without becoming evidence, a reward checklist, or
+  // run history.
+  const [unnumberedRoomOpen, setUnnumberedRoomOpen] = useState(false)
+  const [activeReadingPointId, setActiveReadingPointId] = useState<string | null>(null)
+  const [openedReadingPointIds, setOpenedReadingPointIds] = useState<string[]>([])
+  const [activeReadingInteraction, setActiveReadingInteraction] = useState<{
+    pointId: string
+    interactionId: string
+  } | null>(null)
+  const unnumberedEntryRef = useRef<HTMLButtonElement | null>(null)
   const sceneResultRef = useRef<HTMLButtonElement>(null)
-  const [detailDrawerOpen, setDetailDrawerOpen] = useState(false)
   // The bounded room's console lives in ONE stable React position and is portalled
   // into a host node this component owns. The host is then physically moved between
   // the inspector slot and the dock over the plate, so the ritual can change WHERE
@@ -246,6 +317,19 @@ export function Investigation({
   // action id is named here. Consumed by the world stage, the switcher chips, and
   // the return announcement.
   const resolvedOutcomes = resolveSiteOutcomes(sites, state.completedActions)
+  const authorityConfig = scene.world?.authoritySignal
+  const authoritySignal: AuthoritySignal = authorityConfig
+    ? state.completedActions.includes(authorityConfig.forgedActionId)
+      ? 'forged'
+      : authorityConfig.linkedActionIds.every((actionId) =>
+            state.completedActions.includes(actionId),
+          )
+        ? 'linked'
+        : 'none'
+    : 'none'
+  const unnumberedRoomUnlocked = Boolean(
+    scene.world && canEnterUnnumberedReadingRoom(state),
+  )
 
   // The live stage wrapper, so both the open-transcript reveal and the witnessed-
   // refusal beat can bring the reacting room into view behind / after the modal.
@@ -256,6 +340,10 @@ export function Investigation({
   // controls. Those sites bring the stage into view instead and hand focus to the
   // (still canonical, still always-mounted) site card without a second scroll.
   function revealSiteWorkspace(siteId: SiteId, instant: boolean, sceneFirst: boolean) {
+    if (scene.world) {
+      focusSpatialGameplayControl(siteId)
+      return
+    }
     if (!sceneFirst) {
       focusSiteCard(siteId, instant)
       return
@@ -271,6 +359,17 @@ export function Investigation({
     document.getElementById(`site-card-${siteId}`)?.focus({ preventScroll: true })
   }
   const siteInspectorRef = useRef<HTMLElement>(null)
+  const pendingSpatialFocusRef = useRef<SiteId | null>(null)
+
+  function focusFiledContext(siteId: SiteId = selectedSiteId) {
+    if (scene.world) {
+      focusSpatialGameplayControl(siteId)
+      return
+    }
+    siteInspectorRef.current?.scrollTo({ top: 0, behavior: 'auto' })
+    siteInspectorRef.current?.focus({ preventScroll: true })
+  }
+
   const holdTimerRef = useRef<number | null>(null)
   const transitionEpochRef = useRef(0)
   const selectedSiteRef = useRef(selectedSiteId)
@@ -280,6 +379,121 @@ export function Investigation({
   const [worldLine, setWorldLine] = useState('')
 
   const sceneMotionReduced = reducedMotion || osReducedMotion
+  const activeReadingPoint = unnumberedReadingRoom.readingPoints.find(
+    (point) => point.id === activeReadingPointId,
+  )
+  const activeReadingInteractionDefinition =
+    activeReadingPoint &&
+    activeReadingInteraction?.pointId === activeReadingPoint.id
+      ? activeReadingPoint.interactions.find(
+          (interaction) => interaction.id === activeReadingInteraction.interactionId,
+        )
+      : undefined
+
+  function enterUnnumberedRoom(sourceButton: HTMLButtonElement) {
+    if (!unnumberedRoomUnlocked || worldPresentation.kind !== 'concourse') return
+    unnumberedEntryRef.current = sourceButton
+    onCaseFileOpenChange(false)
+    onDetailDrawerOpenChange(false)
+    onDepositionEntryChange(null)
+    setPreviewActionId(null)
+    clearSceneFirstConfirmation(false)
+    setActiveSecretId(null)
+    setActiveReadingPointId(null)
+    setOpenedReadingPointIds([])
+    setActiveReadingInteraction(null)
+    setUnnumberedRoomOpen(true)
+    setWorldLine(unnumberedReadingRoom.transitionIn.join(' '))
+    window.requestAnimationFrame(() => {
+      document
+        .querySelector<HTMLButtonElement>('.unnumbered-room-point')
+        ?.focus({ preventScroll: true })
+    })
+  }
+
+  function exitUnnumberedRoom() {
+    if (!unnumberedRoomOpen) return
+    setUnnumberedRoomOpen(false)
+    setActiveReadingPointId(null)
+    setActiveReadingInteraction(null)
+    setWorldLine(unnumberedReadingRoom.exit.transition)
+    window.requestAnimationFrame(() => {
+      const restoredEntry =
+        document.querySelector<HTMLButtonElement>('.annex-world-secret-room') ??
+        unnumberedEntryRef.current
+      restoredEntry?.focus({ preventScroll: true })
+      unnumberedEntryRef.current = restoredEntry
+    })
+  }
+
+  function inspectReadingPoint(pointId: string) {
+    if (!unnumberedRoomOpen) return
+    const point = unnumberedReadingRoom.readingPoints.find(
+      (candidate) => candidate.id === pointId,
+    )
+    if (!point) return
+    setActiveReadingPointId(point.id)
+    setActiveReadingInteraction(null)
+    const alreadyOpened = openedReadingPointIds.includes(point.id)
+    const nextCount = alreadyOpened
+      ? openedReadingPointIds.length
+      : openedReadingPointIds.length + 1
+    const fullReading = [
+      `${point.title}.`,
+      point.inspection,
+      point.machineMarking ? `${point.machineMarking}.` : undefined,
+      point.draftingPrompt,
+      point.archivistNote,
+    ]
+      .filter(Boolean)
+      .join(' ')
+    setWorldLine(
+      nextCount === unnumberedReadingRoom.readingPoints.length
+        ? `${fullReading} ${unnumberedReadingRoom.completion.accessible}`
+        : fullReading,
+    )
+    if (!alreadyOpened) {
+      setOpenedReadingPointIds((current) =>
+        current.includes(point.id) ? current : [...current, point.id],
+      )
+    }
+  }
+
+  function performReadingInteraction(pointId: string, interactionId: string) {
+    const point = unnumberedReadingRoom.readingPoints.find(
+      (candidate) => candidate.id === pointId,
+    )
+    const interaction = point?.interactions.find(
+      (candidate) => candidate.id === interactionId,
+    )
+    if (!point || !interaction || !unnumberedRoomOpen) return
+    setActiveReadingPointId(point.id)
+    setActiveReadingInteraction({ pointId, interactionId })
+    setWorldLine(
+      `${point.title}. ${interaction.response} ${point.archivistNote}`,
+    )
+  }
+
+  // The optional level is a route, not a modal, but Escape still provides the
+  // expected game-world way back. A summoned document owns Escape while open.
+  useEffect(() => {
+    if (
+      !unnumberedRoomOpen ||
+      caseFileOpen ||
+      detailDrawerOpen ||
+      depositionEntry ||
+      sceneBeat
+    ) {
+      return
+    }
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key !== 'Escape' || event.defaultPrevented) return
+      event.preventDefault()
+      exitUnnumberedRoom()
+    }
+    window.addEventListener('keydown', handleEscape)
+    return () => window.removeEventListener('keydown', handleEscape)
+  })
 
   // Keep the operating-system preference live. It participates in the view-only
   // transition gate exactly like the in-game preference, including mid-travel.
@@ -477,13 +691,13 @@ export function Investigation({
       })
     }
     if (reducedMotion) {
-      focusSiteCard(siteId, true)
+      focusFiledContext(siteId)
       return
     }
     if (holdTimerRef.current !== null) window.clearTimeout(holdTimerRef.current)
     holdTimerRef.current = window.setTimeout(() => {
       holdTimerRef.current = null
-      focusSiteCard(siteId, false)
+      focusFiledContext(siteId)
     }, WITNESS_HOLD_MS)
   }
 
@@ -496,11 +710,10 @@ export function Investigation({
     onCommitDeposition(actionId, beats, askedConsent)
     // Decide the beat from the committed consent (shared vocabulary), not by
     // observing the refusal state after it lands.
-    const consent = resolveCommitConsent(deposition, actionId, askedConsent)
+    const consent = resolveCommitConsent(deposition, actionId, beats, askedConsent)
     if (!witnessesRefusalOnCommit(consent)) {
       window.requestAnimationFrame(() => {
-        siteInspectorRef.current?.scrollTo({ top: 0, behavior: 'auto' })
-        siteInspectorRef.current?.focus({ preventScroll: true })
+        focusFiledContext()
       })
       return
     }
@@ -514,9 +727,16 @@ export function Investigation({
     // The confirmed choice unmounts when the filed result replaces it. Keep the
     // keyboard route in context and reveal the consequence from its first line.
     window.requestAnimationFrame(() => {
-      siteInspectorRef.current?.scrollTo({ top: 0, behavior: 'auto' })
-      siteInspectorRef.current?.focus({ preventScroll: true })
+      focusFiledContext()
     })
+  }
+
+  function inspectFourthMargin() {
+    if (!selectedSiteSecret) return
+    setActiveSecretId(selectedSiteSecret.id)
+    if (!selectedSiteSecretDiscovered) {
+      onDiscoverSecret(selectedSiteSecret.id)
+    }
   }
 
   // The scene-first commit. The dispatch fires FIRST and unconditionally; the
@@ -524,6 +744,7 @@ export function Investigation({
   // ever to fail to mount, the event log, evidence, and trust are already written
   // exactly as the inspector's method list writes them.
   function handleSceneFirstCommit(actionId: FieldActionId) {
+    clearSceneFirstConfirmation(false)
     setPreviewActionId(null)
     onCommitAction(actionId)
     setSceneBeat({ actionId, phase: 'settling' })
@@ -534,8 +755,7 @@ export function Investigation({
   function dismissSceneBeat() {
     setSceneBeat(null)
     window.requestAnimationFrame(() => {
-      siteInspectorRef.current?.scrollTo({ top: 0, behavior: 'auto' })
-      siteInspectorRef.current?.focus({ preventScroll: true })
+      focusFiledContext()
     })
   }
 
@@ -547,12 +767,12 @@ export function Investigation({
   // document.querySelectorAll('[aria-modal="true"]').length === 1.
   function openDetailDrawer() {
     onCaseFileOpenChange(false)
-    setDetailDrawerOpen(true)
+    onDetailDrawerOpenChange(true)
   }
 
-  function openCaseFile() {
-    setDetailDrawerOpen(false)
-    onCaseFileOpenChange(true)
+  function openCaseFile(initialTab: RailTab = 'case') {
+    onDetailDrawerOpenChange(false)
+    onCaseFileOpenChange(true, initialTab)
   }
 
   function handleAbandonDeposition() {
@@ -560,8 +780,7 @@ export function Investigation({
     // The portalled dialog unmounts immediately. Return keyboard users to the
     // location workspace instead of letting focus fall through to <body>.
     window.requestAnimationFrame(() => {
-      siteInspectorRef.current?.scrollTo({ top: 0, behavior: 'auto' })
-      siteInspectorRef.current?.focus({ preventScroll: true })
+      focusFiledContext()
     })
   }
   // The scene state is a pure read of GameState + the open-deposition view: the
@@ -576,7 +795,7 @@ export function Investigation({
   // identity). Kept as the single source of truth for the reported percentage.
   const captionMask = scene.weather.kind === 'rain' ? scene.weather.intensity.neutral ?? 0 : null
   const tribunalReady = canEnterTribunal(state)
-  const sitesNeeded = Math.max(0, 2 - state.completedSites.length)
+  const sitesNeeded = Math.max(0, content.fieldSiteLimit - state.completedSites.length)
   const gateRequirements = [
     sitesNeeded > 0
       ? `Complete ${sitesNeeded} more field site${sitesNeeded === 1 ? '' : 's'}.`
@@ -585,6 +804,20 @@ export function Investigation({
   ].filter((requirement): requirement is string => requirement !== null)
   const gateRequirement = gateRequirements.join(' ')
   const selectedSite = sites.find((site) => site.id === selectedSiteId) ?? sites[0]!
+  // The approach may point the player toward one authored threshold before the
+  // first filing, but it is never selection state. In particular, this does not
+  // initialize selectedSiteId or feed the camera's selectedSiteId input.
+  const openingApproach = state.primaryApproach
+    ? approaches.find((approach) => approach.id === state.primaryApproach)
+    : undefined
+  const recommendedSite =
+    state.completedSites.length === 0 && openingApproach
+      ? sites.find(
+          (site) =>
+            site.id === openingApproach.suggestedSiteId &&
+            !state.completedSites.includes(site.id),
+        )
+      : undefined
   const presentationForRender: WorldPresentation =
     sceneMotionReduced &&
     (worldPresentation.kind === 'travel' || worldPresentation.kind === 'arriving')
@@ -594,14 +827,16 @@ export function Investigation({
           origin: worldPresentation.origin,
         }
       : worldPresentation
-  const acousticTreatment = scene.world
-    ? presentationForRender.kind === 'concourse'
-      ? scene.world.acoustics
-      : presentationForRender.kind === 'map'
-        ? null
-        : (scene.world.portals.find((portal) => portal.siteId === presentationForRender.siteId)
-            ?.acoustics ?? null)
-    : null
+  const acousticTreatment = unnumberedRoomOpen
+    ? activeReadingPoint?.acoustics ?? unnumberedReadingRoom.acoustics
+    : scene.world
+      ? presentationForRender.kind === 'concourse'
+        ? scene.world.acoustics
+        : presentationForRender.kind === 'map'
+          ? null
+          : (scene.world.portals.find((portal) => portal.siteId === presentationForRender.siteId)
+              ?.acoustics ?? null)
+      : null
   // While the acoustic-shadow room is active (its site selected, unfiled, and
   // reporting a phase), its authored per-phase treatment replaces the portal's
   // static one on the SAME callback. The room is view-local, so leaving the site
@@ -612,7 +847,9 @@ export function Investigation({
     !state.completedSites.includes(selectedSite.id)
       ? selectedSite.acousticShadow.acoustics[acousticPresentation.phase]
       : null
-  const effectiveAcoustic = acousticRoomTreatment ?? acousticTreatment
+  const effectiveAcoustic = unnumberedRoomOpen
+    ? acousticTreatment
+    : acousticRoomTreatment ?? acousticTreatment
 
   // Keep the audio graph synchronized from authored view data only. Returning to
   // the hub restores its treatment; leaving Investigation restores the dry bed.
@@ -630,6 +867,7 @@ export function Investigation({
     presentationForRender.kind !== 'concourse' &&
     presentationForRender.siteId === selectedSite.id
   const shownCloseup =
+    !unnumberedRoomOpen &&
     presentationMatchesSelection &&
     (presentationForRender.kind === 'arriving' || presentationForRender.kind === 'closeup')
       ? selectedSite.closeup
@@ -650,9 +888,24 @@ export function Investigation({
   const selectedCompletedAction = selectedCompletedBase
     ? resolveFieldAction(content, selectedCompletedBase.id, state.precedents)
     : undefined
+  const fieldFilingClosed = !selectedCompletedAction && !hasFieldSiteCapacity(state)
+  const filedSiteCount = Math.min(state.completedSites.length, content.fieldSiteLimit)
+  const omittedSiteCount = Math.max(0, sites.length - state.completedSites.length)
+  const filingBudgetNote = `${omittedSiteCount} site${omittedSiteCount === 1 ? '' : 's'} omitted from the filed record. The location remains available to inspect.`
   const selectedActions = selectedSite.actionIds
     .map((actionId) => resolveFieldAction(content, actionId, state.precedents))
     .filter((action): action is NonNullable<typeof action> => Boolean(action))
+  const selectedSiteSecret = content.secrets?.find(
+    (secret) => secret.siteId === selectedSite.id,
+  )
+  const selectedSiteSecretDiscovered = selectedSiteSecret
+    ? hasDiscoveredSecret(state, selectedSiteSecret.id)
+    : false
+  const selectedSiteSecretAvailable = selectedSiteSecret
+    ? canDiscoverSecret(state, selectedSiteSecret.id)
+    : false
+  const activeSecret =
+    activeSecretId === selectedSiteSecret?.id ? selectedSiteSecret : undefined
   // Which resolved acoustic-shadow crossing the settled plate should render, once a
   // maintenance method is filed. The credential-forging method takes the override;
   // the shadow walk does not — so the flag distinguishes the two without an id.
@@ -726,7 +979,54 @@ export function Investigation({
   // The live buttons only mount on the SETTLED plate, so nothing is clickable over
   // an opening aperture and the two controls never overlap during the entry.
   const sceneFirstZonesLive =
-    sceneFirstPlate && presentationForRender.kind === 'closeup' && !selectedCompletedAction
+    sceneFirstPlate &&
+    presentationForRender.kind === 'closeup' &&
+    !selectedCompletedAction &&
+    !fieldFilingClosed
+  const armedSceneAction =
+    armedSceneActionId && sceneFirstZonesLive
+      ? selectedActions.find((action) => action.id === armedSceneActionId)
+      : undefined
+  const sceneFirstConfirmationActive = Boolean(armedSceneAction)
+
+  function armSceneFirstMethod(actionId: FieldActionId) {
+    const active = document.activeElement
+    const focusedSceneMethod =
+      active instanceof HTMLButtonElement && active.closest('.scene-zones-live') ? active : null
+    const zoneIndex = shownCloseup?.zones?.findIndex((zone) => zone.actionId === actionId) ?? -1
+    const fallbackSceneMethod =
+      zoneIndex >= 0
+        ? document.querySelectorAll<HTMLButtonElement>('.scene-zones-live .choice-row')[zoneIndex] ??
+          null
+        : null
+    const element = focusedSceneMethod ?? fallbackSceneMethod
+
+    armedSceneMethodRef.current = element ? { actionId, element } : null
+    sceneFocusRestoreRequestedRef.current = false
+    setArmedSceneActionId(actionId)
+  }
+
+  function clearSceneFirstConfirmation(restoreFocus: boolean) {
+    const armedMethod = armedSceneMethodRef.current
+    sceneFocusRestoreRequestedRef.current = Boolean(
+      restoreFocus && armedSceneActionId && armedMethod?.actionId === armedSceneActionId,
+    )
+    if (!sceneFocusRestoreRequestedRef.current) armedSceneMethodRef.current = null
+    setArmedSceneActionId(null)
+  }
+
+  // HUD actions unmount in the same React commit that clears the review. A layout
+  // effect runs after that DOM update, so Cancel and Escape can return to the
+  // original scene method rather than briefly falling through to <body>.
+  useLayoutEffect(() => {
+    if (armedSceneActionId !== null || !sceneFocusRestoreRequestedRef.current) return
+    sceneFocusRestoreRequestedRef.current = false
+    const armedMethod = armedSceneMethodRef.current
+    armedSceneMethodRef.current = null
+    if (!armedMethod?.element.isConnected) return
+    armedMethod.element.focus({ preventScroll: true })
+  }, [armedSceneActionId])
+
   // The room's console docks OVER the plate while the settled close read is on
   // screen and the ritual is still running. The moment the methods unlock the
   // console yields the plate to the two zones and returns to the inspector, and
@@ -735,9 +1035,22 @@ export function Investigation({
   const roomConsoleDocked =
     roomSite &&
     !selectedCompletedAction &&
+    !fieldFilingClosed &&
     !roomMethodsRevealed &&
     presentationForRender.kind === 'closeup' &&
     presentationMatchesSelection
+  const fourthMarginMarkerLive = Boolean(
+    selectedSiteSecret &&
+      shownCloseup &&
+      selectedCompletedAction &&
+      presentationForRender.kind === 'closeup' &&
+      !sceneBeat &&
+      !roomConsoleDocked &&
+      !depositionEntry &&
+      !caseFileOpen &&
+      !detailDrawerOpen &&
+      (selectedSiteSecretDiscovered || selectedSiteSecretAvailable),
+  )
   // ── THE INSPECTOR COLLAPSE (E1b · audit P1-D) ──────────────────────────────
   // The audit measured the inspector at 434×546 carrying two sentences and ~450px
   // of nothing while the plate was squeezed to a letterbox strip. This is the
@@ -764,6 +1077,7 @@ export function Investigation({
   const inspectorSpine =
     sideBySide &&
     !selectedCompletedAction &&
+    !fieldFilingClosed &&
     (roomConsoleDocked || (sceneFirstPlate && !roomSite))
   // ONE summon to the full text, never two: the plate's chrome carries it
   // wherever the plate is already hosting the methods, and the spine carries it
@@ -807,6 +1121,7 @@ export function Investigation({
   const worldViewClass = [
     'world-view',
     scene.world ? 'world-view--spatial' : '',
+    unnumberedRoomOpen ? 'world-view--unnumbered-room' : '',
     presentationForRender.kind === 'concourse' ? 'world-view--concourse' : '',
     shownCloseup ? 'world-view--closeup' : '',
     presentationForRender.kind === 'travel' ? 'world-view--traveling' : '',
@@ -816,6 +1131,7 @@ export function Investigation({
     // short plate the two otherwise print over each other.
     sceneBeat ? 'world-view--scene-beat' : '',
     sceneQuietCaption ? 'world-view--scene-quiet' : '',
+    sceneFirstConfirmationActive ? 'world-view--scene-confirmation' : '',
     // The docked room console needs a taller plate box on the narrow layout.
     roomConsoleDocked ? 'world-view--room-console' : '',
   ]
@@ -831,7 +1147,7 @@ export function Investigation({
     ([, delta]) => delta !== 0,
   )
 
-  const methodsVisible = !selectedCompletedAction && roomMethodsRevealed
+  const methodsVisible = !selectedCompletedAction && (roomMethodsRevealed || fieldFilingClosed)
   // The in-voice name of the room's current step while mid-ritual, so the footer
   // CTA can point at what the room is actually asking for (never "Choose a method"
   // while the ritual defers it). Null on a plain or terminal-phase site.
@@ -864,6 +1180,36 @@ export function Investigation({
     carried?.focus({ preventScroll: true })
   })
 
+  // A portal activated by keyboard remains the focus owner while the camera
+  // travels, then hands focus to the first real control in the settled room.
+  // The handoff is view-local and never participates in case progression.
+  useLayoutEffect(() => {
+    if (
+      !scene.world ||
+      presentationForRender.kind !== 'closeup' ||
+      pendingSpatialFocusRef.current !== selectedSite.id ||
+      caseFileOpen ||
+      detailDrawerOpen ||
+      Boolean(depositionEntry) ||
+      Boolean(sceneBeat)
+    ) {
+      return
+    }
+    pendingSpatialFocusRef.current = null
+    const frame = window.requestAnimationFrame(() => {
+      focusSpatialGameplayControl(selectedSite.id)
+    })
+    return () => window.cancelAnimationFrame(frame)
+  }, [
+    caseFileOpen,
+    depositionEntry,
+    detailDrawerOpen,
+    presentationForRender.kind,
+    scene.world,
+    sceneBeat,
+    selectedSite.id,
+  ])
+
   // When the ritual unlocks WHILE the console is docked, the terminal choice moves
   // from the console to the plate zones in the same commit. The room's own focus
   // chain cannot reach those zones (they live outside it), so the workspace hands
@@ -881,7 +1227,7 @@ export function Investigation({
   const cta = fieldCta({
     tribunalReady,
     reconstructionFiled: Boolean(reconstruction),
-    completedSitesCount: state.completedSites.length,
+    canOpenReconstruction: canOpenReconstruction(state),
     methodsVisible,
     ritualStepLabel,
   })
@@ -917,6 +1263,10 @@ export function Investigation({
             })
             return
           }
+          if (scene.world) {
+            focusSpatialGameplayControl(selectedSite.id)
+            return
+          }
           siteInspectorRef.current?.scrollIntoView({
             behavior: reducedMotion ? 'auto' : 'smooth',
             block: 'center',
@@ -947,10 +1297,12 @@ export function Investigation({
   }
 
   function selectSite(siteId: SiteId, moveFocus = false, sourceElement?: HTMLElement) {
+    clearSceneFirstConfirmation(false)
     setPreviewActionId(null)
+    setActiveSecretId(null)
     // The staged reveal and its drawer belong to the location being left.
     setSceneBeat(null)
-    setDetailDrawerOpen(false)
+    onDetailDrawerOpenChange(false)
     // The room component remains mounted while the selected threshold swaps
     // between concourse and closeup. Preserve its plate state on that same-site
     // transition; only an actual location switch remounts/reset the view-local room.
@@ -1002,6 +1354,10 @@ export function Investigation({
       setWorldPresentation({ kind: 'travel', siteId, epoch, origin })
     }
     if (!moveFocus) return
+    if (scene.world) {
+      pendingSpatialFocusRef.current = siteId
+      return
+    }
 
     // The workspace updates immediately while the stage travels. OS-only reduced
     // motion uses the same instant scroll behavior as the in-game preference.
@@ -1023,9 +1379,11 @@ export function Investigation({
   function returnToConcourse() {
     if (!scene.world) return
     transitionEpochRef.current += 1
+    clearSceneFirstConfirmation(false)
     setPreviewActionId(null)
+    setActiveSecretId(null)
     setSceneBeat(null)
-    setDetailDrawerOpen(false)
+    onDetailDrawerOpenChange(false)
     setWorldPresentation({ kind: 'concourse' })
     // When the site the player is leaving carries a resolved room outcome, speak
     // its authored line once so the concourse alteration is perceivable non-visually.
@@ -1048,15 +1406,315 @@ export function Investigation({
       }, RETURN_EMPHASIS_MS)
     }
     window.requestAnimationFrame(() => {
-      document.getElementById(`site-switch-${selectedSiteId}`)?.focus({ preventScroll: true })
+      const returnTarget = scene.world
+        ? document.querySelector<HTMLElement>(
+            `.annex-world-portal[data-site="${selectedSiteId}"]`,
+          )
+        : document.getElementById(`site-switch-${selectedSiteId}`)
+      returnTarget?.focus({ preventScroll: true })
     })
   }
+
+  const hudEvidenceCount = evidenceDefinitions.filter((item) =>
+    state.evidence.includes(item.id),
+  ).length
+  // Each filed site admits one mutually-exclusive field exhibit. The lattice
+  // contributes at most one reconstruction exhibit, regardless of how many
+  // authored alternatives it offers. This is a reachable capacity, unlike the
+  // full definition count (which includes mutually-exclusive outcomes).
+  const hudEvidenceCapacity =
+    sites.length + (reconstructionDefinitions.length > 0 ? 1 : 0)
+  const hudTransitioning =
+    presentationForRender.kind === 'travel' || presentationForRender.kind === 'arriving'
+  const worldHubName =
+    scene.world?.kind === 'deposition-annex' ? 'deposition annex' : 'concourse'
+  const returnToWorldLabel = `Return to ${worldHubName}`
+  const freshConcourseRecommendation =
+    presentationForRender.kind === 'concourse' && openingApproach && recommendedSite
+      ? { approach: openingApproach, site: recommendedSite }
+      : undefined
+
+  let hudObjective = `Select a threshold in the ${worldHubName} and enter one field location.`
+  if (sceneFirstConfirmationActive && armedSceneAction) {
+    hudObjective = `Review ${armedSceneAction.title}. Filing this method is final for this run.`
+  } else if (unnumberedRoomOpen) {
+    hudObjective = unnumberedReadingRoom.hudObjective
+  } else if (activeSecret) {
+    hudObjective = 'Read the irregular mark. It will be held beside the record, not entered as evidence.'
+  } else if (sceneBeat) {
+    hudObjective = 'Hold the record while the consequence settles.'
+  } else if (hudTransitioning) {
+    hudObjective = `Entering ${selectedSite.name}.`
+  } else if (shownCloseup && selectedCompletedAction) {
+    hudObjective = cta?.label ?? `Review the filed result, then ${returnToWorldLabel.toLowerCase()}.`
+  } else if (fieldFilingClosed) {
+    hudObjective = filingBudgetNote
+  } else if (shownCloseup && ritualStepLabel) {
+    hudObjective = ritualStepLabel
+  } else if (shownCloseup && methodsVisible) {
+    hudObjective = SCENE_FIRST_METHOD_PROMPT
+  } else if (
+    presentationForRender.kind === 'concourse' &&
+    cta &&
+    cta.kind !== 'ritual-step'
+  ) {
+    hudObjective = cta.label
+  } else if (freshConcourseRecommendation) {
+    hudObjective = `Suggested: ${freshConcourseRecommendation.site.name}. You may choose any route.`
+  }
+
+  const hudPreviewAction = previewActionId
+    ? selectedActions.find((action) => action.id === previewActionId)
+    : undefined
+  const hudReaction = selectedCompletedAction?.reactions?.[0]
+  let hudDialogue: CinematicHudDialogue | undefined
+  if (!sceneBeat && !roomConsoleDocked && !hudTransitioning) {
+    if (sceneFirstConfirmationActive && armedSceneAction) {
+      hudDialogue = {
+        kicker: 'Final filing review',
+        speaker: armedSceneAction.title,
+        // The method description remains on its scene control. This HUD line
+        // deliberately carries the authored consequence instead, so the review
+        // adds the cost of filing rather than repeating the choice.
+        line: armedSceneAction.consequence,
+      }
+    } else if (unnumberedRoomOpen && activeReadingPoint) {
+      const objectLine = activeReadingInteractionDefinition
+        ? `${activeReadingInteractionDefinition.response} ${activeReadingPoint.archivistNote}`
+        : [
+            activeReadingPoint.inspection,
+            activeReadingPoint.machineMarking,
+            activeReadingPoint.draftingPrompt,
+            activeReadingPoint.archivistNote,
+          ]
+            .filter(Boolean)
+            .join(' ')
+      hudDialogue = {
+        kicker: `${activeReadingPoint.meta} · not evidence`,
+        speaker: activeReadingPoint.title,
+        line: objectLine,
+        variant: 'secret',
+      }
+    } else if (unnumberedRoomOpen) {
+      hudDialogue = {
+        kicker: unnumberedReadingRoom.subtitle,
+        speaker: 'The Small Archivist',
+        personaId: 'archivist',
+        line: unnumberedReadingRoom.archivistCard,
+      }
+    } else if (activeSecret) {
+      hudDialogue = {
+        kicker: 'The Fourth Margin · not evidence',
+        speaker: activeSecret.title,
+        line: activeSecret.body,
+        variant: 'secret',
+      }
+    } else if (!shownCloseup && authoritySignal === 'forged') {
+      hudDialogue = {
+        kicker: 'Authority trace',
+        speaker: 'Dormant credential',
+        line: 'The forged authority is live. Its back-trace now follows the certification route.',
+      }
+    } else if (!shownCloseup && authoritySignal === 'linked') {
+      hudDialogue = {
+        kicker: 'Authority trace',
+        speaker: 'Registry ↔ maintenance',
+        line: 'Registry and maintenance signals now converge on one authority family.',
+      }
+    } else if (hudPreviewAction) {
+      hudDialogue = {
+        kicker: 'Method preview',
+        speaker: hudPreviewAction.methodLabel,
+        line: hudPreviewAction.description,
+      }
+    } else if (hudReaction) {
+      hudDialogue = {
+        kicker: 'Field channel',
+        speaker: personaName(hudReaction.persona),
+        personaId: hudReaction.persona,
+        line: hudReaction.line,
+      }
+    } else if (fieldFilingClosed) {
+      hudDialogue = {
+        kicker: 'Filed-record limit',
+        speaker: `${selectedSite.index} · ${selectedSite.name}`,
+        line: filingBudgetNote,
+      }
+    } else if (shownCloseup) {
+      hudDialogue = {
+        kicker: 'Location record',
+        speaker: `${selectedSite.index} · ${selectedSite.name}`,
+        line: selectedSite.description,
+      }
+    } else {
+      hudDialogue = {
+        kicker: 'Civic mandate',
+        speaker: 'The Annex',
+        line: caseFile.mandate,
+        // THE FILING BUDGET, STATED BEFORE IT CAN BE VIOLATED. The same rule is
+        // printed in the `!scene.world` command bar below, which the cinematic
+        // scene-first flow never renders — so a scene-first player used to meet
+        // the 2-of-4 limit only by hitting it at site three (audit F3). Stated
+        // here in the Authority's register, on the plate that already speaks for
+        // the institution, and gated on the same `completedSites.length === 0`
+        // the legacy copy uses, so it self-retires after the first filing.
+        //
+        // The plate is an absolutely-positioned HUD overlay, not a page row: it
+        // adds no document height, which is what the legacy copy's own comment
+        // warns about (as a command-bar row that sentence pushed the 1280x800
+        // concourse to scrollHeight 823 and failed `1280x800 · the collapsed
+        // page fits without a scrollbar` in evidence-hud-collapse.mjs). Measured
+        // after this change: scrollHeight 800 against an 800px viewport.
+        note:
+          state.completedSites.length === 0
+            ? 'Filing budget: this tribunal hears two sites. The other two are yours to inspect and leave off the record.'
+            : undefined,
+        kind: 'civic-mandate',
+      }
+    }
+  }
+
+  const hudActions: CinematicHudAction[] = []
+  if (!sceneBeat && !hudTransitioning) {
+    if (sceneFirstConfirmationActive && armedSceneAction) {
+      hudActions.push(
+        {
+          id: 'scene-file',
+          label: `File ${armedSceneAction.title}`,
+          tone: 'primary',
+        },
+        {
+          id: 'scene-cancel',
+          label: 'Cancel',
+          tone: 'quiet',
+        },
+      )
+    } else if (unnumberedRoomOpen) {
+      if (activeReadingPoint) {
+        activeReadingPoint.interactions.forEach((interaction) => {
+          hudActions.push({
+            id: `reader:${activeReadingPoint.id}:${interaction.id}`,
+            label: interaction.label,
+            tone: 'quiet',
+          })
+        })
+      }
+      hudActions.push({
+        id: 'return',
+        label: unnumberedReadingRoom.exit.label,
+        tone: 'quiet',
+      })
+    } else if (shownCloseup) {
+      if (roomConsoleDocked) {
+        // The console is already this location's primary interaction surface.
+        // Keep one explicit escape route without laying a second action stack
+        // over the console itself.
+        hudActions.push({
+          id: 'return',
+          label: returnToWorldLabel,
+          tone: 'quiet',
+        })
+      } else {
+        if (cta && (selectedCompletedAction || cta.kind === 'ritual-step')) {
+          hudActions.push({
+            id: 'progress',
+            label: cta.label,
+            tone: 'primary',
+          })
+        }
+        hudActions.push(
+          {
+            id: 'detail',
+            label: 'Location detail',
+            tone: 'quiet',
+          },
+          {
+            id: 'return',
+            label: returnToWorldLabel,
+            tone: 'quiet',
+          },
+        )
+      }
+    } else if (cta && cta.kind !== 'ritual-step') {
+      hudActions.push({
+        id: 'progress',
+        label: cta.label,
+        tone: 'primary',
+      })
+    } else if (freshConcourseRecommendation) {
+      hudActions.push({
+        id: 'recommended-site',
+        label: `Enter ${freshConcourseRecommendation.site.name}`,
+        tone: 'primary',
+      })
+    }
+  }
+
+  function runHudAction(actionId: CinematicHudAction['id']) {
+    if (actionId.startsWith('reader:')) {
+      const [, pointId, interactionId] = actionId.split(':')
+      if (pointId && interactionId) performReadingInteraction(pointId, interactionId)
+      return
+    }
+    switch (actionId) {
+      case 'recommended-site':
+        if (freshConcourseRecommendation) {
+          selectSite(freshConcourseRecommendation.site.id, true)
+        }
+        return
+      case 'scene-file':
+        if (armedSceneAction) handleSceneFirstCommit(armedSceneAction.id)
+        return
+      case 'scene-cancel':
+        clearSceneFirstConfirmation(true)
+        return
+      case 'progress':
+        if (cta) runCta(cta.kind)
+        return
+      case 'detail':
+        openDetailDrawer()
+        return
+      case 'return':
+        if (unnumberedRoomOpen) exitUnnumberedRoom()
+        else returnToConcourse()
+        return
+    }
+  }
+
+  const hudLocationLabel = unnumberedRoomOpen
+    ? `Ø04 · ${unnumberedReadingRoom.title}`
+    : shownCloseup
+      ? `${selectedSite.index} · ${selectedSite.name}`
+      : hudTransitioning
+        ? `Transit · ${selectedSite.name}`
+        : scene.world?.caption.title ?? chrome.worldCaption[0]
+  const hudInteractionHint = sceneFirstConfirmationActive
+    ? 'This method is final for this run. File it or cancel.'
+    : sceneBeat
+      ? 'Dialogue in progress'
+    : hudTransitioning
+      ? 'Crossing the threshold'
+      : unnumberedRoomOpen && activeReadingPoint
+        ? 'Handle the object, choose another point, or leave'
+        : unnumberedRoomOpen
+          ? 'Choose any reading point · no prescribed order'
+      : activeSecret
+        ? 'Irregular mark retained in Case File · Case'
+        : fieldFilingClosed
+          ? 'Filing budget reached · inspect this location or continue to the memory lattice'
+        : shownCloseup && roomConsoleDocked
+          ? ritualStepLabel ?? 'Work the room console'
+          : shownCloseup && methodsVisible
+            ? 'Choose one marked method'
+            : shownCloseup
+              ? 'Read the location'
+              : 'Select a threshold in the world'
 
   // ONE React position for whichever bounded room this location authors. Rendered
   // through a portal into a host node the workspace owns, so docking the console
   // over the plate is a DOM move rather than a remount. Keyed by site: switching
   // location still resets the view-local ritual exactly as before.
-  const roomConsoleNode = selectedCompletedAction ? null : selectedSite.room ? (
+  const roomConsoleNode = selectedCompletedAction || fieldFilingClosed ? null : selectedSite.room ? (
     <ClassificationRoom
       key={selectedSite.id}
       room={selectedSite.room}
@@ -1089,7 +1747,11 @@ export function Investigation({
   ) : null
 
   return (
-    <article className="phase-page investigation-page">
+    <article
+      className={`phase-page investigation-page ${
+        scene.world ? 'investigation-page--game-hud' : ''
+      }`}
+    >
       {roomConsoleNode && roomConsoleHost
         ? createPortal(roomConsoleNode, roomConsoleHost)
         : roomConsoleNode}
@@ -1103,14 +1765,15 @@ export function Investigation({
           The page's own label copy is gone from view — the room says it better —
           but the <h1> survives as sr-only so heading order and the id other
           surfaces reference are untouched. */}
-      <header className="field-commandbar">
+      {!scene.world && (
+        <header className="field-commandbar">
         <h1 className="sr-only" id="field-heading">
           Investigate the district
         </h1>
         <div className="field-objectives" aria-label="Tribunal requirements">
-          <span data-complete={state.completedSites.length >= 2 ? 'true' : undefined}>
+          <span data-complete={state.completedSites.length >= content.fieldSiteLimit ? 'true' : undefined}>
             <strong>
-              {state.completedSites.length} / {state.completedSites.length >= 2 ? 4 : 2}
+              {filedSiteCount} / {content.fieldSiteLimit}
             </strong>
             sites
           </span>
@@ -1140,7 +1803,7 @@ export function Investigation({
         {state.completedSites.length === 0 && (
           <p className="field-threshold">
             The tribunal will hear a record of two sites. The other two are yours to
-            leave read or unread.{' '}
+            leave outside the filed record.{' '}
             {/* W1-4 · P2-F. The threshold sentence states the RULE; the campaign
                 model — route becomes a model, model becomes a ruling, ruling
                 outlives the run — was nowhere on this surface, which is the whole
@@ -1164,7 +1827,14 @@ export function Investigation({
             )}
           </p>
         )}
-      </header>
+        </header>
+      )}
+
+      {!scene.world && state.completedSites.length >= content.fieldSiteLimit && (
+        <p className="field-omitted-sites" role="status">
+          {omittedSiteCount} site{omittedSiteCount === 1 ? '' : 's'} omitted from the filed record.
+        </p>
+      )}
 
       <div className={`field-workspace ${inspectorSpine ? 'field-workspace--spine' : ''}`}>
         <section className="world-pane" aria-label="District navigation">
@@ -1176,17 +1846,35 @@ export function Investigation({
             {/* The world is now the primary location picker. A hotspot swaps the
                 adjacent workspace in place instead of sending the player down a
                 long document. Canonical game state remains engine-owned. */}
-            {scene.world ? (
+            {unnumberedRoomOpen ? (
+              <UnnumberedRoomStage
+                room={unnumberedReadingRoom}
+                active
+                reducedMotion={sceneMotionReduced}
+                activePointId={activeReadingPointId ?? undefined}
+                openedPointIds={openedReadingPointIds}
+                activeInteraction={activeReadingInteraction ?? undefined}
+                onPointActivate={(pointId) => inspectReadingPoint(pointId)}
+              />
+            ) : scene.world ? (
               <AnnexWorldStage
                 world={scene.world}
                 sites={sites}
                 completedSiteIds={state.completedSites}
                 selectedSiteId={cameraSiteId}
+                recommendedSiteId={recommendedSite?.id}
                 active={sceneActive}
                 reducedMotion={sceneMotionReduced}
                 alarmLevel={state.alarm}
+                authoritySignal={authoritySignal}
                 resolvedOutcomes={resolvedOutcomes}
                 returnEmphasisSiteId={returnEmphasisSiteId ?? undefined}
+                secretRoom={unnumberedReadingRoom}
+                secretRoomAvailable={
+                  unnumberedRoomUnlocked &&
+                  presentationForRender.kind === 'concourse'
+                }
+                onSecretRoomActivate={enterUnnumberedRoom}
                 onPortalActivate={(siteId, sourceElement) =>
                   selectSite(siteId, true, sourceElement)
                 }
@@ -1253,6 +1941,9 @@ export function Investigation({
                 data-emphasis={
                   sceneFirstEmphasisZone || sceneFirstDerivedFocus ? 'true' : undefined
                 }
+                data-confirmation-active={
+                  sceneFirstConfirmationActive ? 'true' : undefined
+                }
                 style={closeupStageStyle(shownCloseup, closeupEntryOrigin, sceneFirstFocus)}
               >
                 <div className="scene-zones-live-cover">
@@ -1260,6 +1951,9 @@ export function Investigation({
                     {shownCloseup.zones?.map((zone) => {
                       const action = selectedActions.find((item) => item.id === zone.actionId)
                       if (!action) return null
+                      const isDepositionEntry = Boolean(
+                        deposition?.entryActionIds.includes(zone.actionId),
+                      )
                       return (
                         <SceneZone
                           key={zone.actionId}
@@ -1269,6 +1963,26 @@ export function Investigation({
                           treatment={
                             shownCloseup.previewTreatment?.actionTreatments[zone.actionId]
                           }
+                          requiresConfirmation={!isDepositionEntry}
+                          armed={
+                            isDepositionEntry
+                              ? undefined
+                              : armedSceneActionId === zone.actionId
+                          }
+                          onArmedChange={
+                            isDepositionEntry
+                              ? undefined
+                              : (armed) => {
+                                  if (armed) {
+                                    armSceneFirstMethod(zone.actionId)
+                                    return
+                                  }
+                                  if (armedSceneActionId === zone.actionId) {
+                                    clearSceneFirstConfirmation(true)
+                                  }
+                                }
+                          }
+                          aside={isDepositionEntry ? 'Open transcript' : undefined}
                           onAttentionChange={(active) => {
                             setPreviewActionId((current) =>
                               active
@@ -1278,10 +1992,39 @@ export function Investigation({
                                   : current,
                             )
                           }}
-                          onCommit={() => handleSceneFirstCommit(zone.actionId)}
+                          onCommit={() => {
+                            if (isDepositionEntry) {
+                              onDepositionEntryChange(zone.actionId)
+                              return
+                            }
+                            handleSceneFirstCommit(zone.actionId)
+                          }}
                         />
                       )
                     })}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Fourth Margin marks share the close-read projection above but
+                never its filing controls. A settled, filed plate may expose one
+                authored 48px DOM target; activating it writes only campaign
+                marginalia and leaves the legal record untouched. */}
+            {fourthMarginMarkerLive && shownCloseup && selectedSiteSecret && (
+              <div
+                className="scene-zones-live fourth-margin-layer"
+                data-resolved="true"
+                data-revealed={activeSecret ? 'true' : undefined}
+                style={closeupStageStyle(shownCloseup, closeupEntryOrigin, sceneFirstFocus)}
+              >
+                <div className="scene-zones-live-cover">
+                  <div className="scene-zones-live-projection">
+                    <FourthMarginMarker
+                      definition={selectedSiteSecret}
+                      discovered={selectedSiteSecretDiscovered}
+                      onInspect={inspectFourthMargin}
+                    />
                   </div>
                 </div>
               </div>
@@ -1360,7 +2103,7 @@ export function Investigation({
 
             {shownCloseup && scene.world && (
               <button className="world-return" type="button" onClick={returnToConcourse}>
-                <span aria-hidden="true">←</span> Return to concourse
+                <span aria-hidden="true">←</span> {returnToWorldLabel}
               </button>
             )}
             <div className="world-caption">
@@ -1386,6 +2129,7 @@ export function Investigation({
             </div>
           </div>
 
+          {!unnumberedRoomOpen && (
           <nav className="site-switcher" aria-label="Field locations">
             {sites.map((site) => {
               const selected = site.id === selectedSite.id
@@ -1421,13 +2165,17 @@ export function Investigation({
               )
             })}
           </nav>
+          )}
         </section>
 
         <section
           className={`site-record site-inspector ${inspectorSpine ? 'site-inspector--spine' : ''} ${selectedCompletedAction ? 'site-record-complete' : ''}`}
+          data-gameplay-hidden={scene.world ? 'true' : undefined}
           id={`site-card-${selectedSite.id}`}
           ref={siteInspectorRef}
           tabIndex={-1}
+          inert={scene.world ? true : undefined}
+          aria-hidden={scene.world ? true : undefined}
           aria-labelledby={`site-heading-${selectedSite.id}`}
         >
           {/* The header is the SAME markup in both states — the spine restyles it
@@ -1443,7 +2191,7 @@ export function Investigation({
             <span
               className={`site-state ${selectedCompletedAction ? 'state-filed' : 'state-open'}`}
             >
-              {selectedCompletedAction ? 'Filed' : 'Open'}
+              {selectedCompletedAction ? 'Filed' : fieldFilingClosed ? 'Omitted' : 'Open'}
             </span>
           </header>
 
@@ -1481,12 +2229,11 @@ export function Investigation({
                 </span>
                 <div>
                   <strong>{selectedEvent?.title ?? selectedCompletedAction.title}</strong>
-                  {/* The authored eventDetail is the narrative alone; the logged
-                      event string appends the trust arithmetic to it. Keeping the
-                      prose clean here and filing the deltas in the grid below lets
-                      the scene's words read as words (screenshot finding: the
-                      filed card ran story and mechanics into one paragraph). */}
-                  <p>{selectedCompletedAction.eventDetail}</p>
+                  {/* The committed event includes the exact source-backed anchors
+                      discovered on this route. Showing it here keeps the filed
+                      result aligned with the lattice: no anchor appears later by
+                      fiat, and the arithmetic remains in the compact grid. */}
+                  <p>{selectedEvent?.detail ?? selectedCompletedAction.eventDetail}</p>
                   <div className="record-delta" aria-label="Filed result">
                     {selectedEvidence && (
                       <span>
@@ -1543,6 +2290,8 @@ export function Investigation({
                 </div>
               )}
             </>
+          ) : fieldFilingClosed ? (
+            <p className="site-filing-limit" role="status">{filingBudgetNote}</p>
           ) : roomSite ? (
             // The bounded room's console. It renders HERE whenever the settled close
             // read is not on screen — the always-mounted rule: the ritual is never
@@ -1621,10 +2370,68 @@ export function Investigation({
         </section>
       </div>
 
+      {scene.world && (
+        <CinematicHud
+          caseCode={caseFile.code}
+          caseTitle={caseFile.title}
+          objective={hudObjective}
+          sitesFiled={filedSiteCount}
+          sitesTotal={content.fieldSiteLimit}
+          evidenceFiled={hudEvidenceCount}
+          evidenceTotal={hudEvidenceCapacity}
+          alarm={state.alarm}
+          locationLabel={hudLocationLabel}
+          interactionHint={hudInteractionHint}
+          dialogue={hudDialogue}
+          progressLabel={
+            unnumberedRoomOpen
+              ? openedReadingPointIds.length === unnumberedReadingRoom.readingPoints.length
+                ? unnumberedReadingRoom.completion.visual
+                : unnumberedReadingRoom.subtitle
+              : activeSecret
+              ? 'Held in Case File · Case'
+              : state.completedSites.length >= content.fieldSiteLimit
+                ? `${omittedSiteCount} site${omittedSiteCount === 1 ? '' : 's'} omitted from filed record`
+                : `${filedSiteCount} / ${content.fieldSiteLimit} sites filed`
+          }
+          actions={hudActions}
+          consoleActive={roomConsoleDocked}
+          lowerHudHidden={Boolean(sceneBeat)}
+          confirmationActive={sceneFirstConfirmationActive}
+          recordActionsDisabled={
+            Boolean(sceneBeat) || hudTransitioning || sceneFirstConfirmationActive
+          }
+          shortcutsEnabled={
+            !caseFileOpen &&
+            !detailDrawerOpen &&
+            !depositionEntry &&
+            !sceneBeat &&
+            !hudTransitioning &&
+            !sceneFirstConfirmationActive
+          }
+          // Same stand-downs as the record chords except the filing review: the
+          // review's own File/Cancel pair IS the visible action list, so its
+          // ordinals stay live and a digit there is the same confirm click the
+          // pointer makes. A summoned drawer stands the digits down so the
+          // record surface owns every key while it is open.
+          actionShortcutsEnabled={
+            !caseFileOpen &&
+            !detailDrawerOpen &&
+            !depositionEntry &&
+            !sceneBeat &&
+            !hudTransitioning
+          }
+          onAction={runHudAction}
+          onOpenCaseFile={() => openCaseFile('case')}
+          onOpenEvidence={() => openCaseFile('evidence')}
+        />
+      )}
+
       {/* The route breadcrumb is gone: it duplicated the CTA, which already names
           the next step in the same words. The filed-model block moved into the
           case file's Case tab — a filed record belongs in the file. */}
-      <footer className={`field-dock ${tribunalReady ? 'field-dock-ready' : ''}`}>
+      {!scene.world && (
+        <footer className={`field-dock ${tribunalReady ? 'field-dock-ready' : ''}`}>
         <div className="field-dock-copy">
           {reconstruction ? (
             <p>{reconstruction.title} · model filed</p>
@@ -1647,7 +2454,8 @@ export function Investigation({
             </button>
           </div>
         )}
-      </footer>
+        </footer>
+      )}
 
       {/* The second belt on mutual exclusivity: even if some future route set
           both flags, only one dialog can render. */}
@@ -1658,9 +2466,10 @@ export function Investigation({
           completedAction={selectedCompletedAction}
           evidenceTitle={selectedEvidence?.title}
           eventTitle={selectedEvent?.title}
+          eventDetail={selectedEvent?.detail}
           standingNote={spineStandingNote}
           settings={state.settings}
-          onClose={() => setDetailDrawerOpen(false)}
+          onClose={() => onDetailDrawerOpenChange(false)}
         />
       )}
 

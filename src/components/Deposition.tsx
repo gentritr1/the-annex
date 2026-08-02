@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { getCaseContent, resolveFieldAction } from '../game/content'
+import { getCaseContent, resolveDepositionUse, resolveFieldAction } from '../game/content'
 import type {
   DepositionChoiceId,
   DepositionConsent,
+  DepositionTestimonyUse,
   FieldActionId,
   GameState,
 } from '../game/types'
@@ -24,6 +25,15 @@ const CHOICE_TAG: Record<DepositionChoiceId, string> = {
   'let-it-stand': 'Let it stand',
   interrupt: 'Interrupt',
   corroborate: 'Corroborate',
+}
+
+const TESTIMONY_USE_LABEL: Record<DepositionTestimonyUse, string> = {
+  'voluntary-office': 'Office-level use authorized',
+  'protected-hand': 'Protected disclosure authorized',
+  refused: 'Use refused',
+  unasked: 'Use not requested',
+  compelled: 'Use compelled over refusal',
+  unknown: 'Use boundary unknown',
 }
 
 // How long the tray takes to slide out before the close (abandon/commit) actually
@@ -174,7 +184,8 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
     beginClose(() => onCommit(entryActionId, beats, askedConsent))
   }
 
-  const consentAnswer = deposition.consent.answers[entryActionId]
+  const requestedUse = resolveDepositionUse(deposition, entryActionId, beats, true)
+  const committedUse = resolveDepositionUse(deposition, entryActionId, beats, askedConsent)
   const beatNumber = Math.min(stepIndex + 1, totalBeats)
 
   const isStatementBeat = stepIndex < statementCount
@@ -187,9 +198,9 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
   const visualRoute = entryAction.methodTags.includes('coercion') ? 'press' : 'sworn'
   let visualConsent: DepositionConsent | 'pending' = 'pending'
   if (isConsentBeat && consentRevealed) {
-    visualConsent = consentAnswer?.consent ?? 'pending'
+    visualConsent = requestedUse.consent
   } else if (isClosingBeat) {
-    visualConsent = askedConsent ? (consentAnswer?.consent ?? 'unasked') : 'unasked'
+    visualConsent = committedUse.consent
   }
 
   const trayClass = [
@@ -221,6 +232,12 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
           route={visualRoute}
           lastChoice={beats.at(-1) ?? null}
           consent={visualConsent}
+          labels={deposition.stageLabels}
+          recordStatus={
+            isClosingBeat
+              ? TESTIMONY_USE_LABEL[committedUse.testimonyUse]
+              : 'Raw record · legal use pending'
+          }
         />
       ) : null}
       <div
@@ -228,6 +245,9 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
         role="dialog"
         aria-modal="true"
         aria-labelledby="deposition-heading"
+        aria-describedby={
+          isConsentBeat && consentRevealed ? 'deposition-use-answer' : undefined
+        }
         tabIndex={-1}
         ref={dialogRef}
         onKeyDown={handleKeyDown}
@@ -242,7 +262,7 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
           </div>
           <h2 id="deposition-heading">
             {isConsentBeat
-              ? 'A question no one has asked'
+              ? 'Set the use of this record'
               : isClosingBeat
                 ? 'Close the transcript'
                 : 'On the record'}
@@ -260,15 +280,9 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
                 <ChoiceButton
                   key={choice.id}
                   title={choice.label}
-                  label={CHOICE_TAG[choice.id]}
+                  label={choice.tag ?? CHOICE_TAG[choice.id]}
                   description={choice.detail}
-                  consequence={
-                    choice.id === 'interrupt'
-                      ? 'Coercion-adjacent method.'
-                      : choice.id === 'corroborate'
-                        ? 'Procedure and care.'
-                        : 'You do not intervene.'
-                  }
+                  consequence={choice.summary}
                   tone={choice.id === 'interrupt' ? 'risk' : 'default'}
                   onClick={() => chooseBeat(choice.id)}
                 />
@@ -285,7 +299,9 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
             <p className="deposition-question">{deposition.consent.question}</p>
             {consentRevealed ? (
               <div className="deposition-answer">
-                <p className="deposition-statement">{consentAnswer?.line}</p>
+                <p className="deposition-statement" id="deposition-use-answer">
+                  {requestedUse.line}
+                </p>
                 <button className="button button-primary" type="button" onClick={() => setStepIndex(closingStep)}>
                   Continue <span aria-hidden="true">→</span>
                 </button>
@@ -294,14 +310,14 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
               <div className="choice-list deposition-choices">
                 <ChoiceButton
                   title={deposition.consent.askLabel}
-                  label="Consent"
+                  label="Request use"
                   description={deposition.consent.askDetail}
-                  consequence="Reads as care."
+                  consequence="Ellis’s stated boundary becomes part of the record."
                   onClick={askConsent}
                 />
                 <ChoiceButton
                   title={deposition.consent.declineLabel}
-                  label="Proceed"
+                  label="Leave unasked"
                   description={deposition.consent.declineDetail}
                   consequence="No question is put."
                   onClick={declineConsent}
@@ -322,9 +338,8 @@ export function Deposition({ state, entryActionId, onCommit, onAbandon }: Deposi
                 this only gives the moment its shared shape. */}
             <div className="deposition-result">
               <div className="deposition-consent-summary">
-                {askedConsent
-                  ? `You asked. Ellis answered ${consentAnswer?.consent === 'yes' ? 'yes' : 'no'}.`
-                  : 'You did not ask whether Ellis wanted to give this.'}
+                <span>Admissibility shutter</span>
+                <strong>{TESTIMONY_USE_LABEL[committedUse.testimonyUse]}</strong>
               </div>
               <button
                 className={`button button-primary ${commitArmed ? 'button-armed' : ''}`}

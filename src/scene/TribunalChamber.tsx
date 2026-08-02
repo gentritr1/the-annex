@@ -1,6 +1,7 @@
-import type { CSSProperties } from 'react'
+import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react'
 
 interface TribunalChamberProps {
+  backdropSrc?: string
   channel: string
   headline: string
   intro: string
@@ -10,10 +11,12 @@ interface TribunalChamberProps {
   reconstructionTitle: string
   alarmLevel: number
   overrideAvailable: boolean
+  reducedMotion: boolean
   onBack: () => void
 }
 
 export function TribunalChamber({
+  backdropSrc = '/images/phase-scenes/tribunal-chamber.webp',
   channel,
   headline,
   intro,
@@ -23,10 +26,43 @@ export function TribunalChamber({
   reconstructionTitle,
   alarmLevel,
   overrideAvailable,
+  reducedMotion,
   onBack,
 }: TribunalChamberProps) {
   const admittedLights = Array.from({ length: evidenceCount }, (_, index) => index)
   const orbitTotal = Math.max(admittedLights.length, 1)
+
+  // The cue used to be a bare fragment link. On a 1280x800 tribunal the first
+  // verdict card sits roughly 1,350px below the top (audit F4), so the affordance
+  // that named the decision was the one thing that did not deliver the player to
+  // it — the browser's default jump landed wherever the hash took it and left no
+  // focus behind. This carries BOTH: the scroll and the caret. The href stays as
+  // the no-JS path and keeps the link right-clickable.
+  function reachTheDecision(event: ReactMouseEvent<HTMLAnchorElement>) {
+    const heading = document.getElementById('decision-heading')
+    if (!heading) return
+    event.preventDefault()
+    // Scroll the whole section, not the heading: the section carries the Step 2
+    // mark, and stopping at the heading would cut that mark off above the fold.
+    const target = heading.closest('.tribunal-decision-section') ?? heading
+    // Both channels, same as the investigation's own camera moves: the in-game
+    // preference AND the OS media query. A CSS `scroll-behavior: auto` cannot
+    // override the `behavior` argument passed here, so the argument is where the
+    // preference has to be read.
+    const instant =
+      reducedMotion ||
+      (typeof window !== 'undefined' &&
+        typeof window.matchMedia === 'function' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+    target.scrollIntoView({
+      behavior: instant ? 'auto' : 'smooth',
+      block: 'start',
+    })
+    // Keyboard and screen-reader players must arrive where the pointer arrives.
+    // preventScroll, because the scroll above is the one that respects the
+    // reduced-motion preference.
+    heading.focus({ preventScroll: true })
+  }
 
   return (
     <section
@@ -37,7 +73,7 @@ export function TribunalChamber({
       <div className="tribunal-chamber-art" aria-hidden="true">
         <img
           className="tribunal-chamber-plate"
-          src="/images/phase-scenes/tribunal-chamber.webp"
+          src={backdropSrc}
           alt=""
         />
         <div className="tribunal-chamber-depth" />
@@ -83,7 +119,7 @@ export function TribunalChamber({
         ) : null}
       </header>
 
-      <a className="tribunal-scroll-cue" href="#decision-heading">
+      <a className="tribunal-scroll-cue" href="#decision-heading" onClick={reachTheDecision}>
         Review findings <span aria-hidden="true">↓</span>
       </a>
     </section>

@@ -20,6 +20,9 @@ interface SceneDetailDrawerProps {
   // from the same state the inspector's filed card reads.
   evidenceTitle?: string
   eventTitle?: string
+  // The reducer-appended filed detail, including any source-backed anchors this
+  // action revealed. This remains optional for legacy callers/tests.
+  eventDetail?: string
   // The one standing line the inspector prints for this phase, handed here while
   // the inspector is collapsed to its spine (E1b). It is RELOCATED, never
   // duplicated: the caller passes it only when the inspector is not printing it,
@@ -42,6 +45,7 @@ export function SceneDetailDrawer({
   completedAction,
   evidenceTitle,
   eventTitle,
+  eventDetail,
   standingNote,
   settings,
   onClose,
@@ -120,7 +124,7 @@ export function SceneDetailDrawer({
           {completedAction ? (
             <section className="scene-detail-filed" aria-label="Filed result">
               <h3>{eventTitle ?? completedAction.eventTitle}</h3>
-              <p>{completedAction.eventDetail}</p>
+              <p>{eventDetail ?? completedAction.eventDetail}</p>
               <div className="record-delta">
                 {evidenceTitle && (
                   <span>

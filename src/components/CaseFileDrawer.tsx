@@ -1,13 +1,15 @@
 import { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { getCaseContent } from '../game/content'
-import type { AccessibilitySettings, GameState } from '../game/types'
-import { CaseRail } from './CaseRail'
+import { canDiscoverSecret } from '../game/engine'
+import type { AccessibilitySettings, GameState, SecretId } from '../game/types'
+import { CaseRail, type RailTab } from './CaseRail'
 import { purposeCopy, showsCaseFilePurpose } from './purposeCopy'
 import { recordPortalClass } from './recordMode'
 
 interface CaseFileDrawerProps {
   state: GameState
+  initialTab?: RailTab
   onClose: () => void
   // The run's query trail and the way to append to it. Both are owned by the
   // shell, not by this drawer: the drawer unmounts every time it closes, and a
@@ -15,6 +17,7 @@ interface CaseFileDrawerProps {
   // persisted (App.tsx states why).
   queryTrail: readonly string[]
   onQuery: (query: string) => void
+  onDiscoverSecret: (secretId: SecretId) => void
 }
 
 interface CaseFileSummonProps {
@@ -43,12 +46,14 @@ export function CaseFileSummon({ state, onOpen, className }: CaseFileSummonProps
   // three harness assertions read the live counts out of this button's text) and
   // leaves permanently the moment the first evidence is admitted.
   const orientPurpose = showsCaseFilePurpose(state, counts.evidence)
+  const fourthMarginAvailable = canDiscoverSecret(state, 'reader-key-04')
   return (
     <button
       className={['casefile-summon', orientPurpose ? 'casefile-summon--oriented' : null, className]
         .filter(Boolean)
         .join(' ')}
       type="button"
+      aria-label={`Open case file: ${counts.evidence} evidence, ${counts.events} events.`}
       onClick={onOpen}
     >
       <strong>Case file</strong>
@@ -56,6 +61,12 @@ export function CaseFileSummon({ state, onOpen, className }: CaseFileSummonProps
         {counts.evidence} evidence · {counts.events} events
       </small>
       {orientPurpose && <small className="casefile-summon-why">{purposeCopy.caseFile}</small>}
+      {fourthMarginAvailable && (
+        <span className="casefile-summon-margin">
+          <span aria-hidden="true">◇04</span>
+          <span className="sr-only"> Fourth Margin available</span>
+        </span>
+      )}
     </button>
   )
 }
@@ -76,7 +87,14 @@ export function CaseFileSummon({ state, onOpen, className }: CaseFileSummonProps
 // (opening one closes the other), so there is never more than one aria-modal
 // dialog over the plate — the double-trap hazard the tabbed design exists to
 // remove.
-export function CaseFileDrawer({ state, onClose, queryTrail, onQuery }: CaseFileDrawerProps) {
+export function CaseFileDrawer({
+  state,
+  initialTab = 'case',
+  onClose,
+  queryTrail,
+  onQuery,
+  onDiscoverSecret,
+}: CaseFileDrawerProps) {
   const dialogRef = useRef<HTMLDivElement>(null)
   const returnFocusRef = useRef<HTMLElement | null>(null)
   const settings: AccessibilitySettings = state.settings
@@ -84,13 +102,17 @@ export function CaseFileDrawer({ state, onClose, queryTrail, onQuery }: CaseFile
   useEffect(() => {
     returnFocusRef.current = document.activeElement as HTMLElement | null
     const frame = window.requestAnimationFrame(() => {
-      dialogRef.current?.focus({ preventScroll: true })
+      const activeTab = dialogRef.current?.querySelector<HTMLElement>(
+        `#rail-tab-${initialTab}`,
+      )
+      const focusTarget = activeTab ?? dialogRef.current
+      focusTarget?.focus({ preventScroll: true })
     })
     return () => {
       window.cancelAnimationFrame(frame)
       returnFocusRef.current?.focus?.({ preventScroll: true })
     }
-  }, [])
+  }, [initialTab])
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (event.key === 'Escape') {
@@ -144,7 +166,13 @@ export function CaseFileDrawer({ state, onClose, queryTrail, onQuery }: CaseFile
             Close <span aria-hidden="true">✕</span>
           </button>
         </header>
-        <CaseRail state={state} queryTrail={queryTrail} onQuery={onQuery} />
+        <CaseRail
+          state={state}
+          initialTab={initialTab}
+          queryTrail={queryTrail}
+          onQuery={onQuery}
+          onDiscoverSecret={onDiscoverSecret}
+        />
       </div>
     </div>,
     document.body,

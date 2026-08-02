@@ -6,8 +6,9 @@
 // off the open deposition entry action's METHOD TAGS (shared vocabulary), and the
 // refusal branch keys off the persisted DepositionConsent — never off any case's
 // entry-action id, site id, or case id.
-import { getCaseContent } from '../game/content'
+import { getCaseContent, resolveDepositionUse } from '../game/content'
 import type {
+  DepositionChoiceId,
   DepositionConsent,
   DepositionDefinition,
   FieldActionId,
@@ -36,15 +37,21 @@ export function sceneStateFor(state: GameState, view: SceneViewContext): SceneSt
   const openEntry = view.openDepositionEntry ?? null
 
   if (deposition && openEntry && deposition.entryActionIds.includes(openEntry)) {
-    const action = content.fieldActions.find((item) => item.id === openEntry)
-    // A coercion-tagged entry presses the witness; any other entry corroborates.
-    // Keyed off method-tag vocabulary, not the entry action's id.
-    return action?.methodTags.includes('coercion') ? 'press' : 'corroborate'
+    // Opening a raw recorder is not a moral lighting instruction. The authored
+    // choices and admissibility shutter carry the distinction in readable UI.
+    return 'neutral'
   }
 
   // A committed deposition where the witness refused persists as refusal for the
   // rest of the investigation phase. Keyed off the persisted consent value.
-  if (state.depositionRecord?.consent === 'no') return 'refusal'
+  if (
+    state.depositionRecord?.testimonyUse === 'refused' ||
+    state.depositionRecord?.testimonyUse === 'compelled' ||
+    (state.depositionRecord?.testimonyUse === 'unknown' &&
+      state.depositionRecord.consent === 'no')
+  ) {
+    return 'refusal'
+  }
 
   return 'neutral'
 }
@@ -58,10 +65,11 @@ export function sceneStateFor(state: GameState, view: SceneViewContext): SceneSt
 export function resolveCommitConsent(
   deposition: DepositionDefinition | undefined,
   actionId: FieldActionId,
+  beats: readonly DepositionChoiceId[],
   askedConsent: boolean,
 ): DepositionConsent {
-  if (!askedConsent) return 'unasked'
-  return deposition?.consent.answers[actionId]?.consent ?? 'unasked'
+  if (!deposition) return 'unasked'
+  return resolveDepositionUse(deposition, actionId, beats, askedConsent).consent
 }
 
 // Whether a just-committed deposition should play the one-shot witnessed-refusal

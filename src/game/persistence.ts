@@ -1,10 +1,19 @@
-import { DEFAULT_CASE_ID, getCaseContent, isRegisteredCase, personas } from './content'
+import {
+  DEFAULT_CASE_ID,
+  getCaseContent,
+  isRegisteredCase,
+  personas,
+  getRegisteredSecret,
+  registeredSecretIds,
+  resolveDepositionUse,
+} from './content'
 import type {
   AccessibilitySettings,
   CaseDefinition,
   DepositionChoiceId,
   DepositionConsent,
   DepositionRecord,
+  DepositionTestimonyUse,
   GameEvent,
   GamePhase,
   GameState,
@@ -22,10 +31,10 @@ const SAVE_KEY = 'the-annex.case-77.save.v1'
 const SETTINGS_KEY = 'the-annex.accessibility.v1'
 
 // The save-schema version this build reads and writes. Single source of truth
-// for encode (engine stamps fresh state with it), decode (strict v2 validation
+// for encode (engine stamps fresh state with it), decode (strict current validation
 // below), migrateRawSave, and tests. Bump this by ONE when the shape changes,
 // and add the matching from->to entry to saveMigrations.
-export const CURRENT_SAVE_SCHEMA = 2
+export const CURRENT_SAVE_SCHEMA = 3
 
 // Upper bound on retained run history. previousRuns is capped at push time in
 // the engine (START_NEXT_RUN) and any oversized legacy array is truncated by
@@ -85,12 +94,21 @@ const validEventSourceTypes = new Set<GameEvent['sourceType']>([
   'reconstruction',
   'decision',
 ])
+const validSecretIds = new Set(registeredSecretIds)
 const validDepositionChoices = new Set<DepositionChoiceId>([
   'let-it-stand',
   'interrupt',
   'corroborate',
 ])
 const validDepositionConsent = new Set<DepositionConsent>(['yes', 'no', 'unasked'])
+const validDepositionTestimonyUses = new Set<DepositionTestimonyUse>([
+  'voluntary-office',
+  'protected-hand',
+  'refused',
+  'unasked',
+  'compelled',
+  'unknown',
+])
 
 let storageAvailable = true
 const storageListeners = new Set<() => void>()
@@ -116,11 +134,6 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function isFiniteNumber(value: unknown): value is number {
   return typeof value === 'number' && Number.isFinite(value)
-}
-
-function isStringRecord(value: unknown): value is Record<string, string> {
-  if (!isRecord(value)) return false
-  return Object.values(value).every((entry) => typeof entry === 'string')
 }
 
 function isUniqueArrayOf<T extends string>(value: unknown, allowed: Set<T>): value is T[] {
@@ -216,15 +229,26 @@ function isRunSummary(value: unknown): value is RunSummary {
 }
 
 // A deposition record is optional-tolerated: an old save simply omits it. When
-// present it is validated against the deposition vocabulary and the payload's own
-// case field-action ids; a malformed record rejects the save, matching the strict
-// treatment every other present field gets.
-function isDepositionRecord(value: unknown, sets: CaseIdSets): value is DepositionRecord {
+// present it must name an authored entry action for this case. Current explicit
+// use boundaries also reproduce the case resolver exactly; normalized legacy
+// records retain their older beat trace under the `unknown` sentinel.
+function isDepositionRecord(
+  value: unknown,
+  content: CaseDefinition,
+): value is DepositionRecord {
   if (!isRecord(value)) return false
-  if (typeof value.actionId !== 'string' || !sets.fieldActions.has(value.actionId)) return false
+  const deposition = content.deposition
   if (
-    !Array.isArray(value.beats) ||
-    !value.beats.every(
+    !deposition ||
+    typeof value.actionId !== 'string' ||
+    !deposition.entryActionIds.includes(value.actionId)
+  ) {
+    return false
+  }
+  const beats = value.beats
+  if (
+    !Array.isArray(beats) ||
+    !beats.every(
       (beat): beat is DepositionChoiceId =>
         typeof beat === 'string' && validDepositionChoices.has(beat as DepositionChoiceId),
     )
@@ -238,14 +262,120 @@ function isDepositionRecord(value: unknown, sets: CaseIdSets): value is Depositi
   ) {
     return false
   }
+  // A v2 deposition predates testimonyUse. Preserve it as history and mark the
+  // legal-use boundary unknown rather than inferring it from yes/no or route.
+  if (
+    value.testimonyUse !== undefined &&
+    (typeof value.testimonyUse !== 'string' ||
+      !validDepositionTestimonyUses.has(value.testimonyUse as DepositionTestimonyUse))
+  ) {
+    return false
+  }
+
+  // A normalized legacy record carries `unknown`, and its old authored skeleton
+  // may have a different beat count. Preserve that trace without inventing a use
+  // boundary. Records with a current explicit boundary must match the active
+  // case's authored skeleton and pure resolver exactly.
+  if (value.testimonyUse !== undefined && value.testimonyUse !== 'unknown') {
+    if (beats.length !== deposition.statementBeats.length) return false
+    for (const [index, beat] of deposition.statementBeats.entries()) {
+      if (!beat.choices.some((choice) => choice.id === beats[index])) return false
+    }
+    const resolved = resolveDepositionUse(
+      deposition,
+      value.actionId,
+      beats,
+      value.askedConsent,
+    )
+    if (value.consent !== resolved.consent || value.testimonyUse !== resolved.testimonyUse) {
+      return false
+    }
+  }
   return true
+}
+
+function decodePrecedents(value: unknown): Record<string, string> | null {
+  if (!isRecord(value)) return null
+  const decoded: Record<string, string> = {}
+
+  for (const [caseId, decisionId] of Object.entries(value)) {
+    if (
+      !isRegisteredCase(caseId) ||
+      typeof decisionId !== 'string' ||
+      !getCaseContent(caseId).decisions.some((decision) => decision.id === decisionId)
+    ) {
+      return null
+    }
+    decoded[caseId] = decisionId
+  }
+
+  return decoded
+}
+
+function decodeCaseOutcomes(value: unknown): Record<string, Record<string, string>> | null {
+  if (!isRecord(value)) return null
+  const decoded: Record<string, Record<string, string>> = {}
+
+  for (const [caseId, rawFacts] of Object.entries(value)) {
+    if (!isRegisteredCase(caseId) || !isRecord(rawFacts)) return null
+    const definitions = getCaseContent(caseId).outcomeFactDefinitions ?? []
+    const allowedById = new Map(
+      definitions.map((definition) => [
+        definition.id,
+        new Set(definition.values.map((option) => option.id)),
+      ]),
+    )
+    if (Object.keys(rawFacts).length !== definitions.length) return null
+
+    const facts: Record<string, string> = {}
+    for (const [factId, factValue] of Object.entries(rawFacts)) {
+      if (
+        typeof factValue !== 'string' ||
+        !allowedById.get(factId)?.has(factValue)
+      ) {
+        return null
+      }
+      facts[factId] = factValue
+    }
+    decoded[caseId] = facts
+  }
+
+  return decoded
+}
+
+// Schema v2 knew verdict labels but did not own the compact facts that made those
+// verdicts legally usable later. A recorded precedent therefore receives only
+// explicit historical fallbacks. We never reverse-engineer subject contact,
+// hearing scope, testimony permission, office linkage, or public standing from
+// old method tags, routes, consent bits, or verdict copy.
+function legacyCaseOutcomeFallbacks(
+  precedents: unknown,
+): Record<string, Record<string, string>> {
+  if (!isRecord(precedents)) return {}
+
+  const outcomes: Record<string, Record<string, string>> = {}
+  if (typeof precedents['case-77'] === 'string') {
+    outcomes['case-77'] = {
+      valeContact: 'unknown',
+      authorityLink77: 'not-proven',
+      continuityScope: 'unknown',
+    }
+  }
+  if (typeof precedents['case-81'] === 'string') {
+    outcomes['case-81'] = {
+      testimonyUse81: 'unknown',
+      officeLink81: 'unknown',
+      ellisPublicStanding: 'unknown',
+    }
+  }
+  return outcomes
 }
 
 // Ordered save migrations, keyed by the schemaVersion they upgrade FROM. Each
 // function receives a record already known to be at its from-version and returns
 // the same record reshaped to from+1. They are PURE (no I/O) and run BEFORE the
-// strict decode below. To add v3 later: write the 2 entry here and bump
-// CURRENT_SAVE_SCHEMA; migrateRawSave will chain 1->2->3 automatically.
+// strict decode below. Add one entry and bump CURRENT_SAVE_SCHEMA for each shape
+// change; migrateRawSave chains every intermediate migration automatically.
 const saveMigrations: Record<number, (raw: Record<string, unknown>) => Record<string, unknown>> = {
   // v1 -> v2: introduce caseId + precedents, and cap legacy run history.
   1: (raw) => {
@@ -278,6 +408,15 @@ const saveMigrations: Record<number, (raw: Record<string, unknown>) => Record<st
       previousRuns: cappedRuns,
     }
   },
+  // v2 -> v3: add the compact campaign outcome map and the active tribunal
+  // choice. Historical verdicts are not enough to reconstruct either: the choice
+  // starts empty, while completed cases receive explicit unknown/not-proven facts.
+  2: (raw) => ({
+    ...raw,
+    schemaVersion: 3,
+    tribunalChoice: null,
+    caseOutcomes: legacyCaseOutcomeFallbacks(raw.precedents),
+  }),
 }
 
 // Bring a raw parsed save up to CURRENT_SAVE_SCHEMA, or reject it. Returns the
@@ -308,7 +447,37 @@ export function decodeGameState(value: unknown): GameState | null {
   if (typeof value.caseId !== 'string' || !isRegisteredCase(value.caseId)) return null
   const content = getCaseContent(value.caseId)
   const sets = buildCaseIdSets(content)
-  if (!isStringRecord(value.precedents)) return null
+  const precedents = decodePrecedents(value.precedents)
+  if (!precedents) return null
+  const caseOutcomes = decodeCaseOutcomes(value.caseOutcomes)
+  if (!caseOutcomes) return null
+  // Optional-tolerated campaign marginalia: saves written before the Fourth
+  // Margin existed have no field and normalize to an empty collection. A
+  // present collection is strict, including compound-secret prerequisites, so
+  // a forged Reader Key cannot enter through localStorage.
+  let discoveredSecretIds: string[] = []
+  if (value.discoveredSecretIds !== undefined) {
+    if (!isUniqueArrayOf(value.discoveredSecretIds, validSecretIds)) return null
+    discoveredSecretIds = value.discoveredSecretIds
+    const discovered = new Set(discoveredSecretIds)
+    const prerequisitesHold = discoveredSecretIds.every((secretId) => {
+      const definition = getRegisteredSecret(secretId)?.definition
+      return (definition?.requiresSecretIds ?? []).every((requiredId) =>
+        discovered.has(requiredId),
+      )
+    })
+    if (!prerequisitesHold) return null
+  }
+  const precedentCaseIds = Object.keys(precedents)
+  const outcomeCaseIds = Object.keys(caseOutcomes)
+  if (
+    precedentCaseIds.length !== outcomeCaseIds.length ||
+    precedentCaseIds.some(
+      (caseId) => !Object.prototype.hasOwnProperty.call(caseOutcomes, caseId),
+    )
+  ) {
+    return null
+  }
   if (typeof value.phase !== 'string' || !validPhases.has(value.phase as GamePhase)) return null
   if (!Number.isInteger(value.runNumber) || (value.runNumber as number) < 1) return null
   if (
@@ -337,12 +506,21 @@ export function decodeGameState(value: unknown): GameState | null {
   ) {
     return null
   }
+  if (value.tribunalChoice !== null) {
+    if (
+      typeof value.tribunalChoice !== 'string' ||
+      !content.tribunalChoice?.options.some((option) => option.id === value.tribunalChoice)
+    ) {
+      return null
+    }
+  }
   if (
     value.decision !== null &&
     (typeof value.decision !== 'string' || !sets.decisions.has(value.decision))
   ) {
     return null
   }
+  if (value.decision !== null && precedents[value.caseId] !== value.decision) return null
   if (
     !Array.isArray(value.events) ||
     !value.events.every((event, index) => isGameEvent(event, index + 1, sets))
@@ -353,12 +531,14 @@ export function decodeGameState(value: unknown): GameState | null {
   // Optional-tolerated: absent or null decodes to null; present must be valid.
   let depositionRecord: DepositionRecord | null = null
   if (value.depositionRecord !== undefined && value.depositionRecord !== null) {
-    if (!isDepositionRecord(value.depositionRecord, sets)) return null
+    if (!isDepositionRecord(value.depositionRecord, content)) return null
+    if (!completedActions.includes(value.depositionRecord.actionId)) return null
     depositionRecord = {
       actionId: value.depositionRecord.actionId,
       beats: [...value.depositionRecord.beats],
       askedConsent: value.depositionRecord.askedConsent,
       consent: value.depositionRecord.consent,
+      testimonyUse: value.depositionRecord.testimonyUse ?? 'unknown',
     }
   }
   const settings = decodeAccessibilitySettings(value.settings)
@@ -388,11 +568,14 @@ export function decodeGameState(value: unknown): GameState | null {
     tribunalOverride: value.tribunalOverride,
     selectedFragments: value.selectedFragments,
     reconstruction: value.reconstruction as GameState['reconstruction'],
+    tribunalChoice: value.tribunalChoice as GameState['tribunalChoice'],
     decision: value.decision as GameState['decision'],
     depositionRecord,
     events: value.events,
     previousRuns: value.previousRuns,
-    precedents: value.precedents,
+    precedents,
+    caseOutcomes,
+    discoveredSecretIds,
     settings,
     announcement: value.announcement,
   }

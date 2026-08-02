@@ -225,7 +225,7 @@ export function buildRecordIndex(state: GameState): readonly RecordEntry[] {
   // 6 · The precedent this case carries in, if it cites one and the cited case
   //     has a recorded verdict. The line is authored in THIS case's bundle, so
   //     nothing of the other case's content crosses over.
-  const precedentLine = getPrecedentLine(state.caseId, state.precedents)
+  const precedentLine = getPrecedentLine(state.caseId, state.precedents, state.caseOutcomes)
   if (precedentLine) {
     entries.push({
       id: `precedent:${content.precedentSource?.caseId ?? 'prior'}`,

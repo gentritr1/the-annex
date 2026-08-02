@@ -10,7 +10,14 @@ interface ChoiceButtonProps {
   tone?: 'default' | 'risk'
   aside?: ReactNode
   tension?: ReactNode
+  effects?: ReactNode
+  disabled?: boolean
   requiresConfirmation?: boolean
+  // Supplying `armed` makes the arm state controlled. This is used when a
+  // second surface (the cinematic HUD) must participate in the same final
+  // confirmation without changing the underlying action callback.
+  armed?: boolean
+  onArmedChange?: (armed: boolean) => void
   onAttentionChange?: (active: boolean) => void
   // Suppress this button's own sr-only arm-announcement live region. Used inside
   // the classification room, which owns a single persistent live region of its
@@ -27,25 +34,32 @@ export function ChoiceButton({
   tone = 'default',
   aside,
   tension,
+  effects,
+  disabled = false,
   requiresConfirmation = false,
+  armed: controlledArmed,
+  onArmedChange,
   onAttentionChange,
   suppressLiveRegion = false,
 }: ChoiceButtonProps) {
-  const [armed, setArmed] = useState(false)
+  const [uncontrolledArmed, setUncontrolledArmed] = useState(false)
   const rootRef = useRef<HTMLButtonElement>(null)
+  const isControlled = controlledArmed !== undefined
+  const armed = controlledArmed ?? uncontrolledArmed
 
-  // While armed, the three "step back" gestures disarm, silently: pointer down
-  // anywhere outside this button, Escape, or focus leaving the button (onBlur
-  // below). Switching location unmounts the whole list (the investigation keys
-  // it by site), which resets this state with it — also silently.
+  // In uncontrolled mode, the three "step back" gestures disarm silently:
+  // pointer down anywhere outside this button, Escape, or focus leaving the
+  // button (onBlur below). Switching location unmounts the whole list (the
+  // investigation keys it by site), which resets this state with it — also
+  // silently.
   useEffect(() => {
-    if (!armed) return
+    if (isControlled || !armed) return
     function onPointerDown(event: PointerEvent) {
       if (rootRef.current?.contains(event.target as Node)) return
-      setArmed(false)
+      setUncontrolledArmed(false)
     }
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') setArmed(false)
+      if (event.key === 'Escape') setUncontrolledArmed(false)
     }
     document.addEventListener('pointerdown', onPointerDown)
     document.addEventListener('keydown', onKeyDown)
@@ -53,7 +67,28 @@ export function ChoiceButton({
       document.removeEventListener('pointerdown', onPointerDown)
       document.removeEventListener('keydown', onKeyDown)
     }
-  }, [armed])
+  }, [armed, isControlled])
+
+  // A controlled arm deliberately survives focus moving from the scene zone to
+  // the HUD's File/Cancel controls. Escape remains the local, keyboard-native
+  // cancellation gesture; all other clear paths are explicitly owned by the
+  // parent confirmation scope.
+  useEffect(() => {
+    if (!isControlled || !armed) return
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') onArmedChange?.(false)
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [armed, isControlled, onArmedChange])
+
+  function setArmed(next: boolean) {
+    if (isControlled) {
+      onArmedChange?.(next)
+      return
+    }
+    setUncontrolledArmed(next)
+  }
 
   function handleClick() {
     if (requiresConfirmation && !armed) {
@@ -80,6 +115,7 @@ export function ChoiceButton({
         ref={rootRef}
         className={`choice-row choice-row-${tone} ${aside ? 'choice-row-has-aside' : ''} ${armed ? 'choice-row-armed' : ''}`}
         type="button"
+        disabled={disabled}
         aria-pressed={requiresConfirmation ? armed : undefined}
         onClick={handleClick}
         onPointerEnter={() => onAttentionChange?.(true)}
@@ -88,24 +124,27 @@ export function ChoiceButton({
         }}
         onFocus={() => onAttentionChange?.(true)}
         onBlur={() => {
-          setArmed(false)
+          if (!isControlled) setUncontrolledArmed(false)
           onAttentionChange?.(false)
         }}
       >
-        <span className="choice-method">{label}</span>
-        <span className="choice-body">
-          <strong>
-            {title}
-            {armed ? ' — select again to file' : ''}
-          </strong>
-          <span>{description}</span>
-          {/* The pre-commit cost stays on the button while armed — emphasized,
-              not replaced by instructions — so it is read at the decision. */}
-          <small>
-            {consequence}
-            {armed ? ' — final for this run' : ''}
-          </small>
-          {tension ? <span className="choice-tension">{tension}</span> : null}
+        <span className="choice-copy">
+          <span className="choice-method">{label}</span>
+          <span className="choice-body">
+            <strong>
+              {title}
+              {armed ? ' — select again to file' : ''}
+            </strong>
+            <span>{description}</span>
+            {effects ? <span className="choice-effects">{effects}</span> : null}
+            {/* The pre-commit cost stays on the button while armed — emphasized,
+                not replaced by instructions — so it is read at the decision. */}
+            <small>
+              {consequence}
+              {armed ? ' — final for this run' : ''}
+            </small>
+            {tension ? <span className="choice-tension">{tension}</span> : null}
+          </span>
         </span>
         <span
           className={`choice-aside ${aside ? 'choice-aside-label' : ''}`}

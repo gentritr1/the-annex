@@ -62,8 +62,17 @@ function preChangeSave(): Record<string, unknown> {
       },
     ],
   }
-  // Strip the Wave-1 fields the pre-change build could not have written.
-  return { ...state, settings: preChangeSettings }
+  // Strip both the Wave-1 preferences and the v3 campaign fields the historical
+  // build could not have written. Keep this as an actual v2 payload even after
+  // createInitialGameState advances again.
+  const legacy: Record<string, unknown> = {
+    ...state,
+    schemaVersion: 2,
+    settings: preChangeSettings,
+  }
+  delete legacy.tribunalChoice
+  delete legacy.caseOutcomes
+  return legacy
 }
 
 describe('an old save still loads after the Wave 1 settings change', () => {
@@ -73,7 +82,8 @@ describe('an old save still loads after the Wave 1 settings change', () => {
 
   it('decodes a v2 save whose settings predate easyRead and subtitlePlate', () => {
     const written = preChangeSave()
-    expect(written.schemaVersion).toBe(CURRENT_SAVE_SCHEMA)
+    expect(CURRENT_SAVE_SCHEMA).toBe(3)
+    expect(written.schemaVersion).toBe(2)
     expect(Object.keys(written.settings as object)).toHaveLength(5)
     window.localStorage.setItem(SAVE_KEY, JSON.stringify(written))
 
@@ -85,6 +95,13 @@ describe('an old save still loads after the Wave 1 settings change', () => {
     expect(loaded?.precedents).toEqual({ 'case-77': 'certify-continuity' })
     expect(loaded?.previousRuns).toHaveLength(1)
     expect(loaded?.previousRuns[0]?.decision).toBe('certify-continuity')
+    expect(loaded?.caseOutcomes).toEqual({
+      'case-77': {
+        valeContact: 'unknown',
+        authorityLink77: 'not-proven',
+        continuityScope: 'unknown',
+      },
+    })
     // The old preferences are preserved and the new ones default off.
     expect(loaded?.settings).toEqual({
       ...preChangeSettings,

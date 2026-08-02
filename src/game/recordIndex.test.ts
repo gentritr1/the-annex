@@ -20,14 +20,14 @@ function startInvestigation() {
   return gameReducer(briefing, { type: 'SELECT_APPROACH', approachId: 'care' })
 }
 
-// One site filed, one model filed — a run with something in every bucket the
+// Two sites and one model filed — a run with something in every bucket the
 // index can produce except the cross-case precedent.
 function midRun(): GameState {
   let state = startInvestigation()
   state = gameReducer(state, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
   state = gameReducer(state, { type: 'COMMIT_FIELD_ACTION', actionId: 'authenticate-chain' })
   state = gameReducer(state, { type: 'OPEN_RECONSTRUCTION' })
-  state = gameReducer(state, { type: 'TOGGLE_FRAGMENT', fragmentId: 'scar-sensation' })
+  state = gameReducer(state, { type: 'TOGGLE_FRAGMENT', fragmentId: 'witness-account' })
   state = gameReducer(state, { type: 'TOGGLE_FRAGMENT', fragmentId: 'registry-hash' })
   state = gameReducer(state, { type: 'SUBMIT_RECONSTRUCTION' })
   return state
@@ -112,7 +112,7 @@ describe('buildRecordIndex — the comprehension contract', () => {
     state = gameReducer(state, { type: 'COMMIT_FIELD_ACTION', actionId: 'listen-mara' })
     state = gameReducer(state, { type: 'COMMIT_FIELD_ACTION', actionId: 'authenticate-chain' })
     state = gameReducer(state, { type: 'OPEN_RECONSTRUCTION' })
-    state = gameReducer(state, { type: 'TOGGLE_FRAGMENT', fragmentId: 'scar-sensation' })
+    state = gameReducer(state, { type: 'TOGGLE_FRAGMENT', fragmentId: 'witness-account' })
     state = gameReducer(state, { type: 'TOGGLE_FRAGMENT', fragmentId: 'registry-hash' })
 
     // Two anchors SELECTED but not submitted: a thought, not a filing.

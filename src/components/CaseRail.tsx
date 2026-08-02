@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react'
-import { getCaseContent, getReactionsForSource, methodLabels, personas } from '../game/content'
-import { getTrustLabel } from '../game/engine'
+import {
+  getCaseContent,
+  getDiscoveredSecretDefinitions,
+  getReactionsForSource,
+  getRegisteredSecret,
+  methodLabels,
+  personas,
+  resolveSecretCounterline,
+} from '../game/content'
+import { canDiscoverSecret, getTrustLabel, hasDiscoveredSecret } from '../game/engine'
 import { personaRunLines } from '../game/personaRecord'
 import { buildLedger, ledgerFilingLabels, type LedgerCost } from '../game/ledger'
 import {
@@ -9,7 +17,7 @@ import {
   groupRecordEntries,
   searchRecord,
 } from '../game/recordIndex'
-import type { EvidenceStatus, GameState, PersonaId } from '../game/types'
+import type { EvidenceStatus, GameState, PersonaId, SecretId } from '../game/types'
 import { DossierPhoto } from './DossierPhoto'
 import { PersonaPortrait } from './PersonaPortrait'
 import { purposeCopy, showsRosterPurpose } from './purposeCopy'
@@ -17,13 +25,15 @@ import { ReactionQuotes } from './ReactionQuotes'
 
 interface CaseRailProps {
   state: GameState
+  initialTab?: RailTab
   // The run's query trail, owned by the shell (see CaseFileDrawer). Passed in
   // rather than held here because this component unmounts with the drawer.
   queryTrail: readonly string[]
   onQuery: (query: string) => void
+  onDiscoverSecret: (secretId: SecretId) => void
 }
 
-type RailTab = 'case' | 'ledger' | 'evidence' | 'log' | 'people' | 'search'
+export type RailTab = 'case' | 'ledger' | 'evidence' | 'log' | 'people' | 'search'
 
 // SEARCH IS A FIFTH TAB, not a field above the bar. Argued from the drawer's own
 // structure: the bar is a mutually-exclusive panel switcher whose contract three
@@ -61,13 +71,31 @@ const statusLabels: Record<EvidenceStatus, string> = {
   testimony: 'Testimony',
 }
 
-export function CaseRail({ state, queryTrail, onQuery }: CaseRailProps) {
-  const { caseFile, evidenceDefinitions, reconstructionDefinitions } = getCaseContent(state.caseId)
-  const [activeTab, setActiveTab] = useState<RailTab>('case')
+export function CaseRail({
+  state,
+  initialTab = 'case',
+  queryTrail,
+  onQuery,
+  onDiscoverSecret,
+}: CaseRailProps) {
+  const { caseFile, evidenceDefinitions, reconstructionDefinitions, sites, fieldSiteLimit } =
+    getCaseContent(state.caseId)
+  const [activeTab, setActiveTab] = useState<RailTab>(initialTab)
   const evidence = evidenceDefinitions.filter((item) => state.evidence.includes(item.id))
   // The filed memory model. It used to sit in the field dock; a filed record
   // belongs in the file, so the Case tab is now its home.
   const reconstruction = reconstructionDefinitions.find((item) => item.id === state.reconstruction)
+  const filedSiteCount = Math.min(state.completedSites.length, fieldSiteLimit)
+  const omittedSiteCount = Math.max(0, sites.length - state.completedSites.length)
+  const discoveredSecrets = getDiscoveredSecretDefinitions(state)
+  const readerKey = getRegisteredSecret('reader-key-04')?.definition
+  const readerKeyDiscovered = hasDiscoveredSecret(state, 'reader-key-04')
+  const readerKeyPrerequisitesHeld = Boolean(
+    readerKey?.requiresSecretIds?.every((secretId) =>
+      hasDiscoveredSecret(state, secretId),
+    ),
+  )
+  const readerKeyClaimable = canDiscoverSecret(state, 'reader-key-04')
   // Whether any persona's trust has moved off zero yet — gates the Social memory
   // block's progressive reveal (F-6).
   const anyTrust = personas.some((persona) => state.trust[persona.id] !== 0)
@@ -195,10 +223,8 @@ export function CaseRail({ state, queryTrail, onQuery }: CaseRailProps) {
           <section className="rail-block rail-status-grid" aria-label="Case status">
             <div>
               <span>Sites filed</span>
-              {/* Denominator is the tribunal threshold until it is met, then the
-                  district's true size — a third or fourth filing must register. */}
               <strong>
-                {state.completedSites.length} / {state.completedSites.length >= 2 ? 4 : 2}
+                {filedSiteCount} / {fieldSiteLimit}
               </strong>
             </div>
             <div>
@@ -217,6 +243,12 @@ export function CaseRail({ state, queryTrail, onQuery }: CaseRailProps) {
             </div>
           </section>
 
+          {state.completedSites.length >= fieldSiteLimit && (
+            <p className="rail-omitted-sites">
+              {omittedSiteCount} site{omittedSiteCount === 1 ? '' : 's'} omitted from the filed record.
+            </p>
+          )}
+
           {/* The filed memory model, moved here out of the field dock: it is a
               filed record, and filed records live in the file. Same <details>
               element, same authored copy and reactions as before. */}
@@ -228,6 +260,75 @@ export function CaseRail({ state, queryTrail, onQuery }: CaseRailProps) {
                 <p>{reconstruction.thesis}</p>
                 <ReactionQuotes reactions={reconstruction.reactions} />
               </details>
+            </section>
+          )}
+
+          {(discoveredSecrets.length > 0 || readerKeyClaimable) && (
+            <section className="rail-block fourth-margin-index" data-fourth-margin>
+              <p className="rail-label">The Fourth Margin · not evidence</p>
+              <h2>Irregular marks retained beside the record</h2>
+              <p className="rail-note">
+                These readings may argue with the file. They do not alter evidence,
+                standing, testimony, alarm, or any finding.
+              </p>
+
+              {discoveredSecrets.length > 0 && (
+                <div className="fourth-margin-entries">
+                  {discoveredSecrets.map((secret) => (
+                    <details
+                      className="fourth-margin-entry"
+                      data-kind={secret.kind}
+                      key={secret.id}
+                    >
+                      <summary>
+                        <span aria-hidden="true">{secret.kind === 'key' ? '◇04' : '⌜'}</span>
+                        {secret.title}
+                      </summary>
+                      <div className="fourth-margin-entry-body">
+                        {secret.kind === 'aphorism' ? (
+                          <blockquote>{secret.body}</blockquote>
+                        ) : (
+                          <p className="fourth-margin-object">{secret.body}</p>
+                        )}
+                        {secret.attribution && (
+                          <p className="fourth-margin-attribution">{secret.attribution}</p>
+                        )}
+                        {secret.source && (
+                          <p className="fourth-margin-source">{secret.source}</p>
+                        )}
+                        <p className="fourth-margin-counterline">
+                          {resolveSecretCounterline(secret, state)}
+                        </p>
+                        <p className="fourth-margin-location">{secret.location}</p>
+                      </div>
+                    </details>
+                  ))}
+                </div>
+              )}
+
+              {readerKey && readerKeyPrerequisitesHeld && (
+                <div className="fourth-margin-key-claim">
+                  <p>
+                    The fragments marked <strong>I</strong> and <strong>XV</strong> align
+                    against an unnumbered reader.
+                  </p>
+                  <button
+                    type="button"
+                    aria-disabled={readerKeyDiscovered || !readerKeyClaimable}
+                    aria-pressed={readerKeyDiscovered}
+                    onClick={() => {
+                      if (readerKeyClaimable) onDiscoverSecret(readerKey.id)
+                    }}
+                  >
+                    <span aria-hidden="true">◇04</span>{' '}
+                    {readerKeyDiscovered
+                      ? 'Reader Key 04 retained'
+                      : readerKeyClaimable
+                        ? 'Align the fragments · claim Reader Key 04'
+                        : 'Reader Key 04 aligns after the Case 81 verdict'}
+                  </button>
+                </div>
+              )}
             </section>
           )}
 

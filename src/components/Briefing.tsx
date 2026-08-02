@@ -1,7 +1,14 @@
+import { useState } from 'react'
 import { Atmosphere } from '../ambience/Atmosphere'
 import { MirrorSigil } from '../ambience/sigils'
-import { DEFAULT_CASE_ID, getCaseContent, getMirrorBriefingAside, methodLabels } from '../game/content'
-import type { ApproachId, GameState } from '../game/types'
+import {
+  DEFAULT_CASE_ID,
+  getCaseContent,
+  getMirrorBriefingAside,
+  methodLabels,
+  personaName,
+} from '../game/content'
+import type { ApproachDefinition, ApproachId, GameState, PersonaId } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
 import { DossierPhoto } from './DossierPhoto'
 
@@ -10,8 +17,22 @@ interface BriefingProps {
   onSelectApproach: (approachId: ApproachId) => void
 }
 
+function relationshipDelta(approach: ApproachDefinition): string {
+  const changes = Object.entries(approach.trust)
+    .filter(([, delta]) => delta !== 0)
+    .map(
+      ([personaId, delta]) =>
+        `${personaName(personaId as PersonaId)} ${delta > 0 ? '+' : ''}${delta}`,
+    )
+  return changes.length > 0 ? changes.join(' · ') : 'No relationship change'
+}
+
 export function Briefing({ state, onSelectApproach }: BriefingProps) {
   const { caseFile, approaches, chrome, scene } = getCaseContent(state.caseId)
+  // The opening card is a view-local draft. Only the lone review button below
+  // dispatches the existing SELECT_APPROACH action through App.
+  const [draftApproachId, setDraftApproachId] = useState<ApproachId | null>(null)
+  const draftApproach = approaches.find((approach) => approach.id === draftApproachId)
   const priorRun = state.previousRuns.at(-1)
   // The prior run may belong to another case; its aside comes from that case.
   const mirrorAside = priorRun
@@ -50,17 +71,48 @@ export function Briefing({ state, onSelectApproach }: BriefingProps) {
           </div>
 
           <div className="choice-list briefing-choice-list">
-            {approaches.map((approach) => (
-              <ChoiceButton
-                key={approach.id}
-                title={approach.title}
-                label={approach.method}
-                description={approach.description}
-                consequence={approach.consequence}
-                onClick={() => onSelectApproach(approach.id)}
-              />
-            ))}
+            {approaches.map((approach) => {
+              const selected = draftApproachId === approach.id
+              return (
+                <div
+                  className={`briefing-approach-card ${selected ? 'briefing-approach-card-selected' : ''}`}
+                  data-approach-id={approach.id}
+                  data-selected={selected ? 'true' : undefined}
+                  key={approach.id}
+                >
+                  <ChoiceButton
+                    title={approach.title}
+                    label={approach.method}
+                    description={approach.description}
+                    consequence={approach.consequence}
+                    aside={selected ? 'Selected' : undefined}
+                    onClick={() => setDraftApproachId(approach.id)}
+                  />
+                </div>
+              )
+            })}
           </div>
+
+          {draftApproach && (
+            <section className="briefing-approach-review" aria-labelledby="approach-review-heading">
+              <p className="section-context">Opening approach review</p>
+              <h3 id="approach-review-heading">{draftApproach.title}</h3>
+              <p>
+                <strong>Method memory:</strong>{' '}
+                {draftApproach.methodTags.map((tag) => methodLabels[tag]).join(' · ')}
+              </p>
+              <p>
+                <strong>Relationship:</strong> {relationshipDelta(draftApproach)}
+              </p>
+              <button
+                className="button button-primary"
+                type="button"
+                onClick={() => onSelectApproach(draftApproach.id)}
+              >
+                Begin audit <span aria-hidden="true">→</span>
+              </button>
+            </section>
+          )}
         </section>
 
         <div className="narrative-measure briefing-record">

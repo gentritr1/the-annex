@@ -1,0 +1,111 @@
+{
+  "capturedAt": "2026-07-30",
+  "baseUrl": "http://127.0.0.1:4173/",
+  "captures": [
+    {
+      "file": "desktop-concourse-1280x720.png",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "surface": "Case 77 concourse after two filed locations",
+      "renderer": "webgl",
+      "horizontalOverflowPx": 0,
+      "progress": {
+        "sites": "2/4",
+        "evidence": "2/5",
+        "trace": "1"
+      }
+    },
+    {
+      "file": "mobile-post-filing-375x812.png",
+      "viewport": {
+        "width": 375,
+        "height": 812
+      },
+      "surface": "Maintenance spine filed result",
+      "horizontalOverflowPx": 0,
+      "dialogueBoundsPx": {
+        "top": 440,
+        "bottom": 604
+      },
+      "promptBoundsPx": {
+        "top": 637,
+        "bottom": 800
+      },
+      "dialoguePromptOverlapPx": 0,
+      "statusBoundsPx": {
+        "top": 58,
+        "bottom": 215
+      },
+      "hudButtonHeightsPx": [
+        44,
+        44,
+        56,
+        56,
+        48
+      ]
+    }
+  ],
+  "responsiveChecks": {
+    "smallPhone": {
+      "viewport": "375x812",
+      "horizontalOverflowPx": 0,
+      "minimumHudButtonHeightPx": 44
+    },
+    "landscapePhone": {
+      "viewport": "844x390",
+      "horizontalOverflowPx": 0,
+      "dialogueBoundsPx": {
+        "left": 22,
+        "top": 240,
+        "right": 427,
+        "bottom": 370
+      },
+      "promptBoundsPx": {
+        "left": 518,
+        "top": 272,
+        "right": 822,
+        "bottom": 370
+      }
+    },
+    "highContrastLargeText": {
+      "viewport": "375x812",
+      "horizontalOverflowPx": 0,
+      "dialogueBoundsPx": {
+        "top": 456,
+        "bottom": 664
+      },
+      "promptBoundsPx": {
+        "top": 671,
+        "bottom": 800
+      },
+      "dialoguePromptGapPx": 7.1,
+      "longDialogueOverflow": "auto"
+    },
+    "mobileTrace": {
+      "viewport": "375x812",
+      "display": "grid",
+      "widthPx": 116,
+      "heightPx": 23,
+      "horizontalOverflowPx": 0
+    },
+    "mobileRoomConsole": {
+      "viewport": "375x812",
+      "consoleBoundsPx": {
+        "top": 487,
+        "bottom": 812
+      },
+      "escapePromptBoundsPx": {
+        "top": 180,
+        "bottom": 237
+      },
+      "overlapPx": 0
+    },
+    "reducedMotion": {
+      "renderer": "poster",
+      "renderLoop": "idle",
+      "horizontalOverflowPx": 0
+    }
+  }
+}

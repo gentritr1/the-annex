@@ -12,7 +12,7 @@ import {
 const base: FieldCtaState = {
   tribunalReady: false,
   reconstructionFiled: false,
-  completedSitesCount: 0,
+  canOpenReconstruction: false,
   methodsVisible: false,
   ritualStepLabel: null,
 }
@@ -22,22 +22,21 @@ describe('fieldCta — every progression state names its real next step', () => 
     const cta = fieldCta({
       ...base,
       tribunalReady: true,
-      completedSitesCount: 2,
+      canOpenReconstruction: true,
       reconstructionFiled: true,
       methodsVisible: true,
     })
     expect(cta).toEqual({ kind: 'tribunal', label: 'Enter tribunal' })
   })
 
-  it('first site filed, no model → open the memory lattice', () => {
-    const cta = fieldCta({ ...base, completedSitesCount: 1, methodsVisible: true })
+  it('an engine-openable lattice → open the memory lattice', () => {
+    const cta = fieldCta({ ...base, canOpenReconstruction: true, methodsVisible: true })
     expect(cta).toEqual({ kind: 'reconstruction', label: 'Open memory lattice' })
   })
 
   it('model filed but gate still closed → complete one more site', () => {
     const cta = fieldCta({
       ...base,
-      completedSitesCount: 1,
       reconstructionFiled: true,
       methodsVisible: true,
     })

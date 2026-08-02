@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act } from 'react'
+import { act, useState } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { getCaseContent } from '../game/content'
@@ -15,6 +15,7 @@ declare global {
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
 
 const content = getCaseContent('case-77')
+const case81Content = getCaseContent('case-81')
 // Every location that hosts its methods in the scene — the plain pilot site and
 // each bounded room whose TERMINAL choice adopts the same grammar. The identity
 // claim has to hold for all of them, not just the first one authored.
@@ -62,6 +63,30 @@ function clickButton() {
 }
 
 describe('SceneZone commits through the canonical path', () => {
+  it('opens a Case 81 deposition entry in one step without field-filing semantics', () => {
+    const actionId = case81Content.deposition!.entryActionIds[0]!
+    const action = case81Content.fieldActions.find((item) => item.id === actionId)!
+    const opens: FieldActionId[] = []
+    act(() => {
+      root.render(
+        <SceneZone
+          action={action}
+          x={0.5}
+          y={0.5}
+          requiresConfirmation={false}
+          aside="Open transcript"
+          onCommit={() => opens.push(action.id)}
+          onAttentionChange={() => undefined}
+        />,
+      )
+    })
+
+    clickButton()
+    expect(opens).toEqual([actionId])
+    expect(host.querySelector('button')?.getAttribute('aria-pressed')).toBeNull()
+    expect(host.querySelector('button')?.textContent).toContain('Open transcript')
+  })
+
   it('needs the same arm → confirm two-step the inspector list needs', () => {
     const action = content.fieldActions.find((item) => item.id === zones[0]!.actionId)!
     const commits: FieldActionId[] = []
@@ -85,6 +110,47 @@ describe('SceneZone commits through the canonical path', () => {
     expect(commits).toEqual([action.id])
   })
 
+  it('keeps a controlled arm through HUD focus and commits on the scene button’s second activation', () => {
+    const action = content.fieldActions.find((item) => item.id === zones[0]!.actionId)!
+    const commits: FieldActionId[] = []
+
+    function Harness() {
+      const [armed, setArmed] = useState(false)
+      return (
+        <>
+          <SceneZone
+            action={action}
+            x={zones[0]!.x}
+            y={zones[0]!.y}
+            armed={armed}
+            onArmedChange={setArmed}
+            onCommit={() => commits.push(action.id)}
+            onAttentionChange={() => undefined}
+          />
+          <button type="button" data-hud-file>
+            File from HUD
+          </button>
+        </>
+      )
+    }
+
+    act(() => root.render(<Harness />))
+    const sceneButton = host.querySelector<HTMLButtonElement>('.scene-zone button')!
+    const hudFile = host.querySelector<HTMLButtonElement>('[data-hud-file]')!
+
+    act(() => sceneButton.click())
+    expect(sceneButton.getAttribute('aria-pressed')).toBe('true')
+
+    act(() => {
+      sceneButton.focus()
+      hudFile.focus()
+    })
+    expect(host.querySelector('.scene-zone button')?.getAttribute('aria-pressed')).toBe('true')
+
+    act(() => host.querySelector<HTMLButtonElement>('.scene-zone button')!.click())
+    expect(commits).toEqual([action.id])
+  })
+
   it('keeps the whole authored method text in the button’s accessible name', () => {
     const action = content.fieldActions.find((item) => item.id === zones[0]!.actionId)!
     act(() => {
@@ -103,6 +169,40 @@ describe('SceneZone commits through the canonical path', () => {
     expect(name).toContain(action.title)
     expect(name).toContain(action.description)
     expect(name).toContain(action.consequence)
+  })
+
+  it('moves portrait-cropped outer captions inboard without moving their anchors', () => {
+    const action = case81Content.fieldActions.find(
+      (item) => item.id === case81Content.deposition!.entryActionIds[0],
+    )!
+
+    act(() => {
+      root.render(
+        <SceneZone
+          action={action}
+          x={0.41}
+          y={0.62}
+          onCommit={() => undefined}
+          onAttentionChange={() => undefined}
+        />,
+      )
+    })
+    expect(host.querySelector('.scene-zone')?.getAttribute('data-edge')).toBe('start')
+    expect(host.querySelector('.scene-zone')?.getAttribute('style')).toContain('left: 41%')
+
+    act(() => {
+      root.render(
+        <SceneZone
+          action={action}
+          x={0.59}
+          y={0.62}
+          onCommit={() => undefined}
+          onAttentionChange={() => undefined}
+        />,
+      )
+    })
+    expect(host.querySelector('.scene-zone')?.getAttribute('data-edge')).toBe('end')
+    expect(host.querySelector('.scene-zone')?.getAttribute('style')).toContain('left: 59%')
   })
 
   // The load-bearing guarantee of the pilot: the scene-first control is a

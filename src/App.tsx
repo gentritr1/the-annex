@@ -3,6 +3,7 @@ import { createAmbientAudio, type AmbientAudioHandle, type WeatherBedKind } from
 import { Briefing } from './components/Briefing'
 import { CaseFileDrawer, CaseFileSummon } from './components/CaseFileDrawer'
 import { CaseHeader } from './components/CaseHeader'
+import type { RailTab } from './components/CaseRail'
 import { Debrief } from './components/Debrief'
 import { Investigation } from './components/Investigation'
 import { Reconstruction } from './components/Reconstruction'
@@ -158,6 +159,11 @@ export default function App() {
   // saved. Investigation owns the mutual exclusivity with the location-detail
   // drawer, so at most one aria-modal dialog is ever over the plate.
   const [caseFileOpen, setCaseFileOpen] = useState(false)
+  // The location-detail drawer portals to <body> exactly like the deposition
+  // and case file. Its open signal therefore belongs at shell scope so the
+  // complete behind-dialog app can be inert, not only Investigation's subtree.
+  const [detailDrawerOpen, setDetailDrawerOpen] = useState(false)
+  const [caseFileInitialTab, setCaseFileInitialTab] = useState<RailTab>('case')
   // A phase change retires the summoned file (its summon on the old surface has
   // gone with it). Derived during render — the supported adjust-state-on-change
   // pattern the rail already uses — rather than in an effect.
@@ -165,6 +171,16 @@ export default function App() {
   if (caseFilePhase !== state.phase) {
     setCaseFilePhase(state.phase)
     if (caseFileOpen) setCaseFileOpen(false)
+    if (detailDrawerOpen) setDetailDrawerOpen(false)
+    if (caseFileInitialTab !== 'case') setCaseFileInitialTab('case')
+  }
+
+  function setCaseFileSurface(open: boolean, initialTab: RailTab = 'case') {
+    if (open) {
+      setCaseFileInitialTab(initialTab)
+      setDetailDrawerOpen(false)
+    }
+    setCaseFileOpen(open)
   }
 
   // ── The query trail (E5) ───────────────────────────────────────────────────
@@ -303,11 +319,20 @@ export default function App() {
     state.precedents,
   ).map((id) => describeSwitchTarget(id, state.precedents))
 
-  const appClassName = appShellClass(state.settings)
+  const spatialGameplay =
+    state.phase === 'investigation' && Boolean(getCaseContent(state.caseId).scene.world)
+  const cinematicRecord = state.phase === 'tribunal' || state.phase === 'debrief'
+  const appClassName = [
+    appShellClass(state.settings),
+    spatialGameplay ? 'annex-app--gameplay' : '',
+    cinematicRecord ? 'annex-app--cinematic-phase' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   if (state.phase === 'landing') {
     return (
-      <div className={appClassName}>
+      <div className={appClassName} data-phase={state.phase}>
         <StartScreen
           savedState={savedState}
           settings={state.settings}
@@ -327,11 +352,15 @@ export default function App() {
   }
 
   return (
-    // While a transcript is open the shell is inert — pointer and keyboard both —
-    // so the deposition reads as modal even though the tray only docks at the
-    // bottom. The tray itself portals to <body>, outside this subtree, so it stays
-    // interactive. (Cleared the instant the transcript commits or is abandoned.)
-    <div className={appClassName} inert={depositionEntry !== null}>
+    // While a transcript or the case file is open the shell is inert — pointer
+    // and keyboard both. Both modal surfaces portal to <body>, outside this
+    // subtree, so they stay interactive while the world cannot be reached
+    // behind them.
+    <div
+      className={appClassName}
+      data-phase={state.phase}
+      inert={depositionEntry !== null || caseFileOpen || detailDrawerOpen}
+    >
       <a className="skip-link" href="#case-scene">
         Skip to current scene
       </a>
@@ -359,11 +388,16 @@ export default function App() {
             <Investigation
               state={state}
               caseFileOpen={caseFileOpen}
-              onCaseFileOpenChange={setCaseFileOpen}
+              onCaseFileOpenChange={setCaseFileSurface}
+              detailDrawerOpen={detailDrawerOpen}
+              onDetailDrawerOpenChange={setDetailDrawerOpen}
               depositionEntry={depositionEntry}
               onDepositionEntryChange={setDepositionEntry}
               onAcousticTreatmentChange={setSpatialTreatment}
               onCommitAction={(actionId) => dispatch({ type: 'COMMIT_FIELD_ACTION', actionId })}
+              onDiscoverSecret={(secretId) =>
+                dispatch({ type: 'DISCOVER_SECRET', secretId })
+              }
               onCommitDeposition={(actionId, beats, askedConsent) =>
                 dispatch({ type: 'COMMIT_DEPOSITION', actionId, beats, askedConsent })
               }
@@ -382,6 +416,9 @@ export default function App() {
           {state.phase === 'tribunal' && (
             <Tribunal
               state={state}
+              onTribunalChoice={(choiceId) =>
+                dispatch({ type: 'SET_TRIBUNAL_CHOICE', choiceId })
+              }
               onDecide={(decisionId) => dispatch({ type: 'DECIDE', decisionId })}
               onBack={() => dispatch({ type: 'RETURN_TO_INVESTIGATION' })}
             />
@@ -405,7 +442,7 @@ export default function App() {
       {state.phase !== 'investigation' && (
         <CaseFileSummon
           state={state}
-          onOpen={() => setCaseFileOpen(true)}
+          onOpen={() => setCaseFileSurface(true)}
           className="casefile-summon--shell"
         />
       )}
@@ -413,9 +450,13 @@ export default function App() {
       {caseFileOpen && (
         <CaseFileDrawer
           state={state}
+          initialTab={caseFileInitialTab}
           onClose={() => setCaseFileOpen(false)}
           queryTrail={queryTrail}
           onQuery={recordQuery}
+          onDiscoverSecret={(secretId) =>
+            dispatch({ type: 'DISCOVER_SECRET', secretId })
+          }
         />
       )}
 

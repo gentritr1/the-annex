@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { FieldActionDefinition, PreviewTreatmentToken } from '../game/types'
 import { ChoiceButton } from './ChoiceButton'
 
@@ -9,6 +10,15 @@ interface SceneZoneProps {
   // The ambient token this method previews, used only to colour the ring and cap
   // so the two sides of the room read as two different rooms. Presentation only.
   treatment?: PreviewTreatmentToken
+  // Deposition entry zones open the transcript instead of filing a canonical
+  // field action, so they deliberately skip the arm/confirm filing gesture.
+  requiresConfirmation?: boolean
+  // Scene-first filing may be confirmed from the persistent HUD. These optional
+  // controlled props keep its arm state explicit without changing any ordinary
+  // scene-zone caller's local arm/confirm behavior.
+  armed?: boolean
+  onArmedChange?: (armed: boolean) => void
+  aside?: ReactNode
   onCommit: () => void
   onAttentionChange: (active: boolean) => void
 }
@@ -24,6 +34,10 @@ export function SceneZone({
   x,
   y,
   treatment,
+  requiresConfirmation = true,
+  armed,
+  onArmedChange,
+  aside,
   onCommit,
   onAttentionChange,
 }: SceneZoneProps) {
@@ -31,7 +45,11 @@ export function SceneZone({
     <div
       className="scene-zone"
       data-treatment={treatment}
-      data-edge={x <= 0.32 ? 'start' : x >= 0.68 ? 'end' : undefined}
+      data-armed={armed ? 'true' : undefined}
+      // Portrait cover-cropping can place a master-space 0.41 / 0.59 anchor
+      // against the visible edge. Classify the outer 45% bands as inboard
+      // captions; the ring itself remains pinned to the authored coordinate.
+      data-edge={x <= 0.45 ? 'start' : x >= 0.55 ? 'end' : undefined}
       // A low anchor has no room beneath it for a caption that grows downward —
       // on a letterboxed plate the pre-commit cost runs off the bottom edge
       // exactly when the player arms. Those zones caption UPWARD instead; the
@@ -46,7 +64,10 @@ export function SceneZone({
         description={action.description}
         consequence={action.consequence}
         tone={action.alarmDelta > 0 ? 'risk' : 'default'}
-        requiresConfirmation
+        requiresConfirmation={requiresConfirmation}
+        armed={armed}
+        onArmedChange={onArmedChange}
+        aside={aside}
         onAttentionChange={onAttentionChange}
         onClick={onCommit}
       />

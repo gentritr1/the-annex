@@ -216,7 +216,7 @@ export function buildFindings(state: GameState): readonly LedgerFinding[] {
 
   // 1 · What this case carries in from an earlier ruling. Stated only when there
   //     is one; a first case has no such fact to report.
-  if (getPrecedentLine(state.caseId, state.precedents)) {
+  if (getPrecedentLine(state.caseId, state.precedents, state.caseOutcomes)) {
     findings.push({
       id: 'finding:precedent',
       text: 'A prior ruling is carried in from an earlier case and cited on this record.',
@@ -269,14 +269,15 @@ export function buildFindings(state: GameState): readonly LedgerFinding[] {
 
   // 5 · Whether the tribunal will hear this record. The rule itself is read from
   //     `canEnterTribunal`, so this sentence cannot disagree with the gate.
+  const requiredSites = content.fieldSiteLimit
   if (canEnterTribunal(state)) {
     findings.push({
       id: 'finding:threshold',
-      text: 'The tribunal will hear this record: two locations are closed and a memory model is on file.',
+      text: `The tribunal will hear this record: ${requiredSites === 1 ? 'one location is' : `${requiredSites} locations are`} closed and a memory model is on file.`,
     })
   } else {
     const wanted: string[] = []
-    const missingSites = 2 - state.completedSites.length
+    const missingSites = Math.max(0, requiredSites - state.completedSites.length)
     if (missingSites > 0) {
       wanted.push(
         missingSites === 1

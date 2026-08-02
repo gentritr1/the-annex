@@ -15,7 +15,9 @@ import type {
   GameState,
   SiteDefinition,
 } from '../game/types'
+import { CinematicPhaseHud } from './CinematicPhaseHud'
 import { PersonaPortrait } from './PersonaPortrait'
+import { LegalChannels } from './LegalChannels'
 
 interface DebriefProps {
   state: GameState
@@ -52,12 +54,20 @@ export function Debrief({
   const content = getCaseContent(state.caseId)
   const { decisions, approaches, evidenceDefinitions, sites } = content
   const decision = decisions.find((item) => item.id === state.decision)
+  const decisionCopy =
+    decision && (content.getDecisionCopy?.(decision.id, state) ?? decision)
+  const legalChannels =
+    decision && (content.getLegalChannels?.(decision.id, state) ?? decision.legalChannels)
   const approach = approaches.find((item) => item.id === state.primaryApproach)
   const discoveredEvidence = evidenceDefinitions.filter((item) => state.evidence.includes(item.id))
-  const consequenceLines = state.decision ? content.decisionConsequences[state.decision] ?? [] : []
+  const consequenceLines = state.decision
+    ? content.getDecisionConsequences?.(state.decision, state) ??
+      content.decisionConsequences[state.decision] ??
+      []
+    : []
   const tensionEcho =
     state.reconstruction && state.decision
-      ? getTensionLine(state.caseId, state.reconstruction, state.decision)
+      ? getTensionLine(state.caseId, state.reconstruction, state.decision, state)
       : null
   // The revelation, authored per verdict path (and consent). Null when the case
   // authors none for this state; the engine never sees it — it is view-only copy.
@@ -71,9 +81,39 @@ export function Debrief({
     ? decisions.find((item) => item.id === priorVerdict)
     : undefined
   const tableauBackground = content.scene.layers.find((layer) => layer.raster)?.raster?.src ?? ''
+  const outcomeFacts = state.caseOutcomes[state.caseId] ?? {}
+  const outcomeRows = (content.outcomeFactDefinitions ?? []).flatMap((definition) => {
+    const valueId = outcomeFacts[definition.id]
+    const value = definition.values.find((option) => option.id === valueId)
+    return value ? [{ id: definition.id, label: definition.label, value: value.label }] : []
+  })
 
   return (
     <article className="phase-page debrief-page">
+      <CinematicPhaseHud
+        caseCode={content.caseFile.code}
+        caseTitle={content.caseFile.title}
+        phaseLabel="Consequence record"
+        runNumber={state.runNumber}
+        objective="Review the legal force, retained facts, and human cost before the next run."
+        metrics={[
+          {
+            label: 'Evidence',
+            value: String(discoveredEvidence.length),
+            tone: discoveredEvidence.length > 0 ? 'open' : 'warning',
+          },
+          {
+            label: 'Facts',
+            value: String(outcomeRows.length),
+            tone: outcomeRows.length > 0 ? 'open' : 'warning',
+          },
+          {
+            label: 'Trace',
+            value: state.alarm === 0 ? 'Quiet' : String(state.alarm),
+            tone: state.alarm === 0 ? 'neutral' : 'warning',
+          },
+        ]}
+      />
       <DebriefTableau
         backgroundSrc={tableauBackground}
         subjectImageSrc={content.caseFile.dossierImage?.src}
@@ -81,7 +121,7 @@ export function Debrief({
         runNumber={state.runNumber}
         decisionId={decision?.id ?? 'unfiled'}
         decisionTitle={decision?.shortLabel ?? 'Run closed'}
-        decisionCost={decision?.cost ?? 'The record closed without a finding.'}
+        decisionCost={decisionCopy?.cost ?? 'The record closed without a finding.'}
         evidenceCount={discoveredEvidence.length}
         completedSiteCount={state.completedSites.length}
         totalSiteCount={content.sites.length}
@@ -120,7 +160,30 @@ export function Debrief({
             <em>Filed model vs finding:</em> {tensionEcho}
           </p>
         ) : null}
+        {legalChannels && legalChannels.length > 0 ? (
+          <div className="debrief-legal-force">
+            <h3>Legal force filed</h3>
+            <LegalChannels channels={legalChannels} />
+          </div>
+        ) : null}
       </section>
+
+      {outcomeRows.length > 0 ? (
+        <section className="debrief-section outcome-facts" aria-labelledby="outcome-facts-heading">
+          <div className="debrief-section-heading">
+            <span>Campaign record · {outcomeRows.length} facts retained</span>
+            <h2 id="outcome-facts-heading">What later cases are allowed to remember.</h2>
+          </div>
+          <dl>
+            {outcomeRows.map((row) => (
+              <div key={row.id}>
+                <dt>{row.label}</dt>
+                <dd>{row.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      ) : null}
 
       {revelation ? (
         <section className="debrief-section revelation-section" aria-labelledby="revelation-heading">
@@ -141,7 +204,8 @@ export function Debrief({
           <h2>The next run will not begin cleanly.</h2>
           <p>
             The Mirror retains your finding and folds one impossible familiarity into the next
-            briefing. Choose another route to expose a different account of the same person.
+            briefing. Choose another route—or carry this ruling into another case—to expose what
+            the first record could not hold.
           </p>
         </div>
         <div className="mirror-actions">

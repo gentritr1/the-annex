@@ -1,6 +1,6 @@
 // Evidence for the Care ward 12 scene-first PILOT, driven against the real Vite
 // app in headless Chrome over raw CDP. It captures every distinct pilot screen
-// state at 1280x800 and 375x812, probes the ambient state-sets from the RUNNING
+// state at 1280x800 and compact phone viewports, probes the ambient state-sets from the RUNNING
 // APP with transitions disabled first (the transition-clock scar: a computed read
 // on a transitioned property otherwise returns the START frame), records a
 // keyboard-only completion transcript with trusted key events, re-enters the site
@@ -285,6 +285,37 @@ const zoneRingCentres = () =>
              x: r.left + r.width / 2, y: r.top + r.height / 2 }
   }))()`)
 
+// On compact gameplay the live controls sit over a full-viewport plate beneath
+// a fixed HUD. Verify the real button boxes, not only their decorative rings:
+// each must be a >=44px target, wholly in the viewport, clear of the lower HUD,
+// and own its own centre point for a real touch/pointer activation.
+const compactZoneGeometry = () =>
+  evaluate(`(() => {
+    const lowerHud = document.querySelector('.hud-prompts')?.getBoundingClientRect()
+    return [...document.querySelectorAll('.scene-zone button')].map((button) => {
+      const rect = button.getBoundingClientRect()
+      const centerX = rect.left + rect.width / 2
+      const centerY = rect.top + rect.height / 2
+      const owner = document.elementFromPoint(centerX, centerY)
+      return {
+        left: rect.left,
+        right: rect.right,
+        top: rect.top,
+        bottom: rect.bottom,
+        width: rect.width,
+        height: rect.height,
+        inViewport:
+          rect.left >= 0 &&
+          rect.right <= window.innerWidth &&
+          rect.top >= 0 &&
+          rect.bottom <= window.innerHeight,
+        aboveLowerHud: !lowerHud || rect.bottom <= lowerHud.top,
+        touchTarget: rect.width >= 44 && rect.height >= 44,
+        ownsCenter: owner === button || button.contains(owner),
+      }
+    })
+  })()`)
+
 // Ambient probe. Transitions are disabled and two frames are allowed to pass
 // BEFORE the computed read, so the value is the settled target rather than the
 // transition's start frame.
@@ -368,6 +399,18 @@ async function pilotPass(width, height) {
 
   const rings = await zoneRingCentres()
   record(`[${tag}] both rings anchored`, rings.length === 2, rings)
+  if (width <= 700) {
+    const geometry = await compactZoneGeometry()
+    record(
+      `[${tag}] both Care methods remain touchable above the lower HUD`,
+      geometry.length === 2 &&
+        geometry.every(
+          (zone) =>
+            zone.inViewport && zone.aboveLowerHud && zone.touchTarget && zone.ownsCenter,
+        ),
+      geometry,
+    )
+  }
 
   // LISTEN preview
   await mouseTo(rings[0].x, rings[0].y)
@@ -976,6 +1019,7 @@ async function caseEightyOnePass(width, height) {
 const passes = [
   ['pilot 1280x800', () => pilotPass(1280, 800)],
   ['pilot 375x812', () => pilotPass(375, 812)],
+  ['pilot 390x844', () => pilotPass(390, 844)],
   ['reduced motion 1280x800', () => reducedMotionPass(1280, 800)],
   ['reduced motion 375x812', () => reducedMotionPass(375, 812)],
   ['forced colors 1280x800', () => forcedColorsPass(1280, 800)],

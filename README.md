@@ -40,13 +40,15 @@ Future AI integrations are proposal-only: models may draft dialogue, reflections
 
 ## MVP scope
 
-Included: two linked cases, four investigative sites each, four method families, a reconstruction puzzle, four major personas plus a Mirror residue hook, tribunal outcomes, local persistence, responsive controls, and accessibility preferences.
+Included: two linked cases, four investigative sites each, four method families, a reconstruction puzzle, four major personas plus a Mirror residue hook, tribunal outcomes, local persistence, responsive controls, accessibility preferences, distinct bounded 3D hubs for Case 77's rain-cooled civic concourse and Case 81's dry deposition annex, and a world-first cinematic HUD with inline dialogue and an in-game case/evidence codex.
 
-Deferred: 3D first-person traversal, combat, open-world districts, cloud accounts, live freeform NPC chat, procedural missions, and production-final art/audio.
+Deferred: 3D first-person traversal, collision and physics, combat, open-world districts, character rigs, cloud accounts, live freeform NPC chat, procedural missions, and production-final character/audio pipelines.
 
 ## Project context
 
 - [PRODUCT.md](PRODUCT.md) defines users, purpose, principles, and boundaries.
 - [DESIGN.md](DESIGN.md) defines the visual system.
 - [docs/CONTENT_AUTHORING.md](docs/CONTENT_AUTHORING.md) explains how to add a future case safely.
+- [docs/3D_AMBIENCE_SLICE.md](docs/3D_AMBIENCE_SLICE.md) defines the bounded 3D vertical slice and its safe narrative seams.
+- [docs/CINEMATIC_HUD.md](docs/CINEMATIC_HUD.md) defines the game-like HUD, dialogue, codex, and state boundaries.
 - [docs/PROVENANCE.md](docs/PROVENANCE.md) tracks generated and authored assets.

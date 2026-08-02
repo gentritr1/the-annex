@@ -12,6 +12,7 @@ import type {
   EvidenceDefinition,
   EvidenceId,
   FieldActionDefinition,
+  FragmentDiscoveryDefinition,
   FragmentDefinition,
   FragmentId,
   GameState,
@@ -19,14 +20,15 @@ import type {
   ReconstructionDefinition,
   ReconstructionId,
   SceneDefinition,
+  SecretDefinition,
   SiteDefinition,
+  SubjectHearingPresence,
 } from '../types'
 
-// Case 77 — "The Vale Continuity Claim". This is a verbatim move of the original
-// single-case corpus into a self-contained CaseDefinition; the string values are
-// byte-identical to the pre-multi-case content module. Component-embedded chrome
-// (world-map labels, tribunal seal, debrief consequences and reflections) is
-// gathered here too so the presentation layer stays case-agnostic.
+// Case 77 — "The Vale Continuity Claim". The original single-case corpus lives in
+// this self-contained CaseDefinition together with its tribunal scope, compact
+// campaign exports, and component-facing chrome, so the shared engine and
+// presentation layer stay case-agnostic.
 
 const caseFile: CaseFile = {
   code: 'CMA–77–A',
@@ -42,6 +44,7 @@ const caseFile: CaseFile = {
 
 const chrome: CaseChrome = {
   briefingCoordinates: 'Lower Span / Annex 04',
+  tribunalBackdropSrc: '/images/phase-scenes/tribunal-chamber.webp',
   worldAriaLabel: 'Rain-dark civic archive district at night',
   worldLabels: [
     { className: 'world-label world-label-registry', text: 'A · Registry' },
@@ -64,32 +67,40 @@ const approaches: readonly ApproachDefinition[] = [
     id: 'procedure',
     title: 'Begin with the record',
     method: 'Procedure',
+    methodTags: ['procedure'],
     description: 'Establish chain of custody before speaking to anyone involved.',
     consequence: 'The Registrar opens with provisional confidence.',
+    suggestedSiteId: 'registry',
     trust: { registrar: 1 },
   },
   {
     id: 'care',
     title: 'Begin with the person',
     method: 'Care',
+    methodTags: ['care'],
     description: 'Meet 77-A before deciding what kind of evidence she is.',
     consequence: 'The Shepherd will remember that sequence.',
+    suggestedSiteId: 'care-ward',
     trust: { shepherd: 1 },
   },
   {
     id: 'covert',
     title: 'Begin outside permission',
     method: 'Covert',
+    methodTags: ['stealth'],
     description: 'Map what the official audit path has been designed not to show.',
     consequence: 'The Defector offers a quiet route through maintenance.',
+    suggestedSiteId: 'maintenance',
     trust: { defector: 1 },
   },
   {
     id: 'curiosity',
     title: 'Begin with the missing question',
     method: 'Inquiry',
+    methodTags: ['puzzle'],
     description: 'Ask which category the case file never defines.',
     consequence: 'The Small Archivist saves your first unanswered question.',
+    suggestedSiteId: 'small-archive',
     trust: { archivist: 1 },
   },
 ]
@@ -247,7 +258,7 @@ const fieldActions: readonly FieldActionDefinition[] = [
     methodLabel: 'Care',
     description: 'Treat the subject as a witness before testing the reliability of her account.',
     consequence: 'Builds relational trust · leaves one contradiction unresolved',
-    methodTags: ['care', 'negotiation', 'nonlethal'],
+    methodTags: ['care', 'nonlethal'],
     evidenceId: 'sensory-echo',
     trust: { shepherd: 2, archivist: 1 },
     alarmDelta: 0,
@@ -842,23 +853,6 @@ const sites: readonly SiteDefinition[] = [
       ],
       sceneFirst: true,
       atmosphere: 'rain-reflection',
-      // The whole room answers the method under consideration: care softens and
-      // warms the rain, coercion sharpens and floods it. One token per method,
-      // explicit — never inferred from method tags or trust.
-      previewTreatment: {
-        matteSrc: '/images/site-scenes/care-ward-rain-memory.jpg',
-        actionTreatments: {
-          'listen-mara': 'listen',
-          'stress-test': 'pressure',
-        },
-      },
-      rainPresence: {
-        matteSrc: '/images/site-scenes/care-ward-rain-memory.jpg',
-        actionTreatments: {
-          'listen-mara': 'listening',
-          'stress-test': 'pressure',
-        },
-      },
     },
     unvisitedNote:
       'You never entered Care ward 12. 77-A stayed a file that never had to answer you.',
@@ -946,15 +940,135 @@ const fragments: readonly FragmentDefinition[] = [
 const fragmentEvidenceLinks: Readonly<Record<FragmentId, readonly EvidenceId[]>> = {
   'scar-sensation': ['sensory-echo', 'contradictory-scar'],
   'witness-account': ['sensory-echo', 'missing-category'],
-  'registry-hash': ['custody-chain', 'checksum-drift'],
+  'registry-hash': ['custody-chain', 'checksum-drift', 'sensor-omission', 'maintenance-override'],
   'new-dream': ['missing-category', 'redacted-index'],
 }
+
+// Every anchor is tied to the action and source that actually exposed it. There
+// are deliberately no broad site-wide entries here: every route leaves a
+// different source trace in the filed record, including the routes that use a
+// civic system instead of a person-facing encounter.
+const fragmentDiscoveries: readonly FragmentDiscoveryDefinition[] = [
+  {
+    fragmentId: 'registry-hash',
+    siteId: 'registry',
+    actionId: 'authenticate-chain',
+    source: 'Civic restoration ledger · final hash receipt',
+    reveal: 'The final signed hash links Mara’s last archive state to the restoration package.',
+  },
+  {
+    fragmentId: 'new-dream',
+    siteId: 'registry',
+    actionId: 'authenticate-chain',
+    source: 'Civic restoration ledger · post-restoration exception note',
+    reveal: 'A ledger exception dates 77-A’s first dream after restoration and outside every admitted donor.',
+  },
+  {
+    fragmentId: 'registry-hash',
+    siteId: 'registry',
+    actionId: 'trace-checksum',
+    source: 'Registry mirror node · fourth-minute checksum',
+    reveal: 'The mirror preserves the signed checksum bridging the last archive state to the package.',
+  },
+  {
+    fragmentId: 'new-dream',
+    siteId: 'registry',
+    actionId: 'trace-checksum',
+    source: 'Registry mirror node · private-event reconciliation',
+    reveal: 'The mirror marks one dream as post-restoration, with no donor fragment available to explain it.',
+  },
+  {
+    fragmentId: 'witness-account',
+    siteId: 'care-ward',
+    actionId: 'listen-mara',
+    source: 'Care ward 12 · Shepherd’s recognition note',
+    reveal: 'The Shepherd identifies the rain response as Mara’s private fear response, never stored in civic backups.',
+  },
+  {
+    fragmentId: 'new-dream',
+    siteId: 'care-ward',
+    actionId: 'listen-mara',
+    source: '77-A’s uninterrupted account',
+    reveal: '77-A separates the rain memory from a first dream that began only after restoration.',
+  },
+  {
+    fragmentId: 'scar-sensation',
+    siteId: 'care-ward',
+    actionId: 'stress-test',
+    source: 'Care ward pressure trace',
+    reveal: 'The pressure trace records precise pain at Mara’s scar site although 77-A’s tissue is unmarked.',
+  },
+  {
+    fragmentId: 'new-dream',
+    siteId: 'care-ward',
+    actionId: 'stress-test',
+    source: '77-A’s post-test correction',
+    reveal: 'After the test, 77-A distinguishes the old scar from a dream that started after the restoration.',
+  },
+  {
+    fragmentId: 'registry-hash',
+    siteId: 'maintenance',
+    actionId: 'walk-acoustic-shadow',
+    source: 'Maintenance acoustic map · omitted signature cross-link',
+    reveal: 'The omitted interval points back to the checksum that bridges Mara’s final archive state to the package.',
+  },
+  {
+    fragmentId: 'new-dream',
+    siteId: 'maintenance',
+    actionId: 'walk-acoustic-shadow',
+    source: 'Maintenance exception queue',
+    reveal: 'The excluded queue notes a private dream logged after restoration and absent from the donor set.',
+  },
+  {
+    fragmentId: 'registry-hash',
+    siteId: 'maintenance',
+    actionId: 'forge-authority',
+    source: 'Dormant credential audit cache',
+    reveal: 'The credential cache retains the signed hash that the ordinary registry surface no longer exposes.',
+  },
+  {
+    fragmentId: 'new-dream',
+    siteId: 'maintenance',
+    actionId: 'forge-authority',
+    source: 'Dormant credential exception attachment',
+    reveal: 'An attached exception records 77-A’s first private dream as no donor’s memory.',
+  },
+  {
+    fragmentId: 'witness-account',
+    siteId: 'small-archive',
+    actionId: 'answer-archivist',
+    source: 'Shelf-zero care note',
+    reveal: 'A held care note says the Shepherd recognized a fear response never placed in the civic backups.',
+  },
+  {
+    fragmentId: 'new-dream',
+    siteId: 'small-archive',
+    actionId: 'answer-archivist',
+    source: 'Shelf-zero post-restoration card',
+    reveal: 'The card names 77-A’s first dream as a memory formed after the donor record ended.',
+  },
+  {
+    fragmentId: 'registry-hash',
+    siteId: 'small-archive',
+    actionId: 'seal-index',
+    source: 'Restricted composite index · restoration chain entry',
+    reveal: 'The sealed index preserves the signed chain from Mara’s last archive state into the restoration package.',
+  },
+  {
+    fragmentId: 'new-dream',
+    siteId: 'small-archive',
+    actionId: 'seal-index',
+    source: 'Restricted composite index · post-restoration note',
+    reveal: 'The sealed note records a first dream with no matching donor fragment.',
+  },
+]
 
 const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
   {
     id: 'relational-continuity',
     title: 'Relational continuity',
     thesis: 'A self can persist through embodied memory and recognition even when the record is incomplete.',
+    limitation: 'Recognition can support continuity without proving that every restored memory originated with Mara.',
     evidenceId: 'relational-proof',
     trust: { shepherd: 2 },
     unresolvedTone: false,
@@ -969,6 +1083,7 @@ const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
     id: 'institutional-chain',
     title: 'Institutional continuity',
     thesis: 'A signed chain becomes persuasive when a living witness closes its interpretive gap.',
+    limitation: 'A complete chain can show provenance while leaving the meaning of continuity contested.',
     evidenceId: 'reconstructed-chain',
     trust: { registrar: 2 },
     unresolvedTone: false,
@@ -983,6 +1098,7 @@ const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
     id: 'emergent-self',
     title: 'Emergent personhood',
     thesis: 'The restoration may inherit Mara’s past while already generating a self that is not reducible to Mara.',
+    limitation: 'A post-restoration self does not by itself settle which legal ties, if any, it inherits.',
     evidenceId: 'novel-memory',
     trust: { archivist: 2, shepherd: 1 },
     unresolvedTone: false,
@@ -997,6 +1113,7 @@ const reconstructionDefinitions: readonly ReconstructionDefinition[] = [
     id: 'unresolved-composite',
     title: 'Irreducible composite',
     thesis: 'The anchors are jointly real and still refuse one clean account of continuity.',
+    limitation: 'Keeping the conflict visible protects against a false certainty but leaves the legal question open.',
     evidenceId: 'irreducible-conflict',
     trust: { defector: 1, registrar: -1 },
     unresolvedTone: true,
@@ -1026,7 +1143,8 @@ const decisions: readonly DecisionDefinition[] = [
     title: 'Charter 77-A as a new person',
     shortLabel: 'Charter a new person',
     description: '77-A receives full protection while Mara’s former legal identity remains closed.',
-    cost: 'Protects the present self while severing inherited relationships and claims.',
+    cost:
+      'Protects the present self while permanently barring 77-A from Mara Vale’s closed estate and its debt appeal.',
     requiresOverride: false,
     illicit: false,
     methodTags: ['procedure'],
@@ -1127,19 +1245,18 @@ const mirrorBriefingAsides: Readonly<Record<DecisionId, string>> = {
     '“Last run you wrote her continuity without a vote. The forged fourth minute is still open, and it remembers your hand.”',
 }
 
-// Debrief consequence lines: what each finding changes. Moved verbatim from the
-// Debrief component so a second case can author its own.
+// Debrief consequence lines: the immediate legal effects each finding distributes.
 const decisionConsequences: Readonly<Record<DecisionId, readonly string[]>> = {
   'certify-continuity': [
     '77-A leaves review as Mara Vale and inherits every relationship attached to that name.',
-    'The restoration process becomes a precedent creditors and families may both invoke.',
+    'Mara Vale’s registered debts and unfinished estate obligations reactivate against 77-A with the name.',
     'Any emerging self inside 77-A is legally invisible unless Mara chooses to name it later.',
     '“I have her name back,” 77-A says at release. “I keep waiting for it to feel like mine and not like hers.”',
   ],
   'charter-new-person': [
     '77-A leaves review with full civic protection under a name she may choose herself.',
     'Mara Vale remains legally dead; property and unfinished obligations pass without her.',
-    'The city gains its first category for a person made from another person’s continuity claim.',
+    'Mara’s estate debt is finalized without 77-A: she neither inherits it nor has standing to contest how it was closed.',
     '“A name of my own,” she says. “Now I find out which of the memories will follow me into it.”',
   ],
   'quarantine-review': [
@@ -1186,6 +1303,180 @@ function getPersonaReflection(personaId: PersonaId, state: GameState): string {
   if (decision === 'charter-new-person') return '“You made a category. Now find out who it leaves behind.”'
   if (trust >= 2) return '“I kept the question you answered. I also kept the one you did not.”'
   return '“Adults call a shelf empty when they removed the label themselves.”'
+}
+
+const tribunalChoice = {
+  id: 'continuityScope',
+  legend: 'Precedent scope',
+  prompt: 'How far may this finding travel beyond 77-A?',
+  options: [
+    {
+      id: 'individual',
+      label: 'Bind 77-A only',
+      description:
+        'This finding resolves one continuity claim. Later restorations must establish their own rule.',
+    },
+    {
+      id: 'general',
+      label: 'Set general continuity precedent',
+      description:
+        'Future restorations may invoke this finding, including every gap in the record supporting it.',
+    },
+  ],
+} as const
+
+const outcomeFactDefinitions = [
+  {
+    id: 'valeContact',
+    label: '77-A contact',
+    values: [
+      { id: 'consulted', label: 'Consulted' },
+      { id: 'pressured', label: 'Pressured' },
+      { id: 'not-consulted', label: 'Not consulted' },
+      { id: 'unknown', label: 'Legacy contact unknown' },
+    ],
+  },
+  {
+    id: 'authorityLink77',
+    label: 'Fourth-minute authority link',
+    values: [
+      { id: 'proven', label: 'Proven' },
+      { id: 'not-proven', label: 'Not proven' },
+    ],
+  },
+  {
+    id: 'continuityScope',
+    label: 'Continuity scope',
+    values: [
+      { id: 'individual', label: 'Individual determination' },
+      { id: 'general', label: 'General precedent' },
+      { id: 'unknown', label: 'Legacy scope unknown' },
+    ],
+  },
+] as const
+
+function valeContactFor(state: GameState): 'consulted' | 'pressured' | 'not-consulted' {
+  if (state.completedActions.includes('listen-mara')) return 'consulted'
+  if (state.completedActions.includes('stress-test')) return 'pressured'
+  return 'not-consulted'
+}
+
+// This is deliberately not evidence. It gives 77-A one ordinary, present-tense
+// presence before findings without adding a fact, gate, or recommended verdict.
+// The three possible care-ward records are exhaustive because a site can only
+// admit one action in a run.
+function getSubjectHearingPresence(state: GameState): SubjectHearingPresence {
+  if (state.completedActions.includes('listen-mara')) {
+    return {
+      speaker: '77-A',
+      status: 'Listened to',
+      lines: [
+        '“Please call me Mara for this hearing.”',
+        '“After this, I would like ten quiet minutes by the rain screen before anyone asks me another question.”',
+      ],
+    }
+  }
+
+  if (state.completedActions.includes('stress-test')) {
+    return {
+      speaker: '77-A',
+      status: 'Pressured',
+      lines: [
+        '“Please call me 77-A until I decide otherwise.”',
+        '“When this is over, I want the ward light turned down and no more tests this hour.”',
+      ],
+    }
+  }
+
+  return {
+    speaker: '77-A',
+    status: 'Not heard in the field record',
+    lines: [
+      '“Please call me 77-A until we have spoken.”',
+      '“When the hearing ends, I would like to know whether I may walk to the rain screen.”',
+    ],
+  }
+}
+
+function authorityLinkFor(state: GameState): 'proven' | 'not-proven' {
+  return state.completedActions.includes('trace-checksum') &&
+    state.completedActions.includes('walk-acoustic-shadow')
+    ? 'proven'
+    : 'not-proven'
+}
+
+function getOutcomeFacts(state: GameState): Readonly<Record<string, string>> {
+  return {
+    valeContact: valeContactFor(state),
+    authorityLink77: authorityLinkFor(state),
+    // DECIDE requires a validated choice for this case. The fallback keeps this
+    // pure content hook total if it is called by a read-only preview.
+    continuityScope: state.tribunalChoice === 'general' ? 'general' : 'individual',
+  }
+}
+
+function getTribunalSignals(state: GameState) {
+  const contact = valeContactFor(state)
+  const authorityLink = authorityLinkFor(state)
+
+  return [
+    {
+      label: 'Subject contact',
+      value:
+        contact === 'consulted'
+          ? '77-A consulted'
+          : contact === 'pressured'
+            ? '77-A pressure-tested'
+            : '77-A not consulted',
+      ...(contact === 'consulted' ? {} : { tone: 'warning' as const }),
+    },
+    {
+      label: 'Authority coordination',
+      value:
+        authorityLink === 'proven'
+          ? 'Registry mark and corridor omission linked'
+          : 'Registry–maintenance link not established',
+    },
+  ]
+}
+
+function getTribunalObjection(state: GameState) {
+  if (state.completedActions.includes('forge-authority')) {
+    return {
+      speaker: 'The Registrar',
+      line:
+        'The credential can write status. It cannot make this proceeding lawful. A general filing would carry that defect into every later case.',
+    }
+  }
+
+  const contact = valeContactFor(state)
+  if (contact === 'not-consulted') {
+    return {
+      speaker: 'The Shepherd',
+      line:
+        '77-A did not speak in this review. Whatever scope you choose, name that omission before you bind her life to it.',
+    }
+  }
+  if (contact === 'pressured') {
+    return {
+      speaker: 'The Shepherd',
+      line: '77-A answered under repeated pressure. The result may be precise; it is not consent.',
+    }
+  }
+
+  if (authorityLinkFor(state) === 'not-proven') {
+    return {
+      speaker: 'The Registrar',
+      line:
+        'You have not joined the late checksum to the excluded corridor minute. Treat coordination as unproved.',
+    }
+  }
+
+  return {
+    speaker: 'The Defector',
+    line:
+      'The checksum and omission share an authority family. That proves coordination, not who used it or why.',
+  }
 }
 
 // ── Scene direction ──────────────────────────────────────────────────────────
@@ -1335,6 +1626,8 @@ const scene: SceneDefinition = {
     posterSrc: '/images/world/case77/concourse-poster.webp',
     concreteSrc: '/images/world/case77/poured-concrete.webp',
     terrazzoSrc: '/images/world/case77/wet-terrazzo.webp',
+    bronzeSrc: '/images/world/case77/smoked-civic-bronze.webp',
+    featurePlateSrc: '/images/world/case77/stormwell-vista.webp',
     room: { width: 12, depth: 11, height: 3.4 },
     homeCamera: {
       position: [0, 1.62, 5.9],
@@ -1355,6 +1648,12 @@ const scene: SceneDefinition = {
     caption: {
       title: 'Civic Archive concourse',
       detail: 'Drag to look · select a threshold',
+    },
+    authoritySignal: {
+      linkedActionIds: ['trace-checksum', 'walk-acoustic-shadow'],
+      linkedSiteIds: ['registry', 'maintenance'],
+      forgedActionId: 'forge-authority',
+      forgedSiteId: 'maintenance',
     },
     portals: [
       {
@@ -1443,23 +1742,56 @@ const scene: SceneDefinition = {
   LayerArt: CivicArchiveArt,
 }
 
+// One old reading survives beside the audit copy, outside the evidentiary
+// index. The quote is a public-domain artifact, not the game's answer; the
+// unknown hand underneath disputes what the office did with it.
+const secrets: readonly SecretDefinition[] = [
+  {
+    id: 'nietzsche-forgetting',
+    kind: 'aphorism',
+    title: 'The animal’s blank',
+    body:
+      '“Thus even a happy life is possible without remembrance, as the beast shows: but life in any true sense is absolutely impossible without forgetfulness.”',
+    attribution: 'Friedrich Nietzsche · translated by Adrian Collins',
+    source: 'The Use and Abuse of History · § I · 1909',
+    counterline:
+      'The office erased three people and called the absence closure. That was not their forgetfulness.',
+    location: 'Registry intake · audit mirror',
+    announcement:
+      'A Fourth Margin fragment was retained. It did not enter evidence.',
+    availablePhases: ['investigation'],
+    siteId: 'registry',
+    anchor: { x: 0.72, y: 0.3 },
+    compactAnchor: { x: 0.72, y: 0.37 },
+  },
+]
+
 export const case77: CaseDefinition = {
   id: 'case-77',
   label: 'Case 77',
   caseFile,
   chrome,
+  fieldSiteLimit: 2,
   approaches,
   evidenceDefinitions,
   fieldActions,
   sites,
   fragments,
+  fragmentDiscoveries,
   fragmentEvidenceLinks,
   reconstructionDefinitions,
   decisions,
+  secrets,
   getReconstructionForFragments,
   reconstructionDecisionTensions,
   mirrorBriefingAsides,
   decisionConsequences,
   getPersonaReflection,
+  tribunalChoice,
+  outcomeFactDefinitions,
+  getOutcomeFacts,
+  getTribunalSignals,
+  getTribunalObjection,
+  getSubjectHearingPresence,
   scene,
 }

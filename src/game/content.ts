@@ -2,9 +2,13 @@ import { case77 } from './cases/case77'
 import { case81 } from './cases/case81'
 import type {
   CaseDefinition,
-  FieldActionDefinition,
+  DepositionChoiceId,
+  DepositionDefinition,
+  DepositionUseResolution,
   FieldActionId,
+  FieldActionDefinition,
   GameEvent,
+  GameState,
   MethodTag,
   PersonaDefinition,
   PersonaId,
@@ -12,6 +16,9 @@ import type {
   DecisionId,
   ReconstructionId,
   RunSummary,
+  SecretDefinition,
+  SecretId,
+  UnnumberedReadingRoomDefinition,
 } from './types'
 
 // ── Global vocabulary (shared by every case) ────────────────────────────────
@@ -104,6 +111,27 @@ export const DEFAULT_CASE_ID = 'case-77'
 // cheap). Ordered as the registry declares them.
 export const registeredCaseIds: readonly string[] = Object.keys(caseRegistry)
 
+export interface RegisteredSecret {
+  caseId: string
+  definition: SecretDefinition
+}
+
+// One global index over the per-case authored Fourth Margin items. Persistence
+// validates campaign discoveries against it, while presentation can reopen
+// fragments after the player crosses into another case.
+export const registeredSecrets: readonly RegisteredSecret[] = Object.values(
+  caseRegistry,
+).flatMap((caseDefinition) =>
+  (caseDefinition.secrets ?? []).map((definition) => ({
+    caseId: caseDefinition.id,
+    definition,
+  })),
+)
+
+export const registeredSecretIds: readonly SecretId[] = registeredSecrets.map(
+  ({ definition }) => definition.id,
+)
+
 export function isRegisteredCase(caseId: string): boolean {
   return Object.prototype.hasOwnProperty.call(caseRegistry, caseId)
 }
@@ -130,6 +158,236 @@ export function getCaseContent(caseId: string): CaseDefinition {
   return caseRegistry[caseId] ?? caseRegistry[DEFAULT_CASE_ID]
 }
 
+export function getRegisteredSecret(secretId: SecretId): RegisteredSecret | undefined {
+  return registeredSecrets.find(({ definition }) => definition.id === secretId)
+}
+
+export function getDiscoveredSecretDefinitions(
+  state: GameState,
+): readonly SecretDefinition[] {
+  return state.discoveredSecretIds.flatMap((secretId) => {
+    const definition = getRegisteredSecret(secretId)?.definition
+    return definition ? [definition] : []
+  })
+}
+
+// A route-aware pencil answer is meaningful only while its owning case's live
+// state is available. After a case crossing, the durable authored counterline is
+// used instead of pretending the next case's state describes the old discovery.
+export function resolveSecretCounterline(
+  definition: SecretDefinition,
+  state: GameState,
+): string {
+  const owner = getRegisteredSecret(definition.id)
+  return owner?.caseId === state.caseId && definition.getCounterline
+    ? definition.getCounterline(state)
+    : definition.counterline
+}
+
+// ── Global Fourth Margin ambience ──────────────────────────────────────────
+// This room is not owned by either case: Reader Key 04 may expose its entry
+// anchor in whichever bounded world is active. The key is the only persisted
+// input. Every visit, focus, arrangement, and opened-point marker belongs to the
+// presentation layer and is deliberately absent from GameState.
+export const unnumberedReadingRoom = {
+  id: 'unnumbered-reading-room',
+  requiredSecretId: 'reader-key-04',
+  room: { width: 7.2, depth: 6.4, height: 2.8 },
+  homeCamera: {
+    position: [0, 1.54, 4.85],
+    target: [0, 1.18, -1.1],
+  },
+  acoustics: {
+    weatherLevel: 0.2,
+    weatherCutoffHz: 620,
+    roomLevel: 0.58,
+    roomCutoffHz: 165,
+    humHz: 49,
+    humLevel: 0.22,
+  },
+  travelMs: 520,
+  entryAnchors: [
+    {
+      id: 'concourse-unnumbered-reader',
+      worldKind: 'concourse',
+      position: [0, 0.72, -0.17],
+      rotationY: 0,
+      posterAnchor: { x: 0.5, y: 0.64 },
+      camera: {
+        position: [0, 1.5, 2.7],
+        target: [0, 0.78, -0.17],
+      },
+      label: 'Turn Reader Key 04',
+      accessibleLabel: 'Turn Reader Key 04 · enter the unnumbered reader',
+    },
+    {
+      id: 'deposition-annex-unnumbered-reader',
+      worldKind: 'deposition-annex',
+      position: [0, 0.96, -0.66],
+      rotationY: 0,
+      posterAnchor: { x: 0.5, y: 0.6 },
+      camera: {
+        position: [0, 1.52, 2.6],
+        target: [0, 0.96, -0.66],
+      },
+      label: 'Turn Reader Key 04',
+      accessibleLabel: 'Turn Reader Key 04 · enter the unnumbered reader',
+    },
+  ],
+  title: 'UNNUMBERED READING ROOM',
+  subtitle: 'Not evidence · no filing channel',
+  entryAction: 'Turn Reader Key 04 · enter the unnumbered reader',
+  transitionIn: [
+    'Reader Key 04 enters the unnumbered slot.',
+    'The wall withdraws by the width of a book.',
+  ],
+  archivistCard:
+    'There are three places to read. I did not put arrows between them. The window remembers one minute of rain; it is not a way out.',
+  hudObjective: 'Read any object · leave at any time',
+  accessibleIntroduction:
+    'A narrow reading room has opened. A false window shows a recorded civic skyline. Three independent reading points are available in any order. Nothing examined here enters evidence.',
+  completion: {
+    visual: 'All three lamps remain on. None becomes the room’s center.',
+    accessible: 'All three reading points are open. No record was added.',
+  },
+  exit: {
+    label: 'Return to the filed world',
+    transition:
+      'The key comes free. The wall closes without assigning the room a number.',
+  },
+  navigation: {
+    readingPointOrder: 'player-chosen',
+    showProgressCounter: false,
+    exitAvailability: 'always',
+  },
+  stateContract: {
+    pointState: 'view-local',
+    mutatesGameState: false,
+    entersEvidence: false,
+    grantsCaseReward: false,
+    writesRunHistory: false,
+  },
+  readingPoints: [
+    {
+      id: 'book-that-opens',
+      placement: 'left',
+      markerGlyph: '⌁',
+      position: [-2.25, 0.85, -0.65],
+      posterAnchor: { x: 0.23, y: 0.58 },
+      camera: {
+        position: [-2.7, 1.62, 2.05],
+        target: [-2.25, 1, -0.65],
+      },
+      acoustics: {
+        weatherLevel: 0.34,
+        weatherCutoffHz: 900,
+        roomLevel: 0.42,
+        roomCutoffHz: 260,
+        humHz: 48,
+        humLevel: 0.12,
+      },
+      title: 'THE BOOK THAT OPENS',
+      meta: 'Public gardening guide · edition field missing',
+      inspection:
+        'Two transit stubs reinforce the hinge. Blue thread takes the spine. A strip of lunch paper closes the tear. The surviving diagrams show drainage boxes and balcony beans. A coriander seed rests in the gutter.',
+      archivistNote:
+        'The spine was gone. I used three things that were not spines. It opens now.',
+      interactions: [
+        {
+          id: 'lift-repaired-cover',
+          label: 'Lift the repaired cover',
+          response:
+            'The repairs pull against one another, then share the weight. No page comes loose.',
+        },
+      ],
+    },
+    {
+      id: 'two-orders',
+      placement: 'center',
+      markerGlyph: '⇵',
+      position: [0, 1.15, -2.85],
+      posterAnchor: { x: 0.5, y: 0.4 },
+      camera: {
+        position: [0, 1.52, 0],
+        target: [0, 1.25, -2.8],
+      },
+      acoustics: {
+        weatherLevel: 0.12,
+        weatherCutoffHz: 460,
+        roomLevel: 0.6,
+        roomCutoffHz: 180,
+        humHz: 55,
+        humLevel: 0.3,
+      },
+      title: 'THE TWO ORDERS',
+      meta: 'Two slips, neither filed over the other',
+      inspection:
+        'The slips marked I and XV fit the reader together. Two shallow channels allow either one to sit above the other. No channel is marked first.',
+      archivistNote:
+        'I kept the answers with the books. Otherwise the books start sounding like orders.',
+      interactions: [
+        {
+          id: 'i-above-xv',
+          label: 'Set I above XV',
+          response:
+            'The reader holds forgetting over selection. No conclusion prints.',
+        },
+        {
+          id: 'xv-above-i',
+          label: 'Set XV above I',
+          response:
+            'The reader holds selection over forgetting. No conclusion prints.',
+        },
+        {
+          id: 'slips-level',
+          label: 'Leave the slips level',
+          response: 'The light reaches both margins. The reader files nothing.',
+        },
+      ],
+    },
+    {
+      id: 'unpressed-promise',
+      placement: 'right',
+      markerGlyph: '□',
+      position: [2.25, 1, -0.65],
+      posterAnchor: { x: 0.77, y: 0.58 },
+      camera: {
+        position: [2.7, 1.62, 2.05],
+        target: [2.25, 1.05, -0.65],
+      },
+      acoustics: {
+        weatherLevel: 0.05,
+        weatherCutoffHz: 360,
+        roomLevel: 0.45,
+        roomCutoffHz: 120,
+        humHz: 43,
+        humLevel: 0.17,
+      },
+      title: 'THE UNPRESSED PROMISE',
+      meta: 'Unfiled form · no petition attached',
+      inspection:
+        'An unused privacy strip lies beneath an empty name frame. No petition is attached. No seal has touched the paper.',
+      machineMarking: 'NOT FILED · NO LEGAL FORCE',
+      draftingPrompt: 'WHAT MAY THIS ROOM PROMISE BEFORE A NAME IS ASKED?',
+      archivistNote:
+        'I left the name empty. The promise is harder to hide that way.',
+      interactions: [
+        {
+          id: 'lower-empty-frame',
+          label: 'Lower the empty frame',
+          response: 'The frame settles over blank paper. Nothing is sealed.',
+        },
+      ],
+    },
+  ],
+} satisfies UnnumberedReadingRoomDefinition
+
+// Pure capability projection for presentation. It reads the one registered key
+// and cannot mutate the collection or any other canonical field.
+export function canEnterUnnumberedReadingRoom(state: GameState): boolean {
+  return state.discoveredSecretIds.includes(unnumberedReadingRoom.requiredSecretId)
+}
+
 // ── Case-aware content helpers ───────────────────────────────────────────────
 
 // One authored line naming the alignment/dissonance between a filed model and a
@@ -138,8 +396,13 @@ export function getTensionLine(
   caseId: string,
   reconstruction: ReconstructionId,
   decision: DecisionId,
+  state?: GameState,
 ): string {
-  return getCaseContent(caseId).reconstructionDecisionTensions[reconstruction]?.[decision] ?? ''
+  const content = getCaseContent(caseId)
+  if (state && content.getReconstructionDecisionTension) {
+    return content.getReconstructionDecisionTension(reconstruction, decision, state)
+  }
+  return content.reconstructionDecisionTensions[reconstruction]?.[decision] ?? ''
 }
 
 // Resolve a field action to its EFFECTIVE definition under the given precedents.
@@ -203,12 +466,34 @@ export function getMirrorBriefingAside(caseId: string, decision: DecisionId): st
 export function getPrecedentLine(
   caseId: string,
   precedents: Readonly<Record<string, string>>,
+  caseOutcomes: Readonly<Record<string, Readonly<Record<string, string>>>> = {},
 ): string | null {
   const source = getCaseContent(caseId).precedentSource
   if (!source) return null
   const priorDecision = precedents[source.caseId]
   if (!priorDecision) return null
+  const variant = source.outcomeVariant
+  if (variant) {
+    // Migrated saves can carry the verdict while lacking the later-added outcome
+    // fact. Let case content author a conservative `unknown` reading instead of
+    // silently falling through to a potentially broader generic citation.
+    const factValue = caseOutcomes[source.caseId]?.[variant.factId] ?? 'unknown'
+    const variantLine = variant.lines[factValue]?.[priorDecision]
+    if (variantLine) return variantLine
+  }
   return source.lines[priorDecision] ?? null
+}
+
+// One shared seam for deposition legality. Case content owns the boundary;
+// engine, scene state, and UI all call the same pure resolver so presentation can
+// never claim a use different from the one the reducer persists.
+export function resolveDepositionUse(
+  deposition: DepositionDefinition,
+  actionId: FieldActionId,
+  beats: readonly DepositionChoiceId[],
+  askedConsent: boolean,
+): DepositionUseResolution {
+  return deposition.resolveUse({ actionId, beats, askedConsent })
 }
 
 // The canon rule surfaced (W4): the latest verdict IS the record. One in-voice
